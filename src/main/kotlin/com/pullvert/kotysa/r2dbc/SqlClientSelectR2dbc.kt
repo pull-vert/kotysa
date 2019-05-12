@@ -4,15 +4,14 @@
 
 package com.pullvert.kotysa.r2dbc
 
-import io.r2dbc.spi.Row
-import org.apache.commons.logging.LogFactory
-import org.springframework.data.r2dbc.core.DatabaseClient
 import com.pullvert.kotysa.AbstractRow
 import com.pullvert.kotysa.DefaultSqlClientSelect
 import com.pullvert.kotysa.SqlClientSelect.ReactiveReturn
 import com.pullvert.kotysa.SqlClientSelect.ReactiveSelect
 import com.pullvert.kotysa.Tables
 import com.pullvert.kotysa.ValueProvider
+import io.r2dbc.spi.Row
+import org.springframework.data.r2dbc.core.DatabaseClient
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 
@@ -33,8 +32,6 @@ internal class SqlClientSelectR2dbc private constructor() {
 			override val resultClass: KClass<T>,
 			override val transform: ((ValueProvider) -> T)? = null
 	) : DefaultSqlClientSelect.Select<T>, ReactiveSelect<T>, R2dbcReturn<T> {
-
-		override val logger = LogFactory.getLog(R2dbcSelect::class.java)
 
 		override val sqlClientProperties: SqlClientPropertiesR2dbc<T>
 			get() {

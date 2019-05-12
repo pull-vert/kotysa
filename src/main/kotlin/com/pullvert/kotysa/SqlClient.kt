@@ -4,8 +4,7 @@
 
 package com.pullvert.kotysa
 
-import org.apache.commons.logging.Log
-import reactor.core.publisher.Mono
+import mu.KotlinLogging
 import kotlin.reflect.KClass
 
 /**
@@ -43,23 +42,6 @@ interface SqlClient : AbstractSqlClient {
 }
 
 /**
- * Reactive Sql Client, to be used with any non-blocking driver, such as R2dbc
- * @author Fred Montariol
- */
-interface ReactiveSqlClient : AbstractSqlClient {
-
-	override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): SqlClientSelect.ReactiveSelect<T>
-
-	override fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void>
-
-	override fun createTables(vararg tableClasses: KClass<*>): Mono<Void>
-
-	override fun <T : Any> insert(row: T): Mono<Void>
-
-	override fun insert(vararg rows: Any): Mono<Void>
-}
-
-/**
  * @author Fred Montariol
  */
 inline fun <reified T : Any> SqlClient.select(
@@ -69,27 +51,16 @@ inline fun <reified T : Any> SqlClient.select(
 /**
  * @author Fred Montariol
  */
-inline fun <reified T : Any> ReactiveSqlClient.select(
-		noinline selectDsl: ((ValueProvider) -> T)? = null
-): SqlClientSelect.ReactiveSelect<T> = select(T::class, selectDsl)
-
-/**
- * @author Fred Montariol
- */
 inline fun <reified T : Any> SqlClient.createTable() = createTable(T::class)
 
-/**
- * @author Fred Montariol
- */
-inline fun <reified T : Any> ReactiveSqlClient.createTable() = createTable(T::class)
 
+private val logger = KotlinLogging.logger {}
 
 /**
  * @author Fred Montariol
  */
 internal interface DefaultSqlClient : AbstractSqlClient {
 	val tables: Tables
-	val logger: Log
 
 	fun <T : Any> selectCheck(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?) {
 		if (selectDsl == null) {
@@ -108,9 +79,7 @@ internal interface DefaultSqlClient : AbstractSqlClient {
 			"${column.columnName} ${column.sqlType} $nullability"
 		}
 		val createTableSql = "CREATE TABLE IF NOT EXISTS ${table.name} ($columns, $primaryKey)"
-		if (logger.isDebugEnabled) {
-			logger.debug("Exec SQL : $createTableSql")
-		}
+		logger.debug { "Exec SQL : $createTableSql" }
 		return createTableSql
 	}
 
@@ -147,9 +116,7 @@ internal interface DefaultSqlClient : AbstractSqlClient {
 			values.add(value)
 		}
 		val insertSql = "INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES (${values.joinToString()})"
-		if (logger.isDebugEnabled) {
-			logger.debug("Exec SQL : $insertSql")
-		}
+		logger.debug { "Exec SQL : $insertSql" }
 		return insertSql
 	}
 

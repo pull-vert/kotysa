@@ -4,9 +4,8 @@
 
 package com.pullvert.kotysa.r2dbc
 
-import org.apache.commons.logging.LogFactory
-import org.springframework.data.r2dbc.core.DatabaseClient
 import com.pullvert.kotysa.*
+import org.springframework.data.r2dbc.core.DatabaseClient
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toFlux
 import kotlin.reflect.KClass
@@ -17,9 +16,7 @@ import kotlin.reflect.KClass
 class SqlClientR2dbc(
 		private val client: DatabaseClient,
 		override val tables: Tables
-) : DefaultSqlClient, ReactiveSqlClient {
-
-	override val logger = LogFactory.getLog(SqlClientR2dbc::class.java)
+) : DefaultSqlClient, ReactorSqlClient {
 
 	override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): SqlClientSelect.ReactiveSelect<T> {
 		selectCheck(resultClass, selectDsl)

@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.config.KotlinCompilerVersion
 buildscript {
     ext {
         junit_version = '5.4.2'
-//        kotlin_logging_version = '1.6.26'
+        kotlin_logging_version = '1.6.26'
         kotlinx_coroutines_version = '1.2.1'
         mokk_version = '1.9.3'
         spring_data_r2dbc_version = '1.0.0.BUILD-SNAPSHOT'
@@ -35,7 +35,7 @@ repositories {
 }
 
 dependencies {
-//    implementation "io.github.microutils:kotlin-logging:$kotlin_logging_version"
+    implementation "io.github.microutils:kotlin-logging:$kotlin_logging_version"
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     implementation 'io.projectreactor.kotlin:reactor-kotlin-extensions:1.0.0.BUILD-SNAPSHOT'
     compileOnly "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"

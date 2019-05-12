@@ -4,6 +4,7 @@
 
 package com.pullvert.kotysa
 
+import mu.KotlinLogging
 import org.apache.commons.logging.Log
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -43,6 +44,8 @@ class SqlClientSelect private constructor() {
 }
 
 
+private val logger = KotlinLogging.logger {}
+
 /**
  * @author Fred Montariol
  */
@@ -62,7 +65,6 @@ internal class DefaultSqlClientSelect private constructor() {
 	@Suppress("UNCHECKED_CAST")
 	internal interface Return<T : Any>: SqlClientSelect.AbstractReturn<T> {
 		val sqlClientProperties: SqlClientProperties<T>
-		val logger: Log
 
 		fun getSelectInformation() = with(sqlClientProperties) {
 			if (transform != null) {
@@ -76,9 +78,7 @@ internal class DefaultSqlClientSelect private constructor() {
 			val fields = selectedFields.joinToString { field -> field.fieldName }
 			val tables = selectedTables.joinToString { table -> table.name }
 			val selectSql = "SELECT $fields FROM $tables"
-			if (logger.isDebugEnabled) {
-				logger.debug("Exec SQL : $selectSql")
-			}
+			logger.debug { "Exec SQL : $selectSql" }
 			return selectSql
 		}
 
