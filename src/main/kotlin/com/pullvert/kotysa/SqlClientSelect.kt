@@ -5,9 +5,6 @@
 package com.pullvert.kotysa
 
 import mu.KotlinLogging
-import org.apache.commons.logging.Log
-import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.reflect.KClass
@@ -33,13 +30,6 @@ class SqlClientSelect private constructor() {
 	interface Return<T : Any>: AbstractReturn<T> {
 		override fun fetchOne(): T
 		override fun fetchAll(): List<T>
-	}
-
-	interface ReactiveSelect<T : Any>: AbstractSelect<T>, ReactiveReturn<T>
-
-	interface ReactiveReturn<T : Any>: AbstractReturn<T> {
-		override fun fetchOne(): Mono<T>
-		override fun fetchAll(): Flux<T>
 	}
 }
 

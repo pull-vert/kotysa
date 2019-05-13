@@ -7,6 +7,7 @@ package com.pullvert.kotysa.r2dbc
 import com.pullvert.kotysa.AbstractSqlClient
 import com.pullvert.kotysa.SqlClientSelect
 import com.pullvert.kotysa.ValueProvider
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import kotlin.reflect.KClass
 
@@ -16,7 +17,7 @@ import kotlin.reflect.KClass
  */
 interface ReactorSqlClient : AbstractSqlClient {
 
-	override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): SqlClientSelect.ReactiveSelect<T>
+	override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T>
 
 	override fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void>
 
@@ -32,9 +33,22 @@ interface ReactorSqlClient : AbstractSqlClient {
  */
 inline fun <reified T : Any> ReactorSqlClient.select(
 		noinline selectDsl: ((ValueProvider) -> T)? = null
-): SqlClientSelect.ReactiveSelect<T> = select(T::class, selectDsl)
+) = select(T::class, selectDsl)
 
 /**
  * @author Fred Montariol
  */
 inline fun <reified T : Any> ReactorSqlClient.createTable() = createTable(T::class)
+
+
+/**
+ * @author Fred Montariol
+ */
+class ReactorSqlClientSelect private constructor() {
+	interface Select<T : Any>: SqlClientSelect.AbstractSelect<T>, Return<T>
+
+	interface Return<T : Any>: SqlClientSelect.AbstractReturn<T> {
+		override fun fetchOne(): Mono<T>
+		override fun fetchAll(): Flux<T>
+	}
+}

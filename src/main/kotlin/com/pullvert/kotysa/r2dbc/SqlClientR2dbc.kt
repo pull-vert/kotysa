@@ -18,7 +18,7 @@ class SqlClientR2dbc(
 		override val tables: Tables
 ) : DefaultSqlClient, ReactorSqlClient {
 
-	override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): SqlClientSelect.ReactiveSelect<T> {
+	override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T> {
 		selectCheck(resultClass, selectDsl)
 		return SqlClientSelectR2dbc.R2dbcSelect(client, tables, resultClass, selectDsl)
 	}

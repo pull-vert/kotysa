@@ -6,8 +6,6 @@ package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.AbstractRow
 import com.pullvert.kotysa.DefaultSqlClientSelect
-import com.pullvert.kotysa.SqlClientSelect.ReactiveReturn
-import com.pullvert.kotysa.SqlClientSelect.ReactiveSelect
 import com.pullvert.kotysa.Tables
 import com.pullvert.kotysa.ValueProvider
 import io.r2dbc.spi.Row
@@ -31,7 +29,7 @@ internal class SqlClientSelectR2dbc private constructor() {
 			override val tables: Tables,
 			override val resultClass: KClass<T>,
 			override val transform: ((ValueProvider) -> T)? = null
-	) : DefaultSqlClientSelect.Select<T>, ReactiveSelect<T>, R2dbcReturn<T> {
+	) : DefaultSqlClientSelect.Select<T>, ReactorSqlClientSelect.Select<T>, R2dbcReturn<T> {
 
 		override val sqlClientProperties: SqlClientPropertiesR2dbc<T>
 			get() {
@@ -39,7 +37,7 @@ internal class SqlClientSelectR2dbc private constructor() {
 			}
 	}
 
-	internal interface R2dbcReturn<T : Any> : DefaultSqlClientSelect.Return<T>, ReactiveReturn<T> {
+	internal interface R2dbcReturn<T : Any> : DefaultSqlClientSelect.Return<T>, ReactorSqlClientSelect.Return<T> {
 		override val sqlClientProperties: SqlClientPropertiesR2dbc<T>
 
 		override fun fetchOne() = fetch().one()
