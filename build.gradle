@@ -6,6 +6,7 @@ buildscript {
         junit_version = '5.4.2'
         kotlin_logging_version = '1.6.26'
         kotlinx_coroutines_version = '1.2.1'
+        logback_version = '1.2.3'
         mokk_version = '1.9.3'
         spring_data_r2dbc_version = '1.0.0.BUILD-SNAPSHOT'
         spring_fu_version = '0.1.BUILD-SNAPSHOT'
@@ -51,6 +52,7 @@ dependencies {
     testImplementation "io.mockk:mockk:$mokk_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinx_coroutines_version"
     testImplementation "org.assertj:assertj-core:$assertj_version"
+    testImplementation "ch.qos.logback:logback-classic:$logback_version"
 //    testImplementation 'org.springframework:spring-test'
 //    testImplementation 'io.projectreactor:reactor-test'
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
