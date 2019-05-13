@@ -34,3 +34,9 @@ class TablesDsl(private val init: TablesDsl.() -> Unit) {
 		allColumns.putAll(table.columns)
 	}
 }
+
+/**
+ * Configure Functional Table Mapping support.
+ * @see TablesDsl
+ */
+fun tables(dsl: TablesDsl.() -> Unit) = TablesDsl(dsl).initialize()

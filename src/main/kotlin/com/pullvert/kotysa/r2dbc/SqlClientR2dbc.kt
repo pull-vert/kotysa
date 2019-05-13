@@ -54,3 +54,5 @@ class SqlClientR2dbc(
 				.then()
 	}
 }
+
+fun DatabaseClient.sqlClient(tables: Tables) : ReactorSqlClient = SqlClientR2dbc(this, tables)
