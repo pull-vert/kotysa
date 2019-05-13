@@ -8,5 +8,5 @@ package com.pullvert.kotysa
  * @author Fred Montariol
  */
 enum class Nullable {
-	TRUE
+    TRUE
 }

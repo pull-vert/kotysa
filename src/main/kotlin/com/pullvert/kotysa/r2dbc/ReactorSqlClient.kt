@@ -17,22 +17,22 @@ import kotlin.reflect.KClass
  */
 interface ReactorSqlClient : AbstractSqlClient {
 
-	override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T>
+    override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T>
 
-	override fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void>
+    override fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void>
 
-	override fun createTables(vararg tableClasses: KClass<*>): Mono<Void>
+    override fun createTables(vararg tableClasses: KClass<*>): Mono<Void>
 
-	override fun <T : Any> insert(row: T): Mono<Void>
+    override fun <T : Any> insert(row: T): Mono<Void>
 
-	override fun insert(vararg rows: Any): Mono<Void>
+    override fun insert(vararg rows: Any): Mono<Void>
 }
 
 /**
  * @author Fred Montariol
  */
 inline fun <reified T : Any> ReactorSqlClient.select(
-		noinline selectDsl: ((ValueProvider) -> T)? = null
+        noinline selectDsl: ((ValueProvider) -> T)? = null
 ) = select(T::class, selectDsl)
 
 /**
@@ -45,10 +45,10 @@ inline fun <reified T : Any> ReactorSqlClient.createTable() = createTable(T::cla
  * @author Fred Montariol
  */
 class ReactorSqlClientSelect private constructor() {
-	interface Select<T : Any>: SqlClientSelect.AbstractSelect<T>, Return<T>
+    interface Select<T : Any> : SqlClientSelect.AbstractSelect<T>, Return<T>
 
-	interface Return<T : Any>: SqlClientSelect.AbstractReturn<T> {
-		override fun fetchOne(): Mono<T>
-		override fun fetchAll(): Flux<T>
-	}
+    interface Return<T : Any> : SqlClientSelect.AbstractReturn<T> {
+        override fun fetchOne(): Mono<T>
+        override fun fetchAll(): Flux<T>
+    }
 }

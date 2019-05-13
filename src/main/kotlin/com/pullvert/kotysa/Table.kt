@@ -12,8 +12,8 @@ import kotlin.reflect.KProperty1
  * @author Fred Montariol
  */
 data class Tables(
-		val allTables: Map<KClass<*>, Table<*>>,
-		val allColumns: Map<KProperty1<*, *>, Column<*, *>>
+        val allTables: Map<KClass<*>, Table<*>>,
+        val allColumns: Map<KProperty1<*, *>, Column<*, *>>
 )
 
 /**
@@ -21,7 +21,7 @@ data class Tables(
  * @author Fred Montariol
  */
 data class Table<T : Any>(
-		val tableClass: KClass<T>,
-		val name: String,
-		val columns: Map<KProperty1<T, *>, Column<T, *>>
+        val tableClass: KClass<T>,
+        val name: String,
+        val columns: Map<KProperty1<T, *>, Column<T, *>>
 )

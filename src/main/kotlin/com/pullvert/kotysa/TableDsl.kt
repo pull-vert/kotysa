@@ -14,32 +14,32 @@ import kotlin.reflect.full.memberProperties
 @KotysaMarker
 class TableDsl<T : Any>(private val init: TableDsl<T>.() -> Unit, private val tableClass: KClass<T>) {
 
-	lateinit var name: String
-	private val columns = mutableMapOf<KProperty1<T, *>, Column<T, *>>()
+    lateinit var name: String
+    private val columns = mutableMapOf<KProperty1<T, *>, Column<T, *>>()
 
-	fun column(dsl: ColumnDsl<T>.(ColumnChoiceProvider<T>) -> Column.ColumnBuilder<*>) {
-		val column = ColumnDsl(dsl).initialize()
-		addColumn(column)
-	}
+    fun column(dsl: ColumnDsl<T>.(ColumnChoiceProvider<T>) -> Column.ColumnBuilder<*>) {
+        val column = ColumnDsl(dsl).initialize()
+        addColumn(column)
+    }
 
-	private fun addColumn(column: Column<T, *>) {
-		if (columns.containsKey(column.entityProperty)) {
-			throw IllegalStateException("Trying to map property \"${column.entityProperty.name}\" to multiple columns")
-		}
-		require(tableClass.memberProperties.contains(column.entityProperty)) {
-			"Trying to map property \"${column.entityProperty.name}\", which is not a property of entity class \"${tableClass.qualifiedName}\""
-		}
-		columns[column.entityProperty] = column
-	}
+    private fun addColumn(column: Column<T, *>) {
+        if (columns.containsKey(column.entityProperty)) {
+            throw IllegalStateException("Trying to map property \"${column.entityProperty.name}\" to multiple columns")
+        }
+        require(tableClass.memberProperties.contains(column.entityProperty)) {
+            "Trying to map property \"${column.entityProperty.name}\", which is not a property of entity class \"${tableClass.qualifiedName}\""
+        }
+        columns[column.entityProperty] = column
+    }
 
-	fun initialize(): Table<*> {
-		init()
-		require(::name.isInitialized) { "Table columnName is mandatory" }
-		require(columns.isNotEmpty()) { "Table must declare at least one column" }
-		require(columns.values.count { column -> column.isPrimaryKey } <= 1) { "Table must not declare more than one Primary Key Column" }
-		val table = Table(tableClass, name, columns)
-		// associate table to Column
-		columns.forEach{ (_, c) -> c.table = table }
-		return table
-	}
+    fun initialize(): Table<*> {
+        init()
+        require(::name.isInitialized) { "Table columnName is mandatory" }
+        require(columns.isNotEmpty()) { "Table must declare at least one column" }
+        require(columns.values.count { column -> column.isPrimaryKey } <= 1) { "Table must not declare more than one Primary Key Column" }
+        val table = Table(tableClass, name, columns)
+        // associate table to Column
+        columns.forEach { (_, c) -> c.table = table }
+        return table
+    }
 }
