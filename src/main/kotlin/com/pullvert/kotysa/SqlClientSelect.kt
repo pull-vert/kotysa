@@ -18,16 +18,21 @@ import kotlin.reflect.full.withNullability
  * @author Fred Montariol
  */
 class SqlClientSelect private constructor() {
-    interface AbstractSelect<T : Any>
+    interface Select<T : Any> : Return<T>
 
-    interface AbstractReturn<T : Any> {
+    interface Return<T : Any> {
         fun fetchOne(): Any
         fun fetchAll(): Any
     }
+}
 
-    interface Select<T : Any> : AbstractSelect<T>, Return<T>
+/**
+ * @author Fred Montariol
+ */
+class SqlClientSelectBlocking private constructor() {
+    interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T>
 
-    interface Return<T : Any> : AbstractReturn<T> {
+    interface Return<T : Any> : SqlClientSelect.Return<T> {
         override fun fetchOne(): T
         override fun fetchAll(): List<T>
     }
@@ -40,23 +45,23 @@ private val logger = KotlinLogging.logger {}
  * @author Fred Montariol
  */
 internal class DefaultSqlClientSelect private constructor() {
-    internal interface SqlClientProperties<T : Any> {
+    internal interface SelectProperties<T : Any> {
         val tables: Tables
         val resultClass: KClass<T>
         val transform: ((ValueProvider) -> T)?
     }
 
-    internal interface Select<T : Any> : SqlClientSelect.AbstractSelect<T>, Return<T> {
+    internal interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T> {
         val tables: Tables
         val resultClass: KClass<T>
         val transform: ((ValueProvider) -> T)?
     }
 
     @Suppress("UNCHECKED_CAST")
-    internal interface Return<T : Any> : SqlClientSelect.AbstractReturn<T> {
-        val sqlClientProperties: SqlClientProperties<T>
+    internal interface Return<T : Any> : SqlClientSelect.Return<T> {
+        val selectProperties: SelectProperties<T>
 
-        fun getSelectInformation() = with(sqlClientProperties) {
+        fun getSelectInformation() = with(selectProperties) {
             if (transform != null) {
                 SelectDsl(transform!!, tables.allColumns).initialize()
             } else {
@@ -73,7 +78,7 @@ internal class DefaultSqlClientSelect private constructor() {
         }
 
         private fun selectInformationForSingleClass(resultClass: KClass<T>): SelectInformation<T> {
-            val table = sqlClientProperties.tables.allTables[resultClass] as Table<T>
+            val table = selectProperties.tables.allTables[resultClass] as Table<T>
             var fieldIndex = 0
             val columnPropertyIndexMap = mutableMapOf<KProperty1<*, *>, Int>()
             val selectedFields = mutableListOf<Field>()

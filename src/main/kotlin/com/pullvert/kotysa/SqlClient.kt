@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  */
 interface AbstractSqlClient {
 
-    fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): SqlClientSelect.AbstractSelect<T>
+    fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): SqlClientSelect.Select<T>
 
     fun <T : Any> createTable(tableClass: KClass<T>): Any
 
@@ -21,6 +21,8 @@ interface AbstractSqlClient {
     fun <T : Any> insert(row: T): Any
 
     fun insert(vararg rows: Any): Any
+
+    fun <T : Any> deleteFromTable(tableClass: KClass<T>)
 }
 
 /**

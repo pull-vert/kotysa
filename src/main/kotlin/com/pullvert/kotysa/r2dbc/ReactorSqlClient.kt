@@ -45,9 +45,9 @@ inline fun <reified T : Any> ReactorSqlClient.createTable() = createTable(T::cla
  * @author Fred Montariol
  */
 class ReactorSqlClientSelect private constructor() {
-    interface Select<T : Any> : SqlClientSelect.AbstractSelect<T>, Return<T>
+    interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T>
 
-    interface Return<T : Any> : SqlClientSelect.AbstractReturn<T> {
+    interface Return<T : Any> : SqlClientSelect.Return<T> {
         override fun fetchOne(): Mono<T>
         override fun fetchAll(): Flux<T>
     }
