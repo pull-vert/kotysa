@@ -1,10 +1,10 @@
 # kotysa
 
-Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [SqlClient](src/main/kotlin/com/pullvert/kotysa/SqlClient.kt) agnostic from your chosen Sql Engine, written and to be used in Kotlin.
+Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [SqlClient](src/main/kotlin/com/pullvert/kotysa/SqlClient.kt) agnostic from your chosen Sql Engine, written in Kotlin for Kotlin.
 
 ```tables``` functional DSL is used to declare all mapped tables and link functionally each table to an existing class (aka Entity).
 
-**SqlClient** has one Reactive implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient``` : [SqlClientR2dbc](src/main/kotlin/com/pullvert/kotysa/r2dbc/SqlClientR2dbc.kt), it can be obtained with an Extension function directly on ```DatabaseClient``` :
+**SqlClient** has one Reactive implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient``` : [SqlClientR2dbc](src/main/kotlin/com/pullvert/kotysa/r2dbc/SqlClientR2dbc.kt), it can be obtained via an Extension function directly on ```DatabaseClient``` :
 ```kotlin
 fun DatabaseClient.sqlClient(tables: Tables) : ReactorSqlClient
 ```
@@ -18,7 +18,8 @@ Type-safety is based on Entity property's type and nullability. It is used to pr
 
 **SqlClient** blocking version for JDBC has no implementation for now.
 
-## Code example
+## Code examples
+### R2dbc
 
 ```kotlin
 private val tables =
@@ -28,7 +29,7 @@ private val tables =
 				column { it[User::login].varchar().primaryKey }
 				column { it[User::firstname].varchar().name("fname") }
 				column { it[User::lastname].varchar().name("lname") }
-				column { it[User::optional].varchar() }
+				column { it[User::alias].varchar() }
 			}
 		}
 
@@ -38,7 +39,7 @@ class TestRepository(dbClient: DatabaseClient) {
 
 	fun init() {
 		sqlClient.createTables()
-				.then(client.insert(smaldini, sdeleuze, bclozel))
+				.then(client.insert(jdoe, bboss))
 				.block()
 	}
 
@@ -47,23 +48,22 @@ class TestRepository(dbClient: DatabaseClient) {
 	fun findAllMappedToDto() =
 			sqlClient.select {
 				UserDto("${it[User::firstname]} ${it[User::lastname]}",
-						it[User::optional])
+						it[User::alias])
 			}.fetchAll()
 }
 
-val smaldini = User("smaldini", "Stéphane", "Maldini")
-val sdeleuze = User("sdeleuze", "Sébastien", "Deleuze", "hasOptional")
-val bclozel = User("bclozel", "Brian", "Clozel")
+val jdoe = User("jdoe", "John", "Doe")
+val bboss = User("bboss", "Big", "Boss", "TheBoss")
 
 data class User(
 		val login: String,
 		val firstname: String,
 		val lastname: String,
-		val optional: String? = null
+		val alias: String? = null
 )
 
 data class UserDto(
 		val name: String,
-		val optional: String?
+		val alias: String?
 )
 ```

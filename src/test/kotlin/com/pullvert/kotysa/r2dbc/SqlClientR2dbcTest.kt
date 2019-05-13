@@ -43,32 +43,27 @@ class SqlClientSelectR2DbcTest {
     @Test
     fun `Verify findAll returns all users`() {
         assertThat(repository.findAll().toIterable())
-                .hasSize(3)
-                .containsExactlyInAnyOrder(smaldini, sdeleuze, bclozel)
+                .hasSize(2)
+                .containsExactlyInAnyOrder(jdoe, bboss)
     }
 
     @Disabled("count test is disabled : See https://github.com/spring-projects/spring-fu/issues/160")
     @Test
     fun `Verify count returns expected size`() {
         assertThat(repository.count().block())
-                .isEqualTo(3)
+                .isEqualTo(2)
     }
 
     @Test
     fun `Verify findAllMappedToDto does the mapping`() {
         assertThat(repository.findAllMappedToDto().toIterable())
-                .hasSize(3)
-                .extracting("name", "optional")
+                .hasSize(2)
+                .extracting("name", "alias")
                 .containsExactlyInAnyOrder(
-                        tuple("Stéphane Maldini", null),
-                        tuple("Sébastien Deleuze", "hasOptional"),
-                        tuple("Brian Clozel", null))
+                        tuple("John Doe", null),
+                        tuple("Big Boss", "TheBoss"))
     }
 }
-
-val smaldini = User("smaldini", "Stéphane", "Maldini")
-val sdeleuze = User("sdeleuze", "Sébastien", "Deleuze", "hasOptional")
-val bclozel = User("bclozel", "Brian", "Clozel")
 
 class InitR2dbcRepository(private val client: DatabaseClient) {
 
@@ -87,7 +82,7 @@ private val tables =
                 column { it[User::login].varchar().primaryKey }
                 column { it[User::firstname].varchar().name("fname") }
                 column { it[User::lastname].varchar().name("lname") }
-                column { it[User::optional].varchar() }
+                column { it[User::alias].varchar() }
             }
         }
 
@@ -101,7 +96,7 @@ class TestRepository(dbClient: DatabaseClient) {
     }
 
     fun init3() {
-        sqlClient.insert(smaldini, sdeleuze, bclozel)
+        sqlClient.insert(jdoe, bboss)
                 .block()
     }
 
@@ -114,27 +109,23 @@ class TestRepository(dbClient: DatabaseClient) {
     fun findAllMappedToDto() =
             sqlClient.select {
                 UserDto("${it[User::firstname]} ${it[User::lastname]}",
-                        it[User::optional])
+                        it[User::alias])
             }.fetchAll()
 }
 
-data class StrictUser(
-        val login: String,
-        val fname: String,
-        val lname: String,
-        val optional: String? = null
-)
+val jdoe = User("jdoe", "John", "Doe")
+val bboss = User("bboss", "Big", "Boss", "TheBoss")
 
 data class User(
         val login: String,
         val firstname: String,
         val lastname: String,
-        val optional: String? = null
+        val alias: String? = null
 ) {
 //	val id: Int? = null // generated auto-increment
 }
 
 data class UserDto(
         val name: String,
-        val optional: String?
+        val alias: String?
 )
