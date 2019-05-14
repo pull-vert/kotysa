@@ -11,10 +11,11 @@ At this point it supports :
 * ```select<T>``` that can return one (```fetchOne()```) or several (```fetchAll()```) results.
 * table creation with ```createTable<T>``` and ```createTables```
 * ```insert``` for single or multiple rows insertion
+* ```deleteFromTable<T>``` that return number of deleted rows
 
 Type-safety is based on Entity property's type and nullability. It is used to provide available column type, select fields and where clauses (soon).
 
-**SqlClient** has one Reactive implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient``` : [SqlClientR2dbc](src/main/kotlin/com/pullvert/kotysa/r2dbc/SqlClientR2dbc.kt), it can be obtained via an Extension function directly on ```DatabaseClient``` :
+**SqlClient** has one Reactive (using Reactor ```Mono``` and ```Flux```) implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient``` : [SqlClientR2dbc](src/main/kotlin/com/pullvert/kotysa/r2dbc/SqlClientR2dbc.kt), it can be obtained via an Extension function directly on ```DatabaseClient``` :
 ```kotlin
 fun DatabaseClient.sqlClient(tables: Tables) : ReactorSqlClient
 ```
@@ -44,19 +45,19 @@ data class User(
 ```
 ### Write Type-Safe Queries with SqlClient
 ```kotlin
-fun init() {
-	sqlClient.createTables()
-			.then(client.insert(jdoe, bboss))
-			.block()
-	}
+fun createTable() = sqlClient.createTable<User>()
 
-fun findAll() =	sqlClient.select<User>().fetchAll()
+fun insert() = sqlClient.insert(jdoe, bboss)
+
+fun deleteAll() = sqlClient.deleteFromTable<User>().execute()
+
+fun findAll() = sqlClient.select<User>().fetchAll()
 
 fun findAllMappedToDto() =
-		sqlClient.select {
-			UserDto("${it[User::firstname]} ${it[User::lastname]}",
-					it[User::alias])
-		}.fetchAll()
+        sqlClient.select {
+            UserDto("${it[User::firstname]} ${it[User::lastname]}",
+                    it[User::alias])
+        }.fetchAll()
 
 val jdoe = User("jdoe", "John", "Doe")
 val bboss = User("bboss", "Big", "Boss", "TheBoss")
@@ -68,7 +69,7 @@ data class UserDto(
 ```
 ### R2dbc Configuration
 ```kotlin
-class TestRepository(dbClient: DatabaseClient) {
+class UserRepository(dbClient: DatabaseClient) {
 
 	private val sqlClient = dbClient.sqlClient(tables)
 

@@ -13,9 +13,7 @@ import kotlin.reflect.KClass
 class SqlClientDelete private constructor() {
     interface Delete : Return
 
-    interface Return {
-        fun execute(): Any
-    }
+    interface Return
 }
 
 /**
@@ -25,7 +23,7 @@ class SqlClientDeleteBlocking private constructor() {
     interface Delete : SqlClientDelete.Delete, Return
 
     interface Return : SqlClientDelete.Return {
-        override fun execute(): Int
+        fun execute(): Int
     }
 }
 
@@ -39,15 +37,22 @@ internal class DefaultSqlClientDelete private constructor() {
 
     internal interface DeleteProperties<T : Any> {
         val tables: Tables
-        val resultClass: KClass<T>
+        val tableClass: KClass<T>
     }
 
     internal interface Delete<T : Any> : SqlClientDelete.Delete, Return<T> {
         val tables: Tables
-        val resultClass: KClass<T>
+        val tableClass: KClass<T>
     }
 
-    internal interface Return<T : Any> : SqlClientSelect.Return<T> {
+    internal interface Return<T : Any> : SqlClientDelete.Return {
         val deleteProperties: DeleteProperties<T>
+
+        fun deleteFromTableSql(tableClass: KClass<*>): String {
+            val table = deleteProperties.tables.getTable(tableClass)
+            val deleteSql = "DELETE FROM ${table.name}"
+            logger.debug { "Exec SQL : $deleteSql" }
+            return deleteSql
+        }
     }
 }

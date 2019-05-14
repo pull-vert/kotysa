@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 /**
  * @author Fred Montariol
  */
-interface AbstractSqlClient {
+interface SqlClient {
 
     fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): SqlClientSelect.Select<T>
 
@@ -22,16 +22,16 @@ interface AbstractSqlClient {
 
     fun insert(vararg rows: Any): Any
 
-    fun <T : Any> deleteFromTable(tableClass: KClass<T>)
+    fun <T : Any> deleteFromTable(tableClass: KClass<T>): SqlClientDelete.Delete
 }
 
 /**
  * Blocking Sql Client, to be used with any blocking JDBC driver
  * @author Fred Montariol
  */
-interface SqlClient : AbstractSqlClient {
+interface SqlClientBlocking : SqlClient {
 
-    override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): SqlClientSelect.Select<T>
+    override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): SqlClientSelectBlocking.Select<T>
 
     override fun <T : Any> createTable(tableClass: KClass<T>)
 
@@ -42,37 +42,59 @@ interface SqlClient : AbstractSqlClient {
     override fun <T : Any> insert(row: T)
 
     override fun insert(vararg rows: Any)
+
+    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): SqlClientDeleteBlocking.Delete
 }
 
 /**
  * @author Fred Montariol
  */
-inline fun <reified T : Any> SqlClient.select(
+inline fun <reified T : Any> SqlClientBlocking.select(
         noinline selectDsl: ((ValueProvider) -> T)? = null
 ): SqlClientSelect.Select<T> = select(T::class, selectDsl)
 
 /**
  * @author Fred Montariol
  */
-inline fun <reified T : Any> SqlClient.createTable() = createTable(T::class)
+inline fun <reified T : Any> SqlClientBlocking.createTable() = createTable(T::class)
 
+/**
+ * @author Fred Montariol
+ */
+inline fun <reified T : Any> SqlClientBlocking.deleteFromTable() = deleteFromTable(T::class)
+
+
+private fun tableMustBeMapped(tableName: String?) = "Requested table \"$tableName\" is not mapped"
+
+@Suppress("UNCHECKED_CAST")
+fun <T : Any> Tables.getTable(tableClass: KClass<out T>): Table<T> =
+        this.allTables[tableClass] as Table<T>?
+                ?: throw IllegalArgumentException(tableMustBeMapped(tableClass.qualifiedName))
+
+fun <T : Any> Tables.checkTable(tableClass: KClass<out T>) {
+    require(this.allTables.containsKey(tableClass)) { tableMustBeMapped(tableClass.qualifiedName) }
+}
+
+fun Tables.checkTables(tableClasses: Array<out KClass<*>>) {
+    tableClasses.forEach { tableClass -> checkTable(tableClass) }
+}
 
 private val logger = KotlinLogging.logger {}
 
 /**
  * @author Fred Montariol
  */
-internal interface DefaultSqlClient : AbstractSqlClient {
+internal interface DefaultSqlClient : SqlClient {
     val tables: Tables
 
     fun <T : Any> selectCheck(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?) {
         if (selectDsl == null) {
-            checkTable(resultClass)
+            tables.checkTable(resultClass)
         }
     }
 
     fun createTableSql(tableClass: KClass<*>): String {
-        val table = getTable(tableClass)
+        val table = tables.getTable(tableClass)
         var primaryKey: String? = null
         val columns = table.columns.values.joinToString { column ->
             if (column.isPrimaryKey) {
@@ -86,23 +108,8 @@ internal interface DefaultSqlClient : AbstractSqlClient {
         return createTableSql
     }
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T : Any> getTable(tableClass: KClass<out T>): Table<T> =
-            tables.allTables[tableClass] as Table<T>?
-                    ?: throw IllegalArgumentException(tableMustBeMapped(tableClass.qualifiedName))
-
-    fun <T : Any> checkTable(tableClass: KClass<out T>) {
-        require(tables.allTables.containsKey(tableClass)) { tableMustBeMapped(tableClass.qualifiedName) }
-    }
-
-
-    fun checkTables(tableClasses: Array<out KClass<*>>) {
-        tableClasses.forEach { tableClass -> checkTable(tableClass) }
-    }
-
-
     fun <T : Any> insertSql(row: T): String {
-        val table = getTable(row::class)
+        val table = tables.getTable(row::class)
         val columnNames = mutableSetOf<String>()
         val values = mutableListOf<Any?>()
         table.columns.values.forEach { column ->
@@ -122,6 +129,4 @@ internal interface DefaultSqlClient : AbstractSqlClient {
         logger.debug { "Exec SQL : $insertSql" }
         return insertSql
     }
-
-    private fun tableMustBeMapped(tableName: String?) = "Requested table \"$tableName\" is not mapped"
 }

@@ -22,18 +22,15 @@ class SqlClientSelectR2DbcTest {
     val context =
             application(WebApplicationType.NONE) {
                 beans {
-                    bean<InitR2dbcRepository>()
-                    bean<TestRepository>()
+                    bean<UserRepository>()
                 }
                 listener<ApplicationReadyEvent> {
-                    ref<TestRepository>().init1()
-                    ref<InitR2dbcRepository>().init2()
-                    ref<TestRepository>().init3()
+                    ref<UserRepository>().init()
                 }
                 r2dbcH2()
             }.run()
 
-    val repository = context.getBean<TestRepository>()
+    val repository = context.getBean<UserRepository>()
 
     @AfterAll
     fun afterAll() {
@@ -63,16 +60,16 @@ class SqlClientSelectR2DbcTest {
                         tuple("John Doe", null),
                         tuple("Big Boss", "TheBoss"))
     }
-}
 
-class InitR2dbcRepository(private val client: DatabaseClient) {
-
-    fun init2() {
-        deleteAll()
-                .block()
+    @Test
+    fun `Verify deleteAllFromUser works correctly`() {
+        assertThat(repository.deleteAll().block())
+                .isEqualTo(2)
+        assertThat(repository.findAll().toIterable())
+                .isEmpty()
+        // re-insert users
+        repository.insert().block()
     }
-
-    fun deleteAll() = client.execute().sql("DELETE FROM users").fetch().one().then()
 }
 
 private val tables =
@@ -86,19 +83,22 @@ private val tables =
             }
         }
 
-class TestRepository(dbClient: DatabaseClient) {
+class UserRepository(dbClient: DatabaseClient) {
 
     private val sqlClient = dbClient.sqlClient(tables)
 
-    fun init1() {
-        sqlClient.createTables()
+    fun init() {
+        createTable()
+                .then(deleteAll())
+                .then(insert())
                 .block()
     }
 
-    fun init3() {
-        sqlClient.insert(jdoe, bboss)
-                .block()
-    }
+    fun createTable() = sqlClient.createTable<User>()
+
+    fun insert() = sqlClient.insert(jdoe, bboss)
+
+    fun deleteAll() = sqlClient.deleteFromTable<User>().execute()
 
     fun findAll() = sqlClient.select<User>().fetchAll()
 

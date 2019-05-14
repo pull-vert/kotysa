@@ -4,7 +4,8 @@
 
 package com.pullvert.kotysa.r2dbc
 
-import com.pullvert.kotysa.AbstractSqlClient
+import com.pullvert.kotysa.SqlClient
+import com.pullvert.kotysa.SqlClientDelete
 import com.pullvert.kotysa.SqlClientSelect
 import com.pullvert.kotysa.ValueProvider
 import reactor.core.publisher.Flux
@@ -12,10 +13,10 @@ import reactor.core.publisher.Mono
 import kotlin.reflect.KClass
 
 /**
- * Reactive (using Reactor) Sql Client, to be used with any non-blocking driver, such as R2dbc
+ * Reactive (using Reactor Mono and Flux) Sql Client, to be used with R2dbc
  * @author Fred Montariol
  */
-interface ReactorSqlClient : AbstractSqlClient {
+interface ReactorSqlClient : SqlClient {
 
     override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T>
 
@@ -26,6 +27,8 @@ interface ReactorSqlClient : AbstractSqlClient {
     override fun <T : Any> insert(row: T): Mono<Void>
 
     override fun insert(vararg rows: Any): Mono<Void>
+
+    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): ReactorSqlClientDelete.Delete
 }
 
 /**
@@ -40,6 +43,11 @@ inline fun <reified T : Any> ReactorSqlClient.select(
  */
 inline fun <reified T : Any> ReactorSqlClient.createTable() = createTable(T::class)
 
+/**
+ * @author Fred Montariol
+ */
+inline fun <reified T : Any> ReactorSqlClient.deleteFromTable() = deleteFromTable(T::class)
+
 
 /**
  * @author Fred Montariol
@@ -48,7 +56,18 @@ class ReactorSqlClientSelect private constructor() {
     interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T>
 
     interface Return<T : Any> : SqlClientSelect.Return<T> {
-        override fun fetchOne(): Mono<T>
-        override fun fetchAll(): Flux<T>
+        fun fetchOne(): Mono<T>
+        fun fetchAll(): Flux<T>
+    }
+}
+
+/**
+ * @author Fred Montariol
+ */
+class ReactorSqlClientDelete private constructor() {
+    interface Delete : SqlClientDelete.Delete, Return
+
+    interface Return : SqlClientDelete.Return {
+        fun execute(): Mono<Int>
     }
 }

@@ -17,28 +17,28 @@ import kotlin.reflect.KProperty1
  * @author Fred Montariol
  */
 internal class SqlClientSelectR2dbc private constructor() {
-    internal class SelectPropertiesR2Dbc<T : Any>(
+    internal class SelectProperties<T : Any>(
             val client: DatabaseClient,
             override val tables: Tables,
             override val resultClass: KClass<T>,
             override val transform: ((ValueProvider) -> T)?
     ) : DefaultSqlClientSelect.SelectProperties<T>
 
-    internal class R2dbcSelect<T : Any>(
+    internal class Select<T : Any>(
             private val client: DatabaseClient,
             override val tables: Tables,
             override val resultClass: KClass<T>,
             override val transform: ((ValueProvider) -> T)? = null
-    ) : DefaultSqlClientSelect.Select<T>, ReactorSqlClientSelect.Select<T>, R2dbcReturn<T> {
+    ) : DefaultSqlClientSelect.Select<T>, ReactorSqlClientSelect.Select<T>, Return<T> {
 
-        override val selectProperties: SelectPropertiesR2Dbc<T>
+        override val selectProperties: SelectProperties<T>
             get() {
-                return SelectPropertiesR2Dbc(client, tables, resultClass, transform)
+                return SelectProperties(client, tables, resultClass, transform)
             }
     }
 
-    internal interface R2dbcReturn<T : Any> : DefaultSqlClientSelect.Return<T>, ReactorSqlClientSelect.Return<T> {
-        override val selectProperties: SelectPropertiesR2Dbc<T>
+    internal interface Return<T : Any> : DefaultSqlClientSelect.Return<T>, ReactorSqlClientSelect.Return<T> {
+        override val selectProperties: SelectProperties<T>
 
         override fun fetchOne() = fetch().one()
         override fun fetchAll() = fetch().all()

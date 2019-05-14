@@ -20,10 +20,7 @@ import kotlin.reflect.full.withNullability
 class SqlClientSelect private constructor() {
     interface Select<T : Any> : Return<T>
 
-    interface Return<T : Any> {
-        fun fetchOne(): Any
-        fun fetchAll(): Any
-    }
+    interface Return<T : Any>
 }
 
 /**
@@ -33,8 +30,8 @@ class SqlClientSelectBlocking private constructor() {
     interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T>
 
     interface Return<T : Any> : SqlClientSelect.Return<T> {
-        override fun fetchOne(): T
-        override fun fetchAll(): List<T>
+        fun fetchOne(): T
+        fun fetchAll(): List<T>
     }
 }
 
@@ -51,14 +48,14 @@ internal class DefaultSqlClientSelect private constructor() {
         val transform: ((ValueProvider) -> T)?
     }
 
-    internal interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T> {
+    internal interface Select<T : Any> : Return<T> {
         val tables: Tables
         val resultClass: KClass<T>
         val transform: ((ValueProvider) -> T)?
     }
 
     @Suppress("UNCHECKED_CAST")
-    internal interface Return<T : Any> : SqlClientSelect.Return<T> {
+    internal interface Return<T : Any> {
         val selectProperties: SelectProperties<T>
 
         fun getSelectInformation() = with(selectProperties) {

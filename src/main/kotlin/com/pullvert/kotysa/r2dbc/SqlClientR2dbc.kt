@@ -4,9 +4,8 @@
 
 package com.pullvert.kotysa.r2dbc
 
+import com.pullvert.kotysa.*
 import com.pullvert.kotysa.DefaultSqlClient
-import com.pullvert.kotysa.Tables
-import com.pullvert.kotysa.ValueProvider
 import org.springframework.data.r2dbc.core.DatabaseClient
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toFlux
@@ -22,7 +21,7 @@ class SqlClientR2dbc(
 
     override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T> {
         selectCheck(resultClass, selectDsl)
-        return SqlClientSelectR2dbc.R2dbcSelect(client, tables, resultClass, selectDsl)
+        return SqlClientSelectR2dbc.Select(client, tables, resultClass, selectDsl)
     }
 
     override fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void> {
@@ -35,7 +34,7 @@ class SqlClientR2dbc(
                 createTables(*tables.allTables.keys.toTypedArray())
             } else {
                 // fail-fast : check that all tables are mapped Tables
-                checkTables(tableClasses)
+                tables.checkTables(tableClasses)
 
                 tableClasses.toFlux()
                         .flatMap { tableClass -> createTable(tableClass) }
@@ -49,12 +48,15 @@ class SqlClientR2dbc(
 
     override fun insert(vararg rows: Any): Mono<Void> {
         // fail-fast : check that all tables are mapped Tables
-        rows.forEach { row -> checkTable(row::class) }
+        rows.forEach { row -> tables.checkTable(row::class) }
 
         return rows.toFlux()
                 .flatMap { tableClass -> insert(tableClass) }
                 .then()
     }
+
+    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): ReactorSqlClientDelete.Delete =
+            SqlClientDeleteR2dbc.Delete(client, tables, tableClass)
 }
 
 fun DatabaseClient.sqlClient(tables: Tables): ReactorSqlClient = SqlClientR2dbc(this, tables)
