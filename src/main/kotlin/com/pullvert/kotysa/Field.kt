@@ -36,17 +36,32 @@ abstract class FieldProvider {
     }
 }
 
+/**
+ * @author Fred Montariol
+ */
 interface Field {
     val fieldName: String
 }
 
+/**
+ * @author Fred Montariol
+ */
 abstract class ColumnField<T : Any, U>(column: Column<T, U>) : Column<T, U> by column, Field {
     override val fieldName: String
         get() = table.name + "." + columnName
 }
 
+/**
+ * @author Fred Montariol
+ */
 class StringColumnField<T : Any, U>(column: Column<T, U>) : ColumnField<T, U>(column)
 
+/**
+ * @author Fred Montariol
+ */
 class LocalDateTimeColumnField<T : Any, U>(column: Column<T, U>) : ColumnField<T, U>(column)
 
+/**
+ * @author Fred Montariol
+ */
 class DateColumnField<T : Any, U>(column: Column<T, U>) : ColumnField<T, U>(column)
