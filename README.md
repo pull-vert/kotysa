@@ -8,7 +8,7 @@ Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [SqlClient](src/main/kotlin/com/pullv
 ```tables``` functional DSL is used to declare all mapped tables and link each DB table to an existing class (aka Entity).
 
 At this point it supports :
-* ```select<T>``` that can return one (```Mono<T>```) or several (```Flux<T>```) results.
+* ```select<T>``` that can return one (```fetchOne()```) or several (```fetchAll()```) results.
 * table creation with ```createTable<T>``` and ```createTables```
 * ```insert``` for single or multiple rows insertion
 
