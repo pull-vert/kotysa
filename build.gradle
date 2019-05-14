@@ -71,12 +71,13 @@ dokka {
     }
 }
 
-// real xxx-javadoc.jar for JVM
+// xxx-javadoc.jar
 task javadocJar(type: Jar, dependsOn: dokka) {
     classifier = 'javadoc'
     from "$buildDir/javadoc"
 }
 
+// xxx-sources.jar
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
