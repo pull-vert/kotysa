@@ -18,6 +18,9 @@ import org.springframework.fu.kofu.application
 import org.springframework.fu.kofu.r2dbc.r2dbcH2
 import reactor.core.publisher.Mono
 
+/**
+ * @author Fred Montariol
+ */
 class SqlClientSelectR2DbcTest {
     val context =
             application(WebApplicationType.NONE) {
@@ -83,6 +86,9 @@ private val tables =
             }
         }
 
+/**
+ * @author Fred Montariol
+ */
 class UserRepository(dbClient: DatabaseClient) {
 
     private val sqlClient = dbClient.sqlClient(tables)
@@ -116,6 +122,9 @@ class UserRepository(dbClient: DatabaseClient) {
 val jdoe = User("jdoe", "John", "Doe")
 val bboss = User("bboss", "Big", "Boss", "TheBoss")
 
+/**
+ * @author Fred Montariol
+ */
 data class User(
         val login: String,
         val firstname: String,
@@ -125,6 +134,9 @@ data class User(
 //	val id: Int? = null // generated auto-increment
 }
 
+/**
+ * @author Fred Montariol
+ */
 data class UserDto(
         val name: String,
         val alias: String?
