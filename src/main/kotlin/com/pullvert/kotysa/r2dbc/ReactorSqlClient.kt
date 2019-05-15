@@ -57,6 +57,7 @@ class ReactorSqlClientSelect private constructor() {
 
     interface Return<T : Any> : SqlClientSelect.Return<T> {
         fun fetchOne(): Mono<T>
+        fun fetchFirst(): Mono<T>
         fun fetchAll(): Flux<T>
     }
 }

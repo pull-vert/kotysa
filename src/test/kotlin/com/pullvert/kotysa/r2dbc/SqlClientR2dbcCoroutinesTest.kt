@@ -5,6 +5,12 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.tables
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Disabled
@@ -15,24 +21,31 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.data.r2dbc.core.DatabaseClient
 import org.springframework.fu.kofu.application
 import org.springframework.fu.kofu.r2dbc.r2dbcH2
-import reactor.core.publisher.Mono
+import strikt.api.expectThat
+import strikt.assertions.containsExactlyInAnyOrder
+import strikt.assertions.hasSize
+import strikt.assertions.isEqualTo
 
 /**
  * @author Fred Montariol
  */
-class SqlClientSelectR2DbcTest {
+@ExperimentalCoroutinesApi
+@FlowPreview
+class SqlClientSelectR2DbcCoroutinesTest {
     val context =
             application(WebApplicationType.NONE) {
                 beans {
-                    bean<UserRepository>()
+                    bean<CoroutinesUserRepository>()
                 }
                 listener<ApplicationReadyEvent> {
-                    ref<UserRepository>().init()
+                    runBlocking {
+                        ref<CoroutinesUserRepository>().init()
+                    }
                 }
                 r2dbcH2()
             }.run()
 
-    val repository = context.getBean<UserRepository>()
+    val repository = context.getBean<CoroutinesUserRepository>()
 
     @AfterAll
     fun afterAll() {
@@ -40,22 +53,22 @@ class SqlClientSelectR2DbcTest {
     }
 
     @Test
-    fun `Verify findAll returns all users`() {
-        assertThat(repository.findAll().toIterable())
+    fun `Verify findAll returns all users`() = runBlockingTest {
+        expectThat(repository.findAll().toList())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(jdoe, bboss)
     }
 
     @Disabled("count test is disabled : See https://github.com/spring-projects/spring-fu/issues/160")
     @Test
-    fun `Verify count returns expected size`() {
-        assertThat(repository.count().block())
+    fun `Verify count returns expected size`() = runBlockingTest {
+        assertThat(repository.count())
                 .isEqualTo(2)
     }
 
     @Test
-    fun `Verify findAllMappedToDto does the mapping`() {
-        assertThat(repository.findAllMappedToDto().toIterable())
+    fun `Verify findAllMappedToDto does the mapping`() = runBlockingTest {
+        expectThat(repository.findAllMappedToDto().toList())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(
                         UserDto("John Doe", null),
@@ -63,13 +76,13 @@ class SqlClientSelectR2DbcTest {
     }
 
     @Test
-    fun `Verify deleteAllFromUser works correctly`() {
-        assertThat(repository.deleteAll().block())
+    fun `Verify deleteAllFromUser works correctly`() = runBlockingTest {
+        expectThat(repository.deleteAll())
                 .isEqualTo(2)
-        assertThat(repository.findAll().toIterable())
+        assertThat(repository.findAll().toList())
                 .isEmpty()
         // re-insert users
-        repository.insert().block()
+        repository.insert()
     }
 }
 
@@ -87,26 +100,26 @@ private val tables =
 /**
  * @author Fred Montariol
  */
-class UserRepository(dbClient: DatabaseClient) {
+@FlowPreview
+class CoroutinesUserRepository(dbClient: DatabaseClient) {
 
     private val sqlClient = dbClient.sqlClient(tables)
 
-    fun init() {
+    suspend fun init() = coroutineScope {
         createTable()
-                .then(deleteAll())
-                .then(insert())
-                .block()
+        deleteAll()
+        insert()
     }
 
-    fun createTable() = sqlClient.createTable<User>()
+    suspend fun createTable() = sqlClient.awaitCreateTable<User>()
 
-    fun insert() = sqlClient.insert(jdoe, bboss)
+    suspend fun insert() = sqlClient.awaitInsert(jdoe, bboss)
 
-    fun deleteAll() = sqlClient.deleteFromTable<User>().execute()
+    suspend fun deleteAll() = sqlClient.deleteFromTable<User>().awaitExecute()
 
-    fun findAll() = sqlClient.select<User>().fetchAll()
+    fun findAll() = sqlClient.select<User>().fetchFlow()
 
-    fun count() = Mono.empty<Long>()
+    suspend fun count() = 2
 //			sqlClient.select<Long>("COUNT(*)")
 //					.fetchOne()
 
@@ -114,5 +127,5 @@ class UserRepository(dbClient: DatabaseClient) {
             sqlClient.select {
                 UserDto("${it[User::firstname]} ${it[User::lastname]}",
                         it[User::alias])
-            }.fetchAll()
+            }.fetchFlow()
 }

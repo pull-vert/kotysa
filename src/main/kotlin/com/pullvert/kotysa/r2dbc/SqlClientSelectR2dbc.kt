@@ -41,6 +41,7 @@ internal class SqlClientSelectR2dbc private constructor() {
         override val selectProperties: SelectProperties<T>
 
         override fun fetchOne() = fetch().one()
+        override fun fetchFirst() = fetch().first()
         override fun fetchAll() = fetch().all()
 
         private fun fetch() = with(selectProperties) {
