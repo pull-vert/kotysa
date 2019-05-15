@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.pullvert:kotysa:$kotysa_version"
+    implementation 'com.pullvert:kotysa:0.0.x'
 }
 ```
 
