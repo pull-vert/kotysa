@@ -104,7 +104,9 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun deleteAll() = sqlClient.deleteFromTable<User>().execute()
 
-    fun findAll() = sqlClient.select<User>().fetchAll()
+    fun findAll() = sqlClient.select<User>()
+            .where { it[User::firstname] EQ "" }
+            .fetchAll()
 
     fun count() = Mono.empty<Long>()
 //			sqlClient.select<Long>("COUNT(*)")

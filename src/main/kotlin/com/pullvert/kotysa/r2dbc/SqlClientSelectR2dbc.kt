@@ -4,10 +4,8 @@
 
 package com.pullvert.kotysa.r2dbc
 
-import com.pullvert.kotysa.AbstractRow
+import com.pullvert.kotysa.*
 import com.pullvert.kotysa.DefaultSqlClientSelect
-import com.pullvert.kotysa.Tables
-import com.pullvert.kotysa.ValueProvider
 import io.r2dbc.spi.Row
 import org.springframework.data.r2dbc.core.DatabaseClient
 import kotlin.reflect.KClass
@@ -24,18 +22,23 @@ internal class SqlClientSelectR2dbc private constructor() {
             override val transform: ((ValueProvider) -> T)?
     ) : DefaultSqlClientSelect.SelectProperties<T>
 
-    internal class Select<T : Any>(
-            private val client: DatabaseClient,
+    internal class Select<T : Any> internal constructor(
+            client: DatabaseClient,
             override val tables: Tables,
             override val resultClass: KClass<T>,
             override val transform: ((ValueProvider) -> T)? = null
     ) : DefaultSqlClientSelect.Select<T>, ReactorSqlClientSelect.Select<T>, Return<T> {
 
-        override val selectProperties: SelectProperties<T>
-            get() {
-                return SelectProperties(client, tables, resultClass, transform)
-            }
+        override val selectProperties = SelectProperties(client, tables, resultClass, transform)
+
+        override fun where(whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause): ReactorSqlClientSelect.Where<T> {
+            return Where(selectProperties)
+        }
     }
+
+    internal class Where<T : Any> internal constructor(
+            override val selectProperties: SelectProperties<T>
+    ) : DefaultSqlClientSelect.Where<T>, ReactorSqlClientSelect.Where<T>, Return<T>
 
     internal interface Return<T : Any> : DefaultSqlClientSelect.Return<T>, ReactorSqlClientSelect.Return<T> {
         override val selectProperties: SelectProperties<T>

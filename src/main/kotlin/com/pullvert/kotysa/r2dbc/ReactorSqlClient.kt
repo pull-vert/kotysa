@@ -4,10 +4,7 @@
 
 package com.pullvert.kotysa.r2dbc
 
-import com.pullvert.kotysa.SqlClient
-import com.pullvert.kotysa.SqlClientDelete
-import com.pullvert.kotysa.SqlClientSelect
-import com.pullvert.kotysa.ValueProvider
+import com.pullvert.kotysa.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import kotlin.reflect.KClass
@@ -53,7 +50,11 @@ inline fun <reified T : Any> ReactorSqlClient.deleteFromTable() = deleteFromTabl
  * @author Fred Montariol
  */
 class ReactorSqlClientSelect private constructor() {
-    interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T>
+    interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T> {
+        override fun where(whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause): Where<T>
+    }
+
+    interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T>
 
     interface Return<T : Any> : SqlClientSelect.Return<T> {
         fun fetchOne(): Mono<T>

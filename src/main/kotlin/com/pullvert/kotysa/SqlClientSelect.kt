@@ -18,7 +18,11 @@ import kotlin.reflect.full.withNullability
  * @author Fred Montariol
  */
 class SqlClientSelect private constructor() {
-    interface Select<T : Any> : Return<T>
+    interface Select<T : Any> : Return<T> {
+        fun where(whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause): Where<T>
+    }
+
+    interface Where<T : Any> : Return<T>
 
     interface Return<T : Any>
 }
@@ -48,14 +52,16 @@ internal class DefaultSqlClientSelect private constructor() {
         val transform: ((ValueProvider) -> T)?
     }
 
-    internal interface Select<T : Any> : Return<T> {
+    internal interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T> {
         val tables: Tables
         val resultClass: KClass<T>
         val transform: ((ValueProvider) -> T)?
     }
 
+    internal interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T>
+
     @Suppress("UNCHECKED_CAST")
-    internal interface Return<T : Any> {
+    internal interface Return<T : Any> : SqlClientSelect.Return<T> {
         val selectProperties: SelectProperties<T>
 
         fun getSelectInformation() = with(selectProperties) {
