@@ -18,7 +18,7 @@ class TablesDsl(private val init: TablesDsl.() -> Unit) {
     @PublishedApi
     internal val allColumns = mutableMapOf<KProperty1<*, *>, Column<*, *>>()
 
-    fun initialize(): Tables {
+    internal fun initialize(): Tables {
         init()
         require(tables.isNotEmpty()) { "Tables must declare at least one table" }
         return Tables(tables, allColumns)

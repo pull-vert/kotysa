@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono
  * @author Fred Montariol
  */
 class SqlClientSelectR2DbcTest {
-    val context =
+    private val context =
             application(WebApplicationType.NONE) {
                 beans {
                     bean<UserRepository>()

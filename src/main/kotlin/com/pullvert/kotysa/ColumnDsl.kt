@@ -38,7 +38,7 @@ class ColumnDsl<T : Any>(private val init: ColumnDsl<T>.(ColumnChoiceProvider<T>
             DateColumnNullable.ColumnBuilderImpl(property)
 
     @Suppress("UNCHECKED_CAST")
-    fun initialize(): Column<T, *> {
+    internal fun initialize(): Column<T, *> {
         val columnBuilder = init(ColumnChoiceProvider()) as AbstractColumn.ColumnBuilder<*, T>
         if (!columnBuilder.columnNameInitialized) {
             columnBuilder.columnName = columnBuilder.entityProperty.name

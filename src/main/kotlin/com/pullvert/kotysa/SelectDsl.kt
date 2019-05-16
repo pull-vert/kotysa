@@ -72,7 +72,7 @@ class SelectDsl<T>(private val init: (ValueProvider) -> T, override val allColum
         columnPropertyIndexMap[columnProperty] = fieldIndex++
     }
 
-    fun initialize(): SelectInformation<T> {
+    internal fun initialize(): SelectInformation<T> {
         init(this)
         require(columnPropertyIndexMap.isNotEmpty()) { "Table must declare at least one column" }
         return SelectInformation(columnPropertyIndexMap, selectedFields, selectedTables, init)
@@ -83,8 +83,8 @@ class SelectDsl<T>(private val init: (ValueProvider) -> T, override val allColum
  * @author Fred Montariol
  */
 data class SelectInformation<T>(
-        val columnPropertyIndexMap: Map<KProperty1<*, *>, Int>,
-        val selectedFields: List<Field>,
-        val selectedTables: Set<Table<*>>,
-        val select: (ValueProvider) -> T
+        internal val columnPropertyIndexMap: Map<KProperty1<*, *>, Int>,
+        internal val selectedFields: List<Field>,
+        internal val selectedTables: Set<Table<*>>,
+        internal val select: (ValueProvider) -> T
 )

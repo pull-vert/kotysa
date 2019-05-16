@@ -67,15 +67,15 @@ inline fun <reified T : Any> SqlClientBlocking.deleteFromTable() = deleteFromTab
 private fun tableMustBeMapped(tableName: String?) = "Requested table \"$tableName\" is not mapped"
 
 @Suppress("UNCHECKED_CAST")
-fun <T : Any> Tables.getTable(tableClass: KClass<out T>): Table<T> =
+internal fun <T : Any> Tables.getTable(tableClass: KClass<out T>): Table<T> =
         this.allTables[tableClass] as Table<T>?
                 ?: throw IllegalArgumentException(tableMustBeMapped(tableClass.qualifiedName))
 
-fun <T : Any> Tables.checkTable(tableClass: KClass<out T>) {
+internal fun <T : Any> Tables.checkTable(tableClass: KClass<out T>) {
     require(this.allTables.containsKey(tableClass)) { tableMustBeMapped(tableClass.qualifiedName) }
 }
 
-fun Tables.checkTables(tableClasses: Array<out KClass<*>>) {
+internal fun Tables.checkTables(tableClasses: Array<out KClass<*>>) {
     tableClasses.forEach { tableClass -> checkTable(tableClass) }
 }
 

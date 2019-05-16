@@ -32,7 +32,8 @@ class TableDsl<T : Any>(private val init: TableDsl<T>.() -> Unit, private val ta
         columns[column.entityProperty] = column
     }
 
-    fun initialize(): Table<*> {
+    @PublishedApi
+    internal fun initialize(): Table<*> {
         init()
         require(::name.isInitialized) { "Table columnName is mandatory" }
         require(columns.isNotEmpty()) { "Table must declare at least one column" }
