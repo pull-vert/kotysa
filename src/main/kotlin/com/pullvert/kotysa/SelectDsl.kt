@@ -12,7 +12,7 @@ import kotlin.reflect.KProperty1
  * All methods return an unused value
  * @author Fred Montariol
  */
-class SelectDsl<T>(private val init: (ValueProvider) -> T, override val allColumns: Map<KProperty1<*, *>, Column<*, *>>) : FieldProvider(), ValueProvider {
+class SelectDsl<T> internal constructor(private val init: (ValueProvider) -> T, override val allColumns: Map<KProperty1<*, *>, Column<*, *>>) : FieldProvider(), ValueProvider {
 
     private var fieldIndex = 0
     private val columnPropertyIndexMap = mutableMapOf<KProperty1<*, *>, Int>()

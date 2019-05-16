@@ -17,7 +17,7 @@ class TableDsl<T : Any>(private val init: TableDsl<T>.() -> Unit, private val ta
     lateinit var name: String
     private val columns = mutableMapOf<KProperty1<T, *>, Column<T, *>>()
 
-    fun column(columnDsl: ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> Column.ColumnBuilder<*>) {
+    fun column(columnDsl: ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*>) {
         val column = ColumnDsl(columnDsl).initialize()
         addColumn(column)
     }

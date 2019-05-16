@@ -31,7 +31,7 @@ internal class SqlClientSelectR2dbc private constructor() {
 
         override val selectProperties = SelectProperties(client, tables, resultClass, transform)
 
-        override fun where(whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause): ReactorSqlClientSelect.Where<T> {
+        override fun where(whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<*, *>): ReactorSqlClientSelect.Where<T> {
             return Where(selectProperties)
         }
     }

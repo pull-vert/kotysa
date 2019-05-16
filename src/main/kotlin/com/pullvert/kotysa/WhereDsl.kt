@@ -11,32 +11,32 @@ import java.util.*
  * @author Fred Montariol
  */
 @KotysaMarker
-class WhereDsl<T : Any>(private val init: WhereDsl<T>.(WhereColumnPropertyProvider) -> Column.ColumnBuilder<*>) {
+class WhereDsl<T : Any>(private val init: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<*, *>) {
 
-    infix fun NotNullStringColumnProperty<T>.EQ(stringValue: String): VarcharColumnNotNull.ColumnBuilder<String> =
-            VarcharColumnNotNull.ColumnBuilderImpl(property)
+    infix fun <U : Any> NotNullStringColumnProperty<U>.EQ(stringValue: String): String =
+            ""
 
-    fun NullableStringColumnProperty<T>.varchar(): VarcharColumnNullable.ColumnBuilder =
-            VarcharColumnNullable.ColumnBuilderImpl(property)
+    fun NullableStringColumnProperty<T>.varchar(): String =
+            ""
 
-    fun NotNullLocalDateTimeColumnProperty<T>.timestamp(): TimestampColumnNotNull.ColumnBuilder<LocalDateTime> =
-            TimestampColumnNotNull.ColumnBuilderImpl(property)
+    fun NotNullLocalDateTimeColumnProperty<T>.timestamp(): String =
+            ""
 
-    fun NullableLocalDateTimeColumnProperty<T>.timestamp(): TimestampColumnNullable.ColumnBuilder =
-            TimestampColumnNullable.ColumnBuilderImpl(property)
+    fun NullableLocalDateTimeColumnProperty<T>.timestamp(): String =
+            ""
 
-    fun NotNullDateColumnProperty<T>.timestamp(): TimestampColumnNotNull.ColumnBuilder<Date> =
-            TimestampColumnNotNull.ColumnBuilderImpl(property)
+    fun NotNullDateColumnProperty<T>.timestamp(): String =
+            ""
 
-    fun NullableDateColumnProperty<T>.timestamp(): TimestampColumnNullable.ColumnBuilder =
-            TimestampColumnNullable.ColumnBuilderImpl(property)
-
-    @Suppress("UNCHECKED_CAST")
-    internal fun initialize(): Column<T, *> {
-        val columnBuilder = init(WhereColumnPropertyProviderImpl()) as AbstractColumn.ColumnBuilder<*, T>
-        if (!columnBuilder.columnNameInitialized) {
-            columnBuilder.columnName = columnBuilder.entityProperty.name
-        }
-        return columnBuilder.build()
-    }
+    fun NullableDateColumnProperty<T>.timestamp(): String =
+            ""
+//
+//    @Suppress("UNCHECKED_CAST")
+//    internal fun initialize(): Column<T, *> {
+//        val columnBuilder = init(WhereColumnPropertyProviderImpl()) as AbstractColumn.ColumnBuilder<*, T>
+//        if (!columnBuilder.columnNameInitialized) {
+//            columnBuilder.columnName = columnBuilder.entityProperty.name
+//        }
+//        return columnBuilder.build()
+//    }
 }

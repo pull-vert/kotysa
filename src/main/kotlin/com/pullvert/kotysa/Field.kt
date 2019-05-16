@@ -14,19 +14,19 @@ import kotlin.reflect.KProperty1
 @Suppress("UNCHECKED_CAST")
 abstract class FieldProvider {
 
-    protected abstract val allColumns: Map<KProperty1<*, *>, Column<*, *>>
+    internal abstract val allColumns: Map<KProperty1<*, *>, Column<*, *>>
 
-    protected fun getField(stringProperty: KProperty1<*, String?>): StringColumnField<*, String?> {
+    internal fun getField(stringProperty: KProperty1<*, String?>): StringColumnField<*, String?> {
         requireAllColumnsContainsProperty(stringProperty)
         return StringColumnField(allColumns[stringProperty]!! as Column<*, String?>)
     }
 
-    protected fun getField(localDateTimeProperty: KProperty1<*, LocalDateTime?>): LocalDateTimeColumnField<*, LocalDateTime?> {
+    internal fun getField(localDateTimeProperty: KProperty1<*, LocalDateTime?>): LocalDateTimeColumnField<*, LocalDateTime?> {
         requireAllColumnsContainsProperty(localDateTimeProperty)
         return LocalDateTimeColumnField(allColumns[localDateTimeProperty]!! as Column<*, LocalDateTime?>)
     }
 
-    protected fun getField(localDateTimeProperty: KProperty1<*, Date?>): DateColumnField<*, Date?> {
+    internal fun getField(localDateTimeProperty: KProperty1<*, Date?>): DateColumnField<*, Date?> {
         requireAllColumnsContainsProperty(localDateTimeProperty)
         return DateColumnField(allColumns[localDateTimeProperty]!! as Column<*, Date?>)
     }
@@ -46,7 +46,7 @@ interface Field {
 /**
  * @author Fred Montariol
  */
-abstract class ColumnField<T : Any, U>(column: Column<T, U>) : Column<T, U> by column, Field {
+internal abstract class ColumnField<T : Any, U>(column: Column<T, U>) : Column<T, U> by column, Field {
     override val fieldName: String
         get() = table.name + "." + columnName
 }
@@ -54,14 +54,14 @@ abstract class ColumnField<T : Any, U>(column: Column<T, U>) : Column<T, U> by c
 /**
  * @author Fred Montariol
  */
-class StringColumnField<T : Any, U>(column: Column<T, U>) : ColumnField<T, U>(column)
+internal class StringColumnField<T : Any, U>(column: Column<T, U>) : ColumnField<T, U>(column)
 
 /**
  * @author Fred Montariol
  */
-class LocalDateTimeColumnField<T : Any, U>(column: Column<T, U>) : ColumnField<T, U>(column)
+internal class LocalDateTimeColumnField<T : Any, U>(column: Column<T, U>) : ColumnField<T, U>(column)
 
 /**
  * @author Fred Montariol
  */
-class DateColumnField<T : Any, U>(column: Column<T, U>) : ColumnField<T, U>(column)
+internal class DateColumnField<T : Any, U>(column: Column<T, U>) : ColumnField<T, U>(column)

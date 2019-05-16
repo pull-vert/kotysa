@@ -51,7 +51,7 @@ inline fun <reified T : Any> ReactorSqlClient.deleteFromTable() = deleteFromTabl
  */
 class ReactorSqlClientSelect private constructor() {
     interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T> {
-        override fun where(whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause): Where<T>
+        override fun where(whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<*, *>): Where<T>
     }
 
     interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T>

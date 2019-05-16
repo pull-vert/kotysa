@@ -11,7 +11,7 @@ import kotlin.reflect.KProperty1
  * Database all Mapped Tables' model
  * @author Fred Montariol
  */
-data class Tables(
+data class Tables internal constructor(
         internal val allTables: Map<KClass<*>, Table<*>>,
         internal val allColumns: Map<KProperty1<*, *>, Column<*, *>>
 )
@@ -20,7 +20,7 @@ data class Tables(
  * One database Table model mapped by entity class [tableClass]
  * @author Fred Montariol
  */
-data class Table<T : Any>(
+data class Table<T : Any> internal constructor(
         internal val tableClass: KClass<T>,
         internal val name: String,
         @PublishedApi internal val columns: Map<KProperty1<T, *>, Column<T, *>>

@@ -19,7 +19,7 @@ import kotlin.reflect.full.withNullability
  */
 class SqlClientSelect private constructor() {
     interface Select<T : Any> : Return<T> {
-        fun where(whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause): Where<T>
+        fun where(whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<*, *>): Where<T>
     }
 
     interface Where<T : Any> : Return<T>

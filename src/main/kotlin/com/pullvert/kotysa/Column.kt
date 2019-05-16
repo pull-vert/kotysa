@@ -116,27 +116,7 @@ internal class TimestampColumnNotNull<T : Any, U> internal constructor(
         override val isPrimaryKey: Boolean,
         override val defaultValue: U?
 ) : AbstractColumn<T, U>(), TimestampColumn<T, U>, ColumnNotNull<T, U>/*, LocalDateTimeTimestampColumnNotNull<TimestampColumnNotNull>,
-		JavaDateTimestampColumnNotNull<TimestampColumnNotNull>*/ {
-
-    interface ColumnBuilder<U>
-        : TimestampColumn.ColumnBuilder<ColumnBuilder<U>>, ColumnNotNull.ColumnBuilder<ColumnBuilder<U>, U>
-
-    class ColumnBuilderImpl<T : Any, U> internal constructor(
-            override val entityProperty: KProperty1<T, U>
-    ) : TimestampColumn.AbstractColumnBuilder<ColumnBuilder<U>, T>(), ColumnBuilder<U> {
-
-        private var defaultValue: U? = null
-
-        override fun setDefaultValue(defaultValue: U): ColumnBuilder<U> {
-            this.defaultValue = defaultValue
-            return this
-        }
-
-        override val primaryKey = isPrimaryKey
-
-        override fun build() = TimestampColumnNotNull(entityProperty, columnName, sqlType, isPK, defaultValue)
-    }
-}
+		JavaDateTimestampColumnNotNull<TimestampColumnNotNull>*/
 
 /**
  * @author Fred Montariol
@@ -146,28 +126,12 @@ internal class TimestampColumnNullable<T : Any, U> internal constructor(
         override val columnName: String,
         override val sqlType: SqlType
 ) : AbstractColumn<T, U>(), TimestampColumn<T, U>, ColumnNullable<T, U>/*, LocalDateTimeTimestampColumnNull<TimestampColumnNull>,
-		JavaDateTimestampColumnNull<TimestampColumnNull>*/ {
-
-    interface ColumnBuilder : TimestampColumn.ColumnBuilder<ColumnBuilder>, ColumnNullable.ColumnBuilder<ColumnBuilder>
-
-    class ColumnBuilderImpl<T : Any, U> internal constructor(
-            override val entityProperty: KProperty1<T, U>
-    ) : TimestampColumn.AbstractColumnBuilder<ColumnBuilder, T>(), ColumnBuilder {
-        override fun build() = TimestampColumnNullable(entityProperty, columnName, sqlType)
-    }
-}
+		JavaDateTimestampColumnNull<TimestampColumnNull>*/
 
 /**
  * @author Fred Montariol
  */
-internal interface DateColumn<T : Any, U> : Column<T, U> {
-
-    interface ColumnBuilder<T : ColumnBuilder<T>> : Column.ColumnBuilder<T>
-
-    abstract class AbstractColumnBuilder<T : ColumnBuilder<T>, U : Any> : AbstractColumn.ColumnBuilder<T, U>(), ColumnBuilder<T> {
-        override val sqlType = SqlType.DATE
-    }
-}
+internal interface DateColumn<T : Any, U> : Column<T, U>
 
 /**
  * @author Fred Montariol
@@ -178,27 +142,7 @@ internal class DateColumnNotNull<T : Any, U> internal constructor(
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
         override val defaultValue: U?
-) : AbstractColumn<T, U>(), DateColumn<T, U>, ColumnNotNull<T, U>/*, JavaDateDateColumnNotNull<DateColumnNotNull>*/ {
-
-    interface ColumnBuilder<U>
-        : DateColumn.ColumnBuilder<ColumnBuilder<U>>, ColumnNotNull.ColumnBuilder<ColumnBuilder<U>, U>
-
-    class ColumnBuilderImpl<T : Any, U> internal constructor(
-            override val entityProperty: KProperty1<T, U>
-    ) : DateColumn.AbstractColumnBuilder<ColumnBuilder<U>, T>(), ColumnBuilder<U> {
-
-        private var defaultValue: U? = null
-
-        override fun setDefaultValue(defaultValue: U): ColumnBuilder<U> {
-            this.defaultValue = defaultValue
-            return this
-        }
-
-        override val primaryKey = isPrimaryKey
-
-        override fun build() = DateColumnNotNull(entityProperty, columnName, sqlType, isPK, defaultValue)
-    }
-}
+) : AbstractColumn<T, U>(), DateColumn<T, U>, ColumnNotNull<T, U>/*, JavaDateDateColumnNotNull<DateColumnNotNull>*/
 
 /**
  * @author Fred Montariol
@@ -207,13 +151,4 @@ internal class DateColumnNullable<T : Any, U> internal constructor(
         override val entityProperty: KProperty1<T, U>,
         override val columnName: String,
         override val sqlType: SqlType
-) : AbstractColumn<T, U>(), DateColumn<T, U>, ColumnNullable<T, U>/*, JavaDateDateColumnNull<DateColumnNull>*/ {
-
-    interface ColumnBuilder : DateColumn.ColumnBuilder<ColumnBuilder>, ColumnNullable.ColumnBuilder<ColumnBuilder>
-
-    class ColumnBuilderImpl<T : Any, U> internal constructor(
-            override val entityProperty: KProperty1<T, U>
-    ) : DateColumn.AbstractColumnBuilder<ColumnBuilder, T>(), ColumnBuilder {
-        override fun build() = DateColumnNullable(entityProperty, columnName, sqlType)
-    }
-}
+) : AbstractColumn<T, U>(), DateColumn<T, U>, ColumnNullable<T, U>/*, JavaDateDateColumnNull<DateColumnNull>*/
