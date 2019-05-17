@@ -20,7 +20,9 @@ internal class SqlClientSelectR2dbc private constructor() {
             override val tables: Tables,
             override val resultClass: KClass<T>,
             override val transform: ((ValueProvider) -> T)?
-    ) : DefaultSqlClientSelect.SelectProperties<T>
+    ) : DefaultSqlClientSelect.SelectProperties<T> {
+        override val whereClauses = mutableListOf<WhereClause<*, *>>()
+    }
 
     internal class Select<T : Any> internal constructor(
             client: DatabaseClient,
@@ -31,8 +33,13 @@ internal class SqlClientSelectR2dbc private constructor() {
 
         override val selectProperties = SelectProperties(client, tables, resultClass, transform)
 
-        override fun where(whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<*, *>): ReactorSqlClientSelect.Where<T> {
-            return Where(selectProperties)
+        override fun <U : Any> where(
+                whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<U, *>,
+                tableClass: KClass<U>
+        ): ReactorSqlClientSelect.Where<T> {
+            val where = Where(selectProperties)
+            where.addWhereClause(whereDsl, tableClass)
+            return where
         }
     }
 

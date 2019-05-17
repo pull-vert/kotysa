@@ -19,7 +19,10 @@ import kotlin.reflect.full.withNullability
  */
 class SqlClientSelect private constructor() {
     interface Select<T : Any> : Return<T> {
-        fun where(whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<*, *>): Where<T>
+        fun <U : Any> where(
+                whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<U, *>,
+                tableClass: KClass<U>
+        ): Where<T>
     }
 
     interface Where<T : Any> : Return<T>
@@ -50,6 +53,7 @@ internal class DefaultSqlClientSelect private constructor() {
         val tables: Tables
         val resultClass: KClass<T>
         val transform: ((ValueProvider) -> T)?
+        val whereClauses: MutableList<WhereClause<*, *>>
     }
 
     internal interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T> {
@@ -58,7 +62,16 @@ internal class DefaultSqlClientSelect private constructor() {
         val transform: ((ValueProvider) -> T)?
     }
 
-    internal interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T>
+    internal interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T> {
+
+        fun <U : Any> addWhereClause(
+                dsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<U, *>,
+                tableClass: KClass<U>
+        ) = selectProperties.apply {
+            tables.checkTable(tableClass)
+            whereClauses.add(WhereDsl(dsl).initialize())
+        }
+    }
 
     @Suppress("UNCHECKED_CAST")
     internal interface Return<T : Any> : SqlClientSelect.Return<T> {

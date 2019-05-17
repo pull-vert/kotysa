@@ -4,9 +4,6 @@
 
 package com.pullvert.kotysa
 
-import java.time.LocalDateTime
-import java.util.*
-
 /**
  * @author Fred Montariol
  */
@@ -30,13 +27,9 @@ class WhereDsl<T : Any>(private val init: WhereDsl<T>.(WhereColumnPropertyProvid
 
     fun NullableDateColumnProperty<T>.timestamp(): String =
             ""
-//
-//    @Suppress("UNCHECKED_CAST")
-//    internal fun initialize(): Column<T, *> {
-//        val columnBuilder = init(WhereColumnPropertyProviderImpl()) as AbstractColumn.ColumnBuilder<*, T>
-//        if (!columnBuilder.columnNameInitialized) {
-//            columnBuilder.columnName = columnBuilder.entityProperty.name
-//        }
-//        return columnBuilder.build()
-//    }
+
+    @Suppress("UNCHECKED_CAST")
+    internal fun initialize(): WhereClause<*, *> {
+        return init(WhereColumnPropertyProviderImpl())
+    }
 }
