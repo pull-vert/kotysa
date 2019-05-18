@@ -9,6 +9,13 @@ import kotlin.reflect.KProperty1
 /**
  * @author Fred Montariol
  */
-abstract class WhereClause<T : Any, U> {
-    internal abstract val entityProperty: KProperty1<T, U>
+data class WhereClause<T : Any, U> internal constructor(
+    internal val property: KProperty1<T, U>,
+    internal val alias: String?,
+    internal val operation: Operation,
+    internal val value: Any?
+)
+
+internal enum class Operation {
+    EQ, NEQ, SUP, INF, NNULL, NULL
 }

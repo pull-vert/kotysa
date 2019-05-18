@@ -52,8 +52,8 @@ inline fun <reified T : Any> ReactorSqlClient.deleteFromTable() = deleteFromTabl
 class ReactorSqlClientSelect private constructor() {
     interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T> {
         override fun <U : Any> where(
-                whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<U, *>,
-                tableClass: KClass<U>
+                tableClass: KClass<U>,
+                whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<U, *>
         ): Where<T>
     }
 
@@ -65,6 +65,13 @@ class ReactorSqlClientSelect private constructor() {
         fun fetchAll(): Flux<T>
     }
 }
+
+/**
+ * @author Fred Montariol
+ */
+inline fun <T : Any, reified U : Any> ReactorSqlClientSelect.Select<T>.where(
+        noinline whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<U, *>
+) = where(U::class, whereDsl)
 
 /**
  * @author Fred Montariol

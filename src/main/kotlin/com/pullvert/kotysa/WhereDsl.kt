@@ -10,8 +10,7 @@ package com.pullvert.kotysa
 @KotysaMarker
 class WhereDsl<T : Any>(private val init: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<*, *>) {
 
-    infix fun <U : Any> NotNullStringColumnProperty<U>.EQ(stringValue: String): String =
-            ""
+    infix fun <U : Any> NotNullStringColumnProperty<U>.EQ(stringValue: String) = WhereClause(property, alias, Operation.EQ, stringValue)
 
     fun NullableStringColumnProperty<T>.varchar(): String =
             ""

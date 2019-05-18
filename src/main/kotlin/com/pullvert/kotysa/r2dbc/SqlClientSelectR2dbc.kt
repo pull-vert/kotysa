@@ -15,49 +15,40 @@ import kotlin.reflect.KProperty1
  * @author Fred Montariol
  */
 internal class SqlClientSelectR2dbc private constructor() {
-    internal class SelectProperties<T : Any>(
-            val client: DatabaseClient,
-            override val tables: Tables,
-            override val resultClass: KClass<T>,
-            override val transform: ((ValueProvider) -> T)?
-    ) : DefaultSqlClientSelect.SelectProperties<T> {
-        override val whereClauses = mutableListOf<WhereClause<*, *>>()
-    }
 
     internal class Select<T : Any> internal constructor(
-            client: DatabaseClient,
-            override val tables: Tables,
-            override val resultClass: KClass<T>,
-            override val transform: ((ValueProvider) -> T)? = null
-    ) : DefaultSqlClientSelect.Select<T>, ReactorSqlClientSelect.Select<T>, Return<T> {
-
-        override val selectProperties = SelectProperties(client, tables, resultClass, transform)
+            override val client: DatabaseClient,
+            tables: Tables,
+            resultClass: KClass<T>,
+            selectDsl: ((ValueProvider) -> T)?
+    ) : DefaultSqlClientSelect.Select<T>(tables, resultClass, selectDsl), ReactorSqlClientSelect.Select<T>, Return<T> {
 
         override fun <U : Any> where(
-                whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<U, *>,
-                tableClass: KClass<U>
+                tableClass: KClass<U>,
+                whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<U, *>
         ): ReactorSqlClientSelect.Where<T> {
-            val where = Where(selectProperties)
+            val where = Where(client, selectProperties)
             where.addWhereClause(whereDsl, tableClass)
             return where
         }
     }
 
     internal class Where<T : Any> internal constructor(
-            override val selectProperties: SelectProperties<T>
+            override val client: DatabaseClient,
+            override val selectProperties: DefaultSqlClientSelect.SelectProperties<T>
     ) : DefaultSqlClientSelect.Where<T>, ReactorSqlClientSelect.Where<T>, Return<T>
 
     internal interface Return<T : Any> : DefaultSqlClientSelect.Return<T>, ReactorSqlClientSelect.Return<T> {
-        override val selectProperties: SelectProperties<T>
+
+        val client: DatabaseClient
 
         override fun fetchOne() = fetch().one()
         override fun fetchFirst() = fetch().first()
         override fun fetchAll() = fetch().all()
 
         private fun fetch() = with(selectProperties) {
-            val selectInformation = getSelectInformation()
             client.execute()
-                    .sql(selectSql(selectInformation))
+                    .sql(selectSql())
                     .map { r, _ ->
                         selectInformation.select.invoke(R2dbcRow(r, selectInformation.columnPropertyIndexMap))
                     }

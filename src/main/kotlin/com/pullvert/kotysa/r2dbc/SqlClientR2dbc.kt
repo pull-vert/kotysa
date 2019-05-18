@@ -20,7 +20,6 @@ class SqlClientR2dbc(
 ) : DefaultSqlClient, ReactorSqlClient {
 
     override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T> {
-        selectCheck(resultClass, selectDsl)
         return SqlClientSelectR2dbc.Select(client, tables, resultClass, selectDsl)
     }
 
@@ -59,4 +58,9 @@ class SqlClientR2dbc(
             SqlClientDeleteR2dbc.Delete(client, tables, tableClass)
 }
 
+/**
+ * Create a [ReactorSqlClient] from a R2DBC [DatabaseClient] with [Tables] mapping
+ *
+ * @author Fred Montariol
+ */
 fun DatabaseClient.sqlClient(tables: Tables): ReactorSqlClient = SqlClientR2dbc(this, tables)

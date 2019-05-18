@@ -87,12 +87,6 @@ private val logger = KotlinLogging.logger {}
 internal interface DefaultSqlClient : SqlClient {
     val tables: Tables
 
-    fun <T : Any> selectCheck(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?) {
-        if (selectDsl == null) {
-            tables.checkTable(resultClass)
-        }
-    }
-
     fun createTableSql(tableClass: KClass<*>): String {
         val table = tables.getTable(tableClass)
         var primaryKey: String? = null
