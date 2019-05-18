@@ -4,8 +4,8 @@
 
 package com.pullvert.kotysa
 
+import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
 import kotlin.reflect.KProperty1
 
 /**
@@ -13,17 +13,17 @@ import kotlin.reflect.KProperty1
  */
 interface ValueProvider {
 
-    operator fun get(stringProperty: KProperty1<*, String>): String
+    operator fun <T : Any> get(property: KProperty1<T, String>, alias: String? = null): String
 
-    operator fun get(nullableStringProperty: KProperty1<*, String?>, `_`: Nullable = Nullable.TRUE): String?
+    operator fun <T : Any> get(property: KProperty1<T, String?>, alias: String? = null, `_`: Nullable = Nullable.TRUE): String?
 
-    operator fun get(localDateTimeProperty: KProperty1<*, LocalDateTime>): LocalDateTime
+    operator fun <T : Any> get(property: KProperty1<T, LocalDateTime>, alias: String? = null): LocalDateTime
 
-    operator fun get(nullableLocalDateTimeProperty: KProperty1<*, LocalDateTime?>, `_`: Nullable = Nullable.TRUE): LocalDateTime?
+    operator fun <T : Any> get(property: KProperty1<T, LocalDateTime?>, alias: String? = null, `_`: Nullable = Nullable.TRUE): LocalDateTime?
 
-    operator fun get(dateProperty: KProperty1<*, Date>): Date
+    operator fun <T : Any> get(property: KProperty1<T, LocalDate>, alias: String? = null): LocalDate
 
-    operator fun get(nullableDateProperty: KProperty1<*, Date?>, `_`: Nullable = Nullable.TRUE): Date?
+    operator fun <T : Any> get(property: KProperty1<T, LocalDate?>, alias: String? = null, `_`: Nullable = Nullable.TRUE): LocalDate?
 }
 
 /**
@@ -32,23 +32,23 @@ interface ValueProvider {
  */
 abstract class AbstractRow(private val columnPropertyIndexMap: Map<KProperty1<*, *>, Int>) : ValueProvider {
 
-    override operator fun get(stringProperty: KProperty1<*, String>): String =
-            this[columnPropertyIndexMap[stringProperty]!!]!!
+    override operator fun <T : Any> get(property: KProperty1<T, String>, alias: String?): String =
+            this[columnPropertyIndexMap[property]!!]!!
 
-    override operator fun get(nullableStringProperty: KProperty1<*, String?>, `_`: Nullable): String? =
-            this[columnPropertyIndexMap[nullableStringProperty]!!]
+    override operator fun <T : Any> get(property: KProperty1<T, String?>, alias: String?, `_`: Nullable): String? =
+            this[columnPropertyIndexMap[property]!!]
 
-    override operator fun get(localDateTimeProperty: KProperty1<*, LocalDateTime>): LocalDateTime =
-            this[columnPropertyIndexMap[localDateTimeProperty]!!]!!
+    override operator fun <T : Any> get(property: KProperty1<T, LocalDateTime>, alias: String?): LocalDateTime =
+            this[columnPropertyIndexMap[property]!!]!!
 
-    override operator fun get(nullableLocalDateTimeProperty: KProperty1<*, LocalDateTime?>, `_`: Nullable): LocalDateTime? =
-            this[columnPropertyIndexMap[nullableLocalDateTimeProperty]!!]
+    override operator fun <T : Any> get(property: KProperty1<T, LocalDateTime?>, alias: String?, `_`: Nullable): LocalDateTime? =
+            this[columnPropertyIndexMap[property]!!]
 
-    override operator fun get(dateProperty: KProperty1<*, Date>): Date =
-            this[columnPropertyIndexMap[dateProperty]!!]!!
+    override operator fun <T : Any> get(property: KProperty1<T, LocalDate>, alias: String?): LocalDate =
+            this[columnPropertyIndexMap[property]!!]!!
 
-    override operator fun get(nullableDateProperty: KProperty1<*, Date?>, `_`: Nullable): Date? =
-            this[columnPropertyIndexMap[nullableDateProperty]!!]
+    override operator fun <T : Any> get(property: KProperty1<T, LocalDate?>, alias: String?, `_`: Nullable): LocalDate? =
+            this[columnPropertyIndexMap[property]!!]
 
     /**
      * Returns the element at the specified index in the list of returned fields of row

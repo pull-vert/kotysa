@@ -4,50 +4,36 @@
 
 package com.pullvert.kotysa
 
+import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
 import kotlin.reflect.KProperty1
 
 /**
  * @author Fred Montariol
  */
 open class ColumnPropertyProvider {
-    protected fun <T : Any> colProp(stringProperty: KProperty1<T, String>, alias: String? = null) =
-            NotNullStringColumnProperty(stringProperty, alias)
+    protected fun <T : Any> colProp(property: KProperty1<T, String>) = NotNullStringColumnProperty(property)
 
-    protected fun <T : Any> colProp(localDateTimeProperty: KProperty1<T, LocalDateTime>, alias: String? = null) =
-            NotNullLocalDateTimeColumnProperty(localDateTimeProperty, alias)
+    protected fun <T : Any> colProp(property: KProperty1<T, LocalDateTime>) = NotNullLocalDateTimeColumnProperty(property)
 
-    protected fun <T : Any> colProp(dateProperty: KProperty1<T, Date>, alias: String? = null) =
-            NotNullDateColumnProperty(dateProperty, alias)
+    protected fun <T : Any> colProp(property: KProperty1<T, LocalDate>) = NotNullLocalDateColumnProperty(property)
 
-    protected fun <T : Any> colProp(
-            nullableStringProperty: KProperty1<T, String?>,
-            alias: String? = null
-    ): NullableStringColumnProperty<T> {
-        checkNullableProperty(nullableStringProperty)
-        return NullableStringColumnProperty(nullableStringProperty, alias)
+    protected fun <T : Any> colProp(property: KProperty1<T, String?>): NullableStringColumnProperty<T> {
+        checkNullableProperty(property)
+        return NullableStringColumnProperty(property)
     }
 
-    protected fun <T : Any> colProp(
-            nullableLocalDateTimeProperty: KProperty1<T, LocalDateTime?>,
-            alias: String? = null
-    ): NullableLocalDateTimeColumnProperty<T> {
-        checkNullableProperty(nullableLocalDateTimeProperty)
-        return NullableLocalDateTimeColumnProperty(nullableLocalDateTimeProperty, alias)
+    protected fun <T : Any> colProp(property: KProperty1<T, LocalDateTime?>): NullableLocalDateTimeColumnProperty<T> {
+        checkNullableProperty(property)
+        return NullableLocalDateTimeColumnProperty(property)
     }
 
-    protected fun <T : Any> colProp(
-            nullableDateProperty: KProperty1<T, Date?>,
-            alias: String? = null
-    ): NullableDateColumnProperty<T> {
-        checkNullableProperty(nullableDateProperty)
-        return NullableDateColumnProperty(nullableDateProperty, alias)
+    protected fun <T : Any> colProp(property: KProperty1<T, LocalDate?>): NullableLocalDateColumnProperty<T> {
+        checkNullableProperty(property)
+        return NullableLocalDateColumnProperty(property)
     }
 
     private fun checkNullableProperty(property: KProperty1<*, *>) {
-        require(property.returnType.isMarkedNullable) {
-            "\"${property.name}\" is not a nullable property"
-        }
+        require(property.returnType.isMarkedNullable) { "\"${property.name}\" is not a nullable property" }
     }
 }

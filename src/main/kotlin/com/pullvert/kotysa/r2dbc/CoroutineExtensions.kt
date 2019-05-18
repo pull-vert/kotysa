@@ -48,7 +48,7 @@ suspend fun <T : Any> ReactorSqlClientSelect.Return<T>.fetchAwaitFirstOrNull(): 
  * @author Fred Montariol
  */
 @FlowPreview
-fun <T: Any> ReactorSqlClientSelect.Return<T>.fetchFlow(batchSize: Int = 1): Flow<T> = fetchAll().asFlow(batchSize)
+fun <T : Any> ReactorSqlClientSelect.Return<T>.fetchFlow(batchSize: Int = 1): Flow<T> = fetchAll().asFlow(batchSize)
 
 /**
  * Coroutines variant of [ReactorSqlClientDelete.Return.execute].

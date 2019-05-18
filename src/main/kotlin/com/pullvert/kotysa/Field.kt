@@ -4,64 +4,106 @@
 
 package com.pullvert.kotysa
 
+import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
 import kotlin.reflect.KProperty1
-
-/**
- * @author Fred Montariol
- */
-@Suppress("UNCHECKED_CAST")
-abstract class FieldProvider {
-
-    internal abstract val allColumns: Map<KProperty1<*, *>, Column<*, *>>
-
-    internal fun getField(stringProperty: KProperty1<*, String?>): StringColumnField<*, String?> {
-        requireAllColumnsContainsProperty(stringProperty)
-        return StringColumnField(allColumns[stringProperty]!! as Column<*, String?>)
-    }
-
-    internal fun getField(localDateTimeProperty: KProperty1<*, LocalDateTime?>): LocalDateTimeColumnField<*, LocalDateTime?> {
-        requireAllColumnsContainsProperty(localDateTimeProperty)
-        return LocalDateTimeColumnField(allColumns[localDateTimeProperty]!! as Column<*, LocalDateTime?>)
-    }
-
-    internal fun getField(localDateTimeProperty: KProperty1<*, Date?>): DateColumnField<*, Date?> {
-        requireAllColumnsContainsProperty(localDateTimeProperty)
-        return DateColumnField(allColumns[localDateTimeProperty]!! as Column<*, Date?>)
-    }
-
-    private fun requireAllColumnsContainsProperty(columnProperty: KProperty1<*, *>) {
-        require(allColumns.containsKey(columnProperty)) { "Requested field \"${columnProperty.name}\" is not mapped" }
-    }
-}
 
 /**
  * @author Fred Montariol
  */
 interface Field {
     val fieldName: String
+    val alias: String?
 }
 
 /**
  * @author Fred Montariol
  */
-internal abstract class ColumnField<T : Any, U>(column: Column<T, U>) : Column<T, U> by column, Field {
-    override val fieldName: String
-        get() = table.name + "." + columnName
+interface NotNullField : Field
+
+/**
+ * @author Fred Montariol
+ */
+interface NullableField : Field
+
+/**
+ * @author Fred Montariol
+ */
+@Suppress("UNCHECKED_CAST")
+abstract class ColumnField<T : Any, U> internal constructor(
+        allColumns: Map<KProperty1<*, *>, Column<*, *>>,
+        property: KProperty1<*, *>,
+        final override val alias: String?
+) : Field {
+
+    internal val column: Column<T, U>
+
+    init {
+        if (alias != null) {
+            require(alias.isNotBlank()) { "An alias must not be empty or blank" }
+        }
+        require(allColumns.containsKey(property)) { "Requested field \"${property.name}\" is not mapped" }
+        column = allColumns[property]!! as Column<T, U>
+    }
+
+    override val fieldName =
+            if (alias != null) {
+                alias + "." + column.name
+            } else {
+                column.table.name + "." + column.name
+            }
 }
 
 /**
  * @author Fred Montariol
  */
-internal class StringColumnField<T : Any, U>(column: Column<T, U>) : ColumnField<T, U>(column)
+class NotNullStringColumnField<T : Any> internal constructor(
+        allColumns: Map<KProperty1<*, *>, Column<*, *>>,
+        property: KProperty1<T, String>,
+        alias: String? = null
+) : ColumnField<T, String>(allColumns, property, alias), NotNullField
 
 /**
  * @author Fred Montariol
  */
-internal class LocalDateTimeColumnField<T : Any, U>(column: Column<T, U>) : ColumnField<T, U>(column)
+class NullableStringColumnField<T : Any> internal constructor(
+        allColumns: Map<KProperty1<*, *>, Column<*, *>>,
+        property: KProperty1<T, String?>,
+        alias: String? = null
+) : ColumnField<T, String?>(allColumns, property, alias), NullableField
 
 /**
  * @author Fred Montariol
  */
-internal class DateColumnField<T : Any, U>(column: Column<T, U>) : ColumnField<T, U>(column)
+class NotNullLocalDateTimeColumnField<T : Any> internal constructor(
+        allColumns: Map<KProperty1<*, *>, Column<*, *>>,
+        property: KProperty1<T, LocalDateTime>,
+        alias: String? = null
+) : ColumnField<T, LocalDateTime>(allColumns, property, alias), NotNullField
+
+/**
+ * @author Fred Montariol
+ */
+class NullableLocalDateTimeColumnField<T : Any> internal constructor(
+        allColumns: Map<KProperty1<*, *>, Column<*, *>>,
+        property: KProperty1<T, LocalDateTime?>,
+        alias: String? = null
+) : ColumnField<T, LocalDateTime?>(allColumns, property, alias), NotNullField
+
+/**
+ * @author Fred Montariol
+ */
+class NotNullLocalDateColumnField<T : Any> internal constructor(
+        allColumns: Map<KProperty1<*, *>, Column<*, *>>,
+        property: KProperty1<T, LocalDate>,
+        alias: String? = null
+) : ColumnField<T, LocalDate>(allColumns, property, alias), NotNullField
+
+/**
+ * @author Fred Montariol
+ */
+class NullableLocalDateColumnField<T : Any> internal constructor(
+        allColumns: Map<KProperty1<*, *>, Column<*, *>>,
+        property: KProperty1<T, LocalDate?>,
+        alias: String? = null
+) : ColumnField<T, LocalDate?>(allColumns, property, alias), NotNullField

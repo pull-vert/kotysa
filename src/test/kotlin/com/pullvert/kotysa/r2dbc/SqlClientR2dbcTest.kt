@@ -54,6 +54,12 @@ class SqlClientSelectR2DbcTest {
     }
 
     @Test
+    fun `Verify findJohn finds _ _ _ John !`() {
+        assertThat(repository.findJohn().block())
+                .isEqualTo(jdoe)
+    }
+
+    @Test
     fun `Verify findAllMappedToDto does the mapping`() {
         assertThat(repository.findAllMappedToDto().toIterable())
                 .hasSize(2)
@@ -104,9 +110,11 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun deleteAll() = sqlClient.deleteFromTable<User>().execute()
 
-    fun findAll() = sqlClient.select<User>()
-            .where { it[User::firstname] EQ "" }
-            .fetchAll()
+    fun findAll() = sqlClient.select<User>().fetchAll()
+
+    fun findJohn() = sqlClient.select<User>()
+            .where { it[User::firstname] EQ "John" }
+            .fetchOne()
 
     fun count() = Mono.empty<Long>()
 //			sqlClient.select<Long>("COUNT(*)")

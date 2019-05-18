@@ -5,7 +5,6 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
-import com.pullvert.kotysa.DefaultSqlClient
 import org.springframework.data.r2dbc.core.DatabaseClient
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toFlux

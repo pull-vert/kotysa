@@ -35,7 +35,7 @@ class TableDsl<T : Any>(private val init: TableDsl<T>.() -> Unit, private val ta
     @PublishedApi
     internal fun initialize(): Table<*> {
         init()
-        require(::name.isInitialized) { "Table columnName is mandatory" }
+        require(::name.isInitialized) { "Table name is mandatory" }
         require(columns.isNotEmpty()) { "Table must declare at least one column" }
         require(columns.values.count { column -> column.isPrimaryKey } <= 1) { "Table must not declare more than one Primary Key Column" }
         val table = Table(tableClass, name, columns)

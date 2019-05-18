@@ -13,7 +13,7 @@ import kotlin.reflect.KProperty1
 internal interface Column<T : Any, U> {
     var table: Table<T>
     val entityProperty: KProperty1<T, U>
-    val columnName: String
+    val name: String
     val sqlType: SqlType
     val isPrimaryKey: Boolean
     val isNullable: Boolean
@@ -86,7 +86,7 @@ internal interface VarcharColumn<T : Any, U> : Column<T, U>
  */
 internal class VarcharColumnNotNull<T : Any, U> internal constructor(
         override val entityProperty: KProperty1<T, U>,
-        override val columnName: String,
+        override val name: String,
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
         override val defaultValue: U
@@ -97,7 +97,7 @@ internal class VarcharColumnNotNull<T : Any, U> internal constructor(
  */
 internal class VarcharColumnNullable<T : Any, U> internal constructor(
         override val entityProperty: KProperty1<T, U>,
-        override val columnName: String,
+        override val name: String,
         override val sqlType: SqlType
 ) : AbstractColumn<T, U>(), VarcharColumn<T, U>, ColumnNullable<T, U>/*, StringVarcharColumnNull<VarcharColumnNullable>*/
 
@@ -111,7 +111,7 @@ internal interface TimestampColumn<T : Any, U> : Column<T, U>
  */
 internal class TimestampColumnNotNull<T : Any, U> internal constructor(
         override val entityProperty: KProperty1<T, U>,
-        override val columnName: String,
+        override val name: String,
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
         override val defaultValue: U?
@@ -123,7 +123,7 @@ internal class TimestampColumnNotNull<T : Any, U> internal constructor(
  */
 internal class TimestampColumnNullable<T : Any, U> internal constructor(
         override val entityProperty: KProperty1<T, U>,
-        override val columnName: String,
+        override val name: String,
         override val sqlType: SqlType
 ) : AbstractColumn<T, U>(), TimestampColumn<T, U>, ColumnNullable<T, U>/*, LocalDateTimeTimestampColumnNull<TimestampColumnNull>,
 		JavaDateTimestampColumnNull<TimestampColumnNull>*/
@@ -138,7 +138,7 @@ internal interface DateColumn<T : Any, U> : Column<T, U>
  */
 internal class DateColumnNotNull<T : Any, U> internal constructor(
         override val entityProperty: KProperty1<T, U>,
-        override val columnName: String,
+        override val name: String,
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
         override val defaultValue: U?
@@ -149,6 +149,6 @@ internal class DateColumnNotNull<T : Any, U> internal constructor(
  */
 internal class DateColumnNullable<T : Any, U> internal constructor(
         override val entityProperty: KProperty1<T, U>,
-        override val columnName: String,
+        override val name: String,
         override val sqlType: SqlType
 ) : AbstractColumn<T, U>(), DateColumn<T, U>, ColumnNullable<T, U>/*, JavaDateDateColumnNull<DateColumnNull>*/

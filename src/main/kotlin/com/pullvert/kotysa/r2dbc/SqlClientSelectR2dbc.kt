@@ -5,7 +5,6 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
-import com.pullvert.kotysa.DefaultSqlClientSelect
 import io.r2dbc.spi.Row
 import org.springframework.data.r2dbc.core.DatabaseClient
 import kotlin.reflect.KClass
@@ -23,12 +22,9 @@ internal class SqlClientSelectR2dbc private constructor() {
             selectDsl: ((ValueProvider) -> T)?
     ) : DefaultSqlClientSelect.Select<T>(tables, resultClass, selectDsl), ReactorSqlClientSelect.Select<T>, Return<T> {
 
-        override fun <U : Any> where(
-                tableClass: KClass<U>,
-                whereDsl: WhereDsl<T>.(WhereColumnPropertyProvider) -> WhereClause<U, *>
-        ): ReactorSqlClientSelect.Where<T> {
+        override fun where(whereDsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause): ReactorSqlClientSelect.Where<T> {
             val where = Where(client, selectProperties)
-            where.addWhereClause(whereDsl, tableClass)
+            where.addWhereClause(whereDsl)
             return where
         }
     }

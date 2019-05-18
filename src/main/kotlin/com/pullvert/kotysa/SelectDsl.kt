@@ -4,15 +4,18 @@
 
 package com.pullvert.kotysa
 
+import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
 import kotlin.reflect.KProperty1
 
 /**
  * All methods return an unused value
  * @author Fred Montariol
  */
-class SelectDsl<T> internal constructor(private val init: (ValueProvider) -> T, override val allColumns: Map<KProperty1<*, *>, Column<*, *>>) : FieldProvider(), ValueProvider {
+class SelectDsl<T> internal constructor(
+        private val init: (ValueProvider) -> T,
+        override val allColumns: Map<KProperty1<*, *>, Column<*, *>>
+) : FieldProvider(), ValueProvider {
 
     private var fieldIndex = 0
     private val columnPropertyIndexMap = mutableMapOf<KProperty1<*, *>, Int>()
@@ -20,46 +23,46 @@ class SelectDsl<T> internal constructor(private val init: (ValueProvider) -> T, 
     private val selectedFields = mutableListOf<Field>()
     private val selectedTables = mutableSetOf<Table<*>>()
 
-    override operator fun get(stringProperty: KProperty1<*, String>): String {
-        val field = getField(stringProperty)
-        addColumnField(stringProperty, field)
+    override operator fun <T : Any> get(property: KProperty1<T, String>, alias: String?): String {
+        val field = getField(property, alias)
+        addColumnField(property, field)
         return ""
     }
 
-    override operator fun get(nullableStringProperty: KProperty1<*, String?>, `_`: Nullable): String? {
-        val field = getField(nullableStringProperty)
-        addColumnField(nullableStringProperty, field)
+    override operator fun <T : Any> get(property: KProperty1<T, String?>, alias: String?, `_`: Nullable): String? {
+        val field = getField(property, alias)
+        addColumnField(property, field)
         return null
     }
 
-    override operator fun get(localDateTimeProperty: KProperty1<*, LocalDateTime>): LocalDateTime {
-        val field = getField(localDateTimeProperty)
-        addColumnField(localDateTimeProperty, field)
+    override operator fun <T : Any> get(property: KProperty1<T, LocalDateTime>, alias: String?): LocalDateTime {
+        val field = getField(property, alias)
+        addColumnField(property, field)
         return LocalDateTime.MAX
     }
 
-    override operator fun get(nullableLocalDateTimeProperty: KProperty1<*, LocalDateTime?>, `_`: Nullable): LocalDateTime? {
-        val field = getField(nullableLocalDateTimeProperty)
-        addColumnField(nullableLocalDateTimeProperty, field)
+    override operator fun <T : Any> get(property: KProperty1<T, LocalDateTime?>, alias: String?, `_`: Nullable): LocalDateTime? {
+        val field = getField(property, alias)
+        addColumnField(property, field)
         return null
     }
 
-    override operator fun get(dateProperty: KProperty1<*, Date>): Date {
-        val field = getField(dateProperty)
-        addColumnField(dateProperty, field)
-        return Date()
+    override operator fun <T : Any> get(property: KProperty1<T, LocalDate>, alias: String?): LocalDate {
+        val field = getField(property, alias)
+        addColumnField(property, field)
+        return LocalDate.MAX
     }
 
-    override operator fun get(nullableDateProperty: KProperty1<*, Date?>, `_`: Nullable): Date? {
-        val field = getField(nullableDateProperty)
-        addColumnField(nullableDateProperty, field)
+    override operator fun <T : Any> get(property: KProperty1<T, LocalDate?>, alias: String?, `_`: Nullable): LocalDate? {
+        val field = getField(property, alias)
+        addColumnField(property, field)
         return null
     }
 
-    private fun addColumnField(columnProperty: KProperty1<*, *>, columnField: ColumnField<*, *>) {
-        addField(columnProperty, columnField)
-        if (!selectedTables.contains(columnField.table)) {
-            selectedTables.add(columnField.table)
+    private fun addColumnField(property: KProperty1<*, *>, columnField: ColumnField<*, *>) {
+        addField(property, columnField)
+        if (!selectedTables.contains(columnField.column.table)) {
+            selectedTables.add(columnField.column.table)
         }
     }
 

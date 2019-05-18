@@ -65,7 +65,7 @@ internal class VarcharColumnBuilderNotNullImpl<T : Any, U> internal constructor(
     }
 
     override val primaryKey
-            get() = isPrimaryKey
+        get() = isPrimaryKey
 
     override fun build() = VarcharColumnNotNull(entityProperty, columnName, sqlType, isPK, defaultValue)
 }

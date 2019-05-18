@@ -92,10 +92,10 @@ internal interface DefaultSqlClient : SqlClient {
         var primaryKey: String? = null
         val columns = table.columns.values.joinToString { column ->
             if (column.isPrimaryKey) {
-                primaryKey = "CONSTRAINT pk_${table.name} PRIMARY KEY (${column.columnName})"
+                primaryKey = "CONSTRAINT pk_${table.name} PRIMARY KEY (${column.name})"
             }
             val nullability = if (column.isNullable) "NULL" else "NOT NULL"
-            "${column.columnName} ${column.sqlType} $nullability"
+            "${column.name} ${column.sqlType} $nullability"
         }
         val createTableSql = "CREATE TABLE IF NOT EXISTS ${table.name} ($columns, $primaryKey)"
         logger.debug { "Exec SQL : $createTableSql" }
@@ -107,7 +107,7 @@ internal interface DefaultSqlClient : SqlClient {
         val columnNames = mutableSetOf<String>()
         val values = mutableListOf<Any?>()
         table.columns.values.forEach { column ->
-            columnNames.add(column.columnName)
+            columnNames.add(column.name)
             val columnValue = column.entityProperty.get(row)
             val value = if (columnValue == null) {
                 null
