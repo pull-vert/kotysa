@@ -19,7 +19,7 @@ import kotlin.reflect.full.withNullability
  */
 class SqlClientSelect private constructor() {
     interface Select<T : Any> : Return<T> {
-        fun where(whereDsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause): Where<T>
+        fun where(whereDsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause<*>): Where<T>
     }
 
     interface Where<T : Any> : Return<T>
@@ -49,7 +49,7 @@ internal class DefaultSqlClientSelect private constructor() {
     internal class SelectProperties<T : Any>(
             val tables: Tables,
             val selectInformation: SelectInformation<T>,
-            val whereClauses: MutableList<WhereClause>
+            val whereClauses: MutableList<WhereClause<*>>
     )
 
     internal abstract class Select<T : Any> protected constructor(
@@ -77,6 +77,8 @@ internal class DefaultSqlClientSelect private constructor() {
             val table = tables.allTables[resultClass] as Table<T>
             var fieldIndex = 0
             val columnPropertyIndexMap = mutableMapOf<KProperty1<*, *>, Int>()
+
+            // build selectedFields List
             val selectedFields = mutableListOf<Field>()
             table.columns.forEach { (property, _) ->
                 columnPropertyIndexMap[property] = fieldIndex++
@@ -103,6 +105,8 @@ internal class DefaultSqlClientSelect private constructor() {
                 }
                 selectedFields.add(field)
             }
+
+            // Build select Function : (ValueProvider) -> T
             val select: (ValueProvider) -> T = { it ->
                 with(table.tableClass.primaryConstructor!!) {
                     val args = mutableMapOf<KParameter, Any?>()
@@ -132,7 +136,7 @@ internal class DefaultSqlClientSelect private constructor() {
 
     internal interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T> {
 
-        fun addWhereClause(dsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause) {
+        fun addWhereClause(dsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause<*>) {
             selectProperties.apply {
                 whereClauses.add(WhereDsl(dsl, tables.allColumns).initialize())
             }
@@ -150,7 +154,7 @@ internal class DefaultSqlClientSelect private constructor() {
             } else {
                 whereClauses.joinToString(" AND ", "WHERE ") { whereClause ->
                     when (whereClause.operation) {
-                        Operation.EQ -> whereClause.field.fieldName + " = " + printValue(whereClause)
+                        Operation.EQ -> "${whereClause.field.fieldName} = ?"
                         else -> throw RuntimeException("should never happen")
                     }
                 }
@@ -158,16 +162,6 @@ internal class DefaultSqlClientSelect private constructor() {
             val selectSql = "$selects $froms $wheres"
             logger.debug { "Exec SQL : $selectSql" }
             return selectSql
-        }
-
-        private fun printValue(whereClause: WhereClause): String = whereClause.run {
-            if (field is ColumnField<*, *>) {
-                when (field.column.sqlType) {
-                    SqlType.VARCHAR -> return "'$value'"
-                    else -> throw IllegalArgumentException("${field.column.sqlType} is not handled yet for insert")
-                }
-            }
-            throw IllegalArgumentException("non ColumnField are not supported yet")
         }
     }
 }

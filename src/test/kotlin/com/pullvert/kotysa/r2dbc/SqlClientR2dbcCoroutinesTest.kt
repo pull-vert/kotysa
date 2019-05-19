@@ -62,8 +62,14 @@ class SqlClientSelectR2DbcCoroutinesTest {
     @Disabled("count test is disabled : See https://github.com/spring-projects/spring-fu/issues/160")
     @Test
     fun `Verify count returns expected size`() = runBlockingTest {
-        assertThat(repository.count())
+        expectThat(repository.count())
                 .isEqualTo(2)
+    }
+
+    @Test
+    fun `Verify findJohn finds _ _ _ John !`() = runBlockingTest {
+        expectThat(repository.findJohn())
+                .isEqualTo(jdoe)
     }
 
     @Test
@@ -118,6 +124,10 @@ class CoroutinesUserRepository(dbClient: DatabaseClient) {
     suspend fun deleteAll() = sqlClient.deleteFromTable<User>().awaitExecute()
 
     fun findAll() = sqlClient.select<User>().fetchFlow()
+
+    suspend fun findJohn() = sqlClient.select<User>()
+            .where { it[User::firstname] EQ "John" }
+            .fetchAwaitOne()
 
     suspend fun count() = 2
 //			sqlClient.select<Long>("COUNT(*)")
