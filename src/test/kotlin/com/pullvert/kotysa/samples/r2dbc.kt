@@ -42,7 +42,7 @@ private class UserRepository(dbClient: DatabaseClient) {
 
     fun findAllByAlias(alias: String?) = sqlClient.select<User>()
             .where { it[User::alias] EQ alias }
-            // null String accepted     ^^^^^ , if alias=null, will give "WHERE user.alias IS NULL"
+            // null String accepted     ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
             .fetchAll()
 }
 
