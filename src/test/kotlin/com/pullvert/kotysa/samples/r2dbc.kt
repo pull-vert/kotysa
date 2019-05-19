@@ -36,12 +36,12 @@ private class UserRepository(dbClient: DatabaseClient) {
             }.fetchAll()
 
     fun findFirstByFirstname(firstname: String) = sqlClient.select<User>()
-            .where { it[User::firstname] EQ firstname }
+            .where { it[User::firstname] eq firstname }
             // null String forbidden        ^^^^^^^^^
             .fetchFirst()
 
     fun findAllByAlias(alias: String?) = sqlClient.select<User>()
-            .where { it[User::alias] EQ alias }
+            .where { it[User::alias] eq alias }
             // null String accepted     ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
             .fetchAll()
 }

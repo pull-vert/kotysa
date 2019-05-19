@@ -17,9 +17,9 @@ class WhereDsl<T : Any> internal constructor(
         override val allColumns: Map<KProperty1<*, *>, Column<*, *>>
 ) : FieldProvider(), WhereFieldProvider {
 
-    infix fun <U : Any> NotNullStringColumnField<U>.EQ(stringValue: String) = WhereClause(this, Operation.EQ, stringValue)
+    infix fun <U : Any> NotNullStringColumnField<U>.eq(stringValue: String) = WhereClause(this, Operation.EQ, stringValue)
 
-    infix fun <U : Any> NullableStringColumnField<U>.EQ(stringValue: String?) = WhereClause(this, Operation.EQ, stringValue)
+    infix fun <U : Any> NullableStringColumnField<U>.eq(stringValue: String?) = WhereClause(this, Operation.EQ, stringValue)
 
 
     override fun <T : Any> get(property: KProperty1<T, String>, alias: String?) = getField(property, alias)

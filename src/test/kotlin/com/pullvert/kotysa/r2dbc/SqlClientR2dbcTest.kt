@@ -133,11 +133,11 @@ class UserRepository(dbClient: DatabaseClient) {
     fun findAll() = sqlClient.select<User>().fetchAll()
 
     fun findFirstByFirstame(firstname: String) = sqlClient.select<User>()
-            .where { it[User::firstname] EQ firstname }
+            .where { it[User::firstname] eq firstname }
             .fetchFirst()
 
     fun findAllByAlias(alias: String?) = sqlClient.select<User>()
-            .where { it[User::alias] EQ alias }
+            .where { it[User::alias] eq alias }
             .fetchAll()
 
     fun count() = Mono.empty<Long>()

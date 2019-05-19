@@ -146,11 +146,11 @@ class CoroutinesUserRepository(dbClient: DatabaseClient) {
     fun findAll() = sqlClient.select<User>().fetchFlow()
 
     suspend fun findFirstByFirstame(firstname: String) = sqlClient.select<User>()
-            .where { it[User::firstname] EQ firstname }
+            .where { it[User::firstname] eq firstname }
             .fetchAwaitFirstOrNull()
 
     fun findAllByAlias(alias: String?) = sqlClient.select<User>()
-            .where { it[User::alias] EQ alias }
+            .where { it[User::alias] eq alias }
             .fetchFlow()
 
     suspend fun count() = 2
