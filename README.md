@@ -6,7 +6,7 @@ Kotysa
 
 Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [Sql client](src/main/kotlin/com/pullvert/kotysa/SqlClient.kt) that help you write type-safe database queries, agnostic from chosen Sql Engine, written in Kotlin for Kotlin users.
 
-Type-safety relies on Entity property's type and nullability. It is used to limit available column's SQL type, select typed fields and where clauses (soon).
+Type-safety relies on Entity property's type and nullability. It is used to limit available column's SQL type, select typed fields and where clauses.
 
 ## Dependency
 
@@ -26,7 +26,7 @@ dependencies {
 
 ### Describe Database Model with Type-Safe DSL
 
-```tables``` functional DSL is used to declare all mapped tables and link each DB table to an existing class (aka Entity).
+```tables``` functional DSL is used to define all mapped tables' structure, and link each DB table to an existing class (aka Entity).
 
 ```kotlin
 private val tables =
@@ -52,7 +52,7 @@ data class User(
 
 At this point **SqlClient** supports :
 * ```select<T>``` that returns one (```fetchOne()```) or several (```fetchAll()```) results
-* table creation with ```createTable<T>``` and ```createTables```
+* ```createTable<T>``` and ```createTables``` for table creation
 * ```insert``` for single or multiple rows insertion
 * ```deleteFromTable<T>``` that returns number of deleted rows
 
@@ -70,6 +70,16 @@ fun findAllMappedToDto() =
             UserDto("${it[User::firstname]} ${it[User::lastname]}",
                     it[User::alias])
         }.fetchAll()
+        
+fun findFirstByFirstname(firstname: String) = sqlClient.select<User>()
+        .where { it[User::firstname] EQ firstname }
+        // null String forbidden        ^^^^^^^^^
+        .fetchFirst()
+
+fun findAllByAlias(alias: String?) = sqlClient.select<User>()
+        .where { it[User::alias] EQ alias }
+        // null String accepted     ^^^^^ , if alias=null, will give "WHERE user.alias IS NULL"
+        .fetchAll()
 
 val jdoe = User("jdoe", "John", "Doe")
 val bboss = User("bboss", "Big", "Boss", "TheBoss")
