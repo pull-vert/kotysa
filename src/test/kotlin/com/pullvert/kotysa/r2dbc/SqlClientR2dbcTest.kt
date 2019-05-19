@@ -54,9 +54,29 @@ class SqlClientSelectR2DbcTest {
     }
 
     @Test
-    fun `Verify findJohn finds _ _ _ John !`() {
-        assertThat(repository.findJohn().block())
+    fun `Verify findFirstByFirstame finds John`() {
+        assertThat(repository.findFirstByFirstame("John").block())
                 .isEqualTo(jdoe)
+    }
+
+    @Test
+    fun `Verify findFirstByFirstame finds no Unknown`() {
+        assertThat(repository.findFirstByFirstame("Unknown").block())
+                .isNull()
+    }
+
+    @Test
+    fun `Verify findByAlias finds TheBoss`() {
+        assertThat(repository.findAllByAlias("TheBoss").toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(bboss)
+    }
+
+    @Test
+    fun `Verify findByAlias with null alias finds John`() {
+        assertThat(repository.findAllByAlias(null).toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(jdoe)
     }
 
     @Test
@@ -112,9 +132,13 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun findAll() = sqlClient.select<User>().fetchAll()
 
-    fun findJohn() = sqlClient.select<User>()
-            .where { it[User::firstname] EQ "John" }
-            .fetchOne()
+    fun findFirstByFirstame(firstname: String) = sqlClient.select<User>()
+            .where { it[User::firstname] EQ firstname }
+            .fetchFirst()
+
+    fun findAllByAlias(alias: String?) = sqlClient.select<User>()
+            .where { it[User::alias] EQ alias }
+            .fetchAll()
 
     fun count() = Mono.empty<Long>()
 //			sqlClient.select<Long>("COUNT(*)")

@@ -4,15 +4,13 @@
 
 package com.pullvert.kotysa
 
-import kotlin.reflect.KClass
-
 /**
  * @author Fred Montariol
  */
-data class WhereClause<T : Any> internal constructor(
+data class WhereClause internal constructor(
         internal val field: Field,
         internal val operation: Operation,
-        internal val value: Pair<KClass<T>, T?>?
+        internal val value: Any?
 )
 
 internal enum class Operation {

@@ -67,9 +67,29 @@ class SqlClientSelectR2DbcCoroutinesTest {
     }
 
     @Test
-    fun `Verify findJohn finds _ _ _ John !`() = runBlockingTest {
-        expectThat(repository.findJohn())
+    fun `Verify findFirstByFirstame finds John`() = runBlockingTest {
+        expectThat(repository.findFirstByFirstame("John"))
                 .isEqualTo(jdoe)
+    }
+
+    @Test
+    fun `Verify findFirstByFirstame finds no Unknown`() = runBlockingTest {
+        assertThat(repository.findFirstByFirstame("Unknown"))
+                .isNull()
+    }
+
+    @Test
+    fun `Verify findByAlias finds TheBoss`() = runBlockingTest {
+        assertThat(repository.findAllByAlias("TheBoss").toList())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(bboss)
+    }
+
+    @Test
+    fun `Verify findByAlias with null alias finds John`() = runBlockingTest {
+        assertThat(repository.findAllByAlias(null).toList())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(jdoe)
     }
 
     @Test
@@ -125,9 +145,13 @@ class CoroutinesUserRepository(dbClient: DatabaseClient) {
 
     fun findAll() = sqlClient.select<User>().fetchFlow()
 
-    suspend fun findJohn() = sqlClient.select<User>()
-            .where { it[User::firstname] EQ "John" }
-            .fetchAwaitOne()
+    suspend fun findFirstByFirstame(firstname: String) = sqlClient.select<User>()
+            .where { it[User::firstname] EQ firstname }
+            .fetchAwaitFirstOrNull()
+
+    fun findAllByAlias(alias: String?) = sqlClient.select<User>()
+            .where { it[User::alias] EQ alias }
+            .fetchFlow()
 
     suspend fun count() = 2
 //			sqlClient.select<Long>("COUNT(*)")

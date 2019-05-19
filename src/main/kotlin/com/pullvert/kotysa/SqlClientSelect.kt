@@ -19,7 +19,7 @@ import kotlin.reflect.full.withNullability
  */
 class SqlClientSelect private constructor() {
     interface Select<T : Any> : Return<T> {
-        fun where(whereDsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause<*>): Where<T>
+        fun where(whereDsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause): Where<T>
     }
 
     interface Where<T : Any> : Return<T>
@@ -49,7 +49,7 @@ internal class DefaultSqlClientSelect private constructor() {
     internal class SelectProperties<T : Any>(
             val tables: Tables,
             val selectInformation: SelectInformation<T>,
-            val whereClauses: MutableList<WhereClause<*>>
+            val whereClauses: MutableList<WhereClause>
     )
 
     internal abstract class Select<T : Any> protected constructor(
@@ -136,7 +136,7 @@ internal class DefaultSqlClientSelect private constructor() {
 
     internal interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T> {
 
-        fun addWhereClause(dsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause<*>) {
+        fun addWhereClause(dsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause) {
             selectProperties.apply {
                 whereClauses.add(WhereDsl(dsl, tables.allColumns).initialize())
             }
@@ -154,14 +154,40 @@ internal class DefaultSqlClientSelect private constructor() {
             } else {
                 whereClauses.joinToString(" AND ", "WHERE ") { whereClause ->
                     when (whereClause.operation) {
-                        Operation.EQ -> "${whereClause.field.fieldName} = ?"
+                        Operation.EQ ->
+                            if (whereClause.value == null) {
+                                "${whereClause.field.fieldName} IS NULL"
+                            } else {
+                                "${whereClause.field.fieldName} = ?"
+                            }
                         else -> throw RuntimeException("should never happen")
                     }
                 }
             }
-            val selectSql = "$selects $froms $wheres"
-            logger.debug { "Exec SQL : $selectSql" }
-            return selectSql
+            if (logger.isDebugEnabled) {
+                val wheresDebug = if (whereClauses.isEmpty()) {
+                    ""
+                } else {
+                    whereClauses.joinToString(" AND ", "WHERE ") { whereClause ->
+                        when (whereClause.operation) {
+                            Operation.EQ ->
+                                if (whereClause.value == null) {
+                                    "${whereClause.field.fieldName} IS NULL"
+                                } else {
+                                    "${whereClause.field.fieldName} = ${logValue(whereClause.value)}"
+                                }
+                            else -> throw RuntimeException("should never happen")
+                        }
+                    }
+                }
+                logger.debug { "Exec SQL : $selects $froms $wheresDebug" }
+            }
+            return "$selects $froms $wheres"
+        }
+
+        private fun logValue(value: Any) = when (value) {
+            is String -> "\'$value\'"
+            else -> throw RuntimeException("should never happen")
         }
     }
 }

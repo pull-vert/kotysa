@@ -22,7 +22,7 @@ internal class SqlClientSelectR2dbc private constructor() {
             selectDsl: ((ValueProvider) -> T)?
     ) : DefaultSqlClientSelect.Select<T>(tables, resultClass, selectDsl), ReactorSqlClientSelect.Select<T>, Return<T> {
 
-        override fun where(whereDsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause<*>): ReactorSqlClientSelect.Where<T> {
+        override fun where(whereDsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause): ReactorSqlClientSelect.Where<T> {
             val where = Where(client, selectProperties)
             where.addWhereClause(whereDsl)
             return where
@@ -48,11 +48,7 @@ internal class SqlClientSelectR2dbc private constructor() {
             whereClauses
                     .mapNotNull { whereClause -> whereClause.value }
                     .forEachIndexed { index, value ->
-                        executeSpec = if (value.second == null) {
-                            executeSpec.bindNull(index, value.first.java)
-                        } else {
-                            executeSpec.bind(index, value.second!!)
-                        }
+                        executeSpec = executeSpec.bind(index, value)
                     }
 
             executeSpec.map { r, _ ->

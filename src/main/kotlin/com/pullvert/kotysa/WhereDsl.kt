@@ -13,26 +13,14 @@ import kotlin.reflect.KProperty1
  */
 @KotysaMarker
 class WhereDsl<T : Any> internal constructor(
-        private val init: WhereDsl<T>.(WhereFieldProvider) -> WhereClause<*>,
+        private val init: WhereDsl<T>.(WhereFieldProvider) -> WhereClause,
         override val allColumns: Map<KProperty1<*, *>, Column<*, *>>
 ) : FieldProvider(), WhereFieldProvider {
 
-    infix fun <U : Any> NotNullStringColumnField<U>.EQ(stringValue: String) = WhereClause(this, Operation.EQ, Pair(String::class, stringValue))
+    infix fun <U : Any> NotNullStringColumnField<U>.EQ(stringValue: String) = WhereClause(this, Operation.EQ, stringValue)
 
-    fun NullableStringColumnProperty<T>.varchar(): String =
-            ""
+    infix fun <U : Any> NullableStringColumnField<U>.EQ(stringValue: String?) = WhereClause(this, Operation.EQ, stringValue)
 
-    fun NotNullLocalDateTimeColumnProperty<T>.timestamp(): String =
-            ""
-
-    fun NullableLocalDateTimeColumnProperty<T>.timestamp(): String =
-            ""
-
-    fun NotNullLocalDateColumnProperty<T>.timestamp(): String =
-            ""
-
-    fun NullableLocalDateColumnProperty<T>.timestamp(): String =
-            ""
 
     override fun <T : Any> get(property: KProperty1<T, String>, alias: String?) = getField(property, alias)
 
@@ -47,7 +35,7 @@ class WhereDsl<T : Any> internal constructor(
     override fun <T : Any> get(property: KProperty1<T, LocalDate?>, alias: String?) = getField(property, alias)
 
     @Suppress("UNCHECKED_CAST")
-    internal fun initialize(): WhereClause<*> {
+    internal fun initialize(): WhereClause {
         return init(this)
     }
 }
