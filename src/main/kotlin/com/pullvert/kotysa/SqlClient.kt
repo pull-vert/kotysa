@@ -119,6 +119,7 @@ internal interface DefaultSqlClient : SqlClient {
             }
             values.add(value)
         }
+        // todo change this to use binded params !
         val insertSql = "INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES (${values.joinToString()})"
         logger.debug { "Exec SQL : $insertSql" }
         return insertSql
