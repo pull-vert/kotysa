@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 
 /**
- * Database all Mapped Tables' model
+ * All Mapped Tables
  * @author Fred Montariol
  */
 data class Tables internal constructor(

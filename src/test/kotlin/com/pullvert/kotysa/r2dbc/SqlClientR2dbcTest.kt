@@ -4,7 +4,7 @@
 
 package com.pullvert.kotysa.r2dbc
 
-import com.pullvert.kotysa.tables
+import com.pullvert.kotysa.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Disabled
