@@ -146,3 +146,37 @@ internal class DateColumnBuilderNullableImpl<T : Any, U> internal constructor(
 ) : AbstractDateColumnBuilder<DateColumnBuilderNullable, T>(), DateColumnBuilderNullable {
     override fun build() = DateColumnNullable(entityProperty, columnName, sqlType)
 }
+
+interface DateTimeColumnBuilder<T : DateTimeColumnBuilder<T>> : ColumnBuilder<T>
+
+internal abstract class AbstractDateTimeColumnBuilder<T : DateTimeColumnBuilder<T>, U : Any> : AbstractColumnBuilder<T, U>(), DateTimeColumnBuilder<T> {
+    override val sqlType = SqlType.DATE_TIME
+}
+
+interface DateTimeColumnBuilderNotNull<U>
+    : DateTimeColumnBuilder<DateTimeColumnBuilderNotNull<U>>, ColumnNotNullBuilder<DateTimeColumnBuilderNotNull<U>, U>
+
+internal class DateTimeColumnBuilderNotNullImpl<T : Any, U> internal constructor(
+        override val entityProperty: KProperty1<T, U>
+) : AbstractDateTimeColumnBuilder<DateTimeColumnBuilderNotNull<U>, T>(), DateTimeColumnBuilderNotNull<U> {
+
+    private var defaultValue: U? = null
+
+    override fun setDefaultValue(defaultValue: U): DateTimeColumnBuilderNotNull<U> {
+        this.defaultValue = defaultValue
+        return this
+    }
+
+    override val primaryKey
+        get() = isPrimaryKey
+
+    override fun build() = DateTimeColumnNotNull(entityProperty, columnName, sqlType, isPK, defaultValue)
+}
+
+interface DateTimeColumnBuilderNullable : DateTimeColumnBuilder<DateTimeColumnBuilderNullable>, ColumnNullableBuilder<DateTimeColumnBuilderNullable>
+
+internal class DateTimeColumnBuilderNullableImpl<T : Any, U> internal constructor(
+        override val entityProperty: KProperty1<T, U>
+) : AbstractDateTimeColumnBuilder<DateTimeColumnBuilderNullable, T>(), DateTimeColumnBuilderNullable {
+    override fun build() = DateTimeColumnNullable(entityProperty, columnName, sqlType)
+}

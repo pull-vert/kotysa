@@ -70,7 +70,7 @@ class NullableLocalDateTimeColumnProperty<T : Any> internal constructor(
         override val property: KProperty1<T, LocalDateTime?>
 ) : LocalDateTimeColumnProperty<T>(), NullableColumnProperty
 
-// Date
+// LocalDate
 /**
  * @author Fred Montariol
  */

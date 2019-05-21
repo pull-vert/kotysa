@@ -22,11 +22,11 @@ class ColumnDsl<T : Any> internal constructor(
     fun NullableStringColumnProperty<T>.varchar(): VarcharColumnBuilderNullable =
             VarcharColumnBuilderNullableImpl(property)
 
-    fun NotNullLocalDateTimeColumnProperty<T>.timestamp(): TimestampColumnBuilderNotNull<LocalDateTime> =
-            TimestampColumnBuilderNotNullImpl(property)
+    fun NotNullLocalDateTimeColumnProperty<T>.dateTime(): DateTimeColumnBuilderNotNull<LocalDateTime> =
+            DateTimeColumnBuilderNotNullImpl(property)
 
-    fun NullableLocalDateTimeColumnProperty<T>.timestamp(): TimestampColumnBuilderNullable =
-            TimestampColumnBuilderNullableImpl(property)
+    fun NullableLocalDateTimeColumnProperty<T>.dateTime(): DateTimeColumnBuilderNullable =
+            DateTimeColumnBuilderNullableImpl(property)
 
     fun NotNullLocalDateColumnProperty<T>.date(): DateColumnBuilderNotNull<LocalDate> =
             DateColumnBuilderNotNullImpl(property)

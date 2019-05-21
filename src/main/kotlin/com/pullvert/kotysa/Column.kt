@@ -26,7 +26,8 @@ internal interface Column<T : Any, U> {
 enum class SqlType {
     VARCHAR,
     TIMESTAMP,
-    DATE;
+    DATE,
+    DATE_TIME;
 }
 
 /**
@@ -59,23 +60,6 @@ internal abstract class AbstractColumn<T : Any, U> : Column<T, U> {
     override lateinit var table: Table<T>
 }
 
-// String
-//interface StringColumn: Column
-//interface StringVarcharColumnNotNull<T : StringVarcharColumnNotNull<T>>: StringColumn, ColumnNotNull<T>
-//interface StringVarcharColumnNull<T : StringVarcharColumnNull<T>>: StringColumn, ColumnNullable<T>
-//
-//// LocalDateTime
-//interface LocalDateTimeColumn: Column
-//interface LocalDateTimeTimestampColumnNotNull<T : LocalDateTimeTimestampColumnNotNull<T>>: LocalDateTimeColumn, ColumnNotNull<T>
-//interface LocalDateTimeTimestampColumnNull<T : LocalDateTimeTimestampColumnNull<T>>: LocalDateTimeColumn, ColumnNullable<T>
-//
-//// Date
-//interface JavaDateColumn: Column
-//interface JavaDateTimestampColumnNotNull<T : JavaDateTimestampColumnNotNull<T>>: JavaDateColumn, ColumnNotNull<T>
-//interface JavaDateTimestampColumnNull<T : JavaDateTimestampColumnNull<T>>: JavaDateColumn, ColumnNullable<T>
-//interface JavaDateDateColumnNotNull<T : JavaDateDateColumnNotNull<T>>: JavaDateColumn, ColumnNotNull<T>
-//interface JavaDateDateColumnNull<T : JavaDateDateColumnNull<T>>: JavaDateColumn, ColumnNullable<T>
-
 /**
  * @author Fred Montariol
  */
@@ -90,7 +74,7 @@ internal class VarcharColumnNotNull<T : Any, U> internal constructor(
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
         override val defaultValue: U
-) : AbstractColumn<T, U>(), VarcharColumn<T, U>, ColumnNotNull<T, U>/*, StringVarcharColumnNotNull<VarcharColumnNotNull>*/
+) : AbstractColumn<T, U>(), VarcharColumn<T, U>, ColumnNotNull<T, U>
 
 /**
  * @author Fred Montariol
@@ -99,7 +83,7 @@ internal class VarcharColumnNullable<T : Any, U> internal constructor(
         override val entityProperty: KProperty1<T, U>,
         override val name: String,
         override val sqlType: SqlType
-) : AbstractColumn<T, U>(), VarcharColumn<T, U>, ColumnNullable<T, U>/*, StringVarcharColumnNull<VarcharColumnNullable>*/
+) : AbstractColumn<T, U>(), VarcharColumn<T, U>, ColumnNullable<T, U>
 
 /**
  * @author Fred Montariol
@@ -115,8 +99,7 @@ internal class TimestampColumnNotNull<T : Any, U> internal constructor(
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
         override val defaultValue: U?
-) : AbstractColumn<T, U>(), TimestampColumn<T, U>, ColumnNotNull<T, U>/*, LocalDateTimeTimestampColumnNotNull<TimestampColumnNotNull>,
-		JavaDateTimestampColumnNotNull<TimestampColumnNotNull>*/
+) : AbstractColumn<T, U>(), TimestampColumn<T, U>, ColumnNotNull<T, U>
 
 /**
  * @author Fred Montariol
@@ -125,8 +108,7 @@ internal class TimestampColumnNullable<T : Any, U> internal constructor(
         override val entityProperty: KProperty1<T, U>,
         override val name: String,
         override val sqlType: SqlType
-) : AbstractColumn<T, U>(), TimestampColumn<T, U>, ColumnNullable<T, U>/*, LocalDateTimeTimestampColumnNull<TimestampColumnNull>,
-		JavaDateTimestampColumnNull<TimestampColumnNull>*/
+) : AbstractColumn<T, U>(), TimestampColumn<T, U>, ColumnNullable<T, U>
 
 /**
  * @author Fred Montariol
@@ -142,7 +124,7 @@ internal class DateColumnNotNull<T : Any, U> internal constructor(
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
         override val defaultValue: U?
-) : AbstractColumn<T, U>(), DateColumn<T, U>, ColumnNotNull<T, U>/*, JavaDateDateColumnNotNull<DateColumnNotNull>*/
+) : AbstractColumn<T, U>(), DateColumn<T, U>, ColumnNotNull<T, U>
 
 /**
  * @author Fred Montariol
@@ -151,4 +133,29 @@ internal class DateColumnNullable<T : Any, U> internal constructor(
         override val entityProperty: KProperty1<T, U>,
         override val name: String,
         override val sqlType: SqlType
-) : AbstractColumn<T, U>(), DateColumn<T, U>, ColumnNullable<T, U>/*, JavaDateDateColumnNull<DateColumnNull>*/
+) : AbstractColumn<T, U>(), DateColumn<T, U>, ColumnNullable<T, U>
+
+/**
+ * @author Fred Montariol
+ */
+internal interface DateTimeColumn<T : Any, U> : Column<T, U>
+
+/**
+ * @author Fred Montariol
+ */
+internal class DateTimeColumnNotNull<T : Any, U> internal constructor(
+        override val entityProperty: KProperty1<T, U>,
+        override val name: String,
+        override val sqlType: SqlType,
+        override val isPrimaryKey: Boolean,
+        override val defaultValue: U?
+) : AbstractColumn<T, U>(), DateTimeColumn<T, U>, ColumnNotNull<T, U>
+
+/**
+ * @author Fred Montariol
+ */
+internal class DateTimeColumnNullable<T : Any, U> internal constructor(
+        override val entityProperty: KProperty1<T, U>,
+        override val name: String,
+        override val sqlType: SqlType
+) : AbstractColumn<T, U>(), DateTimeColumn<T, U>, ColumnNullable<T, U>
