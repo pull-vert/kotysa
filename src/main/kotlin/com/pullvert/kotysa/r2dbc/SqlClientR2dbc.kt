@@ -40,8 +40,18 @@ class SqlClientR2dbc(
             }
 
     override fun <T : Any> insert(row: T): Mono<Void> {
-        val insertSql = insertSql(row)
-        return client.execute().sql(insertSql).then()
+        var executeSpec = client.execute()
+                .sql(insertSql(row))
+        val table = tables.getTable(row::class)
+        table.columns.values.forEachIndexed { index, column ->
+            val value = column.entityProperty.get(row)
+            if (value == null) {
+                executeSpec = executeSpec.bindNull(index, (column.entityProperty.returnType.classifier as KClass<*>).java)
+            } else {
+                executeSpec = executeSpec.bind(index, value)
+            }
+        }
+        return executeSpec.then()
     }
 
     override fun insert(vararg rows: Any): Mono<Void> {

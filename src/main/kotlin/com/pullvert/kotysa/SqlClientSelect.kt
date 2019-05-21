@@ -184,10 +184,5 @@ internal class DefaultSqlClientSelect private constructor() {
             }
             return "$selects $froms $wheres"
         }
-
-        private fun logValue(value: Any) = when (value) {
-            is String -> "\'$value\'"
-            else -> throw RuntimeException("should never happen")
-        }
     }
 }

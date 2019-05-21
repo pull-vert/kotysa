@@ -105,23 +105,23 @@ internal interface DefaultSqlClient : SqlClient {
     fun <T : Any> insertSql(row: T): String {
         val table = tables.getTable(row::class)
         val columnNames = mutableSetOf<String>()
-        val values = mutableListOf<Any?>()
-        table.columns.values.forEach { column ->
+        val values = table.columns.values.joinToString { column ->
             columnNames.add(column.name)
-            val columnValue = column.entityProperty.get(row)
-            val value = if (columnValue == null) {
-                null
-            } else {
-                when (column.sqlType) {
-                    SqlType.VARCHAR -> "'$columnValue'"
-                    else -> throw IllegalArgumentException("${column.sqlType} is not handled yet for insert")
-                }
-            }
-            values.add(value)
+            "?"
         }
-        // todo change this to use binded params !
-        val insertSql = "INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES (${values.joinToString()})"
-        logger.debug { "Exec SQL : $insertSql" }
-        return insertSql
+        if (logger.isDebugEnabled) {
+            val valuesDebug = table.columns.values.joinToString { column ->
+                val columnValue = column.entityProperty.get(row)
+                logValue(columnValue)
+            }
+            logger.debug { "Exec SQL : INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($valuesDebug)" }
+        }
+        return "INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($values)"
     }
+}
+
+internal fun logValue(value: Any?) = when (value) {
+    null -> "null"
+    is String -> "\'$value\'"
+    else -> throw RuntimeException("should never happen")
 }
