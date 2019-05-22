@@ -5,6 +5,7 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
+import com.pullvert.kotysa.h2.h2
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.coroutineScope
@@ -107,13 +108,13 @@ class SqlClientSelectR2DbcCoroutinesTest {
                 .isEqualTo(2)
         assertThat(repository.findAll().toList())
                 .isEmpty()
-        // re-insert users
+        // re-insertUsers users
         repository.insert()
     }
 }
 
 private val tables =
-        tables {
+        tables().h2 {
             table<User> {
                 name = "users"
                 column { it[User::login].varchar().primaryKey }

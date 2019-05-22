@@ -4,6 +4,7 @@
 
 package com.pullvert.kotysa
 
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.reflect.KProperty1
@@ -14,7 +15,7 @@ import kotlin.reflect.KProperty1
 @KotysaMarker
 class ColumnDsl<T : Any> internal constructor(
         private val init: ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*>
-) : ColumnPropertyProvider(), TableColumnPropertyProvider<T> {
+) : TableColumnPropertyProvider<T> {
 
     fun NotNullStringColumnProperty<T>.varchar(): VarcharColumnBuilderNotNull<String> =
             VarcharColumnBuilderNotNullImpl(property)
@@ -34,17 +35,43 @@ class ColumnDsl<T : Any> internal constructor(
     fun NullableLocalDateColumnProperty<T>.date(): DateColumnBuilderNullable =
             DateColumnBuilderNullableImpl(property)
 
-    override fun get(stringProperty: KProperty1<T, String>) = colProp(stringProperty)
+    fun NotNullInstantColumnProperty<T>.timestamp(): TimestampColumnBuilderNotNull<Instant> =
+            TimestampColumnBuilderNotNullImpl(property)
 
-    override fun get(localDateTimeProperty: KProperty1<T, LocalDateTime>) = colProp(localDateTimeProperty)
+    fun NullableInstantColumnProperty<T>.timestamp(): TimestampColumnBuilderNullable =
+            TimestampColumnBuilderNullableImpl(property)
 
-    override fun get(dateProperty: KProperty1<T, LocalDate>) = colProp(dateProperty)
+    override fun get(property: KProperty1<T, String>) = NotNullStringColumnProperty(property)
 
-    override fun get(nullableStringProperty: KProperty1<T, String?>) = colProp(nullableStringProperty)
+    override fun get(property: KProperty1<T, LocalDateTime>) = NotNullLocalDateTimeColumnProperty(property)
 
-    override fun get(nullableLocalDateTimeProperty: KProperty1<T, LocalDateTime?>) = colProp(nullableLocalDateTimeProperty)
+    override fun get(property: KProperty1<T, LocalDate>) = NotNullLocalDateColumnProperty(property)
 
-    override fun get(nullableDateProperty: KProperty1<T, LocalDate?>) = colProp(nullableDateProperty)
+    override fun get(property: KProperty1<T, Instant>) = NotNullInstantColumnProperty(property)
+
+    override fun get(property: KProperty1<T, String?>): NullableStringColumnProperty<T> {
+        checkNullableProperty(property)
+        return NullableStringColumnProperty(property)
+    }
+
+    override fun get(property: KProperty1<T, LocalDateTime?>): NullableLocalDateTimeColumnProperty<T> {
+        checkNullableProperty(property)
+        return NullableLocalDateTimeColumnProperty(property)
+    }
+
+    override fun get(property: KProperty1<T, LocalDate?>): NullableLocalDateColumnProperty<T> {
+        checkNullableProperty(property)
+        return NullableLocalDateColumnProperty(property)
+    }
+
+    override fun get(property: KProperty1<T, Instant?>): NullableInstantColumnProperty<T> {
+        checkNullableProperty(property)
+        return NullableInstantColumnProperty(property)
+    }
+
+    private fun checkNullableProperty(property: KProperty1<*, *>) {
+        require(property.returnType.isMarkedNullable) { "\"${property.name}\" is not a nullable property" }
+    }
 
     @Suppress("UNCHECKED_CAST")
     internal fun initialize(): Column<T, *> {

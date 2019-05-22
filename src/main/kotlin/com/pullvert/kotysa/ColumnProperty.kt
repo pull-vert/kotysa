@@ -4,6 +4,7 @@
 
 package com.pullvert.kotysa
 
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.reflect.KProperty1
@@ -89,3 +90,23 @@ class NotNullLocalDateColumnProperty<T : Any> internal constructor(
 class NullableLocalDateColumnProperty<T : Any> internal constructor(
         override val property: KProperty1<T, LocalDate?>
 ) : LocalDateColumnProperty<T>(), NullableColumnProperty
+
+// Instant
+/**
+ * @author Fred Montariol
+ */
+abstract class InstantColumnProperty<T : Any> : AbstractColumnProperty<T>()
+
+/**
+ * @author Fred Montariol
+ */
+class NotNullInstantColumnProperty<T : Any> internal constructor(
+        override val property: KProperty1<T, Instant>
+) : InstantColumnProperty<T>(), NotNullColumnProperty
+
+/**
+ * @author Fred Montariol
+ */
+class NullableInstantColumnProperty<T : Any> internal constructor(
+        override val property: KProperty1<T, Instant?>
+) : InstantColumnProperty<T>(), NullableColumnProperty

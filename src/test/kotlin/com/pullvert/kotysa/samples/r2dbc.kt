@@ -1,5 +1,10 @@
+/*
+ * Copyright 2019 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package com.pullvert.kotysa.samples
 
+import com.pullvert.kotysa.h2.h2
 import com.pullvert.kotysa.r2dbc.createTable
 import com.pullvert.kotysa.r2dbc.deleteFromTable
 import com.pullvert.kotysa.r2dbc.select
@@ -8,7 +13,7 @@ import com.pullvert.kotysa.tables
 import org.springframework.data.r2dbc.core.DatabaseClient
 
 private val tables =
-        tables {
+        tables().h2 {
             table<User> {
                 name = "users"
                 column { it[User::login].varchar().primaryKey }

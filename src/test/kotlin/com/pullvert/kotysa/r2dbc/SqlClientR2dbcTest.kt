@@ -5,6 +5,7 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
+import com.pullvert.kotysa.h2.h2
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Disabled
@@ -90,23 +91,38 @@ class SqlClientSelectR2DbcTest {
 
     @Test
     fun `Verify deleteAllFromUser works correctly`() {
-        assertThat(repository.deleteAll().block())
+        assertThat(repository.deleteAllFromUsers().block())
                 .isEqualTo(2)
         assertThat(repository.findAll().toIterable())
                 .isEmpty()
-        // re-insert users
-        repository.insert().block()
+        // re-insertUsers users
+        repository.insertUsers().block()
     }
 }
 
 private val tables =
-        tables {
+        tables().h2 {
             table<User> {
                 name = "users"
                 column { it[User::login].varchar().primaryKey }
                 column { it[User::firstname].varchar().name("fname") }
                 column { it[User::lastname].varchar().name("lname") }
                 column { it[User::alias].varchar() }
+            }
+            table<AllTypesNotNull> {
+                name = "all_types"
+                column { it[AllTypesNotNull::string].varchar().primaryKey }
+                column { it[AllTypesNotNull::localDateTime].dateTime() }
+                column { it[AllTypesNotNull::localDate].date() }
+                column { it[AllTypesNotNull::instant].timestamp() }
+            }
+            table<AllTypesNullable> {
+                name = "all_types_nullable"
+                column { it[AllTypesNullable::id].varchar().primaryKey } // required
+                column { it[AllTypesNullable::string].varchar() }
+                column { it[AllTypesNullable::localDateTime].dateTime() }
+                column { it[AllTypesNullable::localDate].date() }
+                column { it[AllTypesNullable::instant].timestamp() }
             }
         }
 
@@ -119,16 +135,28 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun init() {
         createTable()
-                .then(deleteAll())
-                .then(insert())
+                .then(createTables())
+                .then(deleteAllFromUsers())
+                .then(deleteAllFromAllTypesNotNull())
+                .then(deleteAllFromAllTypesNullable())
+                .then(insertUsers())
+                .then(insertAllTypes())
                 .block()
     }
 
     fun createTable() = sqlClient.createTable<User>()
 
-    fun insert() = sqlClient.insert(jdoe, bboss)
+    fun createTables() = sqlClient.createTables(AllTypesNotNull::class, AllTypesNullable::class)
 
-    fun deleteAll() = sqlClient.deleteFromTable<User>().execute()
+    fun insertUsers() = sqlClient.insert(jdoe, bboss)
+
+    fun insertAllTypes() = sqlClient.insert(allTypesNotNull, allTypesNullable)
+
+    fun deleteAllFromUsers() = sqlClient.deleteFromTable<User>().execute()
+
+    fun deleteAllFromAllTypesNotNull() = sqlClient.deleteFromTable<AllTypesNotNull>().execute()
+
+    fun deleteAllFromAllTypesNullable() = sqlClient.deleteFromTable<AllTypesNullable>().execute()
 
     fun findAll() = sqlClient.select<User>().fetchAll()
 

@@ -11,32 +11,29 @@ import kotlin.reflect.KProperty1
  * @author Fred Montariol
  */
 @KotysaMarker
-class TablesDsl(private val init: TablesDsl.() -> Unit) {
+abstract class TablesDsl<T : TablesDsl<T>>(private val init: T.() -> Unit) {
 
     @PublishedApi
     internal val tables = mutableMapOf<KClass<*>, Table<*>>()
     @PublishedApi
     internal val allColumns = mutableMapOf<KProperty1<*, *>, Column<*, *>>()
 
-    internal fun initialize(): Tables {
-        init()
+    internal fun initialize(initialize: T): Tables {
+        init(initialize)
         require(tables.isNotEmpty()) { "Tables must declare at least one table" }
         return Tables(tables, allColumns)
-    }
-
-    inline fun <reified T : Any> table(noinline dsl: TableDsl<T>.() -> Unit) {
-        val tableClass = T::class
-        if (tables.containsKey(tableClass)) {
-            throw IllegalStateException("Trying to map entity class \"${tableClass.qualifiedName}\" to multiple tables")
-        }
-        val table = TableDsl(dsl, tableClass).initialize()
-        tables[tableClass] = table
-        allColumns.putAll(table.columns)
     }
 }
 
 /**
- * Configure Functional Table Mapping support.
- * @see TablesDsl
+ * Supported Database Choice (via extension functions)
  */
-fun tables(dsl: TablesDsl.() -> Unit) = TablesDsl(dsl).initialize()
+object DatabaseChoice
+
+/**
+ * Choose the database's Type
+ *
+ * @see TablesDsl
+ * @see DatabaseChoice
+ */
+fun tables() = DatabaseChoice

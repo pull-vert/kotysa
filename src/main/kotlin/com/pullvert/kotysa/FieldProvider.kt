@@ -4,6 +4,7 @@
 
 package com.pullvert.kotysa
 
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.reflect.KProperty1
@@ -33,4 +34,10 @@ abstract class FieldProvider {
 
     internal fun <T : Any> getField(property: KProperty1<T, LocalDate?>, alias: String?) =
             NullableLocalDateColumnField(allColumns, property, alias)
+
+    internal fun <T : Any> getField(property: KProperty1<T, Instant>, alias: String?) =
+            NotNullInstantColumnField(allColumns, property, alias)
+
+    internal fun <T : Any> getField(property: KProperty1<T, Instant?>, alias: String?) =
+            NullableInstantColumnField(allColumns, property, alias)
 }

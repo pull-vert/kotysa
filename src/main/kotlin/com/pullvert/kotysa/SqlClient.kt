@@ -5,6 +5,10 @@
 package com.pullvert.kotysa
 
 import mu.KotlinLogging
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.reflect.KClass
 
 /**
@@ -95,7 +99,7 @@ internal interface DefaultSqlClient : SqlClient {
                 primaryKey = "CONSTRAINT pk_${table.name} PRIMARY KEY (${column.name})"
             }
             val nullability = if (column.isNullable) "NULL" else "NOT NULL"
-            "${column.name} ${column.sqlType} $nullability"
+            "${column.name} ${column.sqlType.fullType} $nullability"
         }
         val createTableSql = "CREATE TABLE IF NOT EXISTS ${table.name} ($columns, $primaryKey)"
         logger.debug { "Exec SQL : $createTableSql" }
@@ -123,5 +127,8 @@ internal interface DefaultSqlClient : SqlClient {
 internal fun logValue(value: Any?) = when (value) {
     null -> "null"
     is String -> "\'$value\'"
+    is LocalDate -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_DATE)}\'"
+    is LocalDateTime -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}\'"
+    is Instant -> "\'${DateTimeFormatter.ISO_INSTANT.format(value)}\'"
     else -> throw RuntimeException("should never happen")
 }

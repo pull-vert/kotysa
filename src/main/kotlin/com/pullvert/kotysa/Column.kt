@@ -23,16 +23,6 @@ internal interface Column<T : Any, U> {
 /**
  * @author Fred Montariol
  */
-enum class SqlType {
-    VARCHAR,
-    TIMESTAMP,
-    DATE,
-    DATE_TIME;
-}
-
-/**
- * @author Fred Montariol
- */
 internal interface ColumnNotNull<T : Any, U> : Column<T, U> {
     override val isNullable: Boolean
         get() = false

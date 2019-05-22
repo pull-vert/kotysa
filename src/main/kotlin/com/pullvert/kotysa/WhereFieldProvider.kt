@@ -4,6 +4,7 @@
 
 package com.pullvert.kotysa
 
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.reflect.KProperty1
@@ -23,4 +24,8 @@ interface WhereFieldProvider {
     operator fun <T : Any> get(property: KProperty1<T, LocalDate>, alias: String? = null): NotNullLocalDateColumnField<T>
 
     operator fun <T : Any> get(property: KProperty1<T, LocalDate?>, alias: String? = null): NullableLocalDateColumnField<T>
+
+    operator fun <T : Any> get(property: KProperty1<T, Instant>, alias: String? = null): NotNullInstantColumnField<T>
+
+    operator fun <T : Any> get(property: KProperty1<T, Instant?>, alias: String? = null): NullableInstantColumnField<T>
 }
