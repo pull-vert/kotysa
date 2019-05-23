@@ -72,15 +72,15 @@ inline fun <reified T : Any> SqlClientBlocking.deleteFromTable() = deleteFromTab
 private fun tableMustBeMapped(tableName: String?) = "Requested table \"$tableName\" is not mapped"
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T : Any> Tables.getTable(tableClass: KClass<out T>): Table<T> =
+fun <T : Any> Tables.getTable(tableClass: KClass<out T>): Table<T> =
         this.allTables[tableClass] as Table<T>?
                 ?: throw IllegalArgumentException(tableMustBeMapped(tableClass.qualifiedName))
 
-internal fun <T : Any> Tables.checkTable(tableClass: KClass<out T>) {
+fun <T : Any> Tables.checkTable(tableClass: KClass<out T>) {
     require(this.allTables.containsKey(tableClass)) { tableMustBeMapped(tableClass.qualifiedName) }
 }
 
-internal fun Tables.checkTables(tableClasses: Array<out KClass<*>>) {
+fun Tables.checkTables(tableClasses: Array<out KClass<*>>) {
     tableClasses.forEach { tableClass -> checkTable(tableClass) }
 }
 
@@ -89,7 +89,7 @@ private val logger = KotlinLogging.logger {}
 /**
  * @author Fred Montariol
  */
-internal interface DefaultSqlClient : SqlClient {
+interface DefaultSqlClient : SqlClient {
     val tables: Tables
 
     fun createTableSql(tableClass: KClass<*>): String {

@@ -4,7 +4,7 @@
 Kotysa
 ==================
 
-Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [Sql client](src/main/kotlin/com/pullvert/kotysa/SqlClient.kt) that help you write type-safe database queries, agnostic from chosen Sql Engine, written in Kotlin for Kotlin users.
+Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [Sql client](kotysa-core/src/main/kotlin/com/pullvert/kotysa/SqlClient.kt) that help you write type-safe database queries, agnostic from chosen Sql Engine, written in Kotlin for Kotlin users.
 
 Type-safety relies on Entity property's type and nullability. It is used to limit available column's SQL type, select typed fields and where clauses.
 
@@ -92,7 +92,7 @@ data class UserDto(
 
 ### Use SqlClient with R2dbc
 
-**SqlClient** has one Reactive (using Reactor ```Mono``` and ```Flux```) implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient``` : [SqlClientR2dbc](src/main/kotlin/com/pullvert/kotysa/r2dbc/SqlClientR2dbc.kt), it can be obtained via an Extension function directly on ```DatabaseClient``` :
+**SqlClient** has one Reactive (using Reactor ```Mono``` and ```Flux```) implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient``` : [SqlClientR2dbc](kotysa-r2dbc/src/main/kotlin/com/pullvert/kotysa/r2dbc/SqlClientR2dbc.kt), it can be obtained via an Extension function directly on ```DatabaseClient``` :
 ```kotlin
 fun DatabaseClient.sqlClient(tables: Tables) : ReactorSqlClient
 ```

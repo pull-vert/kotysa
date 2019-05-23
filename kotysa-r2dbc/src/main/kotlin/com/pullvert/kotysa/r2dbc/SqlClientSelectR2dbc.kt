@@ -13,7 +13,7 @@ import kotlin.reflect.KProperty1
 /**
  * @author Fred Montariol
  */
-internal class SqlClientSelectR2dbc private constructor() {
+internal class SqlClientSelectR2dbc private constructor() : DefaultSqlClientSelect() {
 
     internal class Select<T : Any> internal constructor(
             override val client: DatabaseClient,
@@ -31,10 +31,10 @@ internal class SqlClientSelectR2dbc private constructor() {
 
     internal class Where<T : Any> internal constructor(
             override val client: DatabaseClient,
-            override val selectProperties: DefaultSqlClientSelect.SelectProperties<T>
+            override val selectProperties: SelectProperties<T>
     ) : DefaultSqlClientSelect.Where<T>, ReactorSqlClientSelect.Where<T>, Return<T>
 
-    internal interface Return<T : Any> : DefaultSqlClientSelect.Return<T>, ReactorSqlClientSelect.Return<T> {
+    private interface Return<T : Any> : DefaultSqlClientSelect.Return<T>, ReactorSqlClientSelect.Return<T> {
 
         val client: DatabaseClient
 

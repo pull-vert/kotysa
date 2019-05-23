@@ -10,7 +10,7 @@ package com.pullvert.kotysa
 data class WhereClause internal constructor(
         internal val field: Field,
         internal val operation: Operation,
-        internal val value: Any?
+        val value: Any?
 )
 
 internal enum class Operation {

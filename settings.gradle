@@ -11,3 +11,8 @@ pluginManagement {
         }
     }
 }
+
+rootProject.name = 'kotysa'
+
+include 'kotysa-core'
+include 'kotysa-r2dbc'

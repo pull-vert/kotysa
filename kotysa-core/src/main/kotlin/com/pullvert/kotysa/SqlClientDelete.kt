@@ -33,19 +33,19 @@ private val logger = KotlinLogging.logger {}
 /**
  * @author Fred Montariol
  */
-internal class DefaultSqlClientDelete private constructor() {
+open class DefaultSqlClientDelete protected constructor() {
 
-    internal interface DeleteProperties<T : Any> {
+    protected interface DeleteProperties<T : Any> {
         val tables: Tables
         val tableClass: KClass<T>
     }
 
-    internal interface Delete<T : Any> : SqlClientDelete.Delete, Return<T> {
+    protected interface Delete<T : Any> : SqlClientDelete.Delete, Return<T> {
         val tables: Tables
         val tableClass: KClass<T>
     }
 
-    internal interface Return<T : Any> : SqlClientDelete.Return {
+    protected interface Return<T : Any> : SqlClientDelete.Return {
         val deleteProperties: DeleteProperties<T>
 
         fun deleteFromTableSql(tableClass: KClass<*>): String {

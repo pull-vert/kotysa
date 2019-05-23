@@ -13,14 +13,14 @@ import kotlin.reflect.KClass
 /**
  * @author Fred Montariol
  */
-internal class SqlClientDeleteR2dbc private constructor() {
-    internal class DeleteProperties<T : Any>(
+internal class SqlClientDeleteR2dbc private constructor(): DefaultSqlClientDelete() {
+    internal class DeleteProperties<T : Any> internal constructor(
             val client: DatabaseClient,
             override val tables: Tables,
             override val tableClass: KClass<T>
     ) : DefaultSqlClientDelete.DeleteProperties<T>
 
-    internal class Delete<T : Any>(
+    internal class Delete<T : Any> internal constructor(
             private val client: DatabaseClient,
             override val tables: Tables,
             override val tableClass: KClass<T>
@@ -32,7 +32,7 @@ internal class SqlClientDeleteR2dbc private constructor() {
             }
     }
 
-    internal interface Return<T : Any> : DefaultSqlClientDelete.Return<T>, ReactorSqlClientDelete.Return {
+    private interface Return<T : Any> : DefaultSqlClientDelete.Return<T>, ReactorSqlClientDelete.Return {
         override val deleteProperties: DeleteProperties<T>
 
         override fun execute() = with(deleteProperties) {

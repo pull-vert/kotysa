@@ -19,7 +19,7 @@ import kotlin.reflect.full.withNullability
 /**
  * @author Fred Montariol
  */
-class SqlClientSelect private constructor() {
+open class SqlClientSelect private constructor() {
     interface Select<T : Any> : Return<T> {
         fun where(whereDsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause): Where<T>
     }
@@ -47,14 +47,14 @@ private val logger = KotlinLogging.logger {}
 /**
  * @author Fred Montariol
  */
-internal class DefaultSqlClientSelect private constructor() {
-    internal class SelectProperties<T : Any>(
+open class DefaultSqlClientSelect protected constructor() {
+    class SelectProperties<T : Any>(
             val tables: Tables,
             val selectInformation: SelectInformation<T>,
             val whereClauses: MutableList<WhereClause>
     )
 
-    internal abstract class Select<T : Any> protected constructor(
+    abstract class Select<T : Any> protected constructor(
             tables: Tables,
             resultClass: KClass<T>,
             selectDsl: ((ValueProvider) -> T)?
@@ -150,7 +150,7 @@ internal class DefaultSqlClientSelect private constructor() {
         }
     }
 
-    internal interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T> {
+    protected interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T> {
 
         fun addWhereClause(dsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause) {
             selectProperties.apply {
@@ -159,7 +159,7 @@ internal class DefaultSqlClientSelect private constructor() {
         }
     }
 
-    internal interface Return<T : Any> : SqlClientSelect.Return<T> {
+    protected interface Return<T : Any> : SqlClientSelect.Return<T> {
         val selectProperties: SelectProperties<T>
 
         fun selectSql(): String = with(selectProperties) {
@@ -207,8 +207,8 @@ internal class DefaultSqlClientSelect private constructor() {
  * @author Fred Montariol
  */
 data class SelectInformation<T>(
-        internal val columnPropertyIndexMap: Map<KProperty1<*, *>, Int>,
+        val columnPropertyIndexMap: Map<KProperty1<*, *>, Int>,
         internal val selectedFields: List<Field>,
         internal val selectedTables: Set<Table<*>>,
-        internal val select: (ValueProvider) -> T
+        val select: (ValueProvider) -> T
 )

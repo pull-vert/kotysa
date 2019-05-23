@@ -10,7 +10,7 @@ import kotlin.reflect.KProperty1
  * One database Table's Column model mapped by entity's [entityProperty]
  * @author Fred Montariol
  */
-internal interface Column<T : Any, U> {
+interface Column<T : Any, U> {
     var table: Table<T>
     val entityProperty: KProperty1<T, U>
     val name: String

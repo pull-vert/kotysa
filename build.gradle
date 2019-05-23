@@ -1,142 +1,21 @@
-import org.jetbrains.kotlin.config.KotlinCompilerVersion
-
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.31'
-    id 'org.jetbrains.dokka' version '0.9.18'
-    id 'maven-publish'
-    id 'com.jfrog.bintray' version '1.8.4'
-    id 'net.researchgate.release' version '2.8.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.31' apply false
+    id 'org.jetbrains.dokka' version '0.9.18' apply false
+    id 'com.jfrog.bintray' version '1.8.4' apply false
+    id 'net.researchgate.release' version '2.8.0' apply false
 }
 
 println("Using Gradle version: $gradle.gradleVersion")
-println("Using Kotlin compiler version: $KotlinCompilerVersion.VERSION")
 
-repositories {
-    jcenter()
-    maven { url 'https://repo.spring.io/milestone' }
-    maven { url 'https://repo.spring.io/snapshot' }
-}
+subprojects {
+    apply plugin: 'maven-publish'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'net.researchgate.release'
 
-dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-reflect'
-    implementation "io.github.microutils:kotlin-logging:$kotlin_logging_version"
-
-    compileOnly "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
-    compileOnly "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
-    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-reactive:$kotlinx_coroutines_version"
-
-    testImplementation "org.springframework.fu:spring-fu-kofu:$spring_fu_version"
-    testImplementation "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
-    testImplementation "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
-    testImplementation "io.r2dbc:r2dbc-h2:$r2dbc_version"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-reactive:$kotlinx_coroutines_version"
-    testImplementation "ch.qos.logback:logback-classic:$logback_version"
-
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
-    testImplementation "io.strikt:strikt-core:$strikt_version"
-    testImplementation "io.mockk:mockk:$mokk_version"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinx_coroutines_version"
-    testImplementation "org.assertj:assertj-core:$assertj_version"
-
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
-}
-
-compileKotlin {
-    kotlinOptions {
-        freeCompilerArgs = ['-Xjsr305=strict', '-Xjvm-default=enable']
-        jvmTarget = '1.8'
+    repositories {
+        jcenter()
     }
 }
-
-compileTestKotlin {
-    kotlinOptions {
-        freeCompilerArgs = ['-Xjsr305=strict', '-Xjvm-default=enable']
-        jvmTarget = '1.8'
-    }
-}
-
-test {
-    useJUnitPlatform()
-    testLogging {
-        events 'passed', 'failed', 'skipped'
-        showStandardStreams = true
-    }
-}
-
-// --------------- Source & Javadoc artefacts + PUBLISHING ---------------
-
-// generate xxx-sources.jar
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allSource
-    archiveClassifier = 'sources'
-}
-
-dokka {
-    outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
-
-    jdkVersion = 8
-    includes = ['README.md']
-
-    externalDocumentationLink {
-        url = new URL("https://docs.spring.io/spring-data/r2dbc/docs/1.0.x/api/")
-    }
-}
-
-// generate xxx-javadoc.jar
-task javadocJar(type: Jar, dependsOn: dokka) {
-    from "$buildDir/javadoc"
-    archiveClassifier = 'javadoc'
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            artifactId = project.name
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-            pom {
-                name = project.name
-                description = 'Kotysa (Kotlin Type-Safe) is a SqlClient, agnostic from your chosen Sql Engine, ' +
-                        'written in Kotlin for Kotlin users'
-                url = 'https://github.com/pull-vert/kotysa'
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:git://github.com/pull-vert/kotysa.git'
-                    url = 'https://github.com/pull-vert/kotysa.git'
-                }
-            }
-        }
-    }
-}
-
-bintray {
-    user = bintray_user //this usually comes from gradle.properties file in ~/.gradle
-    key = bintray_api_key //this usually comes from gradle.properties file in ~/.gradle
-    publications = ['maven']
-    pkg {
-        repo = 'kotysa'
-        name = 'kotysa'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/pull-vert/kotysa.git'
-        version {
-            name = project.version
-            vcsTag = project.version
-            released = new Date()
-        }
-    }
-}
-
-bintrayUpload.doLast {
-    println("Uploaded $project.name version $project.version")
-}
-
 
 // execute ./gradlew wrapper then remove .gradle directory when version change
 wrapper {

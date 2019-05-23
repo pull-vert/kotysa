@@ -12,7 +12,7 @@ import kotlin.reflect.KProperty1
  * @author Fred Montariol
  */
 data class Tables internal constructor(
-        internal val allTables: Map<KClass<*>, Table<*>>,
+        val allTables: Map<KClass<*>, Table<*>>,
         internal val allColumns: Map<KProperty1<*, *>, Column<*, *>>
 )
 
@@ -22,6 +22,6 @@ data class Tables internal constructor(
  */
 data class Table<T : Any> internal constructor(
         internal val tableClass: KClass<T>,
-        internal val name: String,
-        @PublishedApi internal val columns: Map<KProperty1<T, *>, Column<T, *>>
+        val name: String,
+        val columns: Map<KProperty1<T, *>, Column<T, *>>
 )
