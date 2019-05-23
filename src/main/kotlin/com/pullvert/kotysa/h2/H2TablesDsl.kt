@@ -4,8 +4,6 @@
 
 package com.pullvert.kotysa.h2
 
-import com.pullvert.kotysa.DatabaseChoice
-import com.pullvert.kotysa.Tables
 import com.pullvert.kotysa.TablesDsl
 
 /**
@@ -23,13 +21,4 @@ class H2TablesDsl(init: H2TablesDsl.() -> Unit) : TablesDsl<H2TablesDsl>(init) {
         tables[tableClass] = table
         allColumns.putAll(table.columns)
     }
-}
-
-/**
- * Configure Functional Table Mapping support for H2
- * @see H2TablesDsl
- */
-fun DatabaseChoice.h2(dsl: H2TablesDsl.() -> Unit): Tables {
-    val h2TablesDsl = H2TablesDsl(dsl)
-    return h2TablesDsl.initialize(h2TablesDsl)
 }

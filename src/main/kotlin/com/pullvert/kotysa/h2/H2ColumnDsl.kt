@@ -5,15 +5,6 @@
 package com.pullvert.kotysa.h2
 
 import com.pullvert.kotysa.*
-import com.pullvert.kotysa.ColumnDsl
-import com.pullvert.kotysa.DateColumnBuilderNotNullImpl
-import com.pullvert.kotysa.DateColumnBuilderNullableImpl
-import com.pullvert.kotysa.DateTimeColumnBuilderNotNullImpl
-import com.pullvert.kotysa.DateTimeColumnBuilderNullableImpl
-import com.pullvert.kotysa.TimestampColumnBuilderNotNullImpl
-import com.pullvert.kotysa.TimestampColumnBuilderNullableImpl
-import com.pullvert.kotysa.VarcharColumnBuilderNotNullImpl
-import com.pullvert.kotysa.VarcharColumnBuilderNullableImpl
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime

@@ -4,7 +4,6 @@
 
 package com.pullvert.kotysa.samples
 
-import com.pullvert.kotysa.h2.h2
 import com.pullvert.kotysa.r2dbc.createTable
 import com.pullvert.kotysa.r2dbc.deleteFromTable
 import com.pullvert.kotysa.r2dbc.select

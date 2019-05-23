@@ -24,16 +24,3 @@ abstract class TablesDsl<T : TablesDsl<T>>(private val init: T.() -> Unit) {
         return Tables(tables, allColumns)
     }
 }
-
-/**
- * Supported Database Choice (via extension functions)
- */
-object DatabaseChoice
-
-/**
- * Choose the database's Type
- *
- * @see TablesDsl
- * @see DatabaseChoice
- */
-fun tables() = DatabaseChoice

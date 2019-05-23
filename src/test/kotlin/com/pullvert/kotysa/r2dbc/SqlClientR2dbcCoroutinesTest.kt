@@ -5,7 +5,6 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
-import com.pullvert.kotysa.h2.h2
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.coroutineScope
@@ -33,7 +32,7 @@ import strikt.assertions.isEqualTo
 @ExperimentalCoroutinesApi
 @FlowPreview
 class SqlClientSelectR2DbcCoroutinesTest {
-    val context =
+    private val context =
             application(WebApplicationType.NONE) {
                 beans {
                     bean<CoroutinesUserRepository>()
@@ -46,7 +45,7 @@ class SqlClientSelectR2DbcCoroutinesTest {
                 r2dbcH2()
             }.run()
 
-    val repository = context.getBean<CoroutinesUserRepository>()
+    private val repository = context.getBean<CoroutinesUserRepository>()
 
     @AfterAll
     fun afterAll() {

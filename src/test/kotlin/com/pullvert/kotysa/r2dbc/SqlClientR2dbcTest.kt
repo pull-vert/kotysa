@@ -5,7 +5,6 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
-import com.pullvert.kotysa.h2.h2
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Disabled
@@ -33,7 +32,7 @@ class SqlClientSelectR2DbcTest {
                 r2dbcH2()
             }.run()
 
-    val repository = context.getBean<UserRepository>()
+    private val repository = context.getBean<UserRepository>()
 
     @AfterAll
     fun afterAll() {

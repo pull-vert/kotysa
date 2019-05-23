@@ -202,3 +202,13 @@ internal class DefaultSqlClientSelect private constructor() {
         }
     }
 }
+
+/**
+ * @author Fred Montariol
+ */
+data class SelectInformation<T>(
+        internal val columnPropertyIndexMap: Map<KProperty1<*, *>, Int>,
+        internal val selectedFields: List<Field>,
+        internal val selectedTables: Set<Table<*>>,
+        internal val select: (ValueProvider) -> T
+)
