@@ -10,9 +10,13 @@ package com.pullvert.kotysa
  * @author Fred Montariol
  */
 enum class SqlType(val fullType: String) {
+    // text
     VARCHAR("VARCHAR"),
+
+    // date
     TIMESTAMP("TIMESTAMP"),
     DATE("DATE"),
     DATE_TIME("DATETIME"),
+    TIME("TIME"),
     TIMESTAMP_WITH_TIME_ZONE("TIMESTAMP WITH TIME ZONE") // H2 specific
 }

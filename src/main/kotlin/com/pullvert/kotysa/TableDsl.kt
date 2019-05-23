@@ -12,17 +12,15 @@ import kotlin.reflect.full.memberProperties
  * @author Fred Montariol
  */
 @KotysaMarker
-class TableDsl<T : Any>(private val init: TableDsl<T>.() -> Unit, private val tableClass: KClass<T>) {
+abstract class TableDsl<T : Any, U : TableDsl<T, U>>(
+        private val init: U.() -> Unit,
+        private val tableClass: KClass<T>
+) {
 
     lateinit var name: String
     private val columns = mutableMapOf<KProperty1<T, *>, Column<T, *>>()
 
-    fun column(columnDsl: ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*>) {
-        val column = ColumnDsl(columnDsl).initialize()
-        addColumn(column)
-    }
-
-    private fun addColumn(column: Column<T, *>) {
+    internal fun addColumn(column: Column<T, *>) {
         if (columns.containsKey(column.entityProperty)) {
             throw IllegalStateException("Trying to map property \"${column.entityProperty.name}\" to multiple columns")
         }
@@ -33,8 +31,8 @@ class TableDsl<T : Any>(private val init: TableDsl<T>.() -> Unit, private val ta
     }
 
     @PublishedApi
-    internal fun initialize(): Table<*> {
-        init()
+    internal fun initialize(initialize: U): Table<*> {
+        init(initialize)
         require(::name.isInitialized) { "Table name is mandatory" }
         require(columns.isNotEmpty()) { "Table must declare at least one column" }
         require(columns.values.count { column -> column.isPrimaryKey } <= 1) { "Table must not declare more than one Primary Key Column" }

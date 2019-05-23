@@ -7,6 +7,7 @@ package com.pullvert.kotysa
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 val jdoe = User("jdoe", "John", "Doe")
 val bboss = User("bboss", "Big", "Boss", "TheBoss")
@@ -31,8 +32,8 @@ data class UserDto(
         val alias: String?
 )
 
-val allTypesNotNull = AllTypesNotNull("", LocalDateTime.now(), LocalDate.now(), Instant.now())
-val allTypesNullable = AllTypesNullable("", null, null, null, null)
+val allTypesNotNull = AllTypesNotNull("", LocalDateTime.now(), LocalDate.now(), Instant.now(), LocalTime.now())
+val allTypesNullable = AllTypesNullable("", null, null, null, null, null)
 
 /**
  * @author Fred Montariol
@@ -41,7 +42,8 @@ data class AllTypesNotNull(
         val string: String,
         val localDateTime: LocalDateTime,
         val localDate: LocalDate,
-        val instant: Instant
+        val instant: Instant,
+        val localTim: LocalTime
 )
 
 /**
@@ -52,5 +54,6 @@ data class AllTypesNullable(
         val string: String?,
         val localDateTime: LocalDateTime?,
         val localDate: LocalDate?,
-        val instant: Instant?
+        val instant: Instant?,
+        val localTim: LocalTime?
 )

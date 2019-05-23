@@ -8,6 +8,7 @@ import mu.KotlinLogging
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty1
@@ -108,6 +109,12 @@ internal class DefaultSqlClientSelect private constructor() {
                         } else {
                             NullableInstantColumnField(tables.allColumns, property as KProperty1<T, Instant?>)
                         }
+                    LocalTime::class.createType() ->
+                        if (property.returnType.isMarkedNullable) {
+                            NotNullLocalTimeColumnField(tables.allColumns, property as KProperty1<T, LocalTime>)
+                        } else {
+                            NullableLocalTimeColumnField(tables.allColumns, property as KProperty1<T, LocalTime?>)
+                        }
                     else -> throw RuntimeException("should never happen")
                 }
                 selectedFields.add(field)
@@ -126,6 +133,7 @@ internal class DefaultSqlClientSelect private constructor() {
                                 LocalDateTime::class.createType() -> args[param] = it[prop as KProperty1<T, LocalDateTime?>]
                                 LocalDate::class.createType() -> args[param] = it[prop as KProperty1<T, LocalDate?>]
                                 Instant::class.createType() -> args[param] = it[prop as KProperty1<T, Instant?>]
+                                LocalTime::class.createType() -> args[param] = it[prop as KProperty1<T, LocalTime?>]
                                 else -> throw RuntimeException("should never happen")
                             }
                         } else {

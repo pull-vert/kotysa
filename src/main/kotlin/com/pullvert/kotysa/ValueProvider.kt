@@ -7,6 +7,7 @@ package com.pullvert.kotysa
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import kotlin.reflect.KProperty1
 
 /**
@@ -29,6 +30,10 @@ interface ValueProvider {
     operator fun <T : Any> get(property: KProperty1<T, Instant>, alias: String? = null): Instant
 
     operator fun <T : Any> get(property: KProperty1<T, Instant?>, alias: String? = null, `_`: Nullable = Nullable.TRUE): Instant?
+
+    operator fun <T : Any> get(property: KProperty1<T, LocalTime>, alias: String? = null): LocalTime
+
+    operator fun <T : Any> get(property: KProperty1<T, LocalTime?>, alias: String? = null, `_`: Nullable = Nullable.TRUE): LocalTime?
 }
 
 /**
@@ -59,6 +64,12 @@ abstract class AbstractRow(private val columnPropertyIndexMap: Map<KProperty1<*,
             this[columnPropertyIndexMap[property]!!]!!
 
     override operator fun <T : Any> get(property: KProperty1<T, Instant?>, alias: String?, `_`: Nullable): Instant? =
+            this[columnPropertyIndexMap[property]!!]
+
+    override operator fun <T : Any> get(property: KProperty1<T, LocalTime>, alias: String?): LocalTime =
+            this[columnPropertyIndexMap[property]!!]!!
+
+    override operator fun <T : Any> get(property: KProperty1<T, LocalTime?>, alias: String?, `_`: Nullable): LocalTime? =
             this[columnPropertyIndexMap[property]!!]
 
     /**

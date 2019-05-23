@@ -8,6 +8,7 @@ import mu.KotlinLogging
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import kotlin.reflect.KClass
 
@@ -130,5 +131,6 @@ internal fun logValue(value: Any?) = when (value) {
     is LocalDate -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_DATE)}\'"
     is LocalDateTime -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}\'"
     is Instant -> "\'${DateTimeFormatter.ISO_INSTANT.format(value)}\'"
+    is LocalTime -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_TIME)}\'"
     else -> throw RuntimeException("should never happen")
 }

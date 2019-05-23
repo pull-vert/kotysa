@@ -7,6 +7,7 @@ package com.pullvert.kotysa
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import kotlin.reflect.KProperty1
 
 /**
@@ -67,6 +68,18 @@ class SelectDsl<T> internal constructor(
     }
 
     override operator fun <T : Any> get(property: KProperty1<T, Instant?>, alias: String?, `_`: Nullable): Instant? {
+        val field = getField(property, alias)
+        addColumnField(property, field)
+        return null
+    }
+
+    override operator fun <T : Any> get(property: KProperty1<T, LocalTime>, alias: String?): LocalTime {
+        val field = getField(property, alias)
+        addColumnField(property, field)
+        return LocalTime.MAX
+    }
+
+    override operator fun <T : Any> get(property: KProperty1<T, LocalTime?>, alias: String?, `_`: Nullable): LocalTime? {
         val field = getField(property, alias)
         addColumnField(property, field)
         return null

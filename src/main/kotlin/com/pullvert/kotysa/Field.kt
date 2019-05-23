@@ -7,6 +7,7 @@ package com.pullvert.kotysa
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import kotlin.reflect.KProperty1
 
 /**
@@ -126,3 +127,21 @@ class NullableInstantColumnField<T : Any> internal constructor(
         property: KProperty1<T, Instant?>,
         alias: String? = null
 ) : ColumnField<T, Instant?>(allColumns, property, alias), NotNullField
+
+/**
+ * @author Fred Montariol
+ */
+class NotNullLocalTimeColumnField<T : Any> internal constructor(
+        allColumns: Map<KProperty1<*, *>, Column<*, *>>,
+        property: KProperty1<T, LocalTime>,
+        alias: String? = null
+) : ColumnField<T, LocalTime>(allColumns, property, alias), NotNullField
+
+/**
+ * @author Fred Montariol
+ */
+class NullableLocalTimeColumnField<T : Any> internal constructor(
+        allColumns: Map<KProperty1<*, *>, Column<*, *>>,
+        property: KProperty1<T, LocalTime?>,
+        alias: String? = null
+) : ColumnField<T, LocalTime?>(allColumns, property, alias), NotNullField

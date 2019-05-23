@@ -7,6 +7,7 @@ package com.pullvert.kotysa
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import kotlin.reflect.KProperty1
 
 /**
@@ -38,6 +39,10 @@ class WhereDsl<T : Any> internal constructor(
     override fun <T : Any> get(property: KProperty1<T, Instant>, alias: String?) = getField(property, alias)
 
     override fun <T : Any> get(property: KProperty1<T, Instant?>, alias: String?) = getField(property, alias)
+
+    override fun <T : Any> get(property: KProperty1<T, LocalTime>, alias: String?) = getField(property, alias)
+
+    override fun <T : Any> get(property: KProperty1<T, LocalTime?>, alias: String?) = getField(property, alias)
 
     @Suppress("UNCHECKED_CAST")
     internal fun initialize(): WhereClause {

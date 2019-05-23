@@ -7,6 +7,7 @@ package com.pullvert.kotysa
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import kotlin.reflect.KProperty1
 
 /**
@@ -15,17 +16,21 @@ import kotlin.reflect.KProperty1
 interface TableColumnPropertyProvider<T : Any> {
     operator fun get(property: KProperty1<T, String>): NotNullStringColumnProperty<T>
 
-    operator fun get(property: KProperty1<T, LocalDateTime>): NotNullLocalDateTimeColumnProperty<T>
-
-    operator fun get(property: KProperty1<T, LocalDate>): NotNullLocalDateColumnProperty<T>
-
-    operator fun get(property: KProperty1<T, Instant>): NotNullInstantColumnProperty<T>
-
     operator fun get(property: KProperty1<T, String?>): NullableStringColumnProperty<T>
+
+    operator fun get(property: KProperty1<T, LocalDateTime>): NotNullLocalDateTimeColumnProperty<T>
 
     operator fun get(property: KProperty1<T, LocalDateTime?>): NullableLocalDateTimeColumnProperty<T>
 
+    operator fun get(property: KProperty1<T, LocalDate>): NotNullLocalDateColumnProperty<T>
+
     operator fun get(property: KProperty1<T, LocalDate?>): NullableLocalDateColumnProperty<T>
 
+    operator fun get(property: KProperty1<T, Instant>): NotNullInstantColumnProperty<T>
+
     operator fun get(property: KProperty1<T, Instant?>): NullableInstantColumnProperty<T>
+
+    operator fun get(property: KProperty1<T, LocalTime>): NotNullLocalTimeColumnProperty<T>
+
+    operator fun get(property: KProperty1<T, LocalTime?>): NullableLocalTimeColumnProperty<T>
 }

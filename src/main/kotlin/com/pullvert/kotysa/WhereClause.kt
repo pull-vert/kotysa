@@ -14,5 +14,5 @@ data class WhereClause internal constructor(
 )
 
 internal enum class Operation {
-    EQ, NEQ, SUP, INF, NNULL, NULL
+    EQ, NEQ, SUP, INF
 }

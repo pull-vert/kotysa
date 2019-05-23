@@ -5,7 +5,6 @@
 package com.pullvert.kotysa.h2
 
 import com.pullvert.kotysa.DatabaseChoice
-import com.pullvert.kotysa.TableDsl
 import com.pullvert.kotysa.Tables
 import com.pullvert.kotysa.TablesDsl
 
@@ -13,12 +12,14 @@ import com.pullvert.kotysa.TablesDsl
  * @author Fred Montariol
  */
 class H2TablesDsl(init: H2TablesDsl.() -> Unit) : TablesDsl<H2TablesDsl>(init) {
-    inline fun <reified T : Any> table(noinline dsl: TableDsl<T>.() -> Unit) {
+
+    inline fun <reified T : Any> table(noinline dsl: H2TableDsl<T>.() -> Unit) {
         val tableClass = T::class
         if (tables.containsKey(tableClass)) {
             throw IllegalStateException("Trying to map entity class \"${tableClass.qualifiedName}\" to multiple tables")
         }
-        val table = TableDsl(dsl, tableClass).initialize()
+        val h2TableDsl = H2TableDsl(dsl, tableClass)
+        val table = h2TableDsl.initialize(h2TableDsl)
         tables[tableClass] = table
         allColumns.putAll(table.columns)
     }
@@ -29,6 +30,6 @@ class H2TablesDsl(init: H2TablesDsl.() -> Unit) : TablesDsl<H2TablesDsl>(init) {
  * @see H2TablesDsl
  */
 fun DatabaseChoice.h2(dsl: H2TablesDsl.() -> Unit): Tables {
-    val h2Tables = H2TablesDsl(dsl)
-    return h2Tables.initialize(h2Tables)
+    val h2TablesDsl = H2TablesDsl(dsl)
+    return h2TablesDsl.initialize(h2TablesDsl)
 }

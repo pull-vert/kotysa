@@ -25,6 +25,7 @@ class H2TablesDslTest {
                 column { it[AllTypesNotNull::localDateTime].dateTime() }
                 column { it[AllTypesNotNull::localDate].date() }
                 column { it[AllTypesNotNull::instant].timestamp() }
+                column { it[AllTypesNotNull::localTim].time() }
             }
         }
         assertThat(tables.allColumns.values)
@@ -33,7 +34,8 @@ class H2TablesDslTest {
                         tuple("string", SqlType.VARCHAR, false),
                         tuple("localDateTime", SqlType.DATE_TIME, false),
                         tuple("localDate", SqlType.DATE, false),
-                        tuple("instant", SqlType.TIMESTAMP, false))
+                        tuple("instant", SqlType.TIMESTAMP, false),
+                        tuple("localTim", SqlType.TIME, false))
     }
 
     @Test
@@ -46,6 +48,7 @@ class H2TablesDslTest {
                 column { it[AllTypesNullable::localDateTime].dateTime() }
                 column { it[AllTypesNullable::localDate].date() }
                 column { it[AllTypesNullable::instant].timestamp() }
+                column { it[AllTypesNullable::localTim].time() }
             }
         }
         assertThat(tables.allColumns.values)
@@ -55,6 +58,7 @@ class H2TablesDslTest {
                         tuple("string", SqlType.VARCHAR, true),
                         tuple("localDateTime", SqlType.DATE_TIME, true),
                         tuple("localDate", SqlType.DATE, true),
-                        tuple("instant", SqlType.TIMESTAMP, true))
+                        tuple("instant", SqlType.TIMESTAMP, true),
+                        tuple("localTim", SqlType.TIME, true))
     }
 }

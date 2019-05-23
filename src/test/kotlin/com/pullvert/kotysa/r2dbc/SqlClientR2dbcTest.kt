@@ -115,6 +115,7 @@ private val tables =
                 column { it[AllTypesNotNull::localDateTime].dateTime() }
                 column { it[AllTypesNotNull::localDate].date() }
                 column { it[AllTypesNotNull::instant].timestamp() }
+                column { it[AllTypesNotNull::localTim].time() }
             }
             table<AllTypesNullable> {
                 name = "all_types_nullable"
@@ -123,6 +124,7 @@ private val tables =
                 column { it[AllTypesNullable::localDateTime].dateTime() }
                 column { it[AllTypesNullable::localDate].date() }
                 column { it[AllTypesNullable::instant].timestamp() }
+                column { it[AllTypesNullable::localTim].time() }
             }
         }
 
