@@ -111,18 +111,20 @@ private val tables =
             table<AllTypesNotNull> {
                 name = "all_types"
                 column { it[AllTypesNotNull::string].varchar().primaryKey }
-                column { it[AllTypesNotNull::localDateTime].dateTime() }
+                column { it[AllTypesNotNull::localDateTime1].dateTime() }
+                column { it[AllTypesNotNull::localDateTime2].timestamp() }
                 column { it[AllTypesNotNull::localDate].date() }
-                column { it[AllTypesNotNull::instant].timestamp() }
+                column { it[AllTypesNotNull::instant].timestampWithTimeZone() }
                 column { it[AllTypesNotNull::localTim].time() }
             }
             table<AllTypesNullable> {
                 name = "all_types_nullable"
                 column { it[AllTypesNullable::id].varchar().primaryKey } // required
                 column { it[AllTypesNullable::string].varchar() }
-                column { it[AllTypesNullable::localDateTime].dateTime() }
+                column { it[AllTypesNullable::localDateTime1].dateTime() }
+                column { it[AllTypesNullable::localDateTime2].timestamp() }
                 column { it[AllTypesNullable::localDate].date() }
-                column { it[AllTypesNullable::instant].timestamp() }
+                column { it[AllTypesNullable::instant].timestampWithTimeZone() }
                 column { it[AllTypesNullable::localTim].time() }
             }
         }
