@@ -85,6 +85,12 @@ class SelectDsl<T> internal constructor(
         return null
     }
 
+    override operator fun <T : Any> get(property: KProperty1<T, Boolean>, alias: String?): Boolean {
+        val field = getField(property, alias)
+        addColumnField(property, field)
+        return false
+    }
+
     private fun addColumnField(property: KProperty1<*, *>, columnField: ColumnField<*, *>) {
         addField(property, columnField)
         if (!selectedTables.contains(columnField.column.table)) {

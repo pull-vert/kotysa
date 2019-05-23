@@ -145,3 +145,12 @@ class NullableLocalTimeColumnField<T : Any> internal constructor(
         property: KProperty1<T, LocalTime?>,
         alias: String? = null
 ) : ColumnField<T, LocalTime?>(allColumns, property, alias), NotNullField
+
+/**
+ * @author Fred Montariol
+ */
+class NotNullBooleanColumnField<T : Any> internal constructor(
+        allColumns: Map<KProperty1<*, *>, Column<*, *>>,
+        property: KProperty1<T, Boolean>,
+        alias: String? = null
+) : ColumnField<T, Boolean>(allColumns, property, alias), NotNullField

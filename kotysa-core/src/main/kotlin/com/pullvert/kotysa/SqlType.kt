@@ -17,6 +17,8 @@ enum class SqlType(val fullType: String) {
     TIMESTAMP("TIMESTAMP"),
     DATE("DATE"),
     DATE_TIME("DATETIME"),
-    TIME("TIME"),
-    TIMESTAMP_WITH_TIME_ZONE("TIMESTAMP WITH TIME ZONE") // H2 specific
+    TIME("TIME(9)"),
+    TIMESTAMP_WITH_TIME_ZONE("TIMESTAMP WITH TIME ZONE"), // H2 specific
+
+    BOOLEAN("BOOLEAN")
 }

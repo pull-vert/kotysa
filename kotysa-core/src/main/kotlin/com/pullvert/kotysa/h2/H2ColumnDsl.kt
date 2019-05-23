@@ -52,4 +52,7 @@ class H2ColumnDsl<T : Any> internal constructor(
 
     fun NullableLocalTimeColumnProperty<T>.time(): TimeColumnBuilderNullable =
             TimeColumnBuilderNullableImpl(property)
+
+    fun NotNullBooleanColumnProperty<T>.boolean(): BooleanColumnBuilderNotNull<Boolean> =
+            BooleanColumnBuilderNotNullImpl(property)
 }

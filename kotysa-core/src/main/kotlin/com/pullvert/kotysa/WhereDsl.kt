@@ -44,6 +44,8 @@ class WhereDsl<T : Any> internal constructor(
 
     override fun <T : Any> get(property: KProperty1<T, LocalTime?>, alias: String?) = getField(property, alias)
 
+    override fun <T : Any> get(property: KProperty1<T, Boolean>, alias: String?) = getField(property, alias)
+
     @Suppress("UNCHECKED_CAST")
     internal fun initialize(): WhereClause {
         return init(this)

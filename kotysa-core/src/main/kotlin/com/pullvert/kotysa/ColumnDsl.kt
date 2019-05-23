@@ -53,6 +53,8 @@ abstract class ColumnDsl<T : Any, U : ColumnDsl<T, U>> internal constructor(
         return NullableLocalTimeColumnProperty(property)
     }
 
+    override fun get(property: KProperty1<T, Boolean>) = NotNullBooleanColumnProperty(property)
+
     private fun checkNullableProperty(property: KProperty1<*, *>) {
         require(property.returnType.isMarkedNullable) { "\"${property.name}\" is not a nullable property" }
     }

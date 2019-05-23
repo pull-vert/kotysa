@@ -34,6 +34,8 @@ interface ValueProvider {
     operator fun <T : Any> get(property: KProperty1<T, LocalTime>, alias: String? = null): LocalTime
 
     operator fun <T : Any> get(property: KProperty1<T, LocalTime?>, alias: String? = null, `_`: Nullable = Nullable.TRUE): LocalTime?
+
+    operator fun <T : Any> get(property: KProperty1<T, Boolean>, alias: String? = null): Boolean
 }
 
 /**
@@ -71,6 +73,9 @@ abstract class AbstractRow(private val columnPropertyIndexMap: Map<KProperty1<*,
 
     override operator fun <T : Any> get(property: KProperty1<T, LocalTime?>, alias: String?, `_`: Nullable): LocalTime? =
             this[columnPropertyIndexMap[property]!!]
+
+    override operator fun <T : Any> get(property: KProperty1<T, Boolean>, alias: String?): Boolean =
+            this[columnPropertyIndexMap[property]!!]!!
 
     /**
      * Returns the element at the specified index in the list of returned fields of row

@@ -33,4 +33,6 @@ interface TableColumnPropertyProvider<T : Any> {
     operator fun get(property: KProperty1<T, LocalTime>): NotNullLocalTimeColumnProperty<T>
 
     operator fun get(property: KProperty1<T, LocalTime?>): NullableLocalTimeColumnProperty<T>
+
+    operator fun get(property: KProperty1<T, Boolean>): NotNullBooleanColumnProperty<T>
 }

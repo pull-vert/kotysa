@@ -131,3 +131,10 @@ class NotNullLocalTimeColumnProperty<T : Any> internal constructor(
 class NullableLocalTimeColumnProperty<T : Any> internal constructor(
         override val property: KProperty1<T, LocalTime?>
 ) : LocalTimeColumnProperty<T>(), NullableColumnProperty
+
+/**
+ * @author Fred Montariol
+ */
+class NotNullBooleanColumnProperty<T : Any> internal constructor(
+        override val property: KProperty1<T, Boolean>
+) : AbstractColumnProperty<T>(), NotNullColumnProperty

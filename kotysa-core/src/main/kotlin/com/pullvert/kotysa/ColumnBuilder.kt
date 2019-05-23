@@ -10,10 +10,14 @@ interface ColumnBuilder<T : ColumnBuilder<T>> {
     fun name(columnName: String): T
 }
 
-interface ColumnNotNullBuilder<T : ColumnNotNullBuilder<T, U>, U> : ColumnBuilder<T> {
+interface ColumnNotNullNoPkBuilder<T : ColumnNotNullNoPkBuilder<T, U>, U> : ColumnBuilder<T> {
+    fun setDefaultValue(defaultValue: U): T
+}
+
+interface ColumnNotNullBuilder<T : ColumnNotNullBuilder<T, U>, U> : ColumnNotNullNoPkBuilder<T, U> {
     val primaryKey: T
 
-    fun setDefaultValue(defaultValue: U): T
+    override fun setDefaultValue(defaultValue: U): T
 }
 
 interface ColumnNullableBuilder<T : ColumnNullableBuilder<T>> : ColumnBuilder<T>
@@ -247,4 +251,22 @@ internal class TimestampWithTimeZoneColumnBuilderNullableImpl<T : Any, U> intern
         override val entityProperty: KProperty1<T, U>
 ) : AbstractTimestampWithTimeZoneColumnBuilder<TimestampWithTimeZoneColumnBuilderNullable, T>(), TimestampWithTimeZoneColumnBuilderNullable {
     override fun build() = TimestampWithTimeZoneColumnNullable(entityProperty, columnName, sqlType)
+}
+
+interface BooleanColumnBuilderNotNull<U>
+    : ColumnNotNullNoPkBuilder<BooleanColumnBuilderNotNull<U>, U>
+
+internal class BooleanColumnBuilderNotNullImpl<T : Any, U> internal constructor(
+        override val entityProperty: KProperty1<T, U>
+) : AbstractColumnBuilder<BooleanColumnBuilderNotNull<U>, T>(), BooleanColumnBuilderNotNull<U> {
+    override val sqlType = SqlType.BOOLEAN
+
+    private var defaultValue: U? = null
+
+    override fun setDefaultValue(defaultValue: U): BooleanColumnBuilderNotNull<U> {
+        this.defaultValue = defaultValue
+        return this
+    }
+
+    override fun build() = BooleanColumnNotNull(entityProperty, columnName, sqlType, defaultValue)
 }

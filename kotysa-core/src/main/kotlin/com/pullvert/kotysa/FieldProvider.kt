@@ -47,4 +47,7 @@ abstract class FieldProvider {
 
     internal fun <T : Any> getField(property: KProperty1<T, LocalTime?>, alias: String?) =
             NullableLocalTimeColumnField(allColumns, property, alias)
+
+    internal fun <T : Any> getField(property: KProperty1<T, Boolean>, alias: String?) =
+            NotNullBooleanColumnField(allColumns, property, alias)
 }

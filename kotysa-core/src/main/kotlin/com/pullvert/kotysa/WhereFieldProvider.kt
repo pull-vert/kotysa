@@ -33,4 +33,6 @@ interface WhereFieldProvider {
     operator fun <T : Any> get(property: KProperty1<T, LocalTime>, alias: String? = null): NotNullLocalTimeColumnField<T>
 
     operator fun <T : Any> get(property: KProperty1<T, LocalTime?>, alias: String? = null): NullableLocalTimeColumnField<T>
+
+    operator fun <T : Any> get(property: KProperty1<T, Boolean>, alias: String? = null): NotNullBooleanColumnField<T>
 }

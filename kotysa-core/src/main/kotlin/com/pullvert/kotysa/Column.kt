@@ -199,3 +199,14 @@ internal class TimestampWithTimeZoneColumnNullable<T : Any, U> internal construc
         override val name: String,
         override val sqlType: SqlType
 ) : AbstractColumn<T, U>(), TimestampWithTimeZoneColumn<T, U>, ColumnNullable<T, U>
+
+/**
+ * @author Fred Montariol
+ */
+internal class BooleanColumnNotNull<T : Any, U> internal constructor(
+        override val entityProperty: KProperty1<T, U>,
+        override val name: String,
+        override val sqlType: SqlType,
+        override val defaultValue: U?,
+        override val isPrimaryKey: Boolean = false
+) : AbstractColumn<T, U>(), ColumnNotNull<T, U>

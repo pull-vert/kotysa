@@ -132,5 +132,6 @@ internal fun logValue(value: Any?) = when (value) {
     is LocalDateTime -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}\'"
     is Instant -> "\'${DateTimeFormatter.ISO_INSTANT.format(value)}\'"
     is LocalTime -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_TIME)}\'"
+    is Boolean -> "$value"
     else -> throw RuntimeException("should never happen")
 }

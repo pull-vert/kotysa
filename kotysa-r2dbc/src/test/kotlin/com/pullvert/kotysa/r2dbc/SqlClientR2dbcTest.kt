@@ -41,9 +41,23 @@ class SqlClientSelectR2DbcTest {
 
     @Test
     fun `Verify findAll returns all users`() {
-        assertThat(repository.findAll().toIterable())
+        assertThat(repository.findAllUsers().toIterable())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(jdoe, bboss)
+    }
+
+    @Test
+    fun `Verify findAll returns all AllTypesNotNull`() {
+        assertThat(repository.findAllAllTypesNotNull().toIterable())
+                .hasSize(1)
+                .containsExactly(allTypesNotNull)
+    }
+
+    @Test
+    fun `Verify findAll returns all AllTypesNullable`() {
+        assertThat(repository.findAllAllTypesNullable().toIterable())
+                .hasSize(1)
+                .containsExactly(allTypesNullable)
     }
 
     @Disabled("count test is disabled : See https://github.com/spring-projects/spring-fu/issues/160")
@@ -92,7 +106,7 @@ class SqlClientSelectR2DbcTest {
     fun `Verify deleteAllFromUser works correctly`() {
         assertThat(repository.deleteAllFromUsers().block())
                 .isEqualTo(2)
-        assertThat(repository.findAll().toIterable())
+        assertThat(repository.findAllUsers().toIterable())
                 .isEmpty()
         // re-insertUsers users
         repository.insertUsers().block()
@@ -111,21 +125,22 @@ private val tables =
             table<AllTypesNotNull> {
                 name = "all_types"
                 column { it[AllTypesNotNull::string].varchar().primaryKey }
-                column { it[AllTypesNotNull::localDateTime1].dateTime() }
-                column { it[AllTypesNotNull::localDateTime2].timestamp() }
                 column { it[AllTypesNotNull::localDate].date() }
                 column { it[AllTypesNotNull::instant].timestampWithTimeZone() }
                 column { it[AllTypesNotNull::localTim].time() }
+                column { it[AllTypesNotNull::boolean].boolean() }
+                column { it[AllTypesNotNull::localDateTime1].dateTime() }
+                column { it[AllTypesNotNull::localDateTime2].timestamp() }
             }
             table<AllTypesNullable> {
                 name = "all_types_nullable"
                 column { it[AllTypesNullable::id].varchar().primaryKey } // required
                 column { it[AllTypesNullable::string].varchar() }
-                column { it[AllTypesNullable::localDateTime1].dateTime() }
-                column { it[AllTypesNullable::localDateTime2].timestamp() }
                 column { it[AllTypesNullable::localDate].date() }
                 column { it[AllTypesNullable::instant].timestampWithTimeZone() }
                 column { it[AllTypesNullable::localTim].time() }
+                column { it[AllTypesNullable::localDateTime1].dateTime() }
+                column { it[AllTypesNullable::localDateTime2].timestamp() }
             }
         }
 
@@ -161,7 +176,11 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun deleteAllFromAllTypesNullable() = sqlClient.deleteFromTable<AllTypesNullable>().execute()
 
-    fun findAll() = sqlClient.select<User>().fetchAll()
+    fun findAllUsers() = sqlClient.select<User>().fetchAll()
+
+    fun findAllAllTypesNotNull() = sqlClient.select<AllTypesNotNull>().fetchAll()
+
+    fun findAllAllTypesNullable() = sqlClient.select<AllTypesNullable>().fetchAll()
 
     fun findFirstByFirstame(firstname: String) = sqlClient.select<User>()
             .where { it[User::firstname] eq firstname }

@@ -115,6 +115,10 @@ open class DefaultSqlClientSelect protected constructor() {
                         } else {
                             NullableLocalTimeColumnField(tables.allColumns, property as KProperty1<T, LocalTime?>)
                         }
+                    Boolean::class.createType() -> {
+                        require(!property.returnType.isMarkedNullable) { "Boolean property ${property.name} is nullable, Boolean must not be nullable" }
+                        NotNullBooleanColumnField(tables.allColumns, property as KProperty1<T, Boolean>)
+                    }
                     else -> throw RuntimeException("should never happen")
                 }
                 selectedFields.add(field)
@@ -134,6 +138,7 @@ open class DefaultSqlClientSelect protected constructor() {
                                 LocalDate::class.createType() -> args[param] = it[prop as KProperty1<T, LocalDate?>]
                                 Instant::class.createType() -> args[param] = it[prop as KProperty1<T, Instant?>]
                                 LocalTime::class.createType() -> args[param] = it[prop as KProperty1<T, LocalTime?>]
+                                Boolean::class.createType() -> args[param] = it[prop as KProperty1<T, Boolean>]
                                 else -> throw RuntimeException("should never happen")
                             }
                         } else {
