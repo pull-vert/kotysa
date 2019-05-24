@@ -72,7 +72,6 @@ dokka {
     outputDirectory = "$buildDir/javadoc"
 
     jdkVersion = 8
-    includes = ['../README.md']
 
     externalDocumentationLink {
         url = new URL("https://docs.spring.io/spring-data/r2dbc/docs/1.0.x/api/")

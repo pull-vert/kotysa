@@ -5,9 +5,6 @@
 package com.pullvert.kotysa.h2
 
 import com.pullvert.kotysa.*
-import com.pullvert.kotysa.AbstractColumn
-import com.pullvert.kotysa.ColumnNotNull
-import com.pullvert.kotysa.ColumnNullable
 import kotlin.reflect.KProperty1
 
 /**

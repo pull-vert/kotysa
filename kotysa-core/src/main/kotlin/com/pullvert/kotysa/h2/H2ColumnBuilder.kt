@@ -5,7 +5,6 @@
 package com.pullvert.kotysa.h2
 
 import com.pullvert.kotysa.*
-import com.pullvert.kotysa.AbstractColumnBuilder
 import kotlin.reflect.KProperty1
 
 interface TimestampWithTimeZoneColumnBuilder<T : TimestampWithTimeZoneColumnBuilder<T>> : ColumnBuilder<T>
