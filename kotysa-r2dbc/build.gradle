@@ -9,8 +9,8 @@ repositories {
 }
 
 dependencies {
-    compile(project(':kotysa-core'))
-    
+    compile project(':kotysa-core')
+
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
     compileOnly "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
