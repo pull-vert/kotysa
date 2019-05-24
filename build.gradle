@@ -2,7 +2,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.31' apply false
     id 'org.jetbrains.dokka' version '0.9.18' apply false
     id 'com.jfrog.bintray' version '1.8.4' apply false
-    id 'net.researchgate.release' version '2.8.0' apply false
+    id 'net.researchgate.release' version '2.8.0'
 }
 
 println("Using Gradle version: $gradle.gradleVersion")
@@ -10,11 +10,16 @@ println("Using Gradle version: $gradle.gradleVersion")
 subprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'com.jfrog.bintray'
-    apply plugin: 'net.researchgate.release'
+//    apply plugin: 'net.researchgate.release'
 
     repositories {
         jcenter()
     }
+}
+
+// Workaround for https://github.com/researchgate/gradle-release/issues/144
+task build {
+    dependsOn subprojects.findResults { it.tasks.findByName('build') }
 }
 
 // execute ./gradlew wrapper then remove .gradle directory when version change
