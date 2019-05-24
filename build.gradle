@@ -15,6 +15,10 @@ subprojects {
     repositories {
         jcenter()
     }
+
+    project.tasks.afterReleaseBuild.dependsOn project.getSubprojects().collect({
+        it.getTasks().getByName("uploadArchives")
+    })
 }
 
 // execute ./gradlew wrapper then remove .gradle directory when version change
