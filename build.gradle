@@ -8,6 +8,9 @@ plugins {
 println("Using Gradle version: $gradle.gradleVersion")
 
 subprojects {
+    group='com.pullvert'
+    version='0.0.3'
+
     apply plugin: 'maven-publish'
     apply plugin: 'com.jfrog.bintray'
     apply plugin: 'net.researchgate.release'
@@ -15,10 +18,6 @@ subprojects {
     repositories {
         jcenter()
     }
-
-    project.tasks.afterReleaseBuild.dependsOn project.getSubprojects().collect({
-        it.getTasks().getByName("uploadArchives")
-    })
 }
 
 // execute ./gradlew wrapper then remove .gradle directory when version change
