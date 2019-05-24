@@ -8,9 +8,6 @@ plugins {
 println("Using Gradle version: $gradle.gradleVersion")
 
 subprojects {
-    group = "$group"
-    version = "$version"
-
     apply plugin: 'maven-publish'
     apply plugin: 'com.jfrog.bintray'
     apply plugin: 'net.researchgate.release'
