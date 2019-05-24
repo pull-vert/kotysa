@@ -113,6 +113,7 @@ private val tables =
                 column { it[User::login].varchar().primaryKey }
                 column { it[User::firstname].varchar().name("fname") }
                 column { it[User::lastname].varchar().name("lname") }
+                column { it[User::isAdmin].boolean() }
                 column { it[User::alias].varchar() }
             }
             table<AllTypesNotNull> {

@@ -9,8 +9,8 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-val jdoe = User("jdoe", "John", "Doe")
-val bboss = User("bboss", "Big", "Boss", "TheBoss")
+val jdoe = User("jdoe", "John", "Doe", false)
+val bboss = User("bboss", "Big", "Boss", true, "TheBoss")
 
 /**
  * @author Fred Montariol
@@ -19,10 +19,9 @@ data class User(
         val login: String,
         val firstname: String,
         val lastname: String,
+        val isAdmin: Boolean,
         val alias: String? = null
-) {
-//	val id: Int? = null // generated auto-increment
-}
+)
 
 /**
  * @author Fred Montariol
