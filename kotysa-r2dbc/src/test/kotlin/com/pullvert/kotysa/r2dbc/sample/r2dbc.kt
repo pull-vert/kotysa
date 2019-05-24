@@ -12,7 +12,7 @@ import com.pullvert.kotysa.tables
 import org.springframework.data.r2dbc.core.DatabaseClient
 
 val tables =
-        tables().h2 { // first : choose database type
+        tables().h2 { // choose database type
             table<User> {
                 name = "users"
                 column { it[User::login].varchar().primaryKey }
