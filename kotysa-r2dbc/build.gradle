@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.config.KotlinCompilerVersion
-
 plugins {
     id 'org.jetbrains.kotlin.jvm'
     id 'org.jetbrains.dokka'
@@ -11,7 +9,8 @@ repositories {
 }
 
 dependencies {
-    implementation(project(':kotysa-core'))
+    compile(project(':kotysa-core'))
+    
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
     compileOnly "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
