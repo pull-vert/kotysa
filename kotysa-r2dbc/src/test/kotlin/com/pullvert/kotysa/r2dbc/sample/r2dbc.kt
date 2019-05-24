@@ -11,18 +11,27 @@ import com.pullvert.kotysa.r2dbc.sqlClient
 import com.pullvert.kotysa.tables
 import org.springframework.data.r2dbc.core.DatabaseClient
 
-private val tables =
-        tables().h2 {
+val tables =
+        tables().h2 { // first : choose database type
             table<User> {
                 name = "users"
                 column { it[User::login].varchar().primaryKey }
                 column { it[User::firstname].varchar().name("fname") }
                 column { it[User::lastname].varchar().name("lname") }
+                column { it[User::isAdmin].boolean() }
                 column { it[User::alias].varchar() }
             }
         }
 
-private class UserRepository(dbClient: DatabaseClient) {
+data class User(
+        val login: String,
+        val firstname: String,
+        val lastname: String,
+        val isAdmin: Boolean,
+        val alias: String? = null
+)
+
+class UserRepository(dbClient: DatabaseClient) {
     private val sqlClient = dbClient.sqlClient(tables)
 
     fun createTable() = sqlClient.createTable<User>()
@@ -50,17 +59,10 @@ private class UserRepository(dbClient: DatabaseClient) {
             .fetchAll()
 }
 
-private val jdoe = User("jdoe", "John", "Doe")
-private val bboss = User("bboss", "Big", "Boss", "TheBoss")
+val jdoe = User("jdoe", "John", "Doe", false)
+val bboss = User("bboss", "Big", "Boss", true, "TheBoss")
 
-private data class User(
-        val login: String,
-        val firstname: String,
-        val lastname: String,
-        val alias: String? = null
-)
-
-private data class UserDto(
+data class UserDto(
         val name: String,
         val alias: String?
 )

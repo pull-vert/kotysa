@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.pullvert:kotysa:0.0.x'
+    implementation 'com.pullvert:kotysa-r2dbc:0.0.x' // more modules to come soon
 }
 ```
 
@@ -29,28 +29,30 @@ dependencies {
 ```tables``` functional DSL is used to define all mapped tables' structure, and link each DB table to an existing class (aka Entity).
 
 ```kotlin
-private val tables =
-		tables {
-			table<User> {
-				name = "users"
-				column { it[User::login].varchar().primaryKey }
-				column { it[User::firstname].varchar().name("fname") }
-				column { it[User::lastname].varchar().name("lname") }
-				column { it[User::alias].varchar() }
-			}
-		}
-		
+val tables =
+        tables().h2 { // first : choose database type
+            table<User> {
+                name = "users"
+                column { it[User::login].varchar().primaryKey }
+                column { it[User::firstname].varchar().name("fname") }
+                column { it[User::lastname].varchar().name("lname") }
+                column { it[User::isAdmin].boolean() }
+                column { it[User::alias].varchar() }
+            }
+        }
+
 data class User(
-		val login: String,
-		val firstname: String,
-		val lastname: String,
-		val alias: String? = null
+        val login: String,
+        val firstname: String,
+        val lastname: String,
+        val isAdmin: Boolean,
+        val alias: String? = null
 )
 ```
 
 ### Write Type-Safe Queries with SqlClient
 
-At this point **SqlClient** supports :
+**SqlClient** supports :
 * ```select<T>``` that returns one (```fetchOne()```) or several (```fetchAll()```) results
 * ```createTable<T>``` and ```createTables``` for table creation
 * ```insert``` for single or multiple rows insertion
@@ -81,8 +83,8 @@ fun findAllByAlias(alias: String?) = sqlClient.select<User>()
         // null String accepted     ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
         .fetchAll()
 
-val jdoe = User("jdoe", "John", "Doe")
-val bboss = User("bboss", "Big", "Boss", "TheBoss")
+val jdoe = User("jdoe", "John", "Doe", false)
+val bboss = User("bboss", "Big", "Boss", true, "TheBoss")
 
 data class UserDto(
 		val name: String,
