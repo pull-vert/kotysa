@@ -47,11 +47,11 @@ class H2ColumnDsl<T : Any> internal constructor(
     fun NullableInstantColumnProperty<T>.timestampWithTimeZone(): TimestampWithTimeZoneColumnBuilderNullable =
             TimestampWithTimeZoneColumnBuilderNullableImpl(property)
 
-    fun NotNullLocalTimeColumnProperty<T>.time(): TimeColumnBuilderNotNull<LocalTime> =
-            TimeColumnBuilderNotNullImpl(property)
+    fun NotNullLocalTimeColumnProperty<T>.time9(): Time9ColumnBuilderNotNull<LocalTime> =
+            Time9ColumnBuilderNotNullImpl(property)
 
-    fun NullableLocalTimeColumnProperty<T>.time(): TimeColumnBuilderNullable =
-            TimeColumnBuilderNullableImpl(property)
+    fun NullableLocalTimeColumnProperty<T>.time9(): Time9ColumnBuilderNullable =
+            Time9ColumnBuilderNullableImpl(property)
 
     fun NotNullBooleanColumnProperty<T>.boolean(): BooleanColumnBuilderNotNull<Boolean> =
             BooleanColumnBuilderNotNullImpl(property)

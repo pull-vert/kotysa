@@ -22,10 +22,10 @@ class H2TablesDslTest {
             table<AllTypesNotNull> {
                 name = "all_types"
                 column { it[AllTypesNotNull::string].varchar().primaryKey }
+                column { it[AllTypesNotNull::boolean].boolean() }
                 column { it[AllTypesNotNull::localDate].date() }
                 column { it[AllTypesNotNull::instant].timestampWithTimeZone() }
-                column { it[AllTypesNotNull::localTim].time() }
-                column { it[AllTypesNotNull::boolean].boolean() }
+                column { it[AllTypesNotNull::localTim].time9() }
                 column { it[AllTypesNotNull::localDateTime1].dateTime() }
                 column { it[AllTypesNotNull::localDateTime2].timestamp() }
             }
@@ -34,10 +34,10 @@ class H2TablesDslTest {
                 .extracting("name", "sqlType", "isNullable")
                 .containsExactly(
                         tuple("string", SqlType.VARCHAR, false),
+                        tuple("boolean", SqlType.BOOLEAN, false),
                         tuple("localDate", SqlType.DATE, false),
                         tuple("instant", SqlType.TIMESTAMP_WITH_TIME_ZONE, false),
-                        tuple("localTim", SqlType.TIME, false),
-                        tuple("boolean", SqlType.BOOLEAN, false),
+                        tuple("localTim", SqlType.TIME9, false),
                         tuple("localDateTime1", SqlType.DATE_TIME, false),
                         tuple("localDateTime2", SqlType.TIMESTAMP, false))
     }
@@ -51,7 +51,7 @@ class H2TablesDslTest {
                 column { it[AllTypesNullable::string].varchar() }
                 column { it[AllTypesNullable::localDate].date() }
                 column { it[AllTypesNullable::instant].timestampWithTimeZone() }
-                column { it[AllTypesNullable::localTim].time() }
+                column { it[AllTypesNullable::localTim].time9() }
                 column { it[AllTypesNullable::localDateTime1].dateTime() }
                 column { it[AllTypesNullable::localDateTime2].timestamp() }
             }
@@ -63,7 +63,7 @@ class H2TablesDslTest {
                         tuple("string", SqlType.VARCHAR, true),
                         tuple("localDate", SqlType.DATE, true),
                         tuple("instant", SqlType.TIMESTAMP_WITH_TIME_ZONE, true),
-                        tuple("localTim", SqlType.TIME, true),
+                        tuple("localTim", SqlType.TIME9, true),
                         tuple("localDateTime1", SqlType.DATE_TIME, true),
                         tuple("localDateTime2", SqlType.TIMESTAMP, true))
     }

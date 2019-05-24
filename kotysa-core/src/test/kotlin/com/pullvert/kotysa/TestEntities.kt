@@ -32,7 +32,7 @@ data class UserDto(
         val alias: String?
 )
 
-val allTypesNotNull = AllTypesNotNull("", LocalDate.now(), Instant.now(), LocalTime.now(), true, LocalDateTime.now(), LocalDateTime.now())
+val allTypesNotNull = AllTypesNotNull("", true, LocalDate.now(), Instant.now(), LocalTime.now(), LocalDateTime.now(), LocalDateTime.now())
 val allTypesNullable = AllTypesNullable("", null, null, null, null, null, null)
 
 /**
@@ -40,10 +40,10 @@ val allTypesNullable = AllTypesNullable("", null, null, null, null, null, null)
  */
 data class AllTypesNotNull(
         val string: String,
+        val boolean: Boolean,
         val localDate: LocalDate,
         val instant: Instant,
         val localTim: LocalTime,
-        val boolean: Boolean,
         val localDateTime1: LocalDateTime,
         val localDateTime2: LocalDateTime
 )

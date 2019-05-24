@@ -15,7 +15,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.data.r2dbc.core.DatabaseClient
 import org.springframework.fu.kofu.application
 import org.springframework.fu.kofu.r2dbc.r2dbcH2
-import reactor.core.publisher.Mono
 
 /**
  * @author Fred Montariol
@@ -53,18 +52,12 @@ class SqlClientSelectR2DbcTest {
                 .containsExactly(allTypesNotNull)
     }
 
+    @Disabled("waiting for https://github.com/r2dbc/r2dbc-h2/issues/78")
     @Test
     fun `Verify findAll returns all AllTypesNullable`() {
         assertThat(repository.findAllAllTypesNullable().toIterable())
                 .hasSize(1)
                 .containsExactly(allTypesNullable)
-    }
-
-    @Disabled("count test is disabled : See https://github.com/spring-projects/spring-fu/issues/160")
-    @Test
-    fun `Verify count returns expected size`() {
-        assertThat(repository.count().block())
-                .isEqualTo(2)
     }
 
     @Test
@@ -125,10 +118,10 @@ private val tables =
             table<AllTypesNotNull> {
                 name = "all_types"
                 column { it[AllTypesNotNull::string].varchar().primaryKey }
+                column { it[AllTypesNotNull::boolean].boolean() }
                 column { it[AllTypesNotNull::localDate].date() }
                 column { it[AllTypesNotNull::instant].timestampWithTimeZone() }
-                column { it[AllTypesNotNull::localTim].time() }
-                column { it[AllTypesNotNull::boolean].boolean() }
+                column { it[AllTypesNotNull::localTim].time9() }
                 column { it[AllTypesNotNull::localDateTime1].dateTime() }
                 column { it[AllTypesNotNull::localDateTime2].timestamp() }
             }
@@ -138,7 +131,7 @@ private val tables =
                 column { it[AllTypesNullable::string].varchar() }
                 column { it[AllTypesNullable::localDate].date() }
                 column { it[AllTypesNullable::instant].timestampWithTimeZone() }
-                column { it[AllTypesNullable::localTim].time() }
+                column { it[AllTypesNullable::localTim].time9() }
                 column { it[AllTypesNullable::localDateTime1].dateTime() }
                 column { it[AllTypesNullable::localDateTime2].timestamp() }
             }
@@ -189,10 +182,6 @@ class UserRepository(dbClient: DatabaseClient) {
     fun findAllByAlias(alias: String?) = sqlClient.select<User>()
             .where { it[User::alias] eq alias }
             .fetchAll()
-
-    fun count() = Mono.empty<Long>()
-//			sqlClient.select<Long>("COUNT(*)")
-//					.fetchOne()
 
     fun findAllMappedToDto() =
             sqlClient.select {

@@ -17,8 +17,11 @@ enum class SqlType(val fullType: String) {
     TIMESTAMP("TIMESTAMP"),
     DATE("DATE"),
     DATE_TIME("DATETIME"),
-    TIME("TIME(9)"),
-    TIMESTAMP_WITH_TIME_ZONE("TIMESTAMP WITH TIME ZONE"), // H2 specific
+    TIME("TIME"),
 
-    BOOLEAN("BOOLEAN")
+    BOOLEAN("BOOLEAN"),
+
+    // H2 specific types
+    TIMESTAMP_WITH_TIME_ZONE("TIMESTAMP WITH TIME ZONE"),
+    TIME9("TIME(9)") // time9 with fractional seconds precision to match with java.time9.LocalTime's value
 }

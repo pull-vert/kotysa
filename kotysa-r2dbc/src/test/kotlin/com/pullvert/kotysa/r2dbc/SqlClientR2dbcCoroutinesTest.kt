@@ -13,7 +13,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.getBean
 import org.springframework.boot.WebApplicationType
@@ -57,13 +56,6 @@ class SqlClientSelectR2DbcCoroutinesTest {
         expectThat(repository.findAll().toList())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(jdoe, bboss)
-    }
-
-    @Disabled("count test is disabled : See https://github.com/spring-projects/spring-fu/issues/160")
-    @Test
-    fun `Verify count returns expected size`() = runBlockingTest {
-        expectThat(repository.count())
-                .isEqualTo(2)
     }
 
     @Test
@@ -152,10 +144,6 @@ class CoroutinesUserRepository(dbClient: DatabaseClient) {
     fun findAllByAlias(alias: String?) = sqlClient.select<User>()
             .where { it[User::alias] eq alias }
             .fetchFlow()
-
-    suspend fun count() = 2
-//			sqlClient.select<Long>("COUNT(*)")
-//					.fetchOne()
 
     fun findAllMappedToDto() =
             sqlClient.select {

@@ -219,40 +219,6 @@ internal class TimeColumnBuilderNullableImpl<T : Any, U> internal constructor(
     override fun build() = TimeColumnNullable(entityProperty, columnName, sqlType)
 }
 
-interface TimestampWithTimeZoneColumnBuilder<T : TimestampWithTimeZoneColumnBuilder<T>> : ColumnBuilder<T>
-
-internal abstract class AbstractTimestampWithTimeZoneColumnBuilder<T : TimestampWithTimeZoneColumnBuilder<T>, U : Any> : AbstractColumnBuilder<T, U>(), TimestampWithTimeZoneColumnBuilder<T> {
-    override val sqlType = SqlType.TIMESTAMP_WITH_TIME_ZONE
-}
-
-interface TimestampWithTimeZoneColumnBuilderNotNull<U>
-    : TimestampWithTimeZoneColumnBuilder<TimestampWithTimeZoneColumnBuilderNotNull<U>>, ColumnNotNullBuilder<TimestampWithTimeZoneColumnBuilderNotNull<U>, U>
-
-internal class TimestampWithTimeZoneColumnBuilderNotNullImpl<T : Any, U> internal constructor(
-        override val entityProperty: KProperty1<T, U>
-) : AbstractTimestampWithTimeZoneColumnBuilder<TimestampWithTimeZoneColumnBuilderNotNull<U>, T>(), TimestampWithTimeZoneColumnBuilderNotNull<U> {
-
-    private var defaultValue: U? = null
-
-    override fun setDefaultValue(defaultValue: U): TimestampWithTimeZoneColumnBuilderNotNull<U> {
-        this.defaultValue = defaultValue
-        return this
-    }
-
-    override val primaryKey
-        get() = isPrimaryKey
-
-    override fun build() = TimestampWithTimeZoneColumnNotNull(entityProperty, columnName, sqlType, isPK, defaultValue)
-}
-
-interface TimestampWithTimeZoneColumnBuilderNullable : TimestampWithTimeZoneColumnBuilder<TimestampWithTimeZoneColumnBuilderNullable>, ColumnNullableBuilder<TimestampWithTimeZoneColumnBuilderNullable>
-
-internal class TimestampWithTimeZoneColumnBuilderNullableImpl<T : Any, U> internal constructor(
-        override val entityProperty: KProperty1<T, U>
-) : AbstractTimestampWithTimeZoneColumnBuilder<TimestampWithTimeZoneColumnBuilderNullable, T>(), TimestampWithTimeZoneColumnBuilderNullable {
-    override fun build() = TimestampWithTimeZoneColumnNullable(entityProperty, columnName, sqlType)
-}
-
 interface BooleanColumnBuilderNotNull<U>
     : ColumnNotNullNoPkBuilder<BooleanColumnBuilderNotNull<U>, U>
 
