@@ -16,7 +16,7 @@ import kotlin.reflect.KProperty1
  */
 class SelectDsl<T> internal constructor(
         private val init: (ValueProvider) -> T,
-        override val allColumns: Map<KProperty1<*, *>, Column<*, *>>
+        override val availableColumns: Map<KProperty1<*, *>, Column<*, *>>
 ) : FieldProvider(), ValueProvider {
 
     private var fieldIndex = 0

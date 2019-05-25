@@ -51,7 +51,8 @@ open class DefaultSqlClientSelect protected constructor() {
     class SelectProperties<T : Any>(
             val tables: Tables,
             val selectInformation: SelectInformation<T>,
-            val whereClauses: MutableList<WhereClause>
+            val whereClauses: MutableList<WhereClause>,
+            internal val availableColumns: MutableMap<KProperty1<*, *>, Column<*, *>>
     )
 
     abstract class Select<T : Any> protected constructor(
@@ -71,7 +72,16 @@ open class DefaultSqlClientSelect protected constructor() {
             } else {
                 selectInformationForSingleClass(resultClass, tables)
             }
-            selectProperties = SelectProperties(tables, selectInformation, mutableListOf())
+            // build availableColumns Map
+            val availableColumns = mutableMapOf<KProperty1<*, *>, Column<*, *>>()
+            selectInformation.selectedTables
+                    .flatMap { table -> table.columns.entries }
+                    .forEach { columnEntry ->
+                        // 1) add mapped getters
+                        availableColumns[columnEntry.key] = columnEntry.value
+                        // 2) todo add overridden parent getters
+                    }
+            selectProperties = SelectProperties(tables, selectInformation, mutableListOf(), availableColumns)
         }
 
         @Suppress("UNCHECKED_CAST")
@@ -159,7 +169,7 @@ open class DefaultSqlClientSelect protected constructor() {
 
         fun addWhereClause(dsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause) {
             selectProperties.apply {
-                whereClauses.add(WhereDsl(dsl, tables.allColumns).initialize())
+                whereClauses.add(WhereDsl(dsl, availableColumns).initialize())
             }
         }
     }

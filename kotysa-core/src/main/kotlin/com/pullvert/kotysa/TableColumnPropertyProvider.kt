@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
 
 /**
@@ -16,7 +17,11 @@ import kotlin.reflect.KProperty1
 interface TableColumnPropertyProvider<T : Any> {
     operator fun get(property: KProperty1<T, String>): NotNullStringColumnProperty<T>
 
+//    operator fun get(getter: (T) -> String): NotNullStringColumnProperty<T>
+
     operator fun get(property: KProperty1<T, String?>): NullableStringColumnProperty<T>
+
+//    operator fun get(getter: (T) -> String?): NullableStringColumnProperty<T>
 
     operator fun get(property: KProperty1<T, LocalDateTime>): NotNullLocalDateTimeColumnProperty<T>
 

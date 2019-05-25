@@ -16,7 +16,7 @@ import kotlin.reflect.KProperty1
 @KotysaMarker
 class WhereDsl<T : Any> internal constructor(
         private val init: WhereDsl<T>.(WhereFieldProvider) -> WhereClause,
-        override val allColumns: Map<KProperty1<*, *>, Column<*, *>>
+        override val availableColumns: Map<KProperty1<*, *>, Column<*, *>>
 ) : FieldProvider(), WhereFieldProvider {
 
     infix fun <U : Any> NotNullStringColumnField<U>.eq(stringValue: String) = WhereClause(this, Operation.EQ, stringValue)

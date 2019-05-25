@@ -59,3 +59,21 @@ data class AllTypesNullable(
         val localDateTime1: LocalDateTime?,
         val localDateTime2: LocalDateTime?
 )
+
+// test inheritance
+val inherited = Inherited(/*"id", */"name", "firstname")
+
+/**
+ * @author Fred Montariol
+ */
+interface Nameable {
+    val name: String
+}
+
+data class Inherited(
+//        private val id: String,
+        override val name: String,
+        val firstname: String?
+) : Nameable//, Entity<String> {
+//    override fun getId() = id
+//}

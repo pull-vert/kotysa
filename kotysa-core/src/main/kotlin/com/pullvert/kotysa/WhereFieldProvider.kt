@@ -16,6 +16,8 @@ import kotlin.reflect.KProperty1
 interface WhereFieldProvider {
     operator fun <T : Any> get(property: KProperty1<T, String>, alias: String? = null): NotNullStringColumnField<T>
 
+//    operator fun <T : Any> get(getter: (T) -> String): NotNullStringColumnField<T>
+
     operator fun <T : Any> get(property: KProperty1<T, String?>, alias: String? = null): NullableStringColumnField<T>
 
     operator fun <T : Any> get(property: KProperty1<T, LocalDateTime>, alias: String? = null): NotNullLocalDateTimeColumnField<T>
