@@ -44,9 +44,10 @@ class SqlClientR2dbc(
                 .sql(insertSql(row))
         val table = tables.getTable(row::class)
         table.columns.values.forEachIndexed { index, column ->
-            val value = column.entityProperty.get(row)
+            val value = column.entityGetter(row)
             executeSpec = if (value == null) {
-                executeSpec.bindNull(index, (column.entityProperty.returnType.classifier as KClass<*>).java)
+
+                executeSpec.bindNull(index, (column.entityGetter.toCallable().returnType.classifier as KClass<*>).java)
             } else {
                 executeSpec.bind(index, value)
             }

@@ -8,7 +8,6 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import kotlin.reflect.KProperty1
 
 /**
  * @author Fred Montariol
@@ -29,7 +28,7 @@ interface NullableColumnProperty : ColumnProperty
  * @author Fred Montariol
  */
 abstract class AbstractColumnProperty<T : Any> : ColumnProperty {
-    internal abstract val property: KProperty1<T, *>
+    internal abstract val getter: (T) -> Any?
 }
 
 // String
@@ -42,14 +41,14 @@ abstract class StringColumnProperty<T : Any> : AbstractColumnProperty<T>()
  * @author Fred Montariol
  */
 class NotNullStringColumnProperty<T : Any> internal constructor(
-        override val property: KProperty1<T, String>
+        override val getter: (T) -> String
 ) : StringColumnProperty<T>(), NotNullColumnProperty
 
 /**
  * @author Fred Montariol
  */
 class NullableStringColumnProperty<T : Any> internal constructor(
-        override val property: KProperty1<T, String?>
+        override val getter: (T) -> String?
 ) : StringColumnProperty<T>(), NullableColumnProperty
 
 // LocalDateTime
@@ -62,14 +61,14 @@ abstract class LocalDateTimeColumnProperty<T : Any> : AbstractColumnProperty<T>(
  * @author Fred Montariol
  */
 class NotNullLocalDateTimeColumnProperty<T : Any> internal constructor(
-        override val property: KProperty1<T, LocalDateTime>
+        override val getter: (T) -> LocalDateTime
 ) : LocalDateTimeColumnProperty<T>(), NotNullColumnProperty
 
 /**
  * @author Fred Montariol
  */
 class NullableLocalDateTimeColumnProperty<T : Any> internal constructor(
-        override val property: KProperty1<T, LocalDateTime?>
+        override val getter: (T) -> LocalDateTime?
 ) : LocalDateTimeColumnProperty<T>(), NullableColumnProperty
 
 // LocalDate
@@ -82,14 +81,14 @@ abstract class LocalDateColumnProperty<T : Any> : AbstractColumnProperty<T>()
  * @author Fred Montariol
  */
 class NotNullLocalDateColumnProperty<T : Any> internal constructor(
-        override val property: KProperty1<T, LocalDate>
+        override val getter: (T) -> LocalDate
 ) : LocalDateColumnProperty<T>(), NotNullColumnProperty
 
 /**
  * @author Fred Montariol
  */
 class NullableLocalDateColumnProperty<T : Any> internal constructor(
-        override val property: KProperty1<T, LocalDate?>
+        override val getter: (T) -> LocalDate?
 ) : LocalDateColumnProperty<T>(), NullableColumnProperty
 
 // Instant
@@ -102,14 +101,14 @@ abstract class InstantColumnProperty<T : Any> : AbstractColumnProperty<T>()
  * @author Fred Montariol
  */
 class NotNullInstantColumnProperty<T : Any> internal constructor(
-        override val property: KProperty1<T, Instant>
+        override val getter: (T) -> Instant
 ) : InstantColumnProperty<T>(), NotNullColumnProperty
 
 /**
  * @author Fred Montariol
  */
 class NullableInstantColumnProperty<T : Any> internal constructor(
-        override val property: KProperty1<T, Instant?>
+        override val getter: (T) -> Instant?
 ) : InstantColumnProperty<T>(), NullableColumnProperty
 
 // LocalTime
@@ -122,19 +121,19 @@ abstract class LocalTimeColumnProperty<T : Any> : AbstractColumnProperty<T>()
  * @author Fred Montariol
  */
 class NotNullLocalTimeColumnProperty<T : Any> internal constructor(
-        override val property: KProperty1<T, LocalTime>
+        override val getter: (T) -> LocalTime
 ) : LocalTimeColumnProperty<T>(), NotNullColumnProperty
 
 /**
  * @author Fred Montariol
  */
 class NullableLocalTimeColumnProperty<T : Any> internal constructor(
-        override val property: KProperty1<T, LocalTime?>
+        override val getter: (T) -> LocalTime?
 ) : LocalTimeColumnProperty<T>(), NullableColumnProperty
 
 /**
  * @author Fred Montariol
  */
 class NotNullBooleanColumnProperty<T : Any> internal constructor(
-        override val property: KProperty1<T, Boolean>
+        override val getter: (T) -> Boolean
 ) : AbstractColumnProperty<T>(), NotNullColumnProperty

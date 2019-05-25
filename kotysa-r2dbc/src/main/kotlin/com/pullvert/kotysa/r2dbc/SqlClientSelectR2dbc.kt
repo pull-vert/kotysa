@@ -8,7 +8,6 @@ import com.pullvert.kotysa.*
 import io.r2dbc.spi.Row
 import org.springframework.data.r2dbc.core.DatabaseClient
 import kotlin.reflect.KClass
-import kotlin.reflect.KProperty1
 
 /**
  * @author Fred Montariol
@@ -59,7 +58,7 @@ internal class SqlClientSelectR2dbc private constructor() : DefaultSqlClientSele
         @Suppress("UNCHECKED_CAST")
         private class R2dbcRow(
                 private val r2bcRow: Row,
-                columnPropertyIndexMap: Map<KProperty1<*, *>, Int>
+                columnPropertyIndexMap: Map<out (Any) -> Any?, Int>
         ) : AbstractRow(columnPropertyIndexMap) {
             override fun <T> get(index: Int, type: Class<T>) = r2bcRow.get(index, type) as T
         }

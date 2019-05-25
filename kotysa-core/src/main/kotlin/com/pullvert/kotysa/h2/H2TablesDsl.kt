@@ -4,6 +4,7 @@
 
 package com.pullvert.kotysa.h2
 
+import com.pullvert.kotysa.Column
 import com.pullvert.kotysa.TablesDsl
 
 /**
@@ -19,6 +20,7 @@ class H2TablesDsl(init: H2TablesDsl.() -> Unit) : TablesDsl<H2TablesDsl>(init) {
         val h2TableDsl = H2TableDsl(dsl, tableClass)
         val table = h2TableDsl.initialize(h2TableDsl)
         tables[tableClass] = table
-        allColumns.putAll(table.columns)
+        @Suppress("UNCHECKED_CAST")
+        allColumns.putAll(table.columns as Map<out (Any) -> Any?, Column<*, *>>)
     }
 }

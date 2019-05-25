@@ -8,36 +8,31 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import kotlin.reflect.KProperty
-import kotlin.reflect.KProperty1
 
 /**
  * @author Fred Montariol
  */
 interface TableColumnPropertyProvider<T : Any> {
-    operator fun get(property: KProperty1<T, String>): NotNullStringColumnProperty<T>
 
-//    operator fun get(getter: (T) -> String): NotNullStringColumnProperty<T>
+    operator fun get(getter: (T) -> String): NotNullStringColumnProperty<T>
 
-    operator fun get(property: KProperty1<T, String?>): NullableStringColumnProperty<T>
+    operator fun get(getter: (T) -> String?): NullableStringColumnProperty<T>
 
-//    operator fun get(getter: (T) -> String?): NullableStringColumnProperty<T>
+    operator fun get(getter: (T) -> LocalDateTime): NotNullLocalDateTimeColumnProperty<T>
 
-    operator fun get(property: KProperty1<T, LocalDateTime>): NotNullLocalDateTimeColumnProperty<T>
+    operator fun get(getter: (T) -> LocalDateTime?): NullableLocalDateTimeColumnProperty<T>
 
-    operator fun get(property: KProperty1<T, LocalDateTime?>): NullableLocalDateTimeColumnProperty<T>
+    operator fun get(getter: (T) -> LocalDate): NotNullLocalDateColumnProperty<T>
 
-    operator fun get(property: KProperty1<T, LocalDate>): NotNullLocalDateColumnProperty<T>
+    operator fun get(getter: (T) -> LocalDate?): NullableLocalDateColumnProperty<T>
 
-    operator fun get(property: KProperty1<T, LocalDate?>): NullableLocalDateColumnProperty<T>
+    operator fun get(getter: (T) -> Instant): NotNullInstantColumnProperty<T>
 
-    operator fun get(property: KProperty1<T, Instant>): NotNullInstantColumnProperty<T>
+    operator fun get(getter: (T) -> Instant?): NullableInstantColumnProperty<T>
 
-    operator fun get(property: KProperty1<T, Instant?>): NullableInstantColumnProperty<T>
+    operator fun get(getter: (T) -> LocalTime): NotNullLocalTimeColumnProperty<T>
 
-    operator fun get(property: KProperty1<T, LocalTime>): NotNullLocalTimeColumnProperty<T>
+    operator fun get(getter: (T) -> LocalTime?): NullableLocalTimeColumnProperty<T>
 
-    operator fun get(property: KProperty1<T, LocalTime?>): NullableLocalTimeColumnProperty<T>
-
-    operator fun get(property: KProperty1<T, Boolean>): NotNullBooleanColumnProperty<T>
+    operator fun get(getter: (T) -> Boolean): NotNullBooleanColumnProperty<T>
 }

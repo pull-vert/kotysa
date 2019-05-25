@@ -8,7 +8,6 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import kotlin.reflect.KProperty1
 
 /**
  * @author Fred Montariol
@@ -18,52 +17,52 @@ abstract class ColumnDsl<T : Any, U : ColumnDsl<T, U>> internal constructor(
         private val init: U.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*>
 ) : TableColumnPropertyProvider<T> {
 
-    override fun get(property: KProperty1<T, String>) = NotNullStringColumnProperty(property)
+    override fun get(getter: (T) -> String) = NotNullStringColumnProperty(getter)
 
-    override fun get(property: KProperty1<T, String?>): NullableStringColumnProperty<T> {
-        checkNullableProperty(property)
-        return NullableStringColumnProperty(property)
+    override fun get(getter: (T) -> String?): NullableStringColumnProperty<T> {
+        checkNullableGetter(getter)
+        return NullableStringColumnProperty(getter)
     }
 
-    override fun get(property: KProperty1<T, LocalDateTime>) = NotNullLocalDateTimeColumnProperty(property)
+    override fun get(getter: (T) -> LocalDateTime) = NotNullLocalDateTimeColumnProperty(getter)
 
-    override fun get(property: KProperty1<T, LocalDateTime?>): NullableLocalDateTimeColumnProperty<T> {
-        checkNullableProperty(property)
-        return NullableLocalDateTimeColumnProperty(property)
+    override fun get(getter: (T) -> LocalDateTime?): NullableLocalDateTimeColumnProperty<T> {
+        checkNullableGetter(getter)
+        return NullableLocalDateTimeColumnProperty(getter)
     }
 
-    override fun get(property: KProperty1<T, LocalDate>) = NotNullLocalDateColumnProperty(property)
+    override fun get(getter: (T) -> LocalDate) = NotNullLocalDateColumnProperty(getter)
 
-    override fun get(property: KProperty1<T, LocalDate?>): NullableLocalDateColumnProperty<T> {
-        checkNullableProperty(property)
-        return NullableLocalDateColumnProperty(property)
+    override fun get(getter: (T) -> LocalDate?): NullableLocalDateColumnProperty<T> {
+        checkNullableGetter(getter)
+        return NullableLocalDateColumnProperty(getter)
     }
 
-    override fun get(property: KProperty1<T, Instant>) = NotNullInstantColumnProperty(property)
+    override fun get(getter: (T) -> Instant) = NotNullInstantColumnProperty(getter)
 
-    override fun get(property: KProperty1<T, Instant?>): NullableInstantColumnProperty<T> {
-        checkNullableProperty(property)
-        return NullableInstantColumnProperty(property)
+    override fun get(getter: (T) -> Instant?): NullableInstantColumnProperty<T> {
+        checkNullableGetter(getter)
+        return NullableInstantColumnProperty(getter)
     }
 
-    override fun get(property: KProperty1<T, LocalTime>) = NotNullLocalTimeColumnProperty(property)
+    override fun get(getter: (T) -> LocalTime) = NotNullLocalTimeColumnProperty(getter)
 
-    override fun get(property: KProperty1<T, LocalTime?>): NullableLocalTimeColumnProperty<T> {
-        checkNullableProperty(property)
-        return NullableLocalTimeColumnProperty(property)
+    override fun get(getter: (T) -> LocalTime?): NullableLocalTimeColumnProperty<T> {
+        checkNullableGetter(getter)
+        return NullableLocalTimeColumnProperty(getter)
     }
 
-    override fun get(property: KProperty1<T, Boolean>) = NotNullBooleanColumnProperty(property)
+    override fun get(getter: (T) -> Boolean) = NotNullBooleanColumnProperty(getter)
 
-    private fun checkNullableProperty(property: KProperty1<*, *>) {
-        require(property.returnType.isMarkedNullable) { "\"${property.name}\" is not a nullable property" }
+    private fun checkNullableGetter(getter: (T) -> Any?) {
+        require(getter.toCallable().returnType.isMarkedNullable) { "\"$getter\" doesn't have a nullable return type" }
     }
 
     @Suppress("UNCHECKED_CAST")
     internal fun initialize(initialize: U): Column<T, *> {
         val columnBuilder = init(initialize, initialize) as AbstractColumnBuilder<*, T>
         if (!columnBuilder.columnNameInitialized) {
-            columnBuilder.columnName = columnBuilder.entityProperty.name
+            columnBuilder.columnName = columnBuilder.entityGetter.toCallable().name
         }
         return columnBuilder.build()
     }

@@ -5,7 +5,6 @@
 package com.pullvert.kotysa.h2
 
 import com.pullvert.kotysa.*
-import kotlin.reflect.KProperty1
 
 interface TimestampWithTimeZoneColumnBuilder<T : TimestampWithTimeZoneColumnBuilder<T>> : ColumnBuilder<T>
 
@@ -17,7 +16,7 @@ interface TimestampWithTimeZoneColumnBuilderNotNull<U>
     : TimestampWithTimeZoneColumnBuilder<TimestampWithTimeZoneColumnBuilderNotNull<U>>, ColumnNotNullBuilder<TimestampWithTimeZoneColumnBuilderNotNull<U>, U>
 
 internal class TimestampWithTimeZoneColumnBuilderNotNullImpl<T : Any, U> internal constructor(
-        override val entityProperty: KProperty1<T, U>
+        override val entityGetter: (T) -> U
 ) : AbstractTimestampWithTimeZoneColumnBuilder<TimestampWithTimeZoneColumnBuilderNotNull<U>, T>(), TimestampWithTimeZoneColumnBuilderNotNull<U> {
 
     private var defaultValue: U? = null
@@ -30,15 +29,15 @@ internal class TimestampWithTimeZoneColumnBuilderNotNullImpl<T : Any, U> interna
     override val primaryKey
         get() = isPrimaryKey
 
-    override fun build() = TimestampWithTimeZoneColumnNotNull(entityProperty, columnName, sqlType, isPK, defaultValue)
+    override fun build() = TimestampWithTimeZoneColumnNotNull(entityGetter, columnName, sqlType, isPK, defaultValue)
 }
 
 interface TimestampWithTimeZoneColumnBuilderNullable : TimestampWithTimeZoneColumnBuilder<TimestampWithTimeZoneColumnBuilderNullable>, ColumnNullableBuilder<TimestampWithTimeZoneColumnBuilderNullable>
 
 internal class TimestampWithTimeZoneColumnBuilderNullableImpl<T : Any, U> internal constructor(
-        override val entityProperty: KProperty1<T, U>
+        override val entityGetter: (T) -> U
 ) : AbstractTimestampWithTimeZoneColumnBuilder<TimestampWithTimeZoneColumnBuilderNullable, T>(), TimestampWithTimeZoneColumnBuilderNullable {
-    override fun build() = TimestampWithTimeZoneColumnNullable(entityProperty, columnName, sqlType)
+    override fun build() = TimestampWithTimeZoneColumnNullable(entityGetter, columnName, sqlType)
 }
 
 interface Time9ColumnBuilder<T : Time9ColumnBuilder<T>> : ColumnBuilder<T>
@@ -51,7 +50,7 @@ interface Time9ColumnBuilderNotNull<U>
     : Time9ColumnBuilder<Time9ColumnBuilderNotNull<U>>, ColumnNotNullBuilder<Time9ColumnBuilderNotNull<U>, U>
 
 internal class Time9ColumnBuilderNotNullImpl<T : Any, U> internal constructor(
-        override val entityProperty: KProperty1<T, U>
+        override val entityGetter: (T) -> U
 ) : AbstractTime9ColumnBuilder<Time9ColumnBuilderNotNull<U>, T>(), Time9ColumnBuilderNotNull<U> {
 
     private var defaultValue: U? = null
@@ -64,13 +63,13 @@ internal class Time9ColumnBuilderNotNullImpl<T : Any, U> internal constructor(
     override val primaryKey
         get() = isPrimaryKey
 
-    override fun build() = Time9ColumnNotNull(entityProperty, columnName, sqlType, isPK, defaultValue)
+    override fun build() = Time9ColumnNotNull(entityGetter, columnName, sqlType, isPK, defaultValue)
 }
 
 interface Time9ColumnBuilderNullable : Time9ColumnBuilder<Time9ColumnBuilderNullable>, ColumnNullableBuilder<Time9ColumnBuilderNullable>
 
 internal class Time9ColumnBuilderNullableImpl<T : Any, U> internal constructor(
-        override val entityProperty: KProperty1<T, U>
+        override val entityGetter: (T) -> U
 ) : AbstractTime9ColumnBuilder<Time9ColumnBuilderNullable, T>(), Time9ColumnBuilderNullable {
-    override fun build() = Time9ColumnNullable(entityProperty, columnName, sqlType)
+    override fun build() = Time9ColumnNullable(entityGetter, columnName, sqlType)
 }

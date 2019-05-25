@@ -5,7 +5,6 @@
 package com.pullvert.kotysa
 
 import kotlin.reflect.KClass
-import kotlin.reflect.KProperty1
 
 /**
  * @author Fred Montariol
@@ -16,7 +15,7 @@ abstract class TablesDsl<T : TablesDsl<T>>(private val init: T.() -> Unit) {
     @PublishedApi
     internal val tables = mutableMapOf<KClass<*>, Table<*>>()
     @PublishedApi
-    internal val allColumns = mutableMapOf<KProperty1<*, *>, Column<*, *>>()
+    internal val allColumns = mutableMapOf<(Any) -> Any?, Column<*, *>>()
 
     internal fun initialize(initialize: T): Tables {
         init(initialize)

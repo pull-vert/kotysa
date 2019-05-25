@@ -18,41 +18,41 @@ class H2ColumnDsl<T : Any> internal constructor(
 ) : ColumnDsl<T, H2ColumnDsl<T>>(init) {
 
     fun NotNullStringColumnProperty<T>.varchar(): VarcharColumnBuilderNotNull<String> =
-            VarcharColumnBuilderNotNullImpl(property)
+            VarcharColumnBuilderNotNullImpl(getter)
 
     fun NullableStringColumnProperty<T>.varchar(): VarcharColumnBuilderNullable =
-            VarcharColumnBuilderNullableImpl(property)
+            VarcharColumnBuilderNullableImpl(getter)
 
     fun NotNullLocalDateTimeColumnProperty<T>.timestamp(): TimestampColumnBuilderNotNull<LocalDateTime> =
-            TimestampColumnBuilderNotNullImpl(property)
+            TimestampColumnBuilderNotNullImpl(getter)
 
     fun NullableLocalDateTimeColumnProperty<T>.timestamp(): TimestampColumnBuilderNullable =
-            TimestampColumnBuilderNullableImpl(property)
+            TimestampColumnBuilderNullableImpl(getter)
 
     fun NotNullLocalDateTimeColumnProperty<T>.dateTime(): DateTimeColumnBuilderNotNull<LocalDateTime> =
-            DateTimeColumnBuilderNotNullImpl(property)
+            DateTimeColumnBuilderNotNullImpl(getter)
 
     fun NullableLocalDateTimeColumnProperty<T>.dateTime(): DateTimeColumnBuilderNullable =
-            DateTimeColumnBuilderNullableImpl(property)
+            DateTimeColumnBuilderNullableImpl(getter)
 
     fun NotNullLocalDateColumnProperty<T>.date(): DateColumnBuilderNotNull<LocalDate> =
-            DateColumnBuilderNotNullImpl(property)
+            DateColumnBuilderNotNullImpl(getter)
 
     fun NullableLocalDateColumnProperty<T>.date(): DateColumnBuilderNullable =
-            DateColumnBuilderNullableImpl(property)
+            DateColumnBuilderNullableImpl(getter)
 
     fun NotNullInstantColumnProperty<T>.timestampWithTimeZone(): TimestampWithTimeZoneColumnBuilderNotNull<Instant> =
-            TimestampWithTimeZoneColumnBuilderNotNullImpl(property)
+            TimestampWithTimeZoneColumnBuilderNotNullImpl(getter)
 
     fun NullableInstantColumnProperty<T>.timestampWithTimeZone(): TimestampWithTimeZoneColumnBuilderNullable =
-            TimestampWithTimeZoneColumnBuilderNullableImpl(property)
+            TimestampWithTimeZoneColumnBuilderNullableImpl(getter)
 
     fun NotNullLocalTimeColumnProperty<T>.time9(): Time9ColumnBuilderNotNull<LocalTime> =
-            Time9ColumnBuilderNotNullImpl(property)
+            Time9ColumnBuilderNotNullImpl(getter)
 
     fun NullableLocalTimeColumnProperty<T>.time9(): Time9ColumnBuilderNullable =
-            Time9ColumnBuilderNullableImpl(property)
+            Time9ColumnBuilderNullableImpl(getter)
 
     fun NotNullBooleanColumnProperty<T>.boolean(): BooleanColumnBuilderNotNull<Boolean> =
-            BooleanColumnBuilderNotNullImpl(property)
+            BooleanColumnBuilderNotNullImpl(getter)
 }

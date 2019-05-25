@@ -116,7 +116,7 @@ interface DefaultSqlClient : SqlClient {
         }
         if (logger.isDebugEnabled) {
             val valuesDebug = table.columns.values.joinToString { column ->
-                val columnValue = column.entityProperty.get(row)
+                val columnValue = column.entityGetter(row)
                 logValue(columnValue)
             }
             logger.debug { "Exec SQL : INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($valuesDebug)" }

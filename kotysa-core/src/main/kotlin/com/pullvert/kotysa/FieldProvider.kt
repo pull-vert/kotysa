@@ -8,7 +8,6 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import kotlin.reflect.KProperty1
 
 /**
  * @author Fred Montariol
@@ -16,38 +15,38 @@ import kotlin.reflect.KProperty1
 @Suppress("UNCHECKED_CAST")
 abstract class FieldProvider {
 
-    internal abstract val availableColumns: Map<KProperty1<*, *>, Column<*, *>>
+    internal abstract val availableColumns: Map<out (Any) -> Any?, Column<*, *>>
 
-    internal fun <T : Any> getField(property: KProperty1<T, String>, alias: String?) =
-            NotNullStringColumnField(availableColumns, property, alias)
+    internal fun <T : Any> getField(getter: (T) -> String, alias: String?) =
+            NotNullStringColumnField(availableColumns, getter, alias)
 
-    internal fun <T : Any> getField(property: KProperty1<T, String?>, alias: String?) =
-            NullableStringColumnField(availableColumns, property, alias)
+    internal fun <T : Any> getField(getter: (T) -> String?, alias: String?) =
+            NullableStringColumnField(availableColumns, getter, alias)
 
-    internal fun <T : Any> getField(property: KProperty1<T, LocalDateTime>, alias: String?) =
-            NotNullLocalDateTimeColumnField(availableColumns, property, alias)
+    internal fun <T : Any> getField(getter: (T) -> LocalDateTime, alias: String?) =
+            NotNullLocalDateTimeColumnField(availableColumns, getter, alias)
 
-    internal fun <T : Any> getField(property: KProperty1<T, LocalDateTime?>, alias: String?) =
-            NullableLocalDateTimeColumnField(availableColumns, property, alias)
+    internal fun <T : Any> getField(getter: (T) -> LocalDateTime?, alias: String?) =
+            NullableLocalDateTimeColumnField(availableColumns, getter, alias)
 
-    internal fun <T : Any> getField(property: KProperty1<T, LocalDate>, alias: String?) =
-            NotNullLocalDateColumnField(availableColumns, property, alias)
+    internal fun <T : Any> getField(getter: (T) -> LocalDate, alias: String?) =
+            NotNullLocalDateColumnField(availableColumns, getter, alias)
 
-    internal fun <T : Any> getField(property: KProperty1<T, LocalDate?>, alias: String?) =
-            NullableLocalDateColumnField(availableColumns, property, alias)
+    internal fun <T : Any> getField(getter: (T) -> LocalDate?, alias: String?) =
+            NullableLocalDateColumnField(availableColumns, getter, alias)
 
-    internal fun <T : Any> getField(property: KProperty1<T, Instant>, alias: String?) =
-            NotNullInstantColumnField(availableColumns, property, alias)
+    internal fun <T : Any> getField(getter: (T) -> Instant, alias: String?) =
+            NotNullInstantColumnField(availableColumns, getter, alias)
 
-    internal fun <T : Any> getField(property: KProperty1<T, Instant?>, alias: String?) =
-            NullableInstantColumnField(availableColumns, property, alias)
+    internal fun <T : Any> getField(getter: (T) -> Instant?, alias: String?) =
+            NullableInstantColumnField(availableColumns, getter, alias)
 
-    internal fun <T : Any> getField(property: KProperty1<T, LocalTime>, alias: String?) =
-            NotNullLocalTimeColumnField(availableColumns, property, alias)
+    internal fun <T : Any> getField(getter: (T) -> LocalTime, alias: String?) =
+            NotNullLocalTimeColumnField(availableColumns, getter, alias)
 
-    internal fun <T : Any> getField(property: KProperty1<T, LocalTime?>, alias: String?) =
-            NullableLocalTimeColumnField(availableColumns, property, alias)
+    internal fun <T : Any> getField(getter: (T) -> LocalTime?, alias: String?) =
+            NullableLocalTimeColumnField(availableColumns, getter, alias)
 
-    internal fun <T : Any> getField(property: KProperty1<T, Boolean>, alias: String?) =
-            NotNullBooleanColumnField(availableColumns, property, alias)
+    internal fun <T : Any> getField(getter: (T) -> Boolean, alias: String?) =
+            NotNullBooleanColumnField(availableColumns, getter, alias)
 }

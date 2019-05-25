@@ -8,7 +8,6 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import kotlin.reflect.KProperty1
 
 /**
  * @author Fred Montariol
@@ -33,8 +32,8 @@ interface NullableField : Field
  */
 @Suppress("UNCHECKED_CAST")
 abstract class ColumnField<T : Any, U> internal constructor(
-        availableColumns: Map<KProperty1<*, *>, Column<*, *>>,
-        property: KProperty1<*, *>,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> Any?,
         final override val alias: String?
 ) : Field {
 
@@ -44,8 +43,8 @@ abstract class ColumnField<T : Any, U> internal constructor(
         if (alias != null) {
             require(alias.isNotBlank()) { "An alias must not be empty or blank" }
         }
-        require(availableColumns.containsKey(property)) { "Requested field \"$property\" is not mapped" }
-        column = availableColumns[property]!! as Column<T, U>
+        require(availableColumns.containsKey(getter)) { "Requested field \"$getter\" is not mapped" }
+        column = availableColumns[getter]!! as Column<T, U>
     }
 
     override val fieldName =
@@ -60,97 +59,97 @@ abstract class ColumnField<T : Any, U> internal constructor(
  * @author Fred Montariol
  */
 class NotNullStringColumnField<T : Any> internal constructor(
-        availableColumns: Map<KProperty1<*, *>, Column<*, *>>,
-        property: KProperty1<T, String>,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> String,
         alias: String? = null
-) : ColumnField<T, String>(availableColumns, property, alias), NotNullField
+) : ColumnField<T, String>(availableColumns, getter, alias), NotNullField
 
 /**
  * @author Fred Montariol
  */
 class NullableStringColumnField<T : Any> internal constructor(
-        availableColumns: Map<KProperty1<*, *>, Column<*, *>>,
-        property: KProperty1<T, String?>,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> String?,
         alias: String? = null
-) : ColumnField<T, String?>(availableColumns, property, alias), NullableField
+) : ColumnField<T, String?>(availableColumns, getter, alias), NullableField
 
 /**
  * @author Fred Montariol
  */
 class NotNullLocalDateTimeColumnField<T : Any> internal constructor(
-        availableColumns: Map<KProperty1<*, *>, Column<*, *>>,
-        property: KProperty1<T, LocalDateTime>,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> LocalDateTime,
         alias: String? = null
-) : ColumnField<T, LocalDateTime>(availableColumns, property, alias), NotNullField
+) : ColumnField<T, LocalDateTime>(availableColumns, getter, alias), NotNullField
 
 /**
  * @author Fred Montariol
  */
 class NullableLocalDateTimeColumnField<T : Any> internal constructor(
-        availableColumns: Map<KProperty1<*, *>, Column<*, *>>,
-        property: KProperty1<T, LocalDateTime?>,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> LocalDateTime?,
         alias: String? = null
-) : ColumnField<T, LocalDateTime?>(availableColumns, property, alias), NotNullField
+) : ColumnField<T, LocalDateTime?>(availableColumns, getter, alias), NotNullField
 
 /**
  * @author Fred Montariol
  */
 class NotNullLocalDateColumnField<T : Any> internal constructor(
-        availableColumns: Map<KProperty1<*, *>, Column<*, *>>,
-        property: KProperty1<T, LocalDate>,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> LocalDate,
         alias: String? = null
-) : ColumnField<T, LocalDate>(availableColumns, property, alias), NotNullField
+) : ColumnField<T, LocalDate>(availableColumns, getter, alias), NotNullField
 
 /**
  * @author Fred Montariol
  */
 class NullableLocalDateColumnField<T : Any> internal constructor(
-        availableColumns: Map<KProperty1<*, *>, Column<*, *>>,
-        property: KProperty1<T, LocalDate?>,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> LocalDate?,
         alias: String? = null
-) : ColumnField<T, LocalDate?>(availableColumns, property, alias), NotNullField
+) : ColumnField<T, LocalDate?>(availableColumns, getter, alias), NotNullField
 
 /**
  * @author Fred Montariol
  */
 class NotNullInstantColumnField<T : Any> internal constructor(
-        availableColumns: Map<KProperty1<*, *>, Column<*, *>>,
-        property: KProperty1<T, Instant>,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> Instant,
         alias: String? = null
-) : ColumnField<T, Instant>(availableColumns, property, alias), NotNullField
+) : ColumnField<T, Instant>(availableColumns, getter, alias), NotNullField
 
 /**
  * @author Fred Montariol
  */
 class NullableInstantColumnField<T : Any> internal constructor(
-        availableColumns: Map<KProperty1<*, *>, Column<*, *>>,
-        property: KProperty1<T, Instant?>,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> Instant?,
         alias: String? = null
-) : ColumnField<T, Instant?>(availableColumns, property, alias), NotNullField
+) : ColumnField<T, Instant?>(availableColumns, getter, alias), NotNullField
 
 /**
  * @author Fred Montariol
  */
 class NotNullLocalTimeColumnField<T : Any> internal constructor(
-        availableColumns: Map<KProperty1<*, *>, Column<*, *>>,
-        property: KProperty1<T, LocalTime>,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> LocalTime,
         alias: String? = null
-) : ColumnField<T, LocalTime>(availableColumns, property, alias), NotNullField
+) : ColumnField<T, LocalTime>(availableColumns, getter, alias), NotNullField
 
 /**
  * @author Fred Montariol
  */
 class NullableLocalTimeColumnField<T : Any> internal constructor(
-        availableColumns: Map<KProperty1<*, *>, Column<*, *>>,
-        property: KProperty1<T, LocalTime?>,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> LocalTime?,
         alias: String? = null
-) : ColumnField<T, LocalTime?>(availableColumns, property, alias), NotNullField
+) : ColumnField<T, LocalTime?>(availableColumns, getter, alias), NotNullField
 
 /**
  * @author Fred Montariol
  */
 class NotNullBooleanColumnField<T : Any> internal constructor(
-        availableColumns: Map<KProperty1<*, *>, Column<*, *>>,
-        property: KProperty1<T, Boolean>,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> Boolean,
         alias: String? = null
-) : ColumnField<T, Boolean>(availableColumns, property, alias), NotNullField
+) : ColumnField<T, Boolean>(availableColumns, getter, alias), NotNullField

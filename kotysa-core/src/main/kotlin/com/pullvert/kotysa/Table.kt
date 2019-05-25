@@ -5,7 +5,6 @@
 package com.pullvert.kotysa
 
 import kotlin.reflect.KClass
-import kotlin.reflect.KProperty1
 
 /**
  * All Mapped Tables
@@ -13,7 +12,7 @@ import kotlin.reflect.KProperty1
  */
 data class Tables internal constructor(
         val allTables: Map<KClass<*>, Table<*>>,
-        internal val allColumns: Map<KProperty1<*, *>, Column<*, *>>
+        internal val allColumns: Map<out (Any) -> Any?, Column<*, *>>
 )
 
 /**
@@ -23,5 +22,5 @@ data class Tables internal constructor(
 data class Table<T : Any> internal constructor(
         internal val tableClass: KClass<T>,
         val name: String,
-        val columns: Map<KProperty1<T, *>, Column<T, *>>
+        val columns: Map<(T) -> Any?, Column<T, *>>
 )

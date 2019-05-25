@@ -5,8 +5,8 @@
 package com.pullvert.kotysa
 
 import kotlin.reflect.KClass
-import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.reflect
 
 /**
  * @author Fred Montariol
@@ -18,16 +18,16 @@ abstract class TableDsl<T : Any, U : TableDsl<T, U>>(
 ) {
 
     lateinit var name: String
-    private val columns = mutableMapOf<KProperty1<T, *>, Column<T, *>>()
+    private val columns = mutableMapOf<(T) -> Any?, Column<T, *>>()
 
     internal fun addColumn(column: Column<T, *>) {
-        if (columns.containsKey(column.entityProperty)) {
-            throw IllegalStateException("Trying to map property \"${column.entityProperty.name}\" to multiple columns")
+        if (columns.containsKey(column.entityGetter)) {
+            throw IllegalStateException("Trying to map property \"${column.entityGetter.reflect()!!.name}\" to multiple columns")
         }
-        require(tableClass.memberProperties.contains(column.entityProperty)) {
-            "Trying to map property \"${column.entityProperty.name}\", which is not a property of entity class \"${tableClass.qualifiedName}\""
+        require(tableClass.memberProperties.contains(column.entityGetter)) {
+            "Trying to map property \"${column.entityGetter.reflect()!!.name}\", which is not a property of entity class \"${tableClass.qualifiedName}\""
         }
-        columns[column.entityProperty] = column
+        columns[column.entityGetter] = column
     }
 
     @PublishedApi
