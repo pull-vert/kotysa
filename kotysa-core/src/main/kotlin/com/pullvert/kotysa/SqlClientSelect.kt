@@ -12,6 +12,7 @@ import java.time.LocalTime
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty1
+import kotlin.reflect.KTypeParameter
 import kotlin.reflect.full.allSuperclasses
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.primaryConstructor
@@ -89,9 +90,10 @@ open class DefaultSqlClientSelect protected constructor() {
                                     .flatMap { superClass -> superClass.members }
                                     .filter { callable ->
                                         callable.isAbstract
-                                                && callable is KProperty1<*, *>
                                                 && callable.name == getterCallable.name
-                                                && callable.returnType == getterCallable.returnType
+                                                && (callable is KProperty1<*, *> || callable.name.startsWith("get"))
+                                                && (callable.returnType == getterCallable.returnType
+                                                || callable.returnType.classifier is KTypeParameter)
                                     }
                                     .forEach { callable ->
                                         availableColumns[callable as (Any) -> Any?] = value
@@ -156,9 +158,18 @@ open class DefaultSqlClientSelect protected constructor() {
             val select: (ValueProvider) -> T = { it ->
                 with(table.tableClass.primaryConstructor!!) {
                     val args = mutableMapOf<KParameter, Any?>()
-                    for (param in parameters) {
-                        // get the name corresponding mapped property
-                        val getter = table.columns.keys.firstOrNull { getter -> getter.toCallable().name == param.name }
+                    parameters.forEach { param ->
+                        // get the mapped property with same name
+                        val getter = table.columns.keys.firstOrNull { getter ->
+                            var getterMatch = false
+                            val getterName = getter.toCallable().name
+                            if (getterName.startsWith("get") && getterName.length > 3) {
+                                if (getterName.substring(3).toLowerCase() == param.name!!.toLowerCase()) {
+                                    getterMatch = true
+                                }
+                            }
+                            getterMatch || (getterName == param.name)
+                        }
                         if (getter != null) {
                             when (getter.toCallable().returnType.withNullability(false)) {
                                 String::class.createType() -> args[param] = it[getter as (Any) -> String?]

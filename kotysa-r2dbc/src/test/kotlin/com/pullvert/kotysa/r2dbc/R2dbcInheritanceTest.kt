@@ -4,10 +4,7 @@
 
 package com.pullvert.kotysa.r2dbc
 
-import com.pullvert.kotysa.Inherited
-import com.pullvert.kotysa.Nameable
-import com.pullvert.kotysa.inherited
-import com.pullvert.kotysa.tables
+import com.pullvert.kotysa.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
@@ -40,11 +37,17 @@ class SqlClientSelectR2DbcTest {
         context.close()
     }
 
-//    @Test
-//    fun `Verify findById finds inherited`() {
-//        assertThat(repository.findById<Inherited>("id").block())
-//                .isEqualTo(inherited)
-//    }
+    @Test
+    fun `Verify extension function findById finds inherited`() {
+        assertThat(repository.findById<Inherited>("id").block())
+                .isEqualTo(inherited)
+    }
+
+    @Test
+    fun `Verify findInheritedById finds inherited`() {
+        assertThat(repository.findInheritedById("id").block())
+                .isEqualTo(inherited)
+    }
 
     @Test
     fun `Verify findFirstByName finds inherited`() {
@@ -57,8 +60,8 @@ private val tables =
         tables().h2 {
             table<Inherited> {
                 name = "inherited"
-//                column { it[Inherited::getId].varchar().primaryKey }
-                column { it[Inherited::name].varchar().primaryKey }
+                column { it[Inherited::getId].varchar().primaryKey }
+                column { it[Inherited::name].varchar() }
                 column { it[Inherited::firstname].varchar() }
             }
         }
@@ -82,10 +85,13 @@ class InheritanceRepository(dbClient: DatabaseClient) {
     fun insert() = sqlClient.insert(inherited)
 
     fun deleteAll() = sqlClient.deleteFromTable<Inherited>().execute()
+
+    fun findInheritedById(id: String) =
+            sqlClient.select<Inherited>().where { it[Inherited::getId] eq id }.fetchOne()
 }
 
-//inline fun <reified T : Entity<String>> InheritanceRepository.findById(id: String) =
-//        sqlClient.select<T>().where { it[Entity<String>::getId] eq id }.fetchOne()
+inline fun <reified T : Entity<String>> InheritanceRepository.findById(id: String) =
+        sqlClient.select<T>().where { it[Entity<String>::getId] eq id }.fetchOne()
 
 inline fun <reified T : Nameable> InheritanceRepository.findFirstByName(name: String) =
         sqlClient.select<T>().where { it[Nameable::name] eq name }.fetchFirst()

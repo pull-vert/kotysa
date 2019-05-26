@@ -5,8 +5,6 @@
 package com.pullvert.kotysa
 
 import kotlin.reflect.KClass
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.jvm.reflect
 
 /**
  * @author Fred Montariol
@@ -22,10 +20,10 @@ abstract class TableDsl<T : Any, U : TableDsl<T, U>>(
 
     internal fun addColumn(column: Column<T, *>) {
         if (columns.containsKey(column.entityGetter)) {
-            throw IllegalStateException("Trying to map property \"${column.entityGetter.reflect()!!.name}\" to multiple columns")
+            throw IllegalStateException("Trying to map property \"${column.entityGetter}\" to multiple columns")
         }
-        require(tableClass.memberProperties.contains(column.entityGetter)) {
-            "Trying to map property \"${column.entityGetter.reflect()!!.name}\", which is not a property of entity class \"${tableClass.qualifiedName}\""
+        require(tableClass.members.contains(column.entityGetter.toCallable())) {
+            "Trying to map property \"${column.entityGetter}\", which is not a property of entity class \"${tableClass.qualifiedName}\""
         }
         columns[column.entityGetter] = column
     }

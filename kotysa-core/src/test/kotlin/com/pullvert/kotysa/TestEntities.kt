@@ -61,7 +61,7 @@ data class AllTypesNullable(
 )
 
 // test inheritance
-val inherited = Inherited(/*"id", */"name", "firstname")
+val inherited = Inherited("id", "name", "firstname")
 
 /**
  * @author Fred Montariol
@@ -73,12 +73,12 @@ interface Nameable {
 interface DummyIntermediary : Nameable
 
 open class Inherited(
-//        private val id: String,
+        private val id: String,
         override val name: String,
         val firstname: String?
-) : DummyIntermediary/*, Entity<String>*/ {
+) : DummyIntermediary, Entity<String> {
 
-    //    override fun getId() = id
+    override fun getId() = id
 
     // try to bring ambiguity for reflection on name val
     protected fun name() = ""

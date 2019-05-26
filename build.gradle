@@ -10,7 +10,6 @@ println("Using Gradle version: $gradle.gradleVersion")
 subprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'com.jfrog.bintray'
-//    apply plugin: 'net.researchgate.release'
 
     repositories {
         jcenter()
