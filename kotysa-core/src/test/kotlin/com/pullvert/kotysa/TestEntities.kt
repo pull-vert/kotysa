@@ -70,10 +70,39 @@ interface Nameable {
     val name: String
 }
 
-data class Inherited(
+interface DummyIntermediary : Nameable
+
+open class Inherited(
 //        private val id: String,
         override val name: String,
         val firstname: String?
-) : Nameable//, Entity<String> {
-//    override fun getId() = id
-//}
+) : DummyIntermediary/*, Entity<String>*/ {
+
+    //    override fun getId() = id
+
+    // try to bring ambiguity for reflection on name val
+    protected fun name() = ""
+
+    internal fun getName() = ""
+    @Suppress("UNUSED_PARAMETER")
+    fun getName(dummyParam: Boolean) = ""
+
+    // not a data class so needs hashCode & equals functions
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Inherited
+
+        if (name != other.name) return false
+        if (firstname != other.firstname) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + (firstname?.hashCode() ?: 0)
+        return result
+    }
+}

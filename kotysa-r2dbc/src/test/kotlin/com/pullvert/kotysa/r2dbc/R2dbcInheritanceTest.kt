@@ -4,10 +4,12 @@
 
 package com.pullvert.kotysa.r2dbc
 
-import com.pullvert.kotysa.*
+import com.pullvert.kotysa.Inherited
+import com.pullvert.kotysa.Nameable
+import com.pullvert.kotysa.inherited
+import com.pullvert.kotysa.tables
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.getBean
 import org.springframework.boot.WebApplicationType
@@ -44,7 +46,6 @@ class SqlClientSelectR2DbcTest {
 //                .isEqualTo(inherited)
 //    }
 
-    @Disabled
     @Test
     fun `Verify findFirstByName finds inherited`() {
         assertThat(repository.findFirstByName<Inherited>("name").block())

@@ -11,6 +11,8 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.allSuperclasses
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.withNullability
@@ -54,6 +56,7 @@ open class DefaultSqlClientSelect protected constructor() {
             internal val availableColumns: MutableMap<out (Any) -> Any?, Column<*, *>>
     )
 
+    @Suppress("UNCHECKED_CAST")
     abstract class Select<T : Any> protected constructor(
             tables: Tables,
             resultClass: KClass<T>,
@@ -74,12 +77,26 @@ open class DefaultSqlClientSelect protected constructor() {
             // build availableColumns Map
             val availableColumns = mutableMapOf<(Any) -> Any?, Column<*, *>>()
             selectInformation.selectedTables
-                    .flatMap { table -> table.columns.entries }
-                    .forEach { columnEntry ->
-                        // 1) add mapped getters
-                        @Suppress("UNCHECKED_CAST")
-                        availableColumns[columnEntry.key as (Any) -> Any?] = columnEntry.value
-                        // 2) todo add overridden parent getters
+                    .forEach { table ->
+                        table.columns.forEach { (key, value) ->
+                            // 1) add mapped getter
+                            availableColumns[key as (Any) -> Any?] = value
+
+                            val getterCallable = key.toCallable()
+
+                            // 2) add overridden parent getters associated with this column
+                            table.tableClass.allSuperclasses
+                                    .flatMap { superClass -> superClass.members }
+                                    .filter { callable ->
+                                        callable.isAbstract
+                                                && callable is KProperty1<*, *>
+                                                && callable.name == getterCallable.name
+                                                && callable.returnType == getterCallable.returnType
+                                    }
+                                    .forEach { callable ->
+                                        availableColumns[callable as (Any) -> Any?] = value
+                                    }
+                        }
                     }
             selectProperties = SelectProperties(tables, selectInformation, mutableListOf(), availableColumns)
         }
