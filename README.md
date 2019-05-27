@@ -4,7 +4,9 @@
 Kotysa
 ==================
 
-Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [Sql client](kotysa-core/src/main/kotlin/com/pullvert/kotysa/SqlClient.kt) that help you write type-safe database queries, agnostic from chosen Sql Engine, written in Kotlin for Kotlin users.
+Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [Sql client](kotysa-core/src/main/kotlin/com/pullvert/kotysa/SqlClient.kt) that help you write type-safe database queries, then generate pure SQL for you.
+
+It is agnostic from chosen Sql Engine, written in Kotlin for Kotlin users.
 
 Type-safety relies on Entity property's (or getter's) type and nullability. It is used to allow available column's SQL type(s), select typed fields and allow only limited list of WHERE operations depending on type.
 
@@ -141,7 +143,7 @@ class UserRepository(dbClient: DatabaseClient) {
         <td>TIME(9)</td>
     </tr>
     <tr>
-        <td>Boolean (null Boolean is not allowed)</td>
+        <td>Boolean (nullable Boolean is not allowed)</td>
         <td>BOOLEAN</td>
     </tr>
 </table>
