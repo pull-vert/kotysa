@@ -28,7 +28,7 @@ dependencies {
 
 ### Describe Database Model with Type-Safe DSL
 
-```tables``` functional DSL is used to define all mapped tables' structure, and link each DB table to an existing class (aka Entity).
+```tables``` functional DSL is used to define all mapped tables' structure, by linking every table to a class (aka Entity).
 
 ```kotlin
 val tables =
@@ -82,7 +82,7 @@ fun findFirstByFirstname(firstname: String) = sqlClient.select<User>()
 
 fun findAllByAlias(alias: String?) = sqlClient.select<User>()
         .where { it[User::alias] eq alias }
-        // null String accepted     ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
+        // null String accepted     ^^^^^ , if alias==null, gives "WHERE user.alias IS NULL"
         .fetchAll()
 
 val jdoe = User("jdoe", "John", "Doe", false)
@@ -114,10 +114,12 @@ class UserRepository(dbClient: DatabaseClient) {
 
 ## Supported types
 
+### H2
+
 <table>
     <tr>
         <th>Kotlin type</th>
-        <th>H2</th>
+        <th>H2 type</th>
     </tr>
     <tr>
         <td>String</td>
