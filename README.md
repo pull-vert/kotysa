@@ -109,3 +109,39 @@ class UserRepository(dbClient: DatabaseClient) {
 ```
 
 **SqlClient** blocking version for JDBC has no implementation for now.
+
+## Supported types
+
+<table>
+    <tr>
+        <th>Kotlin type</th>
+        <th>H2</th>
+    </tr>
+    <tr>
+        <td>String</td>
+        <td>VARCHAR</td>
+    </tr>
+    <tr>
+        <td rowspan="2">j.t.LocalDateTime</td>
+        <td>TIMESTAMP</td>
+    </tr>
+    <tr>
+        <td>DATETIME</td>
+    </tr>
+    <tr>
+        <td>j.t.LocalDate</td>
+        <td>DATE</td>
+    </tr>
+    <tr>
+        <td>j.t.Instant</td>
+        <td>TIMESTAMP WITH TIME ZONE</td>
+    </tr>
+    <tr>
+        <td>j.t.LocalTime</td>
+        <td>TIME(9)</td>
+    </tr>
+    <tr>
+        <td>Boolean (null Boolean is not allowed)</td>
+        <td>BOOLEAN</td>
+    </tr>
+</table>
