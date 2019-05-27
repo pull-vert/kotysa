@@ -18,7 +18,7 @@ import org.springframework.fu.kofu.r2dbc.r2dbcH2
 /**
  * @author Fred Montariol
  */
-class SqlClientSelectR2DbcTest {
+class R2dbcInheritanceTest {
     private val context =
             application(WebApplicationType.NONE) {
                 beans {

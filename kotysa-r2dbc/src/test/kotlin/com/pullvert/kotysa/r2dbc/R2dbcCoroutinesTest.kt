@@ -30,7 +30,7 @@ import strikt.assertions.isEqualTo
  */
 @ExperimentalCoroutinesApi
 @FlowPreview
-class SqlClientSelectR2DbcCoroutinesTest {
+class R2DbcCoroutinesTest {
     private val context =
             application(WebApplicationType.NONE) {
                 beans {
