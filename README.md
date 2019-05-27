@@ -8,7 +8,7 @@ Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [Sql client](kotysa-core/src/main/kot
 
 It is agnostic from chosen Sql Engine, written in Kotlin for Kotlin users.
 
-Type-safety relies on Entity property's (or getter's) type and nullability. It is used to allow available column's SQL type(s), select typed fields and allow only limited list of WHERE operations depending on type.
+Type-safety relies on Entity property's (or getter's) type and nullability. It is used to allow [available column SQL type(s)](#supported-types), select typed fields and allow only limited list of WHERE operations depending on type.
 
 ## Dependency
 
