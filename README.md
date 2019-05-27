@@ -4,15 +4,15 @@
 Kotysa
 ==================
 
-Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [Sql client](kotysa-core/src/main/kotlin/com/pullvert/kotysa/SqlClient.kt) that help you write type-safe database queries, then generate pure SQL for you.
+Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [Sql client](kotysa-core/src/main/kotlin/com/pullvert/kotysa/SqlClient.kt) that help you write type-safe database queries, then generate SQL for you.
 
 It is agnostic from chosen Sql Engine, written in Kotlin for Kotlin users.
 
-Type-safety relies on Entity property's (or getter's) type and nullability. It is used to allow [available column SQL type(s)](#supported-types), select typed fields and allow only limited list of WHERE operations depending on type.
+Type-safety relies on Entity property's (or getter's) type and nullability. It is used to allow [available column SQL type(s)](#data-types), select typed fields and allow only limited list of WHERE operations depending on type.
 
 ## Dependency
 
-Kotysa is a single dependency to add to your project.
+Kotysa is a single dependency to add to your java 8+ project.
 
 ```groovy
 repositories {
@@ -112,40 +112,49 @@ class UserRepository(dbClient: DatabaseClient) {
 
 **SqlClient** blocking version for JDBC has no implementation for now.
 
-## Supported types
+## Data types
+
+Supported data types tables will be updated as new types are added. Java 8+ modern date types are used.
 
 ### H2
 
 <table>
     <tr>
         <th>Kotlin type</th>
-        <th>H2 type</th>
+        <th>Description
+        <th>H2 SQL type</th>
     </tr>
     <tr>
         <td>String</td>
+        <td>Variable-length character string, maximum length fixed</td>
         <td>VARCHAR</td>
     </tr>
     <tr>
-        <td rowspan="2">j.t.LocalDateTime</td>
+        <td>java.time.LocalDate</td>
+        <td>Represents a date without time part and without timezone</td>
+        <td>DATE</td>
+    </tr>
+    <tr>
+        <td rowspan="2">java.time.LocalDateTime</td>
+        <td rowspan="2">Represents a date+time without a timezone</td>
         <td>TIMESTAMP</td>
     </tr>
     <tr>
         <td>DATETIME</td>
     </tr>
     <tr>
-        <td>j.t.LocalDate</td>
-        <td>DATE</td>
-    </tr>
-    <tr>
-        <td>j.t.Instant</td>
+        <td>java.time.Instant</td>
+        <td>Represents a date+time with a timezone</td>
         <td>TIMESTAMP WITH TIME ZONE</td>
     </tr>
     <tr>
-        <td>j.t.LocalTime</td>
+        <td>java.time.LocalTime</td>
+        <td>Represents a time without a date part and without timezone</td>
         <td>TIME(9)</td>
     </tr>
     <tr>
-        <td>Boolean (nullable Boolean is not allowed)</td>
+        <td>Boolean</td>
+        <td>nullable Boolean is not allowed ! Single-bit representing a boolean state</td>
         <td>BOOLEAN</td>
     </tr>
 </table>
