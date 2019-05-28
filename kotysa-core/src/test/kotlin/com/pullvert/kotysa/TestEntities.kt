@@ -70,8 +70,14 @@ interface Nameable {
     val name: String
 }
 
+/**
+ * @author Fred Montariol
+ */
 interface DummyIntermediary : Nameable
 
+/**
+ * @author Fred Montariol
+ */
 open class Inherited(
         private val id: String,
         override val name: String,
@@ -88,6 +94,7 @@ open class Inherited(
     fun getName(dummyParam: Boolean) = ""
 
     // not a data class so needs hashCode & equals functions
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -106,24 +113,3 @@ open class Inherited(
         return result
     }
 }
-
-val jdoeJava: JavaUser
-    get() {
-        val javaUser = JavaUser()
-        javaUser.login = "jdoe"
-        javaUser.firstname = "John"
-        javaUser.lastname = "Doe"
-        javaUser.isAdmin = false
-        return javaUser
-    }
-
-val bbossJava: JavaUser
-    get() {
-        val javaUser = JavaUser()
-        javaUser.login = "bboss"
-        javaUser.firstname = "Big"
-        javaUser.lastname = "Boss"
-        javaUser.isAdmin = true
-        javaUser.alias = "TheBoss"
-        return javaUser
-    }

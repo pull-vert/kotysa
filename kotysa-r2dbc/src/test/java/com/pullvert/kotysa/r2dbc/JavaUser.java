@@ -2,7 +2,9 @@
  * Copyright 2019 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package com.pullvert.kotysa;
+package com.pullvert.kotysa.r2dbc;
+
+import com.pullvert.kotysa.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -49,6 +51,7 @@ public class JavaUser {
         isAdmin = admin;
     }
 
+    @Nullable
     public String getAlias() {
         return alias;
     }
