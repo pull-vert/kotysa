@@ -8,31 +8,11 @@ import com.pullvert.kotysa.r2dbc.createTable
 import com.pullvert.kotysa.r2dbc.deleteFromTable
 import com.pullvert.kotysa.r2dbc.select
 import com.pullvert.kotysa.r2dbc.sqlClient
-import com.pullvert.kotysa.tables
+import com.pullvert.kotysa.samples.*
 import org.springframework.data.r2dbc.core.DatabaseClient
 
-val tables =
-        tables().h2 { // choose database type
-            table<User> {
-                name = "users"
-                column { it[User::login].varchar().primaryKey }
-                column { it[User::firstname].varchar().name("fname") }
-                column { it[User::lastname].varchar().name("lname") }
-                column { it[User::isAdmin].boolean() }
-                column { it[User::alias].varchar() }
-            }
-        }
-
-data class User(
-        val login: String,
-        val firstname: String,
-        val lastname: String,
-        val isAdmin: Boolean,
-        val alias: String? = null
-)
-
-class UserRepository(dbClient: DatabaseClient) {
-    private val sqlClient = dbClient.sqlClient(tables)
+class UserRepositoryR2dbc(dbClient: DatabaseClient) {
+    private val sqlClient = dbClient.sqlClient(h2tables)
 
     fun createTable() = sqlClient.createTable<User>()
 
@@ -62,19 +42,13 @@ class UserRepository(dbClient: DatabaseClient) {
     fun simplifiedExample() {
         sqlClient.apply {
             createTable<User>()
-            deleteFromTable<User>() // delete All users
-            insert(jdoe, bboss)
+                    .then(deleteFromTable<User>().execute()) // delete All users
+                    .then(insert(jdoe, bboss))
+                    .block()
+
             val john = select<User>()
                     .where { it[User::firstname] eq "John" }
                     .fetchFirst()
         }
     }
 }
-
-val jdoe = User("jdoe", "John", "Doe", false)
-val bboss = User("bboss", "Big", "Boss", true, "TheBoss")
-
-data class UserDto(
-        val name: String,
-        val alias: String?
-)

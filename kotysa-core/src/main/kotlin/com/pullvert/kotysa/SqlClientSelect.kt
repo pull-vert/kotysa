@@ -35,10 +35,15 @@ open class SqlClientSelect private constructor() {
  * @author Fred Montariol
  */
 class SqlClientSelectBlocking private constructor() {
-    interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T>
+    interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T> {
+        override fun where(whereDsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause): Where<T>
+    }
+
+    interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T>
 
     interface Return<T : Any> : SqlClientSelect.Return<T> {
         fun fetchOne(): T
+        fun fetchFirst(): T
         fun fetchAll(): List<T>
     }
 }

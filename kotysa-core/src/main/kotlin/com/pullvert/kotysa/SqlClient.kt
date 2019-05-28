@@ -56,7 +56,7 @@ interface SqlClientBlocking : SqlClient {
  */
 inline fun <reified T : Any> SqlClientBlocking.select(
         noinline selectDsl: ((ValueProvider) -> T)? = null
-): SqlClientSelect.Select<T> = select(T::class, selectDsl)
+) = select(T::class, selectDsl)
 
 /**
  * @author Fred Montariol

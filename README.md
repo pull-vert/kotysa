@@ -9,7 +9,7 @@ Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [Sql client](kotysa-core/src/main/kot
 ```kotlin
 sqlClient.apply {
     createTable<User>()
-    deleteFromTable<User>() // delete All users
+    deleteFromTable<User>().execute() // delete All users
     insert(jdoe, bboss)
     val john = select<User>()
             .where { it[User::firstname] eq "John" }
