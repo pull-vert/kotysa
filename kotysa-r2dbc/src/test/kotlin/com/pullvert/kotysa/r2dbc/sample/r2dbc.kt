@@ -57,6 +57,18 @@ class UserRepository(dbClient: DatabaseClient) {
             .where { it[User::alias] eq alias }
             // null String accepted     ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
             .fetchAll()
+
+
+    fun simplifiedExample() {
+        sqlClient.apply {
+            createTable<User>()
+            deleteFromTable<User>() // delete All users
+            insert(jdoe, bboss)
+            val john = select<User>()
+                    .where { it[User::firstname] eq "John" }
+                    .fetchFirst()
+        }
+    }
 }
 
 val jdoe = User("jdoe", "John", "Doe", false)

@@ -4,7 +4,18 @@
 Kotysa
 ==================
 
-Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [Sql client](kotysa-core/src/main/kotlin/com/pullvert/kotysa/SqlClient.kt) that help you write type-safe database queries, then generate SQL for you.
+Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [Sql client](kotysa-core/src/main/kotlin/com/pullvert/kotysa/SqlClient.kt). You write type-safe database queries, Kotysa generates SQL for you.
+
+```kotlin
+sqlClient.apply {
+    createTable<User>()
+    deleteFromTable<User>() // delete All users
+    insert(jdoe, bboss)
+    val john = select<User>()
+            .where { it[User::firstname] eq "John" }
+            .fetchFirst()
+}
+```
 
 It is agnostic from chosen Sql Engine, written in Kotlin for Kotlin users.
 
@@ -114,7 +125,7 @@ class UserRepository(dbClient: DatabaseClient) {
 
 ## Data types
 
-Supported data types tables will be updated as new types are added. Java 8+ modern date types are used.
+Supported data types will be updated as new types are added. Java 8+ ```java.time.*``` date types are used.
 
 ### H2
 
@@ -136,7 +147,7 @@ Supported data types tables will be updated as new types are added. Java 8+ mode
     </tr>
     <tr>
         <td rowspan="2">java.time.LocalDateTime</td>
-        <td rowspan="2">Represents a date+time without a timezone</td>
+        <td rowspan="2">Represents a date+time without timezone</td>
         <td>TIMESTAMP</td>
     </tr>
     <tr>
@@ -144,7 +155,7 @@ Supported data types tables will be updated as new types are added. Java 8+ mode
     </tr>
     <tr>
         <td>java.time.Instant</td>
-        <td>Represents a date+time with a timezone</td>
+        <td>Represents a date+time with timezone</td>
         <td>TIMESTAMP WITH TIME ZONE</td>
     </tr>
     <tr>
@@ -154,7 +165,7 @@ Supported data types tables will be updated as new types are added. Java 8+ mode
     </tr>
     <tr>
         <td>Boolean</td>
-        <td>nullable Boolean is not allowed ! Single-bit representing a boolean state</td>
+        <td>nullable Boolean is not allowed ! Representing a boolean state</td>
         <td>BOOLEAN</td>
     </tr>
 </table>
