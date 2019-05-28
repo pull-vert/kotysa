@@ -5,9 +5,11 @@
 package com.pullvert.kotysa;
 
 /**
- * Basic Entity
+ * Basic Entity Superclass
+ *
  * @author Fred Montariol
  */
 public interface Entity<ID> {
+
     ID getId();
 }

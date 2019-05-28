@@ -57,15 +57,43 @@ class R2dbcJavaEntityTest {
     }
 
     @Test
-    fun `Verify findByAlias finds TheBoss`() {
-        assertThat(repository.findAllByAlias("TheBoss").toIterable())
+    fun `Verify findByAlias1 finds TheBoss`() {
+        assertThat(repository.findAllByAlias1("TheBoss").toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(bbossJava)
     }
 
     @Test
-    fun `Verify findByAlias with null alias finds John`() {
-        assertThat(repository.findAllByAlias(null).toIterable())
+    fun `Verify findByAlias2 finds TheBoss`() {
+        assertThat(repository.findAllByAlias2("TheBoss").toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(bbossJava)
+    }
+
+    @Test
+    fun `Verify findByAlias3 finds TheBoss`() {
+        assertThat(repository.findAllByAlias3("TheBoss").toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(bbossJava)
+    }
+
+    @Test
+    fun `Verify findAllByAlias1 with null alias finds John`() {
+        assertThat(repository.findAllByAlias1(null).toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(jdoeJava)
+    }
+
+    @Test
+    fun `Verify findAllByAlias2 with null alias finds John`() {
+        assertThat(repository.findAllByAlias2(null).toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(jdoeJava)
+    }
+
+    @Test
+    fun `Verify findAllByAlias3 with null alias finds John`() {
+        assertThat(repository.findAllByAlias3(null).toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(jdoeJava)
     }
@@ -98,7 +126,9 @@ private val tables =
                 column { it[JavaUser::getFirstname].varchar().name("fname") }
                 column { it[JavaUser::getLastname].varchar().name("lname") }
                 column { it[JavaUser::isAdmin].boolean() }
-                column { it[JavaUser::getAlias].varchar() }
+                column { it[JavaUser::getAlias1].varchar() }
+                column { it[JavaUser::getAlias2].varchar() }
+                column { it[JavaUser::getAlias3].varchar() }
             }
         }
 
@@ -128,13 +158,21 @@ class JavaUserRepository(dbClient: DatabaseClient) {
             .where { it[JavaUser::getFirstname] eq firstname }
             .fetchFirst()
 
-    fun findAllByAlias(alias: String?) = sqlClient.select<JavaUser>()
-            .where { it[JavaUser::getAlias] eq alias }
+    fun findAllByAlias1(alias: String?) = sqlClient.select<JavaUser>()
+            .where { it[JavaUser::getAlias1] eq alias }
+            .fetchAll()
+
+    fun findAllByAlias2(alias: String?) = sqlClient.select<JavaUser>()
+            .where { it[JavaUser::getAlias2] eq alias }
+            .fetchAll()
+
+    fun findAllByAlias3(alias: String?) = sqlClient.select<JavaUser>()
+            .where { it[JavaUser::getAlias3] eq alias }
             .fetchAll()
 
     fun findAllMappedToDto() =
             sqlClient.select {
                 UserDto("${it[JavaUser::getFirstname]} ${it[JavaUser::getLastname]}",
-                        it[JavaUser::getAlias])
+                        it[JavaUser::getAlias1])
             }.fetchAll()
 }

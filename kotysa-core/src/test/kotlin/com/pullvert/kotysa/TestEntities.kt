@@ -113,3 +113,26 @@ open class Inherited(
         return result
     }
 }
+
+val jdoeJava: JavaUser
+    get() {
+        val javaUser = JavaUser()
+        javaUser.login = "jdoe"
+        javaUser.firstname = "John"
+        javaUser.lastname = "Doe"
+        javaUser.isAdmin = false
+        return javaUser
+    }
+
+val bbossJava: JavaUser
+    get() {
+        val javaUser = JavaUser()
+        javaUser.login = "bboss"
+        javaUser.firstname = "Big"
+        javaUser.lastname = "Boss"
+        javaUser.isAdmin = true
+        javaUser.alias1 = "TheBoss"
+        javaUser.alias2 = "TheBoss"
+        javaUser.alias3 = "TheBoss"
+        return javaUser
+    }

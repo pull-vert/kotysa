@@ -4,18 +4,11 @@
 
 package com.pullvert.kotysa
 
-import org.jetbrains.annotations.Nullable
-import java.lang.RuntimeException
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import kotlin.reflect.KFunction
-import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.jvm.internal.impl.load.java.structure.JavaAnnotation
-import kotlin.reflect.jvm.internal.impl.load.java.structure.JavaMethod
-import kotlin.reflect.jvm.internal.impl.name.FqName
-import kotlin.reflect.jvm.javaMethod
 
 /**
  * @author Fred Montariol
@@ -63,14 +56,8 @@ abstract class ColumnDsl<T : Any, U : ColumnDsl<T, U>> internal constructor(
     override fun get(getter: (T) -> Boolean) = NotNullBooleanColumnProperty(getter)
 
     private fun checkNullableGetter(getter: (T) -> Any?) {
-        // support isMarkedNullable (T? syntax in Kotlin, or JSR305 @javax.annotation.Nullable)
-        // and Jetbrain's @org.jetbrains.annotations.Nullable
-        val callable = getter.toCallable()
-        if (!callable.returnType.isMarkedNullable) {
-            if (callable !is KFunction<*> ||
-                    (callable as KFunction<*>).javaMethod?.getAnnotation(Nullable::class.java) == null) {
-                throw RuntimeException("\"$getter\" doesn't have a nullable return type")
-            }
+        if (getter !is KFunction<*>) {
+            require(getter.toCallable().returnType.isMarkedNullable) { "\"$getter\" doesn't have a nullable return type" }
         }
     }
 

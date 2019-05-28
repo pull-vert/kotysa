@@ -11,13 +11,13 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     implementation "io.github.microutils:kotlin-logging:$kotlin_logging_version"
 
-    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
-
     testImplementation "ch.qos.logback:logback-classic:$logback_version"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
     testImplementation "org.assertj:assertj-core:$assertj_version"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testRuntimeOnly 'com.google.code.findbugs:jsr305:3.0.2'
+    testRuntimeOnly 'org.springframework:spring-core:5.1.7.RELEASE'
 }
 
 compileKotlin {

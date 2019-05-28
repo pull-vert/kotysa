@@ -9,10 +9,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import kotlin.reflect.KClass
-import kotlin.reflect.KParameter
-import kotlin.reflect.KProperty1
-import kotlin.reflect.KTypeParameter
+import kotlin.reflect.*
 import kotlin.reflect.full.allSuperclasses
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.primaryConstructor
@@ -161,7 +158,23 @@ open class DefaultSqlClientSelect protected constructor() {
 
             // Build select Function : (ValueProvider) -> T
             val select: (ValueProvider) -> T = { it ->
-                with(table.tableClass.primaryConstructor!!) {
+
+                val constructor = with(table.tableClass) {
+                    if (primaryConstructor != null) {
+                        primaryConstructor
+                    } else {
+                        var nbParameters = -1
+                        var mostCompleteConstructor: KFunction<T>? = null
+                        constructors.forEach { constructor ->
+                            if (constructor.parameters.size > nbParameters) {
+                                nbParameters = constructor.parameters.size
+                                mostCompleteConstructor = constructor
+                            }
+                        }
+                        mostCompleteConstructor
+                    }
+                }
+                with(constructor!!) {
                     val args = mutableMapOf<KParameter, Any?>()
                     parameters.forEach { param ->
                         // get the mapped property with same name
@@ -192,6 +205,7 @@ open class DefaultSqlClientSelect protected constructor() {
                             }
                         }
                     }
+                    // invoke constructor
                     callBy(args)
                 }
             }
