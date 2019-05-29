@@ -11,6 +11,7 @@ import com.pullvert.kotysa.r2dbc.sqlClient
 import com.pullvert.kotysa.samples.*
 import org.springframework.data.r2dbc.core.DatabaseClient
 
+@Suppress("UNUSED_VARIABLE")
 class UserRepositoryR2dbc(dbClient: DatabaseClient) {
     private val sqlClient = dbClient.sqlClient(h2tables)
 

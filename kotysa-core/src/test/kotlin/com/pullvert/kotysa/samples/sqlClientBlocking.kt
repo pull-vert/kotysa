@@ -9,6 +9,7 @@ import com.pullvert.kotysa.createTable
 import com.pullvert.kotysa.deleteFromTable
 import com.pullvert.kotysa.select
 
+@Suppress("UNUSED_VARIABLE")
 interface UserRepositoryBlocking {
     val sqlClient: SqlClientBlocking
 
