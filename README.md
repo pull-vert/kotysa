@@ -11,15 +11,16 @@ sqlClient.apply {
     createTable<User>()
     deleteFromTable<User>().execute() // delete All users
     insert(jdoe, bboss)
+    
     val john = select<User>()
             .where { it[User::firstname] eq "John" }
             .fetchFirst()
 }
 ```
 
-It is agnostic from chosen Sql Engine, written in Kotlin for Kotlin users.
+Kotysa is agnostic from chosen Sql Engine, written in Kotlin for Kotlin users.
 
-Type-safety relies on Entity property's (or getter's) type and nullability. It is used to allow [available column SQL type(s)](#data-types), select typed fields and allow only limited list of WHERE operations depending on type.
+[Available column SQL type(s)](#data-types), typed fields in SELECT and available WHERE operations depends on Entity property's (or getter's) type and nullability.
 
 ## Dependency
 
