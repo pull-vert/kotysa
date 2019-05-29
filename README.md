@@ -1,8 +1,7 @@
 [![GitHub License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Download](https://api.bintray.com/packages/pull-vert/kotysa/kotysa/images/download.svg) ](https://bintray.com/pull-vert/kotysa/kotysa/_latestVersion)
 
-Kotysa
-==================
+# Kotysa
 
 Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [Sql client](kotysa-core/src/main/kotlin/com/pullvert/kotysa/SqlClient.kt). You write type-safe database queries, Kotysa generates SQL for you.
 
@@ -21,6 +20,8 @@ sqlClient.apply {
 Kotysa is agnostic from chosen Sql Engine, written in Kotlin for Kotlin users.
 
 [Available column SQL type(s)](#data-types), typed fields in SELECT and available WHERE operations depends on Entity property's (or getter's) type and nullability.
+
+Kotysa is **not production ready**, some key features are still missing. Early releases will continue to be provided with new features.
 
 ## Dependency
 
