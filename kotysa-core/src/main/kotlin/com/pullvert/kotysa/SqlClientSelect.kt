@@ -10,10 +10,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import kotlin.reflect.*
-import kotlin.reflect.full.allSuperclasses
-import kotlin.reflect.full.createType
-import kotlin.reflect.full.primaryConstructor
-import kotlin.reflect.full.withNullability
+import kotlin.reflect.full.*
 
 /**
  * @author Fred Montariol
@@ -67,12 +64,13 @@ open class DefaultSqlClientSelect protected constructor() {
     ) : SqlClientSelect.Select<T>, Return<T> {
 
         final override val selectProperties: SelectProperties<T>
+        private val selectInformation: SelectInformation<T>
 
         init {
             if (selectDsl == null) {
                 tables.checkTable(resultClass)
             }
-            val selectInformation = if (selectDsl != null) {
+            selectInformation = if (selectDsl != null) {
                 SelectDsl(selectDsl, tables.allColumns).initialize()
             } else {
                 selectInformationForSingleClass(resultClass, tables)
@@ -108,96 +106,35 @@ open class DefaultSqlClientSelect protected constructor() {
         @Suppress("UNCHECKED_CAST")
         private fun selectInformationForSingleClass(resultClass: KClass<T>, tables: Tables): SelectInformation<T> {
             val table = tables.allTables[resultClass] as Table<T>
-            var fieldIndex = 0
             val columnPropertyIndexMap = mutableMapOf<(Any) -> Any?, Int>()
 
-            // build selectedFields List
-            val selectedFields = mutableListOf<Field>()
-            table.columns.forEach { (getter, _) ->
-                columnPropertyIndexMap[getter as (Any) -> Any?] = fieldIndex++
-                val getterType = getter.toCallable().returnType
-                val field = when (getterType.withNullability(false)) {
-                    String::class.createType() ->
-                        if (getterType.isMarkedNullable) {
-                            NotNullStringColumnField(tables.allColumns, getter as (Any) -> String)
-                        } else {
-                            NullableStringColumnField(tables.allColumns, getter as (Any) -> String?)
-                        }
-                    LocalDateTime::class.createType() ->
-                        if (getterType.isMarkedNullable) {
-                            NotNullLocalDateTimeColumnField(tables.allColumns, getter as (Any) -> LocalDateTime)
-                        } else {
-                            NullableLocalDateTimeColumnField(tables.allColumns, getter as (Any) -> LocalDateTime?)
-                        }
-                    LocalDate::class.createType() ->
-                        if (getterType.isMarkedNullable) {
-                            NotNullLocalDateColumnField(tables.allColumns, getter as (Any) -> LocalDate)
-                        } else {
-                            NullableLocalDateColumnField(tables.allColumns, getter as (Any) -> LocalDate?)
-                        }
-                    Instant::class.createType() ->
-                        if (getterType.isMarkedNullable) {
-                            NotNullInstantColumnField(tables.allColumns, getter as (Any) -> Instant)
-                        } else {
-                            NullableInstantColumnField(tables.allColumns, getter as (Any) -> Instant?)
-                        }
-                    LocalTime::class.createType() ->
-                        if (getterType.isMarkedNullable) {
-                            NotNullLocalTimeColumnField(tables.allColumns, getter as (Any) -> LocalTime)
-                        } else {
-                            NullableLocalTimeColumnField(tables.allColumns, getter as (Any) -> LocalTime?)
-                        }
-                    Boolean::class.createType() -> {
-                        require(!getterType.isMarkedNullable) { "$getter is nullable, Boolean must not be nullable" }
-                        NotNullBooleanColumnField(tables.allColumns, getter as (Any) -> Boolean)
-                    }
-                    else -> throw RuntimeException("should never happen")
-                }
-                selectedFields.add(field)
-            }
+            // build selectedFields List & fill columnPropertyIndexMap
+            val selectedFields = selectedFieldsFromTable(table.columns, columnPropertyIndexMap, tables.allColumns)
 
             // Build select Function : (ValueProvider) -> T
             val select: (ValueProvider) -> T = { it ->
-
-                val constructor = with(table.tableClass) {
-                    if (primaryConstructor != null) {
-                        primaryConstructor
-                    } else {
-                        var nbParameters = -1
-                        var mostCompleteConstructor: KFunction<T>? = null
-                        constructors.forEach { constructor ->
-                            if (constructor.parameters.size > nbParameters) {
-                                nbParameters = constructor.parameters.size
-                                mostCompleteConstructor = constructor
-                            }
-                        }
-                        mostCompleteConstructor
-                    }
-                }
-                with(constructor!!) {
+                val associatedColumns = mutableListOf<Column<*, *>>()
+                val constructor = getTableConstructor(table.tableClass)
+                val instance = with(constructor!!) {
                     val args = mutableMapOf<KParameter, Any?>()
                     parameters.forEach { param ->
                         // get the mapped property with same name
-                        val getter = table.columns.keys.firstOrNull { getter ->
+                        val columnEntry = table.columns.entries.firstOrNull { columnEntry ->
                             var getterMatch = false
-                            val getterName = getter.toCallable().name
+                            val getterName = columnEntry.key.toCallable().name
                             if (getterName.startsWith("get") && getterName.length > 3) {
                                 if (getterName.substring(3).toLowerCase() == param.name!!.toLowerCase()) {
                                     getterMatch = true
                                 }
                             }
-                            getterMatch || (getterName == param.name)
-                        }
-                        if (getter != null) {
-                            when (getter.toCallable().returnType.withNullability(false)) {
-                                String::class.createType() -> args[param] = it[getter as (Any) -> String?]
-                                LocalDateTime::class.createType() -> args[param] = it[getter as (Any) -> LocalDateTime?]
-                                LocalDate::class.createType() -> args[param] = it[getter as (Any) -> LocalDate?]
-                                Instant::class.createType() -> args[param] = it[getter as (Any) -> Instant?]
-                                LocalTime::class.createType() -> args[param] = it[getter as (Any) -> LocalTime?]
-                                Boolean::class.createType() -> args[param] = it[getter as (Any) -> Boolean]
-                                else -> throw RuntimeException("should never happen")
+                            val matchFound = getterMatch || (getterName == param.name)
+                            if (matchFound) {
+                                associatedColumns.add(columnEntry.value)
                             }
+                            matchFound
+                        }
+                        if (columnEntry != null) {
+                            args[param] = valueProviderCall(columnEntry.key, it)
                         } else {
                             require(param.isOptional) {
                                 "Cannot instanciate Table \"${table.tableClass.qualifiedName}\"," +
@@ -208,8 +145,124 @@ open class DefaultSqlClientSelect protected constructor() {
                     // invoke constructor
                     callBy(args)
                 }
+
+                // Then try to invoke var or setter for each unassociated getter
+                if (associatedColumns.size < table.columns.size) {
+                    table.columns
+                            .filter { (_, column) -> !associatedColumns.contains(column) }
+                            .forEach { (getter, column) ->
+                                if (getter is KMutableProperty1<T, Any?>) {
+                                    getter.set(instance, valueProviderCall(getter, it))
+                                    associatedColumns.add(column)
+                                } else {
+                                    val callable = getter.toCallable()
+                                    if (callable is KFunction<Any?>
+                                            && (callable.name.startsWith("get")
+                                                    || callable.name.startsWith("is"))
+                                            && callable.name.length > 3) {
+                                        // try to find setter
+                                        val setter = if (callable.name.startsWith("get")) {
+                                            table.tableClass.memberFunctions.firstOrNull { function ->
+                                                function.name == callable.name.replaceFirst("g", "s")
+                                                        && function.parameters.size == 2
+                                            }
+                                        } else {
+                                            // then "is" for Boolean
+                                            table.tableClass.memberFunctions.firstOrNull { function ->
+                                                function.name == callable.name.replaceFirst("is", "set")
+                                                        && function.parameters.size == 2
+                                            }
+                                        }
+                                        if (setter != null) {
+                                            setter.call(instance, valueProviderCall(getter, it))
+                                            associatedColumns.add(column)
+                                        }
+                                    }
+                                }
+                            }
+                }
+                instance
             }
             return SelectInformation(columnPropertyIndexMap, selectedFields, setOf(table), select)
+        }
+
+        private fun valueProviderCall(getter: (T) -> Any?, valueProvider: ValueProvider): Any? =
+                when (getter.toCallable().returnType.withNullability(false)) {
+                    String::class.createType() -> valueProvider[getter as (T) -> String?]
+                    LocalDateTime::class.createType() -> valueProvider[getter as (T) -> LocalDateTime?]
+                    LocalDate::class.createType() -> valueProvider[getter as (T) -> LocalDate?]
+                    Instant::class.createType() -> valueProvider[getter as (T) -> Instant?]
+                    LocalTime::class.createType() -> valueProvider[getter as (T) -> LocalTime?]
+                    Boolean::class.createType() -> valueProvider[getter as (T) -> Boolean]
+                    else -> throw RuntimeException("should never happen")
+                }
+
+        private fun getTableConstructor(tableClass: KClass<T>) = with(tableClass) {
+            if (primaryConstructor != null) {
+                primaryConstructor
+            } else {
+                var nbParameters = -1
+                var mostCompleteConstructor: KFunction<T>? = null
+                constructors.forEach { constructor ->
+                    if (constructor.parameters.size > nbParameters) {
+                        nbParameters = constructor.parameters.size
+                        mostCompleteConstructor = constructor
+                    }
+                }
+                mostCompleteConstructor
+            }
+        }
+
+        private fun selectedFieldsFromTable(
+                columns: Map<(T) -> Any?, Column<T, *>>,
+                columnPropertyIndexMap: MutableMap<(Any) -> Any?, Int>,
+                allColumns: Map<out (Any) -> Any?, Column<*, *>>
+        ): List<Field> {
+            var fieldIndex = 0
+            val selectedFields = mutableListOf<Field>()
+            columns.forEach { (getter, _) ->
+                columnPropertyIndexMap[getter as (Any) -> Any?] = fieldIndex++
+                val getterType = getter.toCallable().returnType
+                val field = when (getterType.withNullability(false)) {
+                    String::class.createType() ->
+                        if (getterType.isMarkedNullable) {
+                            NullableStringColumnField(allColumns, getter as (Any) -> String?)
+                        } else {
+                            NotNullStringColumnField(allColumns, getter as (Any) -> String)
+                        }
+                    LocalDateTime::class.createType() ->
+                        if (getterType.isMarkedNullable) {
+                            NullableLocalDateTimeColumnField(allColumns, getter as (Any) -> LocalDateTime?)
+                        } else {
+                            NotNullLocalDateTimeColumnField(allColumns, getter as (Any) -> LocalDateTime)
+                        }
+                    LocalDate::class.createType() ->
+                        if (getterType.isMarkedNullable) {
+                            NullableLocalDateColumnField(allColumns, getter as (Any) -> LocalDate?)
+                        } else {
+                            NotNullLocalDateColumnField(allColumns, getter as (Any) -> LocalDate)
+                        }
+                    Instant::class.createType() ->
+                        if (getterType.isMarkedNullable) {
+                            NullableInstantColumnField(allColumns, getter as (Any) -> Instant?)
+                        } else {
+                            NotNullInstantColumnField(allColumns, getter as (Any) -> Instant)
+                        }
+                    LocalTime::class.createType() ->
+                        if (getterType.isMarkedNullable) {
+                            NullableLocalTimeColumnField(allColumns, getter as (Any) -> LocalTime?)
+                        } else {
+                            NotNullLocalTimeColumnField(allColumns, getter as (Any) -> LocalTime)
+                        }
+                    Boolean::class.createType() -> {
+                        require(!getterType.isMarkedNullable) { "$getter is nullable, Boolean must not be nullable" }
+                        NotNullBooleanColumnField(allColumns, getter as (Any) -> Boolean)
+                    }
+                    else -> throw RuntimeException("should never happen")
+                }
+                selectedFields.add(field)
+            }
+            return selectedFields
         }
     }
 

@@ -47,7 +47,7 @@ class R2dbcJavaEntityTest {
     @Test
     fun `Verify findFirstByFirstame finds John`() {
         assertThat(repository.findFirstByFirstame("John").block())
-                .isEqualTo(jdoe)
+                .isEqualTo(jdoeJava)
     }
 
     @Test
