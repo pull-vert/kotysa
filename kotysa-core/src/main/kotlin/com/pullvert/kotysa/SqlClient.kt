@@ -137,7 +137,7 @@ internal fun logValue(value: Any?) = when (value) {
     is Instant -> "\'${DateTimeFormatter.ISO_INSTANT.format(value)}\'"
     is LocalTime -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_TIME)}\'"
     is Boolean -> "$value"
-    else -> throw RuntimeException("should never happen")
+    else -> throw RuntimeException("${value.javaClass.canonicalName} is not supported yet")
 }
 
 /**
@@ -203,7 +203,7 @@ open class DefaultSqlClientCommon protected constructor() {
                         } else {
                             "${whereClause.field.fieldName} = ?"
                         }
-                    else -> throw RuntimeException("should never happen")
+                    else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
                 }
             }
 
@@ -216,7 +216,7 @@ open class DefaultSqlClientCommon protected constructor() {
                             } else {
                                 "${whereClause.field.fieldName} = ${logValue(whereClause.value)}"
                             }
-                        else -> throw RuntimeException("should never happen")
+                        else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
                     }
                 }
             } else {
