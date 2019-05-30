@@ -11,6 +11,9 @@ import com.pullvert.kotysa.r2dbc.sqlClient
 import com.pullvert.kotysa.samples.*
 import org.springframework.data.r2dbc.core.DatabaseClient
 
+/**
+ * @author Fred Montariol
+ */
 @Suppress("UNUSED_VARIABLE")
 class UserRepositoryR2dbc(dbClient: DatabaseClient) {
     private val sqlClient = dbClient.sqlClient(h2tables)
@@ -20,6 +23,10 @@ class UserRepositoryR2dbc(dbClient: DatabaseClient) {
     fun insert() = sqlClient.insert(jdoe, bboss)
 
     fun deleteAll() = sqlClient.deleteFromTable<User>().execute()
+
+    fun deleteById(id: String) = sqlClient.deleteFromTable<User>()
+            .where { it[User::login] eq id }
+            .execute()
 
     fun findAll() = sqlClient.select<User>().fetchAll()
 

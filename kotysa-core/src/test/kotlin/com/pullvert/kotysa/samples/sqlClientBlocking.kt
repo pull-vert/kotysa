@@ -9,6 +9,9 @@ import com.pullvert.kotysa.createTable
 import com.pullvert.kotysa.deleteFromTable
 import com.pullvert.kotysa.select
 
+/**
+ * @author Fred Montariol
+ */
 @Suppress("UNUSED_VARIABLE")
 interface UserRepositoryBlocking {
     val sqlClient: SqlClientBlocking
@@ -18,6 +21,10 @@ interface UserRepositoryBlocking {
     fun insert() = sqlClient.insert(jdoe, bboss)
 
     fun deleteAll() = sqlClient.deleteFromTable<User>().execute()
+
+    fun deleteById(id: String) = sqlClient.deleteFromTable<User>()
+            .where { it[User::login] eq id }
+            .execute()
 
     fun findAll() = sqlClient.select<User>().fetchAll()
 

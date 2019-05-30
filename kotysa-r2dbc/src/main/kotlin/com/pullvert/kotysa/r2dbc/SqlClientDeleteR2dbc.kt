@@ -4,41 +4,47 @@
 
 package com.pullvert.kotysa.r2dbc
 
-import com.pullvert.kotysa.DefaultSqlClientDelete
-import com.pullvert.kotysa.Tables
-import com.pullvert.kotysa.getTable
+import com.pullvert.kotysa.*
 import org.springframework.data.r2dbc.core.DatabaseClient
 import kotlin.reflect.KClass
 
 /**
  * @author Fred Montariol
  */
-internal class SqlClientDeleteR2dbc private constructor(): DefaultSqlClientDelete() {
-    internal class DeleteProperties<T : Any> internal constructor(
-            val client: DatabaseClient,
-            override val tables: Tables,
-            override val tableClass: KClass<T>
-    ) : DefaultSqlClientDelete.DeleteProperties<T>
+internal class SqlClientDeleteR2dbc private constructor() : DefaultSqlClientDelete() {
 
     internal class Delete<T : Any> internal constructor(
-            private val client: DatabaseClient,
-            override val tables: Tables,
-            override val tableClass: KClass<T>
-    ) : DefaultSqlClientDelete.Delete<T>, ReactorSqlClientDelete.Delete, Return<T> {
+            override val client: DatabaseClient,
+            tables: Tables,
+            tableClass: KClass<T>
+    ) : DefaultSqlClientDelete.Delete<T>(tables, tableClass), ReactorSqlClientDelete.Delete, Return<T> {
 
-        override val deleteProperties: DeleteProperties<T>
-            get() {
-                return DeleteProperties(client, tables, tableClass)
-            }
+        override fun where(whereDsl: WhereDsl.(WhereFieldProvider) -> WhereClause): ReactorSqlClientDelete.Where {
+            val where = Where(client, properties)
+            where.addWhereClause(whereDsl)
+            return where
+        }
     }
 
-    private interface Return<T : Any> : DefaultSqlClientDelete.Return<T>, ReactorSqlClientDelete.Return {
-        override val deleteProperties: DeleteProperties<T>
+    private class Where<T : Any> internal constructor(
+            override val client: DatabaseClient,
+            override val properties: Properties<T>
+    ) : DefaultSqlClientDelete.Where<T>, ReactorSqlClientDelete.Where, Return<T>
 
-        override fun execute() = with(deleteProperties) {
-            // log SQL delete
-            deleteFromTableSql(tableClass)
-            client.delete().from(tables.getTable(tableClass).name).fetch().rowsUpdated()
+    private interface Return<T : Any> : DefaultSqlClientDelete.Return<T>, ReactorSqlClientDelete.Return {
+        val client: DatabaseClient
+
+        override fun execute() = with(properties) {
+            var executeSpec = client.execute()
+                    .sql(deleteFromTableSql())
+
+            whereClauses
+                    .mapNotNull { whereClause -> whereClause.value }
+                    .forEachIndexed { index, value ->
+                        executeSpec = executeSpec.bind(index, value)
+                    }
+
+            executeSpec.fetch().rowsUpdated()
         }
     }
 }

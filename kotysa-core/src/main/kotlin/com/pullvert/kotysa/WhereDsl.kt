@@ -13,8 +13,8 @@ import java.time.LocalTime
  * @author Fred Montariol
  */
 @KotysaMarker
-class WhereDsl<T : Any> internal constructor(
-        private val init: WhereDsl<T>.(WhereFieldProvider) -> WhereClause,
+class WhereDsl internal constructor(
+        private val init: WhereDsl.(WhereFieldProvider) -> WhereClause,
         override val availableColumns: Map<out (Any) -> Any?, Column<*, *>>
 ) : FieldProvider(), WhereFieldProvider {
 

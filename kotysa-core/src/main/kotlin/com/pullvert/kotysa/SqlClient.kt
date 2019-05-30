@@ -4,6 +4,7 @@
 
 package com.pullvert.kotysa
 
+import mu.KLogger
 import mu.KotlinLogging
 import java.time.Instant
 import java.time.LocalDate
@@ -11,6 +12,9 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty1
+import kotlin.reflect.KTypeParameter
+import kotlin.reflect.full.allSuperclasses
 
 /**
  * @author Fred Montariol
@@ -134,4 +138,92 @@ internal fun logValue(value: Any?) = when (value) {
     is LocalTime -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_TIME)}\'"
     is Boolean -> "$value"
     else -> throw RuntimeException("should never happen")
+}
+
+/**
+ * @author Fred Montariol
+ */
+open class DefaultSqlClientCommon protected constructor() {
+    protected interface Properties {
+        val tables: Tables
+        val whereClauses: MutableList<WhereClause>
+        val availableColumns: MutableMap<out (Any) -> Any?, Column<*, *>>
+    }
+
+    abstract class Instruction protected constructor() {
+        @Suppress("UNCHECKED_CAST")
+        protected fun <T : Any> addAvailableColumnsFromTable(
+                availableColumns: MutableMap<(Any) -> Any?, Column<*, *>>,
+                table: Table<T>
+        ) {
+            table.columns.forEach { (key, value) ->
+                // 1) add mapped getter
+                availableColumns[key as (Any) -> Any?] = value
+
+                val getterCallable = key.toCallable()
+
+                // 2) add overridden parent getters associated with this column
+                table.tableClass.allSuperclasses
+                        .flatMap { superClass -> superClass.members }
+                        .filter { callable ->
+                            callable.isAbstract
+                                    && callable.name == getterCallable.name
+                                    && (callable is KProperty1<*, *> || callable.name.startsWith("get"))
+                                    && (callable.returnType == getterCallable.returnType
+                                    || callable.returnType.classifier is KTypeParameter)
+                        }
+                        .forEach { callable ->
+                            availableColumns[callable as (Any) -> Any?] = value
+                        }
+            }
+        }
+    }
+
+    protected interface Where : Return {
+        fun addWhereClause(dsl: WhereDsl.(WhereFieldProvider) -> WhereClause) {
+            properties.apply {
+                whereClauses.add(WhereDsl(dsl, availableColumns).initialize())
+            }
+        }
+    }
+
+    protected interface Return {
+        val properties: Properties
+
+        fun whereAndWhereDebug(whereClauses: MutableList<WhereClause>, logger: KLogger): Pair<String, String> {
+            if (whereClauses.isEmpty()) {
+                return Pair("", "")
+            }
+
+            val wheres = whereClauses.joinToString(" AND ", "WHERE ") { whereClause ->
+                when (whereClause.operation) {
+                    Operation.EQ ->
+                        if (whereClause.value == null) {
+                            "${whereClause.field.fieldName} IS NULL"
+                        } else {
+                            "${whereClause.field.fieldName} = ?"
+                        }
+                    else -> throw RuntimeException("should never happen")
+                }
+            }
+
+            val wheresDebug = if (logger.isDebugEnabled) {
+                whereClauses.joinToString(" AND ", "WHERE ") { whereClause ->
+                    when (whereClause.operation) {
+                        Operation.EQ ->
+                            if (whereClause.value == null) {
+                                "${whereClause.field.fieldName} IS NULL"
+                            } else {
+                                "${whereClause.field.fieldName} = ${logValue(whereClause.value)}"
+                            }
+                        else -> throw RuntimeException("should never happen")
+                    }
+                }
+            } else {
+                ""
+            }
+
+            return Pair(wheres, wheresDebug)
+        }
+    }
 }

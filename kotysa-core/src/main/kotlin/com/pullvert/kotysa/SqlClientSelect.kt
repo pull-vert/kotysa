@@ -9,15 +9,21 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import kotlin.reflect.*
-import kotlin.reflect.full.*
+import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.KParameter
+import kotlin.reflect.full.createType
+import kotlin.reflect.full.memberFunctions
+import kotlin.reflect.full.primaryConstructor
+import kotlin.reflect.full.withNullability
 
 /**
  * @author Fred Montariol
  */
 open class SqlClientSelect private constructor() {
     interface Select<T : Any> : Return<T> {
-        fun where(whereDsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause): Where<T>
+        fun where(whereDsl: WhereDsl.(WhereFieldProvider) -> WhereClause): Where<T>
     }
 
     interface Where<T : Any> : Return<T>
@@ -30,7 +36,7 @@ open class SqlClientSelect private constructor() {
  */
 class SqlClientSelectBlocking private constructor() {
     interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T> {
-        override fun where(whereDsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause): Where<T>
+        override fun where(whereDsl: WhereDsl.(WhereFieldProvider) -> WhereClause): Where<T>
     }
 
     interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T>
@@ -48,22 +54,22 @@ private val logger = KotlinLogging.logger {}
 /**
  * @author Fred Montariol
  */
-open class DefaultSqlClientSelect protected constructor() {
-    class SelectProperties<T : Any>(
-            val tables: Tables,
+open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientCommon() {
+    class Properties<T : Any>(
+            override val tables: Tables,
             val selectInformation: SelectInformation<T>,
-            val whereClauses: MutableList<WhereClause>,
-            internal val availableColumns: MutableMap<out (Any) -> Any?, Column<*, *>>
-    )
+            override val whereClauses: MutableList<WhereClause>,
+            override val availableColumns: MutableMap<out (Any) -> Any?, Column<*, *>>
+    ) : DefaultSqlClientCommon.Properties
 
     @Suppress("UNCHECKED_CAST")
     abstract class Select<T : Any> protected constructor(
             tables: Tables,
             resultClass: KClass<T>,
             selectDsl: ((ValueProvider) -> T)?
-    ) : SqlClientSelect.Select<T>, Return<T> {
+    ) : DefaultSqlClientCommon.Instruction(), SqlClientSelect.Select<T>, Return<T> {
 
-        final override val selectProperties: SelectProperties<T>
+        final override val properties: Properties<T>
         private val selectInformation: SelectInformation<T>
 
         init {
@@ -78,29 +84,8 @@ open class DefaultSqlClientSelect protected constructor() {
             // build availableColumns Map
             val availableColumns = mutableMapOf<(Any) -> Any?, Column<*, *>>()
             selectInformation.selectedTables
-                    .forEach { table ->
-                        table.columns.forEach { (key, value) ->
-                            // 1) add mapped getter
-                            availableColumns[key as (Any) -> Any?] = value
-
-                            val getterCallable = key.toCallable()
-
-                            // 2) add overridden parent getters associated with this column
-                            table.tableClass.allSuperclasses
-                                    .flatMap { superClass -> superClass.members }
-                                    .filter { callable ->
-                                        callable.isAbstract
-                                                && callable.name == getterCallable.name
-                                                && (callable is KProperty1<*, *> || callable.name.startsWith("get"))
-                                                && (callable.returnType == getterCallable.returnType
-                                                || callable.returnType.classifier is KTypeParameter)
-                                    }
-                                    .forEach { callable ->
-                                        availableColumns[callable as (Any) -> Any?] = value
-                                    }
-                        }
-                    }
-            selectProperties = SelectProperties(tables, selectInformation, mutableListOf(), availableColumns)
+                    .forEach { table -> addAvailableColumnsFromTable(availableColumns, table) }
+            properties = Properties(tables, selectInformation, mutableListOf(), availableColumns)
         }
 
         @Suppress("UNCHECKED_CAST")
@@ -266,55 +251,18 @@ open class DefaultSqlClientSelect protected constructor() {
         }
     }
 
-    protected interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T> {
+    protected interface Where<T : Any> : DefaultSqlClientCommon.Where, SqlClientSelect.Where<T>, Return<T>
 
-        fun addWhereClause(dsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause) {
-            selectProperties.apply {
-                whereClauses.add(WhereDsl(dsl, availableColumns).initialize())
-            }
-        }
-    }
+    protected interface Return<T : Any> : DefaultSqlClientCommon.Return, SqlClientSelect.Return<T> {
+        override val properties: Properties<T>
 
-    protected interface Return<T : Any> : SqlClientSelect.Return<T> {
-        val selectProperties: SelectProperties<T>
-
-        fun selectSql(): String = with(selectProperties) {
+        fun selectSql() = with(properties) {
             val selects = selectInformation.selectedFields.joinToString(prefix = "SELECT ") { field -> field.fieldName }
             val froms = selectInformation.selectedTables.joinToString(prefix = "FROM ") { table -> table.name }
-            val wheres = if (whereClauses.isEmpty()) {
-                ""
-            } else {
-                whereClauses.joinToString(" AND ", "WHERE ") { whereClause ->
-                    when (whereClause.operation) {
-                        Operation.EQ ->
-                            if (whereClause.value == null) {
-                                "${whereClause.field.fieldName} IS NULL"
-                            } else {
-                                "${whereClause.field.fieldName} = ?"
-                            }
-                        else -> throw RuntimeException("should never happen")
-                    }
-                }
-            }
-            if (logger.isDebugEnabled) {
-                val wheresDebug = if (whereClauses.isEmpty()) {
-                    ""
-                } else {
-                    whereClauses.joinToString(" AND ", "WHERE ") { whereClause ->
-                        when (whereClause.operation) {
-                            Operation.EQ ->
-                                if (whereClause.value == null) {
-                                    "${whereClause.field.fieldName} IS NULL"
-                                } else {
-                                    "${whereClause.field.fieldName} = ${logValue(whereClause.value)}"
-                                }
-                            else -> throw RuntimeException("should never happen")
-                        }
-                    }
-                }
-                logger.debug { "Exec SQL : $selects $froms $wheresDebug" }
-            }
-            return "$selects $froms $wheres"
+            val whereAndWhereDebug = whereAndWhereDebug(whereClauses, logger)
+            logger.debug { "Exec SQL : $selects $froms ${whereAndWhereDebug.second}" }
+
+            "$selects $froms ${whereAndWhereDebug.first}"
         }
     }
 }

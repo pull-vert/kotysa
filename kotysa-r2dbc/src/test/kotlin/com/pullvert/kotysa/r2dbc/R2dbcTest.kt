@@ -104,6 +104,16 @@ class R2dbcTest {
         // re-insertUsers users
         repository.insertUsers().block()
     }
+
+    @Test
+    fun `Verify deleteUserById works`() {
+        assertThat(repository.deleteUserById(jdoe.login).block())
+                .isEqualTo(1)
+        assertThat(repository.findAllUsers().toIterable())
+                .hasSize(1)
+        // re-insertUsers jdoe
+        repository.insertJDoe().block()
+    }
 }
 
 private val tables =
@@ -162,6 +172,8 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun insertUsers() = sqlClient.insert(jdoe, bboss)
 
+    fun insertJDoe() = sqlClient.insert(jdoe)
+
     fun insertAllTypes() = sqlClient.insert(allTypesNotNull, allTypesNullable)
 
     fun deleteAllFromUsers() = sqlClient.deleteFromTable<User>().execute()
@@ -169,6 +181,10 @@ class UserRepository(dbClient: DatabaseClient) {
     fun deleteAllFromAllTypesNotNull() = sqlClient.deleteFromTable<AllTypesNotNull>().execute()
 
     fun deleteAllFromAllTypesNullable() = sqlClient.deleteFromTable<AllTypesNullable>().execute()
+
+    fun deleteUserById(id: String) = sqlClient.deleteFromTable<User>()
+            .where { it[User::login] eq id }
+            .execute()
 
     fun findAllUsers() = sqlClient.select<User>().fetchAll()
 

@@ -21,16 +21,16 @@ internal class SqlClientSelectR2dbc private constructor() : DefaultSqlClientSele
             selectDsl: ((ValueProvider) -> T)?
     ) : DefaultSqlClientSelect.Select<T>(tables, resultClass, selectDsl), ReactorSqlClientSelect.Select<T>, Return<T> {
 
-        override fun where(whereDsl: WhereDsl<T>.(WhereFieldProvider) -> WhereClause): ReactorSqlClientSelect.Where<T> {
-            val where = Where(client, selectProperties)
+        override fun where(whereDsl: WhereDsl.(WhereFieldProvider) -> WhereClause): ReactorSqlClientSelect.Where<T> {
+            val where = Where(client, properties)
             where.addWhereClause(whereDsl)
             return where
         }
     }
 
-    internal class Where<T : Any> internal constructor(
+    private class Where<T : Any> internal constructor(
             override val client: DatabaseClient,
-            override val selectProperties: SelectProperties<T>
+            override val properties: Properties<T>
     ) : DefaultSqlClientSelect.Where<T>, ReactorSqlClientSelect.Where<T>, Return<T>
 
     private interface Return<T : Any> : DefaultSqlClientSelect.Return<T>, ReactorSqlClientSelect.Return<T> {
@@ -41,7 +41,7 @@ internal class SqlClientSelectR2dbc private constructor() : DefaultSqlClientSele
         override fun fetchFirst() = fetch().first()
         override fun fetchAll() = fetch().all()
 
-        private fun fetch() = with(selectProperties) {
+        private fun fetch() = with(properties) {
             var executeSpec = client.execute()
                     .sql(selectSql())
             whereClauses
