@@ -11,6 +11,7 @@ import reactor.kotlin.core.publisher.toFlux
 import kotlin.reflect.KClass
 
 /**
+ * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
  * @author Fred Montariol
  */
 class SqlClientR2dbc(
@@ -71,6 +72,7 @@ class SqlClientR2dbc(
 /**
  * Create a [ReactorSqlClient] from a R2DBC [DatabaseClient] with [Tables] mapping
  *
+ * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
  * @author Fred Montariol
  */
 fun DatabaseClient.sqlClient(tables: Tables): ReactorSqlClient = SqlClientR2dbc(this, tables)

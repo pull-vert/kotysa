@@ -11,6 +11,8 @@ import kotlin.reflect.KClass
 
 /**
  * Reactive (using Reactor Mono and Flux) Sql Client, to be used with R2dbc
+ *
+ * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
  * @author Fred Montariol
  */
 interface ReactorSqlClient : SqlClient {

@@ -36,6 +36,8 @@ interface SqlClient {
 
 /**
  * Blocking Sql Client, to be used with any blocking JDBC driver
+ *
+ * @sample com.pullvert.kotysa.samples.UserRepositoryBlocking
  * @author Fred Montariol
  */
 interface SqlClientBlocking : SqlClient {
