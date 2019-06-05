@@ -12,41 +12,52 @@ import java.time.LocalTime
 /**
  * @author Fred Montariol
  */
-@Suppress("UNCHECKED_CAST")
-abstract class FieldProvider {
+interface FieldProvider {
+    operator fun <T : Any> get(getter: (T) -> String, alias: String? = null): NotNullStringColumnField<T>
 
-    internal abstract val availableColumns: Map<out (Any) -> Any?, Column<*, *>>
+    operator fun <T : Any> get(getter: (T) -> String?, alias: String? = null): NullableStringColumnField<T>
 
-    internal fun <T : Any> getField(getter: (T) -> String, alias: String?) =
-            NotNullStringColumnField(availableColumns, getter, alias)
+    operator fun <T : Any> get(getter: (T) -> LocalDateTime, alias: String? = null): NotNullLocalDateTimeColumnField<T>
 
-    internal fun <T : Any> getField(getter: (T) -> String?, alias: String?) =
-            NullableStringColumnField(availableColumns, getter, alias)
+    operator fun <T : Any> get(getter: (T) -> LocalDateTime?, alias: String? = null): NullableLocalDateTimeColumnField<T>
 
-    internal fun <T : Any> getField(getter: (T) -> LocalDateTime, alias: String?) =
-            NotNullLocalDateTimeColumnField(availableColumns, getter, alias)
+    operator fun <T : Any> get(getter: (T) -> LocalDate, alias: String? = null): NotNullLocalDateColumnField<T>
 
-    internal fun <T : Any> getField(getter: (T) -> LocalDateTime?, alias: String?) =
-            NullableLocalDateTimeColumnField(availableColumns, getter, alias)
+    operator fun <T : Any> get(getter: (T) -> LocalDate?, alias: String? = null): NullableLocalDateColumnField<T>
 
-    internal fun <T : Any> getField(getter: (T) -> LocalDate, alias: String?) =
-            NotNullLocalDateColumnField(availableColumns, getter, alias)
+    operator fun <T : Any> get(getter: (T) -> Instant, alias: String? = null): NotNullInstantColumnField<T>
 
-    internal fun <T : Any> getField(getter: (T) -> LocalDate?, alias: String?) =
-            NullableLocalDateColumnField(availableColumns, getter, alias)
+    operator fun <T : Any> get(getter: (T) -> Instant?, alias: String? = null): NullableInstantColumnField<T>
 
-    internal fun <T : Any> getField(getter: (T) -> Instant, alias: String?) =
-            NotNullInstantColumnField(availableColumns, getter, alias)
+    operator fun <T : Any> get(getter: (T) -> LocalTime, alias: String? = null): NotNullLocalTimeColumnField<T>
 
-    internal fun <T : Any> getField(getter: (T) -> Instant?, alias: String?) =
-            NullableInstantColumnField(availableColumns, getter, alias)
+    operator fun <T : Any> get(getter: (T) -> LocalTime?, alias: String? = null): NullableLocalTimeColumnField<T>
 
-    internal fun <T : Any> getField(getter: (T) -> LocalTime, alias: String?) =
-            NotNullLocalTimeColumnField(availableColumns, getter, alias)
+    operator fun <T : Any> get(getter: (T) -> Boolean, alias: String? = null): NotNullBooleanColumnField<T>
+}
 
-    internal fun <T : Any> getField(getter: (T) -> LocalTime?, alias: String?) =
-            NullableLocalTimeColumnField(availableColumns, getter, alias)
+open class SimpleFieldProvider(
+        override val availableColumns: Map<out (Any) -> Any?, Column<*, *>>
+) : FieldAccess(), FieldProvider {
+    override fun <T : Any> get(getter: (T) -> String, alias: String?) = getField(getter, alias)
 
-    internal fun <T : Any> getField(getter: (T) -> Boolean, alias: String?) =
-            NotNullBooleanColumnField(availableColumns, getter, alias)
+    override fun <T : Any> get(getter: (T) -> String?, alias: String?) = getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> LocalDateTime, alias: String?) = getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> LocalDateTime?, alias: String?) = getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> LocalDate, alias: String?) = getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> LocalDate?, alias: String?) = getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> Instant, alias: String?) = getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> Instant?, alias: String?) = getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> LocalTime, alias: String?) = getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> LocalTime?, alias: String?) = getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> Boolean, alias: String?) = getField(getter, alias)
 }

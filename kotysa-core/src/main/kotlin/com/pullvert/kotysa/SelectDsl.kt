@@ -8,21 +8,38 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import kotlin.reflect.KClass
 
 /**
  * All methods return an unused value
  * @author Fred Montariol
  */
 class SelectDsl<T> internal constructor(
-        private val init: (ValueProvider) -> T,
-        override val availableColumns: Map<out (Any) -> Any?, Column<*, *>>
-) : FieldProvider(), ValueProvider {
+        private val init: SelectDslApi.(ValueProvider) -> T,
+        private val tables: Tables
+) : FieldAccess(), ValueProvider, SelectDslApi {
+    override val availableColumns: Map<out (Any) -> Any?, Column<*, *>> = tables.allColumns
 
     private var fieldIndex = 0
-    private val columnPropertyIndexMap = mutableMapOf<(Any) -> Any?, Int>()
+    private val fieldIndexMap = mutableMapOf<Field, Int>()
     private val selectedGetters = mutableListOf<(Any) -> Any?>()
     private val selectedFields = mutableListOf<Field>()
     private val selectedTables = mutableSetOf<Table<*>>()
+
+    override fun <T : Any> count(resultClass: KClass<T>, dsl: ((FieldProvider) -> ColumnField<T, *>)?, alias: String?): Long {
+        if (dsl == null) {
+            tables.checkTable(resultClass)
+        }
+        val columnField = dsl?.invoke(SimpleFieldProvider(availableColumns))
+        val table = tables.getTable(resultClass)
+        if (!selectedTables.contains(table)) {
+            selectedTables.add(table)
+        }
+        addField(CountField(dsl, columnField, alias))
+        return Long.MAX_VALUE
+    }
+
+
 
     override operator fun <T : Any> get(getter: (T) -> String, alias: String?): String {
         val field = getField(getter, alias)
@@ -91,25 +108,29 @@ class SelectDsl<T> internal constructor(
     }
 
     private fun <T : Any> addColumnField(getter: (T) -> Any?, columnField: ColumnField<*, *>) {
-        addField(getter, columnField)
+        addFieldAndGetter(columnField, getter)
         if (!selectedTables.contains(columnField.column.table)) {
             selectedTables.add(columnField.column.table)
         }
     }
 
-    private fun <T : Any> addField(getter: (T) -> Any?, field: Field) {
+    private fun <T : Any> addFieldAndGetter(field: Field, getter: (T) -> Any?) {
         require(!selectedGetters.contains(getter)) {
             "\"$getter\" is already selected, you cannot select the same field multiple times"
         }
         @Suppress("UNCHECKED_CAST")
         selectedGetters.add(getter as (Any) -> Any?)
+        addField(field)
+    }
+
+    private fun addField(field: Field) {
         selectedFields.add(field)
-        columnPropertyIndexMap[getter] = fieldIndex++
+        fieldIndexMap[field] = fieldIndex++
     }
 
     internal fun initialize(): SelectInformation<T> {
         init(this)
-        require(columnPropertyIndexMap.isNotEmpty()) { "Table must declare at least one column" }
-        return SelectInformation(columnPropertyIndexMap, selectedFields, selectedTables, init)
+        require(fieldIndexMap.isNotEmpty()) { "Table must declare at least one column" }
+        return SelectInformation(fieldIndexMap, selectedFields, selectedTables, init)
     }
 }

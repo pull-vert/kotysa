@@ -18,8 +18,8 @@ class SqlClientR2dbc(
         override val tables: Tables
 ) : DefaultSqlClient, ReactorSqlClient {
 
-    override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T> {
-        return SqlClientSelectR2dbc.Select(client, tables, resultClass, selectDsl)
+    override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T> {
+        return SqlClientSelectR2dbc.Select(client, tables, resultClass, dsl)
     }
 
     override fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void> {

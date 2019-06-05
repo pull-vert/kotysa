@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
  */
 interface ReactorSqlClient : SqlClient {
 
-    override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T>
+    override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T>
 
     override fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void>
 
@@ -32,7 +32,7 @@ interface ReactorSqlClient : SqlClient {
  * @author Fred Montariol
  */
 inline fun <reified T : Any> ReactorSqlClient.select(
-        noinline selectDsl: ((ValueProvider) -> T)? = null
+        noinline selectDsl: (SelectDslApi.(ValueProvider) -> T)? = null
 ) = select(T::class, selectDsl)
 
 /**
@@ -51,7 +51,7 @@ inline fun <reified T : Any> ReactorSqlClient.deleteFromTable() = deleteFromTabl
  */
 class ReactorSqlClientSelect private constructor() {
     interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T> {
-        override fun where(whereDsl: WhereDsl.(WhereFieldProvider) -> WhereClause): Where<T>
+        override fun where(whereDsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
     }
 
     interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T>
@@ -68,7 +68,7 @@ class ReactorSqlClientSelect private constructor() {
  */
 class ReactorSqlClientDelete private constructor() {
     interface Delete : SqlClientDelete.Delete, Return {
-        override fun where(whereDsl: WhereDsl.(WhereFieldProvider) -> WhereClause): Where
+        override fun where(whereDsl: WhereDsl.(FieldProvider) -> WhereClause): Where
     }
 
     interface Where : SqlClientDelete.Where, Return

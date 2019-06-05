@@ -68,7 +68,7 @@ data class User(
 ### Write Type-Safe Queries with SqlClient
 
 **SqlClient** supports :
-* ```select<T>``` that returns one (```fetchOne()```) or several (```fetchAll()```) results
+* ```select<T>``` that returns one (```fetchOne()``` and ```fetchFirst()```) or several (```fetchAll()```) results
 * ```createTable<T>``` and ```createTables``` for table creation
 * ```insert``` for single or multiple rows insertion
 * ```deleteFromTable<T>``` that returns number of deleted rows
@@ -85,6 +85,10 @@ fun deleteById(id: String) = sqlClient.deleteFromTable<User>()
         .execute()
 
 fun findAll() = sqlClient.select<User>().fetchAll()
+
+fun countAll() = sqlClient.select { count<User>() }.fetchOne()
+
+fun countWithAlias() = sqlClient.select { count { it[User::alias] } }.fetchOne()
 
 fun findAllMappedToDto() =
         sqlClient.select {

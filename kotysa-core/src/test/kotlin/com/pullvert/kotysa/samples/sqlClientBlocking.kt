@@ -4,10 +4,7 @@
 
 package com.pullvert.kotysa.samples
 
-import com.pullvert.kotysa.SqlClientBlocking
-import com.pullvert.kotysa.createTable
-import com.pullvert.kotysa.deleteFromTable
-import com.pullvert.kotysa.select
+import com.pullvert.kotysa.*
 
 /**
  * @author Fred Montariol
@@ -27,6 +24,10 @@ interface UserRepositoryBlocking {
             .execute()
 
     fun findAll() = sqlClient.select<User>().fetchAll()
+
+    fun countAll() = sqlClient.select { count<User>() }.fetchOne()
+
+    fun countWithAlias() = sqlClient.select { count { it[User::alias] } }.fetchOne()
 
     fun findAllMappedToDto() =
             sqlClient.select {

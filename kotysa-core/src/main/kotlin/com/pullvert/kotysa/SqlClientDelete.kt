@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  */
 class SqlClientDelete private constructor() {
     interface Delete : Return {
-        fun where(whereDsl: WhereDsl.(WhereFieldProvider) -> WhereClause): Where
+        fun where(whereDsl: WhereDsl.(FieldProvider) -> WhereClause): Where
     }
 
     interface Where : Return
@@ -25,7 +25,7 @@ class SqlClientDelete private constructor() {
  */
 class SqlClientDeleteBlocking private constructor() {
     interface Delete : SqlClientDelete.Delete, Return {
-        override fun where(whereDsl: WhereDsl.(WhereFieldProvider) -> WhereClause): Where
+        override fun where(whereDsl: WhereDsl.(FieldProvider) -> WhereClause): Where
     }
 
     interface Where : SqlClientDelete.Where, Return

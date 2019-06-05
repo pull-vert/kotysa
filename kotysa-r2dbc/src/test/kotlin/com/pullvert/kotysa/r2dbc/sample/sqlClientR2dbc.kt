@@ -4,6 +4,7 @@
 
 package com.pullvert.kotysa.r2dbc.sample
 
+import com.pullvert.kotysa.count
 import com.pullvert.kotysa.r2dbc.createTable
 import com.pullvert.kotysa.r2dbc.deleteFromTable
 import com.pullvert.kotysa.r2dbc.select
@@ -29,6 +30,10 @@ class UserRepositoryR2dbc(dbClient: DatabaseClient) {
             .execute()
 
     fun findAll() = sqlClient.select<User>().fetchAll()
+
+    fun countAll() = sqlClient.select { count<User>() }.fetchOne()
+
+    fun countWithAlias() = sqlClient.select { count { it[User::alias] } }.fetchOne()
 
     fun findAllMappedToDto() =
             sqlClient.select {

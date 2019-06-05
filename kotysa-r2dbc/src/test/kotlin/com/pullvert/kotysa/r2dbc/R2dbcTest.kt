@@ -61,6 +61,18 @@ class R2dbcTest {
     }
 
     @Test
+    fun `Verify countUsers returns 2`() {
+        assertThat(repository.countAllUsers().block())
+                .isEqualTo(2L)
+    }
+
+    @Test
+    fun `Verify countUsers with alias returns 1`() {
+        assertThat(repository.countUsersWithAlias().block())
+                .isEqualTo(1L)
+    }
+
+    @Test
     fun `Verify findFirstByFirstame finds John`() {
         assertThat(repository.findFirstByFirstame("John").block())
                 .isEqualTo(jdoe)
@@ -187,6 +199,10 @@ class UserRepository(dbClient: DatabaseClient) {
             .execute()
 
     fun findAllUsers() = sqlClient.select<User>().fetchAll()
+
+    fun countAllUsers() = sqlClient.select { count<User>() }.fetchOne()
+
+    fun countUsersWithAlias() = sqlClient.select { count { it[User::alias] } }.fetchOne()
 
     fun findAllAllTypesNotNull() = sqlClient.select<AllTypesNotNull>().fetchAll()
 

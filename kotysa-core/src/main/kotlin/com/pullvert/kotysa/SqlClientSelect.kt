@@ -23,7 +23,7 @@ import kotlin.reflect.full.withNullability
  */
 open class SqlClientSelect private constructor() {
     interface Select<T : Any> : Return<T> {
-        fun where(whereDsl: WhereDsl.(WhereFieldProvider) -> WhereClause): Where<T>
+        fun where(whereDsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
     }
 
     interface Where<T : Any> : Return<T>
@@ -36,7 +36,7 @@ open class SqlClientSelect private constructor() {
  */
 class SqlClientSelectBlocking private constructor() {
     interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T> {
-        override fun where(whereDsl: WhereDsl.(WhereFieldProvider) -> WhereClause): Where<T>
+        override fun where(whereDsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
     }
 
     interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T>
@@ -66,18 +66,18 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
     abstract class Select<T : Any> protected constructor(
             tables: Tables,
             resultClass: KClass<T>,
-            selectDsl: ((ValueProvider) -> T)?
+            dsl: (SelectDslApi.(ValueProvider) -> T)?
     ) : DefaultSqlClientCommon.Instruction(), SqlClientSelect.Select<T>, Return<T> {
 
         final override val properties: Properties<T>
         private val selectInformation: SelectInformation<T>
 
         init {
-            if (selectDsl == null) {
+            if (dsl == null) {
                 tables.checkTable(resultClass)
             }
-            selectInformation = if (selectDsl != null) {
-                SelectDsl(selectDsl, tables.allColumns).initialize()
+            selectInformation = if (dsl != null) {
+                SelectDsl(dsl, tables).initialize()
             } else {
                 selectInformationForSingleClass(resultClass, tables)
             }
@@ -91,13 +91,13 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
         @Suppress("UNCHECKED_CAST")
         private fun selectInformationForSingleClass(resultClass: KClass<T>, tables: Tables): SelectInformation<T> {
             val table = tables.allTables[resultClass] as Table<T>
-            val columnPropertyIndexMap = mutableMapOf<(Any) -> Any?, Int>()
+            val fieldIndexMap = mutableMapOf<Field, Int>()
 
             // build selectedFields List & fill columnPropertyIndexMap
-            val selectedFields = selectedFieldsFromTable(table.columns, columnPropertyIndexMap, tables.allColumns)
+            val selectedFields = selectedFieldsFromTable(table.columns, fieldIndexMap, tables.allColumns)
 
             // Build select Function : (ValueProvider) -> T
-            val select: (ValueProvider) -> T = { it ->
+            val select: SelectDslApi.(ValueProvider) -> T = { it ->
                 val associatedColumns = mutableListOf<Column<*, *>>()
                 val constructor = getTableConstructor(table.tableClass)
                 val instance = with(constructor!!) {
@@ -168,7 +168,7 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
                 }
                 instance
             }
-            return SelectInformation(columnPropertyIndexMap, selectedFields, setOf(table), select)
+            return SelectInformation(fieldIndexMap, selectedFields, setOf(table), select)
         }
 
         private fun valueProviderCall(getter: (T) -> Any?, valueProvider: ValueProvider): Any? =
@@ -200,13 +200,12 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
 
         private fun selectedFieldsFromTable(
                 columns: Map<(T) -> Any?, Column<T, *>>,
-                columnPropertyIndexMap: MutableMap<(Any) -> Any?, Int>,
+                fieldIndexMap: MutableMap<Field, Int>,
                 allColumns: Map<out (Any) -> Any?, Column<*, *>>
         ): List<Field> {
             var fieldIndex = 0
             val selectedFields = mutableListOf<Field>()
             columns.forEach { (getter, _) ->
-                columnPropertyIndexMap[getter as (Any) -> Any?] = fieldIndex++
                 val getterType = getter.toCallable().returnType
                 val field = when (getterType.withNullability(false)) {
                     String::class.createType() ->
@@ -246,6 +245,7 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
                     else -> throw RuntimeException("should never happen")
                 }
                 selectedFields.add(field)
+                fieldIndexMap[field] = fieldIndex++
             }
             return selectedFields
         }
@@ -271,8 +271,8 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
  * @author Fred Montariol
  */
 data class SelectInformation<T>(
-        val columnPropertyIndexMap: Map<out (Any) -> Any?, Int>,
+        val fieldIndexMap: Map<Field, Int>,
         internal val selectedFields: List<Field>,
         internal val selectedTables: Set<Table<*>>,
-        val select: (ValueProvider) -> T
+        val select: SelectDslApi.(ValueProvider) -> T
 )

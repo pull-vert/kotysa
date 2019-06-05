@@ -21,7 +21,7 @@ import kotlin.reflect.full.allSuperclasses
  */
 interface SqlClient {
 
-    fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): SqlClientSelect.Select<T>
+    fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): SqlClientSelect.Select<T>
 
     fun <T : Any> createTable(tableClass: KClass<T>): Any
 
@@ -40,7 +40,7 @@ interface SqlClient {
  */
 interface SqlClientBlocking : SqlClient {
 
-    override fun <T : Any> select(resultClass: KClass<T>, selectDsl: ((ValueProvider) -> T)?): SqlClientSelectBlocking.Select<T>
+    override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): SqlClientSelectBlocking.Select<T>
 
     override fun <T : Any> createTable(tableClass: KClass<T>)
 
@@ -59,8 +59,8 @@ interface SqlClientBlocking : SqlClient {
  * @author Fred Montariol
  */
 inline fun <reified T : Any> SqlClientBlocking.select(
-        noinline selectDsl: ((ValueProvider) -> T)? = null
-) = select(T::class, selectDsl)
+        noinline dsl: (SelectDslApi.(ValueProvider) -> T)? = null
+) = select(T::class, dsl)
 
 /**
  * @author Fred Montariol
@@ -180,7 +180,7 @@ open class DefaultSqlClientCommon protected constructor() {
     }
 
     protected interface Where : Return {
-        fun addWhereClause(dsl: WhereDsl.(WhereFieldProvider) -> WhereClause) {
+        fun addWhereClause(dsl: WhereDsl.(FieldProvider) -> WhereClause) {
             properties.apply {
                 whereClauses.add(WhereDsl(dsl, availableColumns).initialize())
             }

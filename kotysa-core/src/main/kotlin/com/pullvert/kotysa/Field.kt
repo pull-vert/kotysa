@@ -27,6 +27,19 @@ interface NotNullField : Field
  */
 interface NullableField : Field
 
+class CountField<T : Any, U> internal constructor(
+        internal val dsl: ((FieldProvider) -> ColumnField<T, *>)?,
+        private val columnField: ColumnField<T, U>?,
+        override val alias: String?
+) : NotNullField {
+    override val fieldName: String
+        get() {
+            val counted = columnField?.fieldName ?: "*"
+            return "COUNT($counted)"
+        }
+
+}
+
 /**
  * @author Fred Montariol
  */

@@ -14,36 +14,13 @@ import java.time.LocalTime
  */
 @KotysaMarker
 class WhereDsl internal constructor(
-        private val init: WhereDsl.(WhereFieldProvider) -> WhereClause,
-        override val availableColumns: Map<out (Any) -> Any?, Column<*, *>>
-) : FieldProvider(), WhereFieldProvider {
+        private val init: WhereDsl.(FieldProvider) -> WhereClause,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>
+) : SimpleFieldProvider(availableColumns) {
 
     infix fun <U : Any> NotNullStringColumnField<U>.eq(stringValue: String) = WhereClause(this, Operation.EQ, stringValue)
 
     infix fun <U : Any> NullableStringColumnField<U>.eq(stringValue: String?) = WhereClause(this, Operation.EQ, stringValue)
-
-
-    override fun <T : Any> get(getter: (T) -> String, alias: String?) = getField(getter, alias)
-
-    override fun <T : Any> get(getter: (T) -> String?, alias: String?) = getField(getter, alias)
-
-    override fun <T : Any> get(getter: (T) -> LocalDateTime, alias: String?) = getField(getter, alias)
-
-    override fun <T : Any> get(getter: (T) -> LocalDateTime?, alias: String?) = getField(getter, alias)
-
-    override fun <T : Any> get(getter: (T) -> LocalDate, alias: String?) = getField(getter, alias)
-
-    override fun <T : Any> get(getter: (T) -> LocalDate?, alias: String?) = getField(getter, alias)
-
-    override fun <T : Any> get(getter: (T) -> Instant, alias: String?) = getField(getter, alias)
-
-    override fun <T : Any> get(getter: (T) -> Instant?, alias: String?) = getField(getter, alias)
-
-    override fun <T : Any> get(getter: (T) -> LocalTime, alias: String?) = getField(getter, alias)
-
-    override fun <T : Any> get(getter: (T) -> LocalTime?, alias: String?) = getField(getter, alias)
-
-    override fun <T : Any> get(getter: (T) -> Boolean, alias: String?) = getField(getter, alias)
 
     @Suppress("UNCHECKED_CAST")
     internal fun initialize(): WhereClause {

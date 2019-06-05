@@ -18,10 +18,10 @@ internal class SqlClientSelectR2dbc private constructor() : DefaultSqlClientSele
             override val client: DatabaseClient,
             tables: Tables,
             resultClass: KClass<T>,
-            selectDsl: ((ValueProvider) -> T)?
-    ) : DefaultSqlClientSelect.Select<T>(tables, resultClass, selectDsl), ReactorSqlClientSelect.Select<T>, Return<T> {
+            dsl: (SelectDslApi.(ValueProvider) -> T)?
+    ) : DefaultSqlClientSelect.Select<T>(tables, resultClass, dsl), ReactorSqlClientSelect.Select<T>, Return<T> {
 
-        override fun where(whereDsl: WhereDsl.(WhereFieldProvider) -> WhereClause): ReactorSqlClientSelect.Where<T> {
+        override fun where(whereDsl: WhereDsl.(FieldProvider) -> WhereClause): ReactorSqlClientSelect.Where<T> {
             val where = Where(client, properties)
             where.addWhereClause(whereDsl)
             return where
@@ -51,15 +51,16 @@ internal class SqlClientSelectR2dbc private constructor() : DefaultSqlClientSele
                     }
 
             executeSpec.map { r, _ ->
-                selectInformation.select.invoke(R2dbcRow(r, selectInformation.columnPropertyIndexMap))
+                val row = R2dbcRow(r, selectInformation.fieldIndexMap)
+                selectInformation.select(row, row)
             }
         }
 
         @Suppress("UNCHECKED_CAST")
         private class R2dbcRow(
                 private val r2bcRow: Row,
-                columnPropertyIndexMap: Map<out (Any) -> Any?, Int>
-        ) : AbstractRow(columnPropertyIndexMap) {
+                fieldIndexMap: Map<Field, Int>
+        ) : AbstractRow(fieldIndexMap) {
             override fun <T> get(index: Int, type: Class<T>) = r2bcRow.get(index, type) as T
         }
     }
