@@ -23,7 +23,7 @@ import kotlin.reflect.full.withNullability
  */
 open class SqlClientSelect private constructor() {
     interface Select<T : Any> : Return<T> {
-        fun where(whereDsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
+        fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
     }
 
     interface Where<T : Any> : Return<T>
@@ -36,7 +36,7 @@ open class SqlClientSelect private constructor() {
  */
 class SqlClientSelectBlocking private constructor() {
     interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T> {
-        override fun where(whereDsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
+        override fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
     }
 
     interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T>

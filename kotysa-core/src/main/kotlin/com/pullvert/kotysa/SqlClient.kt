@@ -31,7 +31,9 @@ interface SqlClient {
 
     fun insert(vararg rows: Any): Any
 
-    fun <T : Any> deleteFromTable(tableClass: KClass<T>): SqlClientDelete.Delete
+    fun <T : Any> deleteFromTable(tableClass: KClass<T>): SqlClientDelete.Delete<T>
+
+    fun <T : Any> updateTable(tableClass: KClass<T>): SqlClientUpdate.Update<T>
 }
 
 /**
@@ -54,7 +56,9 @@ interface SqlClientBlocking : SqlClient {
 
     override fun insert(vararg rows: Any)
 
-    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): SqlClientDeleteBlocking.Delete
+    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): SqlClientDeleteBlocking.Delete<T>
+
+    override fun <T : Any> updateTable(tableClass: KClass<T>): SqlClientUpdateBlocking.Update<T>
 }
 
 /**
@@ -73,6 +77,11 @@ inline fun <reified T : Any> SqlClientBlocking.createTable() = createTable(T::cl
  * @author Fred Montariol
  */
 inline fun <reified T : Any> SqlClientBlocking.deleteFromTable() = deleteFromTable(T::class)
+
+/**
+ * @author Fred Montariol
+ */
+inline fun <reified T : Any> SqlClientBlocking.updateTable() = updateTable(T::class)
 
 
 private fun tableMustBeMapped(tableName: String?) = "Requested table \"$tableName\" is not mapped"
@@ -185,6 +194,14 @@ open class DefaultSqlClientCommon protected constructor() {
         fun addWhereClause(dsl: WhereDsl.(FieldProvider) -> WhereClause) {
             properties.apply {
                 whereClauses.add(WhereDsl(dsl, availableColumns).initialize())
+            }
+        }
+    }
+
+    protected interface TypedWhere<T : Any> : Return {
+        fun addWhereClause(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause) {
+            properties.apply {
+                whereClauses.add(TypedWhereDsl(dsl, availableColumns).initialize())
             }
         }
     }

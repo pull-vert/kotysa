@@ -95,3 +95,6 @@ inline fun <reified T : Entity<String>> InheritanceRepository.findById(id: Strin
 
 inline fun <reified T : Nameable> InheritanceRepository.findFirstByName(name: String) =
         sqlClient.select<T>().where { it[Nameable::name] eq name }.fetchFirst()
+
+inline fun <reified T : Entity<String>> InheritanceRepository.deleteById(id: String) =
+        sqlClient.deleteFromTable<T>().where { it[Entity<String>::getId] eq id }.execute() // todo test it

@@ -65,8 +65,11 @@ class SqlClientR2dbc(
                 .then()
     }
 
-    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): ReactorSqlClientDelete.Delete =
+    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): ReactorSqlClientDelete.Delete<T> =
             SqlClientDeleteR2dbc.Delete(client, tables, tableClass)
+
+    override fun <T : Any> updateTable(tableClass: KClass<T>): ReactorSqlClientUpdate.Update<T> =
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 }
 
 /**

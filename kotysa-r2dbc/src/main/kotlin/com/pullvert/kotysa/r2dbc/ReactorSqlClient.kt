@@ -27,7 +27,9 @@ interface ReactorSqlClient : SqlClient {
 
     override fun insert(vararg rows: Any): Mono<Void>
 
-    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): ReactorSqlClientDelete.Delete
+    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): ReactorSqlClientDelete.Delete<T>
+
+    override fun <T : Any> updateTable(tableClass: KClass<T>): ReactorSqlClientUpdate.Update<T>
 }
 
 /**
@@ -52,8 +54,9 @@ inline fun <reified T : Any> ReactorSqlClient.deleteFromTable() = deleteFromTabl
  * @author Fred Montariol
  */
 class ReactorSqlClientSelect private constructor() {
+
     interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T> {
-        override fun where(whereDsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
+        override fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
     }
 
     interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T>
@@ -69,13 +72,30 @@ class ReactorSqlClientSelect private constructor() {
  * @author Fred Montariol
  */
 class ReactorSqlClientDelete private constructor() {
-    interface Delete : SqlClientDelete.Delete, Return {
-        override fun where(whereDsl: WhereDsl.(FieldProvider) -> WhereClause): Where
+
+    interface Delete<T : Any> : SqlClientDelete.Delete<T>, Return {
+        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): Where
     }
 
     interface Where : SqlClientDelete.Where, Return
 
     interface Return : SqlClientDelete.Return {
         fun execute(): Mono<Int>
+    }
+}
+
+/**
+ * @author Fred Montariol
+ */
+class ReactorSqlClientUpdate private constructor() {
+
+    interface Update<T : Any> : SqlClientUpdate.Update<T>, Return {
+        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): Where
+    }
+
+    interface Where : SqlClientUpdate.Where, Return
+
+    interface Return : SqlClientUpdate.Return {
+        fun execute(): Mono<Void>
     }
 }

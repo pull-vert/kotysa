@@ -4,23 +4,37 @@
 
 package com.pullvert.kotysa
 
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-
 /**
  * @author Fred Montariol
  */
 @KotysaMarker
-class WhereDsl internal constructor(
-        private val init: WhereDsl.(FieldProvider) -> WhereClause,
-        availableColumns: Map<out (Any) -> Any?, Column<*, *>>
-) : SimpleFieldProvider(availableColumns) {
-
+interface CommonWhereDsl {
     infix fun <U : Any> NotNullStringColumnField<U>.eq(stringValue: String) = WhereClause(this, Operation.EQ, stringValue)
 
     infix fun <U : Any> NullableStringColumnField<U>.eq(stringValue: String?) = WhereClause(this, Operation.EQ, stringValue)
+}
+
+/**
+ * @author Fred Montariol
+ */
+class WhereDsl internal constructor(
+        private val init: WhereDsl.(FieldProvider) -> WhereClause,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>
+) : SimpleFieldProvider(availableColumns), CommonWhereDsl {
+
+    @Suppress("UNCHECKED_CAST")
+    internal fun initialize(): WhereClause {
+        return init(this)
+    }
+}
+
+/**
+ * @author Fred Montariol
+ */
+class TypedWhereDsl<T : Any> internal constructor(
+        private val init: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause,
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>
+) : SimpleTypedFieldProvider<T>(availableColumns), CommonWhereDsl {
 
     @Suppress("UNCHECKED_CAST")
     internal fun initialize(): WhereClause {

@@ -21,9 +21,9 @@ internal class SqlClientSelectR2dbc private constructor() : DefaultSqlClientSele
             dsl: (SelectDslApi.(ValueProvider) -> T)?
     ) : DefaultSqlClientSelect.Select<T>(tables, resultClass, dsl), ReactorSqlClientSelect.Select<T>, Return<T> {
 
-        override fun where(whereDsl: WhereDsl.(FieldProvider) -> WhereClause): ReactorSqlClientSelect.Where<T> {
+        override fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): ReactorSqlClientSelect.Where<T> {
             val where = Where(client, properties)
-            where.addWhereClause(whereDsl)
+            where.addWhereClause(dsl)
             return where
         }
     }

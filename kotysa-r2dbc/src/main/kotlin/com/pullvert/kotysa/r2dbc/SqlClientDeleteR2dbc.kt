@@ -17,11 +17,11 @@ internal class SqlClientDeleteR2dbc private constructor() : DefaultSqlClientDele
             override val client: DatabaseClient,
             tables: Tables,
             tableClass: KClass<T>
-    ) : DefaultSqlClientDelete.Delete<T>(tables, tableClass), ReactorSqlClientDelete.Delete, Return<T> {
+    ) : DefaultSqlClientDelete.Delete<T>(tables, tableClass), ReactorSqlClientDelete.Delete<T>, Return<T> {
 
-        override fun where(whereDsl: WhereDsl.(FieldProvider) -> WhereClause): ReactorSqlClientDelete.Where {
+        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): ReactorSqlClientDelete.Where {
             val where = Where(client, properties)
-            where.addWhereClause(whereDsl)
+            where.addWhereClause(dsl)
             return where
         }
     }

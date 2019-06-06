@@ -10,8 +10,8 @@ import kotlin.reflect.KClass
 /**
  * @author Fred Montariol
  */
-class SqlClientDelete private constructor() {
-    interface Delete<T : Any> : Return {
+class SqlClientUpdate private constructor() {
+    interface Update<T : Any> : Return {
         fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): Where
     }
 
@@ -23,15 +23,15 @@ class SqlClientDelete private constructor() {
 /**
  * @author Fred Montariol
  */
-class SqlClientDeleteBlocking private constructor() {
-    interface Delete<T : Any> : SqlClientDelete.Delete<T>, Return {
+class SqlClientUpdateBlocking private constructor() {
+    interface Update<T : Any> : SqlClientUpdate.Update<T>, Return {
         override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): Where
     }
 
-    interface Where : SqlClientDelete.Where, Return
+    interface Where : SqlClientUpdate.Where, Return
 
-    interface Return : SqlClientDelete.Return {
-        fun execute(): Int
+    interface Return : SqlClientUpdate.Return {
+        fun execute()
     }
 }
 
@@ -41,7 +41,7 @@ private val logger = KotlinLogging.logger {}
 /**
  * @author Fred Montariol
  */
-open class DefaultSqlClientDelete protected constructor() : DefaultSqlClientCommon() {
+open class DefaultSqlClientUpdate protected constructor() : DefaultSqlClientCommon() {
 
     class Properties<T : Any>(
             override val tables: Tables,
@@ -50,10 +50,10 @@ open class DefaultSqlClientDelete protected constructor() : DefaultSqlClientComm
             override val availableColumns: MutableMap<out (Any) -> Any?, Column<*, *>>
     ) : DefaultSqlClientCommon.Properties
 
-    abstract class Delete<T : Any> protected constructor(
+    abstract class Update<T : Any> protected constructor(
             tables: Tables,
             tableClass: KClass<T>
-    ) : DefaultSqlClientCommon.Instruction(), SqlClientDelete.Delete<T>, Return<T> {
+    ) : DefaultSqlClientCommon.Instruction(), SqlClientUpdate.Update<T>, Return<T> {
         final override val properties: Properties<T>
 
         init {
@@ -66,17 +66,17 @@ open class DefaultSqlClientDelete protected constructor() : DefaultSqlClientComm
         }
     }
 
-    protected interface Where<T : Any> : TypedWhere<T>, SqlClientDelete.Where, Return<T>
+    protected interface Where<T : Any> : TypedWhere<T>, SqlClientUpdate.Where, Return<T>
 
-    protected interface Return<T : Any> : DefaultSqlClientCommon.Return, SqlClientDelete.Return {
+    protected interface Return<T : Any> : DefaultSqlClientCommon.Return, SqlClientUpdate.Return {
         override val properties: Properties<T>
 
-        fun deleteFromTableSql() = with(properties) {
-            val deleteSql = "DELETE FROM ${table.name}"
+        fun updateTableSql() = with(properties) {
+            val updateSql = "UPDATE ${table.name}"
             val whereAndWhereDebug = whereAndWhereDebug(whereClauses, logger)
-            logger.debug { "Exec SQL : $deleteSql ${whereAndWhereDebug.second}" }
+            logger.debug { "Exec SQL : $updateSql ${whereAndWhereDebug.second}" }
 
-            "$deleteSql ${whereAndWhereDebug.first}"
+            "$updateSql ${whereAndWhereDebug.first}"
         }
     }
 }
