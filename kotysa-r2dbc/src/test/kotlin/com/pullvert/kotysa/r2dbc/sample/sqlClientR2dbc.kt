@@ -5,11 +5,9 @@
 package com.pullvert.kotysa.r2dbc.sample
 
 import com.pullvert.kotysa.count
-import com.pullvert.kotysa.r2dbc.createTable
-import com.pullvert.kotysa.r2dbc.deleteFromTable
-import com.pullvert.kotysa.r2dbc.select
-import com.pullvert.kotysa.r2dbc.sqlClient
+import com.pullvert.kotysa.r2dbc.*
 import com.pullvert.kotysa.samples.*
+import com.pullvert.kotysa.updateTable
 import org.springframework.data.r2dbc.core.DatabaseClient
 
 /**
@@ -50,6 +48,14 @@ class UserRepositoryR2dbc(dbClient: DatabaseClient) {
             .where { it[User::alias] eq alias }
             // null String accepted     ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
             .fetchAll()
+
+    fun updateFirstname(newFirstname: String) = sqlClient.updateTable<User>()
+            .set { it[User::firstname] = newFirstname }
+            .execute()
+
+    fun updateAlias(newAlias: String?) = sqlClient.updateTable<User>()
+            .set { it[User::alias] = newAlias }
+            .execute()
 
 
     fun simplifiedExample() {

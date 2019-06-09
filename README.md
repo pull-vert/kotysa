@@ -72,6 +72,7 @@ data class User(
 * ```createTable<T>``` and ```createTables``` for table creation
 * ```insert``` for single or multiple rows insertion
 * ```deleteFromTable<T>``` that returns number of deleted rows
+* ```updateTable<T>``` to update fields
 
 ```kotlin
 fun createTable() = sqlClient.createTable<User>()
@@ -105,6 +106,10 @@ fun findAllByAlias(alias: String?) = sqlClient.select<User>()
         .where { it[User::alias] eq alias }
         // null String accepted     ^^^^^ , if alias==null, gives "WHERE user.alias IS NULL"
         .fetchAll()
+        
+fun updateFirstname(newFirstname: String) = sqlClient.updateTable<User>()
+        .set { it[User::firstname] = newFirstname }
+        .execute()
 
 val jdoe = User("jdoe", "John", "Doe", false)
 val bboss = User("bboss", "Big", "Boss", true, "TheBoss")
