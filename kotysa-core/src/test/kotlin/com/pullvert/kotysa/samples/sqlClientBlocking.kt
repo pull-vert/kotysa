@@ -45,6 +45,14 @@ interface UserRepositoryBlocking {
             // null String accepted     ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
             .fetchAll()
 
+    fun updateFirstname(newFirstname: String) = sqlClient.updateTable<User>()
+            .set { it[User::firstname] = newFirstname }
+            .execute()
+
+    fun updateAlias(newAlias: String?) = sqlClient.updateTable<User>()
+            .set { it[User::alias] = newAlias }
+            .execute()
+
 
     fun simplifiedExample() {
         sqlClient.apply {

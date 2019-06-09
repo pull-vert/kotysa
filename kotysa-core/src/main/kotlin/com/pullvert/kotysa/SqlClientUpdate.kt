@@ -12,6 +12,8 @@ import kotlin.reflect.KClass
  */
 class SqlClientUpdate private constructor() {
     interface Update<T : Any> : Return {
+        fun set(dsl: (FieldSetter<T>) -> Unit): Update<T>
+
         fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): Where
     }
 
@@ -25,6 +27,8 @@ class SqlClientUpdate private constructor() {
  */
 class SqlClientUpdateBlocking private constructor() {
     interface Update<T : Any> : SqlClientUpdate.Update<T>, Return {
+        override fun set(dsl: (FieldSetter<T>) -> Unit): Update<T>
+
         override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): Where
     }
 
@@ -47,7 +51,8 @@ open class DefaultSqlClientUpdate protected constructor() : DefaultSqlClientComm
             override val tables: Tables,
             val table: Table<T>,
             override val whereClauses: MutableList<WhereClause>,
-            override val availableColumns: MutableMap<out (Any) -> Any?, Column<*, *>>
+            override val availableColumns: MutableMap<out (Any) -> Any?, Column<*, *>>,
+            val setValues: MutableMap<Column<T, *>, Any?>
     ) : DefaultSqlClientCommon.Properties
 
     abstract class Update<T : Any> protected constructor(
@@ -62,7 +67,14 @@ open class DefaultSqlClientUpdate protected constructor() : DefaultSqlClientComm
             // build availableColumns Map
             val availableColumns = mutableMapOf<(Any) -> Any?, Column<*, *>>()
             addAvailableColumnsFromTable(availableColumns, table)
-            properties = Properties(tables, table, mutableListOf(), availableColumns)
+            properties = Properties(tables, table, mutableListOf(), availableColumns, mutableMapOf())
+        }
+
+        protected fun addSetValue(dsl: (FieldSetter<T>) -> Unit) {
+            properties.apply {
+                val setValue = UpdateSetDsl(dsl, availableColumns).initialize()
+                setValues[setValue.first.column] = setValue.second
+            }
         }
     }
 
@@ -73,10 +85,22 @@ open class DefaultSqlClientUpdate protected constructor() : DefaultSqlClientComm
 
         fun updateTableSql() = with(properties) {
             val updateSql = "UPDATE ${table.name}"
-            val whereAndWhereDebug = whereAndWhereDebug(whereClauses, logger)
-            logger.debug { "Exec SQL : $updateSql ${whereAndWhereDebug.second}" }
 
-            "$updateSql ${whereAndWhereDebug.first}"
+            val whereAndWhereDebug = whereAndWhereDebug(whereClauses, logger)
+
+            val setSql = setValues.keys.joinToString(prefix = "SET ") { column ->
+                "${column.name} = ?"
+            }
+
+            if (logger.isDebugEnabled) {
+                val setSqlDebug = setValues.keys.joinToString(prefix = "SET ") { column ->
+                    val columnValue = setValues[column]
+                    "${column.name} = ${logValue(columnValue)}"
+                }
+                logger.debug("Exec SQL : $updateSql $setSqlDebug ${whereAndWhereDebug.second}")
+            }
+
+            "$updateSql $setSql ${whereAndWhereDebug.first}"
         }
     }
 }

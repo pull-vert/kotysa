@@ -49,6 +49,11 @@ inline fun <reified T : Any> ReactorSqlClient.createTable() = createTable(T::cla
  */
 inline fun <reified T : Any> ReactorSqlClient.deleteFromTable() = deleteFromTable(T::class)
 
+/**
+ * @author Fred Montariol
+ */
+inline fun <reified T : Any> ReactorSqlClient.updateTable() = updateTable(T::class)
+
 
 /**
  * @author Fred Montariol
@@ -90,6 +95,8 @@ class ReactorSqlClientDelete private constructor() {
 class ReactorSqlClientUpdate private constructor() {
 
     interface Update<T : Any> : SqlClientUpdate.Update<T>, Return {
+        override fun set(dsl: (FieldSetter<T>) -> Unit): Update<T>
+
         override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): Where
     }
 

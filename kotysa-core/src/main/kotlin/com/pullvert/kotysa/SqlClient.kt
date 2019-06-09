@@ -134,7 +134,7 @@ interface DefaultSqlClient : SqlClient {
                 val columnValue = column.entityGetter(row)
                 logValue(columnValue)
             }
-            logger.debug { "Exec SQL : INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($valuesDebug)" }
+            logger.debug("Exec SQL : INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($valuesDebug)")
         }
         return "INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($values)"
     }

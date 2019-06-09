@@ -74,7 +74,7 @@ class R2dbcTest {
 
     @Test
     fun `Verify findFirstByFirstame finds John`() {
-        assertThat(repository.findFirstByFirstame("John").block())
+        assertThat(repository.findFirstByFirstame(jdoe.firstname).block())
                 .isEqualTo(jdoe)
     }
 
@@ -86,7 +86,7 @@ class R2dbcTest {
 
     @Test
     fun `Verify findByAlias finds TheBoss`() {
-        assertThat(repository.findAllByAlias("TheBoss").toIterable())
+        assertThat(repository.findAllByAlias(bboss.alias).toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(bboss)
     }
@@ -125,6 +125,28 @@ class R2dbcTest {
                 .hasSize(1)
         // re-insertUsers jdoe
         repository.insertJDoe().block()
+    }
+
+    @Test
+    fun `Verify updateLastname works`() {
+        repository.updateLastname("Do").block()
+        assertThat(repository.findFirstByFirstame(jdoe.firstname).block())
+                .extracting { user -> user?.lastname }
+                .isEqualTo("Do")
+        repository.updateLastname(jdoe.lastname).block()
+    }
+
+    @Test
+    fun `Verify updateAlias works`() {
+        repository.updateAlias("TheBigBoss").block()
+        assertThat(repository.findFirstByFirstame(bboss.firstname).block())
+                .extracting { user -> user?.alias }
+                .isEqualTo("TheBigBoss")
+        repository.updateAlias(null).block()
+        assertThat(repository.findFirstByFirstame(bboss.firstname).block())
+                .extracting { user -> user?.alias }
+                .isEqualTo(null)
+        repository.updateAlias(bboss.alias).block()
     }
 }
 
@@ -221,4 +243,14 @@ class UserRepository(dbClient: DatabaseClient) {
                 UserDto("${it[User::firstname]} ${it[User::lastname]}",
                         it[User::alias])
             }.fetchAll()
+
+    fun updateLastname(newLastname: String) = sqlClient.updateTable<User>()
+            .set { it[User::lastname] = newLastname }
+            .where { it[User::login] eq jdoe.login }
+            .execute()
+
+    fun updateAlias(newAlias: String?) = sqlClient.updateTable<User>()
+            .set { it[User::alias] = newAlias }
+            .where { it[User::login] eq bboss.login }
+            .execute()
 }

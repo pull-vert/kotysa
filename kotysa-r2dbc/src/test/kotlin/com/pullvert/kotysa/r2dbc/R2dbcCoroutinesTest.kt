@@ -20,10 +20,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.data.r2dbc.core.DatabaseClient
 import org.springframework.fu.kofu.application
 import org.springframework.fu.kofu.r2dbc.r2dbcH2
-import strikt.api.expectThat
-import strikt.assertions.containsExactlyInAnyOrder
-import strikt.assertions.hasSize
-import strikt.assertions.isEqualTo
 
 /**
  * @author Fred Montariol
@@ -53,14 +49,14 @@ class R2DbcCoroutinesTest {
 
     @Test
     fun `Verify findAll returns all users`() = runBlockingTest {
-        expectThat(repository.findAll().toList())
+        assertThat(repository.findAll().toList())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(jdoe, bboss)
     }
 
     @Test
     fun `Verify findFirstByFirstame finds John`() = runBlockingTest {
-        expectThat(repository.findFirstByFirstame("John"))
+        assertThat(repository.findFirstByFirstame("John"))
                 .isEqualTo(jdoe)
     }
 
@@ -86,7 +82,7 @@ class R2DbcCoroutinesTest {
 
     @Test
     fun `Verify findAllMappedToDto does the mapping`() = runBlockingTest {
-        expectThat(repository.findAllMappedToDto().toList())
+        assertThat(repository.findAllMappedToDto().toList())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(
                         UserDto("John Doe", null),
@@ -95,12 +91,21 @@ class R2DbcCoroutinesTest {
 
     @Test
     fun `Verify deleteAllFromUser works correctly`() = runBlockingTest {
-        expectThat(repository.deleteAll())
+        assertThat(repository.deleteAll())
                 .isEqualTo(2)
         assertThat(repository.findAll().toList())
                 .isEmpty()
         // re-insertUsers users
         repository.insert()
+    }
+
+    @Test
+    fun `Verify updateLastname works`() = runBlockingTest {
+        repository.updateLastname("Do")
+        assertThat(repository.findFirstByFirstame(jdoe.firstname))
+                .extracting { user -> user?.lastname }
+                .isEqualTo("Do")
+        repository.updateLastname(jdoe.lastname)
     }
 }
 
@@ -151,4 +156,9 @@ class CoroutinesUserRepository(dbClient: DatabaseClient) {
                 UserDto("${it[User::firstname]} ${it[User::lastname]}",
                         it[User::alias])
             }.fetchFlow()
+
+    suspend fun updateLastname(newLastname: String) = sqlClient.updateTable<User>()
+            .set { it[User::lastname] = newLastname }
+            .where { it[User::login] eq jdoe.login }
+            .awaitExecute()
 }

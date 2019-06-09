@@ -47,7 +47,6 @@ class SqlClientR2dbc(
         table.columns.values.forEachIndexed { index, column ->
             val value = column.entityGetter(row)
             executeSpec = if (value == null) {
-
                 executeSpec.bindNull(index, (column.entityGetter.toCallable().returnType.classifier as KClass<*>).java)
             } else {
                 executeSpec.bind(index, value)
@@ -69,7 +68,7 @@ class SqlClientR2dbc(
             SqlClientDeleteR2dbc.Delete(client, tables, tableClass)
 
     override fun <T : Any> updateTable(tableClass: KClass<T>): ReactorSqlClientUpdate.Update<T> =
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            SqlClientUpdateR2dbc.Update(client, tables, tableClass)
 }
 
 /**
