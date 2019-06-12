@@ -2,12 +2,8 @@
  * Copyright 2019 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package com.pullvert.kotysa.h2
+package com.pullvert.kotysa
 
-import com.pullvert.kotysa.AllTypesNotNull
-import com.pullvert.kotysa.AllTypesNullable
-import com.pullvert.kotysa.SqlType
-import com.pullvert.kotysa.tables
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.Test
@@ -15,10 +11,10 @@ import org.junit.jupiter.api.Test
 /**
  * @author Fred Montariol
  */
-class H2TablesDslTest {
+class TablesDslTest {
     @Test
     fun `Test all supported column types for not null properties`() {
-        val tables = tables().h2 {
+        val tables = tables {
             table<AllTypesNotNull> {
                 name = "all_types"
                 column { it[AllTypesNotNull::string].varchar().primaryKey }
@@ -44,7 +40,7 @@ class H2TablesDslTest {
 
     @Test
     fun `Test all supported column types for nullable properties`() {
-        val tables = tables().h2 {
+        val tables = tables {
             table<AllTypesNullable> {
                 name = "all_types_nullable"
                 column { it[AllTypesNullable::id].varchar().primaryKey } // required

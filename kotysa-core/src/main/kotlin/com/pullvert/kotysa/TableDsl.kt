@@ -10,15 +10,24 @@ import kotlin.reflect.KClass
  * @author Fred Montariol
  */
 @KotysaMarker
-abstract class TableDsl<T : Any, U : TableDsl<T, U>>(
-        private val init: U.() -> Unit,
+class TableDsl<T : Any>(
+        private val init: TableDsl<T>.() -> Unit,
         private val tableClass: KClass<T>
 ) {
 
     lateinit var name: String
     private val columns = mutableMapOf<(T) -> Any?, Column<T, *>>()
 
-    internal fun addColumn(column: Column<T, *>) {
+    /**
+     * Declare a Column
+     */
+    fun column(dsl: ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*>) {
+        val columnDsl = ColumnDsl(dsl)
+        val column = columnDsl.initialize()
+        addColumn(column)
+    }
+
+    private fun addColumn(column: Column<T, *>) {
         if (columns.containsKey(column.entityGetter)) {
             throw IllegalStateException("Trying to map property \"${column.entityGetter}\" to multiple columns")
         }
@@ -29,8 +38,8 @@ abstract class TableDsl<T : Any, U : TableDsl<T, U>>(
     }
 
     @PublishedApi
-    internal fun initialize(initialize: U): Table<*> {
-        init(initialize)
+    internal fun initialize(): Table<*> {
+        init(this)
         require(::name.isInitialized) { "Table name is mandatory" }
         require(columns.isNotEmpty()) { "Table must declare at least one column" }
         require(columns.values.count { column -> column.isPrimaryKey } <= 1) { "Table must not declare more than one Primary Key Column" }

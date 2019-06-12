@@ -10,16 +10,36 @@ import kotlin.reflect.KClass
  * @author Fred Montariol
  */
 @KotysaMarker
-abstract class TablesDsl<T : TablesDsl<T>>(private val init: T.() -> Unit) {
+class TablesDsl(private val init: TablesDsl.() -> Unit) {
 
     @PublishedApi
     internal val tables = mutableMapOf<KClass<*>, Table<*>>()
     @PublishedApi
     internal val allColumns = mutableMapOf<(Any) -> Any?, Column<*, *>>()
 
-    internal fun initialize(initialize: T): Tables {
-        init(initialize)
+    inline fun <reified T : Any> table(noinline dsl: TableDsl<T>.() -> Unit) {
+        val tableClass = T::class
+        if (tables.containsKey(tableClass)) {
+            throw IllegalStateException("Trying to map entity class \"${tableClass.qualifiedName}\" to multiple tables")
+        }
+        val tableDsl = TableDsl(dsl, tableClass)
+        val table = tableDsl.initialize()
+        tables[tableClass] = table
+        @Suppress("UNCHECKED_CAST")
+        allColumns.putAll(table.columns as Map<out (Any) -> Any?, Column<*, *>>)
+    }
+
+    internal fun initialize(): Tables {
+        init(this)
         require(tables.isNotEmpty()) { "Tables must declare at least one table" }
         return Tables(tables, allColumns)
     }
 }
+
+/**
+ * Configure Functional Table Mapping support for H2
+ *
+ * @see TablesDsl
+ * @author Fred Montariol
+ */
+fun tables(dsl: TablesDsl.() -> Unit) = TablesDsl(dsl).initialize()

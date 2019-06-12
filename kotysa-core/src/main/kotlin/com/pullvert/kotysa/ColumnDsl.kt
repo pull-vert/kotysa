@@ -14,9 +14,48 @@ import kotlin.reflect.KFunction
  * @author Fred Montariol
  */
 @KotysaMarker
-abstract class ColumnDsl<T : Any, U : ColumnDsl<T, U>> internal constructor(
-        private val init: U.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*>
+class ColumnDsl<T : Any> internal constructor(
+        private val init: ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*>
 ) : TableColumnPropertyProvider<T> {
+
+    fun NotNullStringColumnProperty<T>.varchar(): VarcharColumnBuilderNotNull<String> =
+            VarcharColumnBuilderNotNullImpl(getter)
+
+    fun NullableStringColumnProperty<T>.varchar(): VarcharColumnBuilderNullable =
+            VarcharColumnBuilderNullableImpl(getter)
+
+    fun NotNullLocalDateTimeColumnProperty<T>.timestamp(): TimestampColumnBuilderNotNull<LocalDateTime> =
+            TimestampColumnBuilderNotNullImpl(getter)
+
+    fun NullableLocalDateTimeColumnProperty<T>.timestamp(): TimestampColumnBuilderNullable =
+            TimestampColumnBuilderNullableImpl(getter)
+
+    fun NotNullLocalDateTimeColumnProperty<T>.dateTime(): DateTimeColumnBuilderNotNull<LocalDateTime> =
+            DateTimeColumnBuilderNotNullImpl(getter)
+
+    fun NullableLocalDateTimeColumnProperty<T>.dateTime(): DateTimeColumnBuilderNullable =
+            DateTimeColumnBuilderNullableImpl(getter)
+
+    fun NotNullLocalDateColumnProperty<T>.date(): DateColumnBuilderNotNull<LocalDate> =
+            DateColumnBuilderNotNullImpl(getter)
+
+    fun NullableLocalDateColumnProperty<T>.date(): DateColumnBuilderNullable =
+            DateColumnBuilderNullableImpl(getter)
+
+    fun NotNullInstantColumnProperty<T>.timestampWithTimeZone(): TimestampWithTimeZoneColumnBuilderNotNull<Instant> =
+            TimestampWithTimeZoneColumnBuilderNotNullImpl(getter)
+
+    fun NullableInstantColumnProperty<T>.timestampWithTimeZone(): TimestampWithTimeZoneColumnBuilderNullable =
+            TimestampWithTimeZoneColumnBuilderNullableImpl(getter)
+
+    fun NotNullLocalTimeColumnProperty<T>.time9(): Time9ColumnBuilderNotNull<LocalTime> =
+            Time9ColumnBuilderNotNullImpl(getter)
+
+    fun NullableLocalTimeColumnProperty<T>.time9(): Time9ColumnBuilderNullable =
+            Time9ColumnBuilderNullableImpl(getter)
+
+    fun NotNullBooleanColumnProperty<T>.boolean(): BooleanColumnBuilderNotNull<Boolean> =
+            BooleanColumnBuilderNotNullImpl(getter)
 
     override fun get(getter: (T) -> String) = NotNullStringColumnProperty(getter)
 
@@ -62,8 +101,8 @@ abstract class ColumnDsl<T : Any, U : ColumnDsl<T, U>> internal constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
-    internal fun initialize(initialize: U): Column<T, *> {
-        val columnBuilder = init(initialize, initialize) as AbstractColumnBuilder<*, T>
+    internal fun initialize(): Column<T, *> {
+        val columnBuilder = init(this, this) as AbstractColumnBuilder<*, T>
         if (!columnBuilder.columnNameInitialized) {
             columnBuilder.columnName = columnBuilder.entityGetter.toCallable().name
         }

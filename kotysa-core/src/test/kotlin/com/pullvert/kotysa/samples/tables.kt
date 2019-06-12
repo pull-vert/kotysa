@@ -6,8 +6,8 @@ package com.pullvert.kotysa.samples
 
 import com.pullvert.kotysa.tables
 
-val h2tables =
-        tables().h2 { // choose database type
+val tables =
+        tables {
             table<User> {
                 name = "users"
                 column { it[User::login].varchar().primaryKey }

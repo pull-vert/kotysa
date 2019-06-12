@@ -57,7 +57,7 @@ class R2dbcInheritanceTest {
 }
 
 private val tables =
-        tables().h2 {
+        tables {
             table<Inherited> {
                 name = "inherited"
                 column { it[Inherited::getId].varchar().primaryKey }

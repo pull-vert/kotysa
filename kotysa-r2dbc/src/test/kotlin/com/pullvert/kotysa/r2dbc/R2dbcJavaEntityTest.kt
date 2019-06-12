@@ -119,7 +119,7 @@ class R2dbcJavaEntityTest {
 }
 
 private val tables =
-        tables().h2 {
+        tables {
             table<JavaUser> {
                 name = "java_users"
                 column { it[JavaUser::getLogin].varchar().primaryKey }

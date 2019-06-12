@@ -7,7 +7,6 @@ package com.pullvert.kotysa.r2dbc.sample
 import com.pullvert.kotysa.count
 import com.pullvert.kotysa.r2dbc.*
 import com.pullvert.kotysa.samples.*
-import com.pullvert.kotysa.updateTable
 import org.springframework.data.r2dbc.core.DatabaseClient
 
 /**
@@ -15,7 +14,7 @@ import org.springframework.data.r2dbc.core.DatabaseClient
  */
 @Suppress("UNUSED_VARIABLE")
 class UserRepositoryR2dbc(dbClient: DatabaseClient) {
-    private val sqlClient = dbClient.sqlClient(h2tables)
+    private val sqlClient = dbClient.sqlClient(tables)
 
     fun createTable() = sqlClient.createTable<User>()
 

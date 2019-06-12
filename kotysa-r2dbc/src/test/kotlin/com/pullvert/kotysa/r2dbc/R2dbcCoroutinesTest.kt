@@ -110,7 +110,7 @@ class R2DbcCoroutinesTest {
 }
 
 private val tables =
-        tables().h2 {
+        tables {
             table<User> {
                 name = "users"
                 column { it[User::login].varchar().primaryKey }
