@@ -2,5 +2,4 @@
 * verify you are using SSH with GIT
 * **do bintrayUpload** task
 * verify your artefacts are available on bintray
-* do **release** task (keep suggested versions : release version = current, new version = current + 1)
-* git pull to start new dev cycle
+* do **release** task (for minor release, press Enter for suggested versions : release version = current, new version = current + 1)
