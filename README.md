@@ -45,7 +45,7 @@ dependencies {
 
 ```kotlin
 val tables =
-        tables().h2 { // choose database type
+        tables {
             table<User> {
                 name = "users"
                 column { it[User::login].varchar().primaryKey }
