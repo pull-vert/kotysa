@@ -31,13 +31,14 @@ data class UserDto(
         val alias: String?
 )
 
-val allTypesNotNull = AllTypesNotNull("", true, LocalDate.now(), Instant.now(), LocalTime.now(), LocalDateTime.now(), LocalDateTime.now())
-val allTypesNullable = AllTypesNullable("", null, null, null, null, null, null)
+val allTypesNotNull = AllTypesNotNull("123", "", true, LocalDate.now(), Instant.now(), LocalTime.now(), LocalDateTime.now(), LocalDateTime.now())
+val allTypesNullable = AllTypesNullable("456", null, null, null, null, null, null)
 
 /**
  * @author Fred Montariol
  */
 data class AllTypesNotNull(
+        val id: String,
         val string: String,
         val boolean: Boolean,
         val localDate: LocalDate,

@@ -3,7 +3,7 @@
 
 # Kotysa
 
-Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a [Sql client](kotysa-core/src/main/kotlin/com/pullvert/kotysa/SqlClient.kt). You write type-safe database queries, Kotysa generates SQL for you.
+Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a type-safe object mapping and SQL generator [Sql client](kotysa-core/src/main/kotlin/com/pullvert/kotysa/SqlClient.kt).
 
 ```kotlin
 sqlClient.apply {
@@ -17,11 +17,17 @@ sqlClient.apply {
 }
 ```
 
-Kotysa is agnostic from chosen Sql Engine, written in Kotlin for Kotlin users.
+* Create Kotlin entities, data classes are great for that
+* [Describe Database Model with Type-Safe DSL](#describe-database-model-with-type-safe-dsl) based on these entities
+* [Write Type-Safe Queries with SqlClient](#write-type-safe-queries-with-sqlclient), Kotysa generates SQL for you !
+
+**No annotations at all, just regular Kotlin code !**
+
+Kotysa is agnostic from Sql Engine, written in Kotlin for Kotlin users.
 
 [Available column SQL type(s)](#data-types), typed fields in SELECT and available WHERE operations depends on Entity property's (or getter's) type and nullability.
 
-Kotysa is **not production ready**, some key features are still missing. Early releases will continue to be provided with new features.
+Kotysa is **not production ready yet**, some key features are still missing. Early releases will continue to be provided with new features.
 
 ## Dependency
 
@@ -33,9 +39,11 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.pullvert:kotysa-r2dbc:0.0.x' // more modules to come soon
+    implementation 'com.pullvert:kotysa-r2dbc:0.0.x'
 }
 ```
+
+more Kotysa modules will come soon
 
 ## Code samples
 

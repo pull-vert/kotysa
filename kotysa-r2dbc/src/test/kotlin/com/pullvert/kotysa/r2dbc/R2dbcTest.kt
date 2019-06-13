@@ -15,6 +15,10 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.data.r2dbc.core.DatabaseClient
 import org.springframework.fu.kofu.application
 import org.springframework.fu.kofu.r2dbc.r2dbcH2
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 /**
  * @author Fred Montariol
@@ -148,6 +152,23 @@ class R2dbcTest {
                 .isEqualTo(null)
         repository.updateAlias(bboss.alias).block()
     }
+
+    @Test
+    fun `Verify updateAll works`() {
+        val newLocalDate = LocalDate.now()
+        val newInstant = Instant.now()
+        val newLocalTime = LocalTime.now()
+        val newLocalDateTime = LocalDateTime.now()
+        repository.updateAll("new", false, newLocalDate, newInstant, newLocalTime, newLocalDateTime,
+                newLocalDateTime).block()
+        assertThat(repository.findAllAllTypesNotNull().toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(
+                        AllTypesNotNull(allTypesNotNull.id, "new", false, newLocalDate, newInstant,
+                                newLocalTime, newLocalDateTime, newLocalDateTime))
+        repository.updateAll(allTypesNotNull.string, allTypesNotNull.boolean, allTypesNotNull.localDate, allTypesNotNull.instant,
+                allTypesNotNull.localTim, allTypesNotNull.localDateTime1, allTypesNotNull.localDateTime2).block()
+    }
 }
 
 private val tables =
@@ -162,7 +183,8 @@ private val tables =
             }
             table<AllTypesNotNull> {
                 name = "all_types"
-                column { it[AllTypesNotNull::string].varchar().primaryKey }
+                column { it[AllTypesNotNull::id].varchar().primaryKey }
+                column { it[AllTypesNotNull::string].varchar() }
                 column { it[AllTypesNotNull::boolean].boolean() }
                 column { it[AllTypesNotNull::localDate].date() }
                 column { it[AllTypesNotNull::instant].timestampWithTimeZone() }
@@ -172,7 +194,7 @@ private val tables =
             }
             table<AllTypesNullable> {
                 name = "all_types_nullable"
-                column { it[AllTypesNullable::id].varchar().primaryKey } // required
+                column { it[AllTypesNullable::id].varchar().primaryKey }
                 column { it[AllTypesNullable::string].varchar() }
                 column { it[AllTypesNullable::localDate].date() }
                 column { it[AllTypesNullable::instant].timestampWithTimeZone() }
@@ -253,4 +275,17 @@ class UserRepository(dbClient: DatabaseClient) {
             .set { it[User::alias] = newAlias }
             .where { it[User::login] eq bboss.login }
             .execute()
+
+    fun updateAll(newString: String, newBoolean: Boolean, newLocalDate: LocalDate, newInstant: Instant, newLocalTim: LocalTime,
+                  newLocalDateTime1: LocalDateTime, newLocalDateTime2: LocalDateTime) =
+            sqlClient.updateTable<AllTypesNotNull>()
+                    .set { it[AllTypesNotNull::string] = newString }
+                    .set { it[AllTypesNotNull::boolean] = newBoolean }
+                    .set { it[AllTypesNotNull::localDate] = newLocalDate }
+                    .set { it[AllTypesNotNull::instant] = newInstant }
+                    .set { it[AllTypesNotNull::localTim] = newLocalTim }
+                    .set { it[AllTypesNotNull::localDateTime1] = newLocalDateTime1 }
+                    .set { it[AllTypesNotNull::localDateTime2] = newLocalDateTime2 }
+                    .where { it[AllTypesNotNull::id] eq allTypesNotNull.id }
+                    .execute()
 }
