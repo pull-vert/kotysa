@@ -17,15 +17,15 @@ sqlClient.apply {
 }
 ```
 
-* Create Kotlin entities, data classes are great for that
-* [Describe Database Model with Type-Safe DSL](#describe-database-model-with-type-safe-dsl) based on these entities
-* [Write Type-Safe Queries with SqlClient](#write-type-safe-queries-with-sqlclient), Kotysa generates SQL for you !
-
-**No annotations at all, just regular Kotlin code !**
+**No annotations, no code generation, just regular Kotlin code !**
 
 Kotysa is agnostic from Sql Engine, written in Kotlin for Kotlin users.
 
-[Available column SQL type(s)](#data-types), typed fields in SELECT and available WHERE operations depends on Entity property's (or getter's) type and nullability.
+[Available column SQL type(s)](#data-types), typed fields in SELECT and available WHERE operations depends on Entity properties' (or getters') type and nullability.
+
+* Create Kotlin entities, data classes are great for that
+* [Describe Database Model with Type-Safe DSL](#describe-database-model-with-type-safe-dsl) based on these entities
+* [Write Type-Safe Queries with SqlClient](#write-type-safe-queries-with-sqlclient), Kotysa generates SQL for you !
 
 Kotysa is **not production ready yet**, some key features are still missing. Early releases will continue to be provided with new features.
 
