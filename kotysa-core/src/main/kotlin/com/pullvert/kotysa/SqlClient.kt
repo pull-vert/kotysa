@@ -21,67 +21,8 @@ import kotlin.reflect.full.allSuperclasses
  */
 interface SqlClient {
 
-    fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): SqlClientSelect.Select<T>
-
-    fun <T : Any> createTable(tableClass: KClass<T>): Any
-
-    fun createTables(vararg tableClasses: KClass<*>): Any
-
-    fun <T : Any> insert(row: T): Any
-
-    fun insert(vararg rows: Any): Any
-
-    fun <T : Any> deleteFromTable(tableClass: KClass<T>): SqlClientDelete.Delete<T>
-
-    fun <T : Any> updateTable(tableClass: KClass<T>): SqlClientUpdate.Update<T>
+    fun <T : Any> select(dsl: (SelectDslApi.(ValueProvider) -> T)?): SqlClientSelect.Select<T>
 }
-
-/**
- * Blocking Sql Client, to be used with any blocking JDBC driver
- *
- * @sample com.pullvert.kotysa.samples.UserRepositoryBlocking
- * @author Fred Montariol
- */
-interface SqlClientBlocking : SqlClient {
-
-    override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): SqlClientSelectBlocking.Select<T>
-
-    override fun <T : Any> createTable(tableClass: KClass<T>)
-
-    override fun createTables(vararg tableClasses: KClass<*>) {
-        tableClasses.forEach { tableClass -> createTable(tableClass) }
-    }
-
-    override fun <T : Any> insert(row: T)
-
-    override fun insert(vararg rows: Any)
-
-    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): SqlClientDeleteBlocking.Delete<T>
-
-    override fun <T : Any> updateTable(tableClass: KClass<T>): SqlClientUpdateBlocking.Update<T>
-}
-
-/**
- * @author Fred Montariol
- */
-inline fun <reified T : Any> SqlClientBlocking.select(
-        noinline dsl: (SelectDslApi.(ValueProvider) -> T)? = null
-) = select(T::class, dsl)
-
-/**
- * @author Fred Montariol
- */
-inline fun <reified T : Any> SqlClientBlocking.createTable() = createTable(T::class)
-
-/**
- * @author Fred Montariol
- */
-inline fun <reified T : Any> SqlClientBlocking.deleteFromTable() = deleteFromTable(T::class)
-
-/**
- * @author Fred Montariol
- */
-inline fun <reified T : Any> SqlClientBlocking.updateTable() = updateTable(T::class)
 
 
 private fun tableMustBeMapped(tableName: String?) = "Requested table \"$tableName\" is not mapped"

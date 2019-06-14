@@ -22,23 +22,6 @@ class SqlClientUpdate private constructor() {
     interface Return
 }
 
-/**
- * @author Fred Montariol
- */
-class SqlClientUpdateBlocking private constructor() {
-    interface Update<T : Any> : SqlClientUpdate.Update<T>, Return {
-        override fun set(dsl: (FieldSetter<T>) -> Unit): Update<T>
-
-        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): Where
-    }
-
-    interface Where : SqlClientUpdate.Where, Return
-
-    interface Return : SqlClientUpdate.Return {
-        fun execute()
-    }
-}
-
 
 private val logger = KotlinLogging.logger {}
 

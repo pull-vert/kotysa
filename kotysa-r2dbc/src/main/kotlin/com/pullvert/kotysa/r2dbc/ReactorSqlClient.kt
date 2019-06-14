@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
  */
 interface ReactorSqlClient : SqlClient {
 
-    override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T>
+    override fun <T : Any> select(dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T>
 
     override fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void>
 

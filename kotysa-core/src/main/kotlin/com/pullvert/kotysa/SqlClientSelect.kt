@@ -31,23 +31,6 @@ open class SqlClientSelect private constructor() {
     interface Return<T : Any>
 }
 
-/**
- * @author Fred Montariol
- */
-class SqlClientSelectBlocking private constructor() {
-    interface Select<T : Any> : SqlClientSelect.Select<T>, Return<T> {
-        override fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
-    }
-
-    interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T>
-
-    interface Return<T : Any> : SqlClientSelect.Return<T> {
-        fun fetchOne(): T
-        fun fetchFirst(): T
-        fun fetchAll(): List<T>
-    }
-}
-
 
 private val logger = KotlinLogging.logger {}
 

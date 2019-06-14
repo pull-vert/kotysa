@@ -144,6 +144,8 @@ class UserRepository(dbClient: DatabaseClient) {
 }
 ```
 
+Coroutines are supported with extension functions
+
 **SqlClient** blocking version for JDBC has no implementation for now.
 
 ## Data types

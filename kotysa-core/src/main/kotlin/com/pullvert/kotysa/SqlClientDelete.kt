@@ -20,21 +20,6 @@ class SqlClientDelete private constructor() {
     interface Return
 }
 
-/**
- * @author Fred Montariol
- */
-class SqlClientDeleteBlocking private constructor() {
-    interface Delete<T : Any> : SqlClientDelete.Delete<T>, Return {
-        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): Where
-    }
-
-    interface Where : SqlClientDelete.Where, Return
-
-    interface Return : SqlClientDelete.Return {
-        fun execute(): Int
-    }
-}
-
 
 private val logger = KotlinLogging.logger {}
 
