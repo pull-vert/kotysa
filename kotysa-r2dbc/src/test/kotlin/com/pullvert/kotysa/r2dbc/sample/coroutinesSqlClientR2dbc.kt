@@ -22,7 +22,7 @@ class UserRepositoryR2dbcCoroutines(dbClient: DatabaseClient) {
 
     suspend fun insert() = sqlClient.insert(jdoe, bboss)
 
-    suspend fun deleteAll() = sqlClient.deleteFromTable<User>().execute()
+    suspend fun deleteAll() = sqlClient.deleteAllFromTable<User>()
 
     suspend fun deleteById(id: String) = sqlClient.deleteFromTable<User>()
             .where { it[User::login] eq id }

@@ -20,7 +20,7 @@ class UserRepositoryR2dbc(dbClient: DatabaseClient) {
 
     fun insert() = sqlClient.insert(jdoe, bboss)
 
-    fun deleteAll() = sqlClient.deleteFromTable<User>().execute()
+    fun deleteAll() = sqlClient.deleteAllFromTable<User>()
 
     fun deleteById(id: String) = sqlClient.deleteFromTable<User>()
             .where { it[User::login] eq id }

@@ -3,12 +3,12 @@
 
 # Kotysa
 
-Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) is a type-safe object mapping and SQL generator [Sql client](kotysa-core/src/main/kotlin/com/pullvert/kotysa/SqlClient.kt).
+Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) Sql client is a type-safe object mapping and SQL generator.
 
 ```kotlin
 sqlClient.apply {
     createTable<User>()
-    deleteFromTable<User>().execute() // delete All users
+    deleteAllFromTable<User>()
     insert(jdoe, bboss)
     
     val john = select<User>()
@@ -89,7 +89,7 @@ fun createTable() = sqlClient.createTable<User>()
 
 fun insert() = sqlClient.insert(jdoe, bboss)
 
-fun deleteAll() = sqlClient.deleteFromTable<User>().execute()
+fun deleteAll() = sqlClient.deleteAllFromTable<User>()
 
 fun deleteById(id: String) = sqlClient.deleteFromTable<User>()
         .where { it[User::login] eq id }

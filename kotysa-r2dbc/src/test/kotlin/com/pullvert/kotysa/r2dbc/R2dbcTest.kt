@@ -232,11 +232,11 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun insertAllTypes() = sqlClient.insert(allTypesNotNull, allTypesNullable)
 
-    fun deleteAllFromUsers() = sqlClient.deleteFromTable<User>().execute()
+    fun deleteAllFromUsers() = sqlClient.deleteAllFromTable<User>()
 
-    fun deleteAllFromAllTypesNotNull() = sqlClient.deleteFromTable<AllTypesNotNull>().execute()
+    fun deleteAllFromAllTypesNotNull() = sqlClient.deleteAllFromTable<AllTypesNotNull>()
 
-    fun deleteAllFromAllTypesNullable() = sqlClient.deleteFromTable<AllTypesNullable>().execute()
+    fun deleteAllFromAllTypesNullable() = sqlClient.deleteAllFromTable<AllTypesNullable>()
 
     fun deleteUserById(id: String) = sqlClient.deleteFromTable<User>()
             .where { it[User::login] eq id }

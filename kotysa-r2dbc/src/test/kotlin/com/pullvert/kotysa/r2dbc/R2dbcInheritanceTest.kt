@@ -84,7 +84,7 @@ class InheritanceRepository(dbClient: DatabaseClient) {
 
     fun insert() = sqlClient.insert(inherited)
 
-    fun deleteAll() = sqlClient.deleteFromTable<Inherited>().execute()
+    fun deleteAll() = sqlClient.deleteAllFromTable<Inherited>()
 
     fun findInheritedById(id: String) =
             sqlClient.select<Inherited>().where { it[Inherited::getId] eq id }.fetchOne()

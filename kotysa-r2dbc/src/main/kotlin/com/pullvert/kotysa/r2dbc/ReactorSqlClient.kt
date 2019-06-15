@@ -57,6 +57,11 @@ inline fun <reified T : Any> ReactorSqlClient.deleteFromTable() = deleteFromTabl
 /**
  * @author Fred Montariol
  */
+inline fun <reified T : Any> ReactorSqlClient.deleteAllFromTable() = deleteFromTable(T::class).execute()
+
+/**
+ * @author Fred Montariol
+ */
 inline fun <reified T : Any> ReactorSqlClient.updateTable() = updateTable(T::class)
 
 

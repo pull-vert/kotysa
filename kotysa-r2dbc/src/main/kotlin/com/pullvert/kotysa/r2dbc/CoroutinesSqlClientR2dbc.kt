@@ -57,6 +57,11 @@ inline fun <reified T : Any> CoroutinesSqlClientR2dbc.deleteFromTable() = delete
 /**
  * @author Fred Montariol
  */
+suspend inline fun <reified T : Any> CoroutinesSqlClientR2dbc.deleteAllFromTable() = deleteFromTable(T::class).execute()
+
+/**
+ * @author Fred Montariol
+ */
 inline fun <reified T : Any> CoroutinesSqlClientR2dbc.updateTable() = updateTable(T::class)
 
 

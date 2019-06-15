@@ -127,7 +127,7 @@ class CoroutinesUserRepository(dbClient: DatabaseClient) {
 
     suspend fun insert() = sqlClient.insert(jdoe, bboss)
 
-    suspend fun deleteAll() = sqlClient.deleteFromTable<User>().execute()
+    suspend fun deleteAll() = sqlClient.deleteAllFromTable<User>()
 
     fun findAll() = sqlClient.select<User>().fetchAll()
 

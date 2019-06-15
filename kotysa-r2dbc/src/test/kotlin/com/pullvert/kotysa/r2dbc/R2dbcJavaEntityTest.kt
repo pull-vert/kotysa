@@ -150,7 +150,7 @@ class JavaUserRepository(dbClient: DatabaseClient) {
 
     fun insert() = sqlClient.insert(jdoeJava, bbossJava)
 
-    fun deleteAll() = sqlClient.deleteFromTable<JavaUser>().execute()
+    fun deleteAll() = sqlClient.deleteAllFromTable<JavaUser>()
 
     fun findAll() = sqlClient.select<JavaUser>().fetchAll()
 
