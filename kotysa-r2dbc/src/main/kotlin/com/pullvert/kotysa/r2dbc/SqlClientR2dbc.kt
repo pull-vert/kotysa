@@ -14,31 +14,19 @@ import kotlin.reflect.KClass
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
  * @author Fred Montariol
  */
-class SqlClientR2dbc(
+internal class SqlClientR2dbc(
         private val client: DatabaseClient,
         override val tables: Tables
-) : DefaultSqlClient, ReactorSqlClient {
+) : ReactorSqlClient(), DefaultSqlClient {
 
-    override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T> {
-        return SqlClientSelectR2dbc.Select(client, tables, resultClass, dsl)
+    override fun <T : Any> select(tableClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T> {
+        return SqlClientSelectR2dbc.Select(client, tables, tableClass, dsl)
     }
 
     override fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void> {
         val createTableSql = createTableSql(tableClass)
         return client.execute().sql(createTableSql).then()
     }
-
-    override fun createTables(vararg tableClasses: KClass<*>): Mono<Void> =
-            if (tableClasses.isEmpty()) {
-                createTables(*tables.allTables.keys.toTypedArray())
-            } else {
-                // fail-fast : check that all tables are mapped Tables
-                tables.checkTables(tableClasses)
-
-                tableClasses.toFlux()
-                        .flatMap { tableClass -> createTable(tableClass) }
-                        .then()
-            }
 
     override fun <T : Any> insert(row: T): Mono<Void> {
         var executeSpec = client.execute()

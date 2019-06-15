@@ -8,6 +8,8 @@ import kotlin.reflect.KClass
 
 /**
  * @author Fred Montariol
+ *
+ * @sample com.pullvert.kotysa.samples.tables
  */
 @KotysaMarker
 class TablesDsl(private val init: TablesDsl.() -> Unit) {
@@ -39,6 +41,7 @@ class TablesDsl(private val init: TablesDsl.() -> Unit) {
 /**
  * Configure Functional Table Mapping support for H2
  *
+ * @sample com.pullvert.kotysa.samples.tables
  * @see TablesDsl
  * @author Fred Montariol
  */

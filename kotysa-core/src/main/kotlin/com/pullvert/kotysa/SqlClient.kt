@@ -19,10 +19,7 @@ import kotlin.reflect.full.allSuperclasses
 /**
  * @author Fred Montariol
  */
-interface SqlClient {
-
-    fun <T : Any> select(dsl: (SelectDslApi.(ValueProvider) -> T)?): SqlClientSelect.Select<T>
-}
+interface SqlClient
 
 
 private fun tableMustBeMapped(tableName: String?) = "Requested table \"$tableName\" is not mapped"

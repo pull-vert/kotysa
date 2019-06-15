@@ -212,8 +212,7 @@ class UserRepository(dbClient: DatabaseClient) {
     private val sqlClient = dbClient.sqlClient(tables)
 
     fun init() {
-        createTable()
-                .then(createTables())
+        createTables()
                 .then(deleteAllFromUsers())
                 .then(deleteAllFromAllTypesNotNull())
                 .then(deleteAllFromAllTypesNullable())
@@ -222,9 +221,10 @@ class UserRepository(dbClient: DatabaseClient) {
                 .block()
     }
 
-    fun createTable() = sqlClient.createTable<User>()
-
-    fun createTables() = sqlClient.createTables(AllTypesNotNull::class, AllTypesNullable::class)
+    fun createTables() =
+        sqlClient.createTable<User>()
+                .then(sqlClient.createTable<AllTypesNotNull>())
+                .then(sqlClient.createTable<AllTypesNullable>())
 
     fun insertUsers() = sqlClient.insert(jdoe, bboss)
 

@@ -17,7 +17,7 @@ sqlClient.apply {
 }
 ```
 
-**No annotations, no code generation, just regular Kotlin code !**
+**No annotations, no code generation, just regular Kotlin code ! No JPA, just pure SQL !**
 
 Kotysa is agnostic from Sql Engine, written in Kotlin for Kotlin users.
 
@@ -26,6 +26,8 @@ Kotysa is agnostic from Sql Engine, written in Kotlin for Kotlin users.
 * Create Kotlin entities, data classes are great for that
 * [Describe Database Model with Type-Safe DSL](#describe-database-model-with-type-safe-dsl) based on these entities
 * [Write Type-Safe Queries with SqlClient](#write-type-safe-queries-with-sqlclient), Kotysa generates SQL for you !
+
+Kotysa provide [Coroutines first class support](#coroutines-first-class-support)
 
 Kotysa is **not production ready yet**, some key features are still missing. Early releases will continue to be provided with new features.
 
@@ -77,7 +79,7 @@ data class User(
 
 **SqlClient** supports :
 * ```select<T>``` that returns one (```fetchOne()``` and ```fetchFirst()```) or several (```fetchAll()```) results
-* ```createTable<T>``` and ```createTables``` for table creation
+* ```createTable<T>``` for table creation
 * ```insert``` for single or multiple rows insertion
 * ```deleteFromTable<T>``` that returns number of deleted rows
 * ```updateTable<T>``` to update fields
@@ -144,9 +146,23 @@ class UserRepository(dbClient: DatabaseClient) {
 }
 ```
 
-Coroutines are supported with extension functions
+### Coroutines first class support
 
-**SqlClient** blocking version for JDBC has no implementation for now.
+**SqlClient** has one Coroutines (using ```suspend``` and kotlinx-coroutines ```Flow```) implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient``` : [CoroutineSqlClientR2dbc](kotysa-r2dbc/src/main/kotlin/com/pullvert/kotysa/r2dbc/CoroutinesSqlClientR2dbc.kt), it can be obtained via an Extension function directly on ```DatabaseClient``` :
+```kotlin
+fun DatabaseClient.coSqlClient(tables: Tables): CoroutinesSqlClientR2dbc
+```
+
+```kotlin
+class UserRepository(dbClient: DatabaseClient) {
+
+	private val sqlClient = dbClient.coSqlClient(tables)
+
+	// enjoy sqlClient use with coroutines :)
+}
+```
+
+**SqlClient** blocking version has no implementation for now.
 
 ## Data types
 

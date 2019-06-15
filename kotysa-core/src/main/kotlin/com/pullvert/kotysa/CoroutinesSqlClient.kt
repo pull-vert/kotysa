@@ -10,12 +10,9 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Coroutines Sql Client
  *
- * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
  * @author Fred Montariol
  */
 interface CoroutinesSqlClient : SqlClient {
-
-    override fun <T : Any> select(dsl: (SelectDslApi.(ValueProvider) -> T)?): CoroutinesSqlClientSelect.Select<T>
 
     suspend fun <T : Any> insert(row: T)
 
@@ -35,10 +32,34 @@ class CoroutinesSqlClientSelect private constructor() {
     interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T>
 
     interface Return<T : Any> : SqlClientSelect.Return<T> {
+        /**
+         * Non-nullable Coroutines variant of fetchOne.
+         */
         suspend fun fetchOne(): T
+
+        /**
+         * Nullable Coroutines variant of fetchOne.
+         */
+        suspend fun fetchOneOrNull(): T?
+
+        /**
+         * Non-nullable Coroutines variant of fetchFirst.
+         */
         suspend fun fetchFirst(): T
+
+        /**
+         * Nullable Coroutines variant of fetchFirst.
+         */
+        suspend fun fetchFirstOrNull(): T?
+
+        /**
+         * Coroutines [Flow] variant of fetchAll.
+         *
+         * Backpressure is controlled by [batchSize] parameter that controls the size of in-flight elements
+         * and Reactive Stream's Subscription.request size.
+         */
         @FlowPreview
-        fun fetchAll(): Flow<T>
+        fun fetchAll(batchSize: Int = 1): Flow<T>
     }
 }
 

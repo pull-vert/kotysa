@@ -14,7 +14,7 @@ import org.springframework.data.r2dbc.core.DatabaseClient
  */
 @Suppress("UNUSED_VARIABLE")
 class UserRepositoryR2dbc(dbClient: DatabaseClient) {
-    private val sqlClient = dbClient.sqlClient(tables)
+    private val sqlClient = dbClient.sqlClient(tables())
 
     fun createTable() = sqlClient.createTable<User>()
 

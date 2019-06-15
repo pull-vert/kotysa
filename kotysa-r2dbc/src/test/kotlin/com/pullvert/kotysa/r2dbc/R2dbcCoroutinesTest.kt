@@ -109,25 +109,13 @@ class R2DbcCoroutinesTest {
     }
 }
 
-private val tables =
-        tables {
-            table<User> {
-                name = "users"
-                column { it[User::login].varchar().primaryKey }
-                column { it[User::firstname].varchar().name("fname") }
-                column { it[User::lastname].varchar().name("lname") }
-                column { it[User::isAdmin].boolean() }
-                column { it[User::alias].varchar() }
-            }
-        }
-
 /**
  * @author Fred Montariol
  */
 @FlowPreview
 class CoroutinesUserRepository(dbClient: DatabaseClient) {
 
-    private val sqlClient = dbClient.sqlClient(tables)
+    private val sqlClient = dbClient.coSqlClient(tables)
 
     suspend fun init() = coroutineScope {
         createTable()
@@ -135,30 +123,30 @@ class CoroutinesUserRepository(dbClient: DatabaseClient) {
         insert()
     }
 
-    suspend fun createTable() = sqlClient.awaitCreateTable<User>()
+    suspend fun createTable() = sqlClient.createTable<User>()
 
-    suspend fun insert() = sqlClient.awaitInsert(jdoe, bboss)
+    suspend fun insert() = sqlClient.insert(jdoe, bboss)
 
-    suspend fun deleteAll() = sqlClient.deleteFromTable<User>().awaitExecute()
+    suspend fun deleteAll() = sqlClient.deleteFromTable<User>().execute()
 
-    fun findAll() = sqlClient.select<User>().fetchFlow()
+    fun findAll() = sqlClient.select<User>().fetchAll()
 
     suspend fun findFirstByFirstame(firstname: String) = sqlClient.select<User>()
             .where { it[User::firstname] eq firstname }
-            .fetchAwaitFirstOrNull()
+            .fetchFirstOrNull()
 
     fun findAllByAlias(alias: String?) = sqlClient.select<User>()
             .where { it[User::alias] eq alias }
-            .fetchFlow()
+            .fetchAll()
 
     fun findAllMappedToDto() =
             sqlClient.select {
                 UserDto("${it[User::firstname]} ${it[User::lastname]}",
                         it[User::alias])
-            }.fetchFlow()
+            }.fetchAll()
 
     suspend fun updateLastname(newLastname: String) = sqlClient.updateTable<User>()
             .set { it[User::lastname] = newLastname }
             .where { it[User::login] eq jdoe.login }
-            .awaitExecute()
+            .execute()
 }

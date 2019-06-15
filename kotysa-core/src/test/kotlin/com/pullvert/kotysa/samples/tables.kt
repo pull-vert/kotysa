@@ -6,7 +6,7 @@ package com.pullvert.kotysa.samples
 
 import com.pullvert.kotysa.tables
 
-val tables =
+fun tables() =
         tables {
             table<User> {
                 name = "users"

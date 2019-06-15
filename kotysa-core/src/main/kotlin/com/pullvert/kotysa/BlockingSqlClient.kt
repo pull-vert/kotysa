@@ -7,12 +7,9 @@ package com.pullvert.kotysa
 /**
  * Blocking Sql Client, to be used with any blocking JDBC driver
  *
- * @sample com.pullvert.kotysa.samples.UserRepositoryBlocking
  * @author Fred Montariol
  */
 interface BlockingSqlClient : SqlClient {
-
-    override fun <T : Any> select(dsl: (SelectDslApi.(ValueProvider) -> T)?): BlockingSqlClientSelect.Select<T>
 
     fun <T : Any> insert(row: T)
 

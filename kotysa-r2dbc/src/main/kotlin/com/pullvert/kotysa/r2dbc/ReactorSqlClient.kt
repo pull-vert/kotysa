@@ -15,29 +15,34 @@ import kotlin.reflect.KClass
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
  * @author Fred Montariol
  */
-interface ReactorSqlClient : SqlClient {
+abstract class ReactorSqlClient : SqlClient {
 
-    override fun <T : Any> select(dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T>
+    abstract fun <T : Any> insert(row: T): Mono<Void>
 
-    override fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void>
+    abstract fun insert(vararg rows: Any): Mono<Void>
 
-    override fun createTables(vararg tableClasses: KClass<*>): Mono<Void>
+    @PublishedApi
+    internal abstract fun <T : Any> select(tableClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T>
 
-    override fun <T : Any> insert(row: T): Mono<Void>
+    @PublishedApi
+    internal abstract fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void>
 
-    override fun insert(vararg rows: Any): Mono<Void>
+    @PublishedApi
+    internal abstract fun <T : Any> deleteFromTable(tableClass: KClass<T>): ReactorSqlClientDelete.Delete<T>
 
-    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): ReactorSqlClientDelete.Delete<T>
-
-    override fun <T : Any> updateTable(tableClass: KClass<T>): ReactorSqlClientUpdate.Update<T>
+    @PublishedApi
+    internal abstract fun <T : Any> updateTable(tableClass: KClass<T>): ReactorSqlClientUpdate.Update<T>
 }
 
 /**
  * @author Fred Montariol
  */
-inline fun <reified T : Any> ReactorSqlClient.select(
-        noinline selectDsl: (SelectDslApi.(ValueProvider) -> T)? = null
-) = select(T::class, selectDsl)
+inline fun <reified T : Any> ReactorSqlClient.select(noinline dsl: SelectDslApi.(ValueProvider) -> T) = select(T::class, dsl)
+
+/**
+ * @author Fred Montariol
+ */
+inline fun <reified T : Any> ReactorSqlClient.select() = select(T::class, null)
 
 /**
  * @author Fred Montariol

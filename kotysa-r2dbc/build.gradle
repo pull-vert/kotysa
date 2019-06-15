@@ -12,9 +12,9 @@ dependencies {
     compile project(':kotysa-core')
 
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
-
-    compileOnly "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
-    compileOnly "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
+    implementation "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
+    implementation "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
+    
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-reactive:$kotlinx_coroutines_version"
 
     // the only way IDEA can resolve test classes
