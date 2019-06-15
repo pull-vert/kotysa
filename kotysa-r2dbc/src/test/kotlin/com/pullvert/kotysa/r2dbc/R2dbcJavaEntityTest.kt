@@ -38,69 +38,69 @@ class R2dbcJavaEntityTest {
     }
 
     @Test
-    fun `Verify findAll returns all users`() {
-        assertThat(repository.findAll().toIterable())
+    fun `Verify selectAll returns all users`() {
+        assertThat(repository.selectAll().toIterable())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(jdoeJava, bbossJava)
     }
 
     @Test
-    fun `Verify findFirstByFirstame finds John`() {
-        assertThat(repository.findFirstByFirstame("John").block())
+    fun `Verify selectFirstByFirstame finds John`() {
+        assertThat(repository.selectFirstByFirstame("John").block())
                 .isEqualTo(jdoeJava)
     }
 
     @Test
-    fun `Verify findFirstByFirstame finds no Unknown`() {
-        assertThat(repository.findFirstByFirstame("Unknown").block())
+    fun `Verify selectFirstByFirstame finds no Unknown`() {
+        assertThat(repository.selectFirstByFirstame("Unknown").block())
                 .isNull()
     }
 
     @Test
-    fun `Verify findByAlias1 finds TheBoss`() {
-        assertThat(repository.findAllByAlias1("TheBoss").toIterable())
+    fun `Verify selectByAlias1 finds TheBoss`() {
+        assertThat(repository.selectByAlias1("TheBoss").toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(bbossJava)
     }
 
     @Test
-    fun `Verify findByAlias2 finds TheBoss`() {
-        assertThat(repository.findAllByAlias2("TheBoss").toIterable())
+    fun `Verify selectByAlias2 finds TheBoss`() {
+        assertThat(repository.selectByAlias2("TheBoss").toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(bbossJava)
     }
 
     @Test
-    fun `Verify findByAlias3 finds TheBoss`() {
-        assertThat(repository.findAllByAlias3("TheBoss").toIterable())
+    fun `Verify selectByAlias3 finds TheBoss`() {
+        assertThat(repository.selectByAlias3("TheBoss").toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(bbossJava)
     }
 
     @Test
-    fun `Verify findAllByAlias1 with null alias finds John`() {
-        assertThat(repository.findAllByAlias1(null).toIterable())
+    fun `Verify selectByAlias1 with null alias finds John`() {
+        assertThat(repository.selectByAlias1(null).toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(jdoeJava)
     }
 
     @Test
-    fun `Verify findAllByAlias2 with null alias finds John`() {
-        assertThat(repository.findAllByAlias2(null).toIterable())
+    fun `Verify selectAllByAlias2 with null alias finds John`() {
+        assertThat(repository.selectByAlias2(null).toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(jdoeJava)
     }
 
     @Test
-    fun `Verify findAllByAlias3 with null alias finds John`() {
-        assertThat(repository.findAllByAlias3(null).toIterable())
+    fun `Verify selectByAlias3 with null alias finds John`() {
+        assertThat(repository.selectByAlias3(null).toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(jdoeJava)
     }
 
     @Test
-    fun `Verify findAllMappedToDto does the mapping`() {
-        assertThat(repository.findAllMappedToDto().toIterable())
+    fun `Verify selectAllMappedToDto does the mapping`() {
+        assertThat(repository.selectAllMappedToDto().toIterable())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(
                         UserDto("John Doe", null),
@@ -111,7 +111,7 @@ class R2dbcJavaEntityTest {
     fun `Verify deleteAll works correctly`() {
         assertThat(repository.deleteAll().block())
                 .isEqualTo(2)
-        assertThat(repository.findAll().toIterable())
+        assertThat(repository.selectAll().toIterable())
                 .isEmpty()
         // re-insert users
         repository.insert().block()
@@ -152,25 +152,25 @@ class JavaUserRepository(dbClient: DatabaseClient) {
 
     fun deleteAll() = sqlClient.deleteAllFromTable<JavaUser>()
 
-    fun findAll() = sqlClient.select<JavaUser>().fetchAll()
+    fun selectAll() = sqlClient.selectAll<JavaUser>()
 
-    fun findFirstByFirstame(firstname: String) = sqlClient.select<JavaUser>()
+    fun selectFirstByFirstame(firstname: String) = sqlClient.select<JavaUser>()
             .where { it[JavaUser::getFirstname] eq firstname }
             .fetchFirst()
 
-    fun findAllByAlias1(alias: String?) = sqlClient.select<JavaUser>()
+    fun selectByAlias1(alias: String?) = sqlClient.select<JavaUser>()
             .where { it[JavaUser::getAlias1] eq alias }
             .fetchAll()
 
-    fun findAllByAlias2(alias: String?) = sqlClient.select<JavaUser>()
+    fun selectByAlias2(alias: String?) = sqlClient.select<JavaUser>()
             .where { it[JavaUser::getAlias2] eq alias }
             .fetchAll()
 
-    fun findAllByAlias3(alias: String?) = sqlClient.select<JavaUser>()
+    fun selectByAlias3(alias: String?) = sqlClient.select<JavaUser>()
             .where { it[JavaUser::getAlias3] eq alias }
             .fetchAll()
 
-    fun findAllMappedToDto() =
+    fun selectAllMappedToDto() =
             sqlClient.select {
                 UserDto("${it[JavaUser::getFirstname]} ${it[JavaUser::getLastname]}",
                         it[JavaUser::getAlias1])

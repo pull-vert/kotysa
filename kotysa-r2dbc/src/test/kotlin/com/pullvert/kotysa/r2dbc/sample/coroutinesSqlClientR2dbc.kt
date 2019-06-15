@@ -28,24 +28,24 @@ class UserRepositoryR2dbcCoroutines(dbClient: DatabaseClient) {
             .where { it[User::login] eq id }
             .execute()
 
-    fun findAll() = sqlClient.select<User>().fetchAll()
+    fun selectAll() = sqlClient.selectAll<User>()
 
     suspend fun countAll() = sqlClient.select { count<User>() }.fetchOne()
 
     suspend fun countWithAlias() = sqlClient.select { count { it[User::alias] } }.fetchOne()
 
-    fun findAllMappedToDto() =
+    fun selectAllMappedToDto() =
             sqlClient.select {
                 UserDto("${it[User::firstname]} ${it[User::lastname]}",
                         it[User::alias])
             }.fetchAll()
 
-    suspend fun findFirstByFirstname(firstname: String) = sqlClient.select<User>()
+    suspend fun selectFirstByFirstname(firstname: String) = sqlClient.select<User>()
             .where { it[User::firstname] eq firstname }
             // null String forbidden        ^^^^^^^^^
             .fetchFirst()
 
-    fun findAllByAlias(alias: String?) = sqlClient.select<User>()
+    fun selectByAlias(alias: String?) = sqlClient.select<User>()
             .where { it[User::alias] eq alias }
             // null String accepted     ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
             .fetchAll()

@@ -47,6 +47,12 @@ inline fun <reified T : Any> CoroutinesSqlClientR2dbc.select() = select(T::class
 /**
  * @author Fred Montariol
  */
+@FlowPreview
+inline fun <reified T : Any> CoroutinesSqlClientR2dbc.selectAll(batchSize: Int = 1) = select(T::class, null).fetchAll(batchSize)
+
+/**
+ * @author Fred Montariol
+ */
 suspend inline fun <reified T : Any> CoroutinesSqlClientR2dbc.createTable() = createTable(T::class)
 
 /**

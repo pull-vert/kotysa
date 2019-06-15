@@ -47,6 +47,11 @@ inline fun <reified T : Any> ReactorSqlClient.select() = select(T::class, null)
 /**
  * @author Fred Montariol
  */
+inline fun <reified T : Any> ReactorSqlClient.selectAll() = select(T::class, null).fetchAll()
+
+/**
+ * @author Fred Montariol
+ */
 inline fun <reified T : Any> ReactorSqlClient.createTable() = createTable(T::class)
 
 /**

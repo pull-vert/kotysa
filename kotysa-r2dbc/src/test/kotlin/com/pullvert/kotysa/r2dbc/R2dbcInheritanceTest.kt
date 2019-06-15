@@ -5,6 +5,7 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
+import kotlinx.coroutines.flow.toList
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
@@ -38,21 +39,31 @@ class R2dbcInheritanceTest {
     }
 
     @Test
-    fun `Verify extension function findById finds inherited`() {
-        assertThat(repository.findById<Inherited>("id").block())
+    fun `Verify extension function selectById finds inherited`() {
+        assertThat(repository.selectById<Inherited>("id").block())
                 .isEqualTo(inherited)
     }
 
     @Test
-    fun `Verify findInheritedById finds inherited`() {
-        assertThat(repository.findInheritedById("id").block())
+    fun `Verify selectInheritedById finds inherited`() {
+        assertThat(repository.selectInheritedById("id").block())
                 .isEqualTo(inherited)
     }
 
     @Test
-    fun `Verify findFirstByName finds inherited`() {
-        assertThat(repository.findFirstByName<Inherited>("name").block())
+    fun `Verify selectFirstByName finds inherited`() {
+        assertThat(repository.selectFirstByName<Inherited>("name").block())
                 .isEqualTo(inherited)
+    }
+
+    @Test
+    fun `Verify deleteById deletes inherited`() {
+        assertThat(repository.deleteById<Inherited>("id").block())
+                .isEqualTo(1)
+        assertThat(repository.selectAll().toIterable())
+                .isEmpty()
+        // re-insert
+        repository.insert().block()
     }
 }
 
@@ -86,15 +97,17 @@ class InheritanceRepository(dbClient: DatabaseClient) {
 
     fun deleteAll() = sqlClient.deleteAllFromTable<Inherited>()
 
-    fun findInheritedById(id: String) =
+    fun selectAll() = sqlClient.selectAll<Inherited>()
+
+    fun selectInheritedById(id: String) =
             sqlClient.select<Inherited>().where { it[Inherited::getId] eq id }.fetchOne()
 }
 
-inline fun <reified T : Entity<String>> InheritanceRepository.findById(id: String) =
+inline fun <reified T : Entity<String>> InheritanceRepository.selectById(id: String) =
         sqlClient.select<T>().where { it[Entity<String>::getId] eq id }.fetchOne()
 
-inline fun <reified T : Nameable> InheritanceRepository.findFirstByName(name: String) =
+inline fun <reified T : Nameable> InheritanceRepository.selectFirstByName(name: String) =
         sqlClient.select<T>().where { it[Nameable::name] eq name }.fetchFirst()
 
 inline fun <reified T : Entity<String>> InheritanceRepository.deleteById(id: String) =
-        sqlClient.deleteFromTable<T>().where { it[Entity<String>::getId] eq id }.execute() // todo test it
+        sqlClient.deleteFromTable<T>().where { it[Entity<String>::getId] eq id }.execute()

@@ -43,23 +43,23 @@ class R2dbcTest {
     }
 
     @Test
-    fun `Verify findAll returns all users`() {
-        assertThat(repository.findAllUsers().toIterable())
+    fun `Verify selectAll returns all users`() {
+        assertThat(repository.selectAllUsers().toIterable())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(jdoe, bboss)
     }
 
     @Test
-    fun `Verify findAll returns all AllTypesNotNull`() {
-        assertThat(repository.findAllAllTypesNotNull().toIterable())
+    fun `Verify selectAll returns all AllTypesNotNull`() {
+        assertThat(repository.selectAllAllTypesNotNull().toIterable())
                 .hasSize(1)
                 .containsExactly(allTypesNotNull)
     }
 
     @Disabled("waiting for https://github.com/r2dbc/r2dbc-h2/issues/78")
     @Test
-    fun `Verify findAll returns all AllTypesNullable`() {
-        assertThat(repository.findAllAllTypesNullable().toIterable())
+    fun `Verify selectAll returns all AllTypesNullable`() {
+        assertThat(repository.selectAllAllTypesNullable().toIterable())
                 .hasSize(1)
                 .containsExactly(allTypesNullable)
     }
@@ -77,34 +77,34 @@ class R2dbcTest {
     }
 
     @Test
-    fun `Verify findFirstByFirstame finds John`() {
-        assertThat(repository.findFirstByFirstame(jdoe.firstname).block())
+    fun `Verify selectFirstByFirstame finds John`() {
+        assertThat(repository.selectFirstByFirstame(jdoe.firstname).block())
                 .isEqualTo(jdoe)
     }
 
     @Test
-    fun `Verify findFirstByFirstame finds no Unknown`() {
-        assertThat(repository.findFirstByFirstame("Unknown").block())
+    fun `Verify selectFirstByFirstame finds no Unknown`() {
+        assertThat(repository.selectFirstByFirstame("Unknown").block())
                 .isNull()
     }
 
     @Test
-    fun `Verify findByAlias finds TheBoss`() {
-        assertThat(repository.findAllByAlias(bboss.alias).toIterable())
+    fun `Verify selectByAlias finds TheBoss`() {
+        assertThat(repository.selectAllByAlias(bboss.alias).toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(bboss)
     }
 
     @Test
-    fun `Verify findByAlias with null alias finds John`() {
-        assertThat(repository.findAllByAlias(null).toIterable())
+    fun `Verify selectByAlias with null alias finds John`() {
+        assertThat(repository.selectAllByAlias(null).toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(jdoe)
     }
 
     @Test
-    fun `Verify findAllMappedToDto does the mapping`() {
-        assertThat(repository.findAllMappedToDto().toIterable())
+    fun `Verify selectAllMappedToDto does the mapping`() {
+        assertThat(repository.selectAllMappedToDto().toIterable())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(
                         UserDto("John Doe", null),
@@ -115,7 +115,7 @@ class R2dbcTest {
     fun `Verify deleteAllFromUser works correctly`() {
         assertThat(repository.deleteAllFromUsers().block())
                 .isEqualTo(2)
-        assertThat(repository.findAllUsers().toIterable())
+        assertThat(repository.selectAllUsers().toIterable())
                 .isEmpty()
         // re-insertUsers users
         repository.insertUsers().block()
@@ -125,7 +125,7 @@ class R2dbcTest {
     fun `Verify deleteUserById works`() {
         assertThat(repository.deleteUserById(jdoe.login).block())
                 .isEqualTo(1)
-        assertThat(repository.findAllUsers().toIterable())
+        assertThat(repository.selectAllUsers().toIterable())
                 .hasSize(1)
         // re-insertUsers jdoe
         repository.insertJDoe().block()
@@ -134,7 +134,7 @@ class R2dbcTest {
     @Test
     fun `Verify updateLastname works`() {
         repository.updateLastname("Do").block()
-        assertThat(repository.findFirstByFirstame(jdoe.firstname).block())
+        assertThat(repository.selectFirstByFirstame(jdoe.firstname).block())
                 .extracting { user -> user?.lastname }
                 .isEqualTo("Do")
         repository.updateLastname(jdoe.lastname).block()
@@ -143,11 +143,11 @@ class R2dbcTest {
     @Test
     fun `Verify updateAlias works`() {
         repository.updateAlias("TheBigBoss").block()
-        assertThat(repository.findFirstByFirstame(bboss.firstname).block())
+        assertThat(repository.selectFirstByFirstame(bboss.firstname).block())
                 .extracting { user -> user?.alias }
                 .isEqualTo("TheBigBoss")
         repository.updateAlias(null).block()
-        assertThat(repository.findFirstByFirstame(bboss.firstname).block())
+        assertThat(repository.selectFirstByFirstame(bboss.firstname).block())
                 .extracting { user -> user?.alias }
                 .isEqualTo(null)
         repository.updateAlias(bboss.alias).block()
@@ -159,14 +159,14 @@ class R2dbcTest {
         val newInstant = Instant.now()
         val newLocalTime = LocalTime.now()
         val newLocalDateTime = LocalDateTime.now()
-        repository.updateAll("new", false, newLocalDate, newInstant, newLocalTime, newLocalDateTime,
+        repository.updateAllTypesNotNull("new", false, newLocalDate, newInstant, newLocalTime, newLocalDateTime,
                 newLocalDateTime).block()
-        assertThat(repository.findAllAllTypesNotNull().toIterable())
+        assertThat(repository.selectAllAllTypesNotNull().toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(
                         AllTypesNotNull(allTypesNotNull.id, "new", false, newLocalDate, newInstant,
                                 newLocalTime, newLocalDateTime, newLocalDateTime))
-        repository.updateAll(allTypesNotNull.string, allTypesNotNull.boolean, allTypesNotNull.localDate, allTypesNotNull.instant,
+        repository.updateAllTypesNotNull(allTypesNotNull.string, allTypesNotNull.boolean, allTypesNotNull.localDate, allTypesNotNull.instant,
                 allTypesNotNull.localTim, allTypesNotNull.localDateTime1, allTypesNotNull.localDateTime2).block()
     }
 }
@@ -242,25 +242,25 @@ class UserRepository(dbClient: DatabaseClient) {
             .where { it[User::login] eq id }
             .execute()
 
-    fun findAllUsers() = sqlClient.select<User>().fetchAll()
+    fun selectAllUsers() = sqlClient.selectAll<User>()
 
     fun countAllUsers() = sqlClient.select { count<User>() }.fetchOne()
 
     fun countUsersWithAlias() = sqlClient.select { count { it[User::alias] } }.fetchOne()
 
-    fun findAllAllTypesNotNull() = sqlClient.select<AllTypesNotNull>().fetchAll()
+    fun selectAllAllTypesNotNull() = sqlClient.selectAll<AllTypesNotNull>()
 
-    fun findAllAllTypesNullable() = sqlClient.select<AllTypesNullable>().fetchAll()
+    fun selectAllAllTypesNullable() = sqlClient.selectAll<AllTypesNullable>()
 
-    fun findFirstByFirstame(firstname: String) = sqlClient.select<User>()
+    fun selectFirstByFirstame(firstname: String) = sqlClient.select<User>()
             .where { it[User::firstname] eq firstname }
             .fetchFirst()
 
-    fun findAllByAlias(alias: String?) = sqlClient.select<User>()
+    fun selectAllByAlias(alias: String?) = sqlClient.select<User>()
             .where { it[User::alias] eq alias }
             .fetchAll()
 
-    fun findAllMappedToDto() =
+    fun selectAllMappedToDto() =
             sqlClient.select {
                 UserDto("${it[User::firstname]} ${it[User::lastname]}",
                         it[User::alias])
@@ -276,8 +276,8 @@ class UserRepository(dbClient: DatabaseClient) {
             .where { it[User::login] eq bboss.login }
             .execute()
 
-    fun updateAll(newString: String, newBoolean: Boolean, newLocalDate: LocalDate, newInstant: Instant, newLocalTim: LocalTime,
-                  newLocalDateTime1: LocalDateTime, newLocalDateTime2: LocalDateTime) =
+    fun updateAllTypesNotNull(newString: String, newBoolean: Boolean, newLocalDate: LocalDate, newInstant: Instant, newLocalTim: LocalTime,
+                              newLocalDateTime1: LocalDateTime, newLocalDateTime2: LocalDateTime) =
             sqlClient.updateTable<AllTypesNotNull>()
                     .set { it[AllTypesNotNull::string] = newString }
                     .set { it[AllTypesNotNull::boolean] = newBoolean }
