@@ -19,8 +19,8 @@ internal class SqlClientR2dbc(
         override val tables: Tables
 ) : ReactorSqlClient(), DefaultSqlClient {
 
-    override fun <T : Any> select(tableClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T> {
-        return SqlClientSelectR2dbc.Select(client, tables, tableClass, dsl)
+    override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T> {
+        return SqlClientSelectR2dbc.Select(client, tables, resultClass, dsl)
     }
 
     override fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void> {

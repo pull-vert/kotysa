@@ -30,7 +30,7 @@ class UserRepositoryR2dbcCoroutines(dbClient: DatabaseClient) {
 
     fun selectAll() = sqlClient.selectAll<User>()
 
-    suspend fun countAll() = sqlClient.select { count<User>() }.fetchOne()
+    suspend fun countAll() = sqlClient.countAll<User>()
 
     suspend fun countWithAlias() = sqlClient.select { count { it[User::alias] } }.fetchOne()
 

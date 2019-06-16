@@ -22,7 +22,7 @@ abstract class ReactorSqlClient : SqlClient {
     abstract fun insert(vararg rows: Any): Mono<Void>
 
     @PublishedApi
-    internal abstract fun <T : Any> select(tableClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T>
+    internal abstract fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T>
 
     @PublishedApi
     internal abstract fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void>
@@ -48,6 +48,11 @@ inline fun <reified T : Any> ReactorSqlClient.select() = select(T::class, null)
  * @author Fred Montariol
  */
 inline fun <reified T : Any> ReactorSqlClient.selectAll() = select(T::class, null).fetchAll()
+
+/**
+ * @author Fred Montariol
+ */
+inline fun <reified T : Any> ReactorSqlClient.countAll() = select(Long::class) { count<T>() }.fetchOne()
 
 /**
  * @author Fred Montariol

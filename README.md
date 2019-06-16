@@ -97,7 +97,7 @@ fun deleteById(id: String) = sqlClient.deleteFromTable<User>()
 
 fun selectAll() = sqlClient.selectAll<User>()
 
-fun countAll() = sqlClient.select { count<User>() }.fetchOne()
+fun countAll() = sqlClient.countAll<User>()
 
 fun countWithAlias() = sqlClient.select { count { it[User::alias] } }.fetchOne()
 

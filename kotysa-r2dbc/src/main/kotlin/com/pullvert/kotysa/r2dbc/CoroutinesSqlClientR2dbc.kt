@@ -22,7 +22,7 @@ import kotlin.reflect.KClass
 abstract class CoroutinesSqlClientR2dbc : CoroutinesSqlClient {
 
     @PublishedApi
-    internal abstract fun <T : Any> select(tableClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): CoroutinesSqlClientSelect.Select<T>
+    internal abstract fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): CoroutinesSqlClientSelect.Select<T>
 
     @PublishedApi
     internal abstract suspend fun <T : Any> createTable(tableClass: KClass<T>)
@@ -49,6 +49,11 @@ inline fun <reified T : Any> CoroutinesSqlClientR2dbc.select() = select(T::class
  */
 @FlowPreview
 inline fun <reified T : Any> CoroutinesSqlClientR2dbc.selectAll(batchSize: Int = 1) = select(T::class, null).fetchAll(batchSize)
+
+/**
+ * @author Fred Montariol
+ */
+suspend inline fun <reified T : Any> CoroutinesSqlClientR2dbc.countAll() = select(Long::class) { count<T>() }.fetchOne()
 
 /**
  * @author Fred Montariol
@@ -86,8 +91,8 @@ private class CoroutinesSqlClientR2DbcImpl(
         delegate = SqlClientR2dbc(client, tables)
     }
 
-    override fun <T : Any> select(tableClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): CoroutinesSqlClientSelect.Select<T> =
-            CoroutineSqlClientSelectR2dbc.Select(delegate.select(tableClass, dsl))
+    override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): CoroutinesSqlClientSelect.Select<T> =
+            CoroutineSqlClientSelectR2dbc.Select(delegate.select(resultClass, dsl))
 
     override suspend fun <T : Any> createTable(tableClass: KClass<T>) {
         delegate.createTable(tableClass).awaitFirstOrNull()

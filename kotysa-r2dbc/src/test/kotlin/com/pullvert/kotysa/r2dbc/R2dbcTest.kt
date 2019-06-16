@@ -222,9 +222,9 @@ class UserRepository(dbClient: DatabaseClient) {
     }
 
     fun createTables() =
-        sqlClient.createTable<User>()
-                .then(sqlClient.createTable<AllTypesNotNull>())
-                .then(sqlClient.createTable<AllTypesNullable>())
+            sqlClient.createTable<User>()
+                    .then(sqlClient.createTable<AllTypesNotNull>())
+                    .then(sqlClient.createTable<AllTypesNullable>())
 
     fun insertUsers() = sqlClient.insert(jdoe, bboss)
 
@@ -244,7 +244,7 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun selectAllUsers() = sqlClient.selectAll<User>()
 
-    fun countAllUsers() = sqlClient.select { count<User>() }.fetchOne()
+    fun countAllUsers() = sqlClient.countAll<User>()
 
     fun countUsersWithAlias() = sqlClient.select { count { it[User::alias] } }.fetchOne()
 

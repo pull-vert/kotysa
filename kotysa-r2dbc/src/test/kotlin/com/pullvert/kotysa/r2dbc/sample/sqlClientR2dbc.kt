@@ -28,7 +28,7 @@ class UserRepositoryR2dbc(dbClient: DatabaseClient) {
 
     fun selectAll() = sqlClient.selectAll<User>()
 
-    fun countAll() = sqlClient.select { count<User>() }.fetchOne()
+    fun countAll() = sqlClient.countAll<User>()
 
     fun countWithAlias() = sqlClient.select { count { it[User::alias] } }.fetchOne()
 
