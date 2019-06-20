@@ -8,14 +8,13 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.*
 
 /**
  * @author Fred Montariol
  */
 @Suppress("UNCHECKED_CAST")
-abstract class FieldAccess {
-
-    internal abstract val availableColumns: Map<out (Any) -> Any?, Column<*, *>>
+internal class FieldAccess internal constructor(private val availableColumns: Map<out (Any) -> Any?, Column<*, *>>) {
 
     internal fun <T : Any> getField(getter: (T) -> String, alias: String?) =
             NotNullStringColumnField(availableColumns, getter, alias)
@@ -49,4 +48,10 @@ abstract class FieldAccess {
 
     internal fun <T : Any> getField(getter: (T) -> Boolean, alias: String?) =
             NotNullBooleanColumnField(availableColumns, getter, alias)
+
+    internal fun <T : Any> getField(getter: (T) -> UUID, alias: String?) =
+            NotNullUuidColumnField(availableColumns, getter, alias)
+
+    internal fun <T : Any> getField(getter: (T) -> UUID?, alias: String?) =
+            NullableUuidColumnField(availableColumns, getter, alias)
 }

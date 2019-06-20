@@ -4,14 +4,20 @@
 
 package com.pullvert.kotysa
 
+import java.util.*
+
 /**
  * @author Fred Montariol
  */
 @KotysaMarker
 interface CommonWhereDsl {
-    infix fun <U : Any> NotNullStringColumnField<U>.eq(stringValue: String) = WhereClause(this, Operation.EQ, stringValue)
+    infix fun <U : Any> NotNullStringColumnField<U>.eq(value: String) = WhereClause(this, Operation.EQ, value)
 
-    infix fun <U : Any> NullableStringColumnField<U>.eq(stringValue: String?) = WhereClause(this, Operation.EQ, stringValue)
+    infix fun <U : Any> NullableStringColumnField<U>.eq(value: String?) = WhereClause(this, Operation.EQ, value)
+
+    infix fun <U : Any> NotNullUuidColumnField<U>.eq(value: UUID) = WhereClause(this, Operation.EQ, value)
+
+    infix fun <U : Any> NullableUuidColumnField<U>.eq(value: UUID?) = WhereClause(this, Operation.EQ, value)
 }
 
 /**

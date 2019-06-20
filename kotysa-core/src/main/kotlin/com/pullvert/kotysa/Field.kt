@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.*
 
 /**
  * @author Fred Montariol
@@ -166,3 +167,21 @@ class NotNullBooleanColumnField<T : Any> internal constructor(
         getter: (T) -> Boolean,
         alias: String? = null
 ) : ColumnField<T, Boolean>(availableColumns, getter, alias), NotNullField
+
+/**
+ * @author Fred Montariol
+ */
+class NotNullUuidColumnField<T : Any> internal constructor(
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> UUID,
+        alias: String? = null
+) : ColumnField<T, UUID>(availableColumns, getter, alias), NotNullField
+
+/**
+ * @author Fred Montariol
+ */
+class NullableUuidColumnField<T : Any> internal constructor(
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> UUID?,
+        alias: String? = null
+) : ColumnField<T, UUID?>(availableColumns, getter, alias), NotNullField

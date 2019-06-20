@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.*
 
 /**
  * @author Fred Montariol
@@ -35,4 +36,8 @@ interface FieldSetter<T : Any> {
     operator fun set(getter: (T) -> LocalTime?, value: LocalTime?): Nullable
 
     operator fun set(getter: (T) -> Boolean, value: Boolean)
+
+    operator fun set(getter: (T) -> UUID, value: UUID)
+
+    operator fun set(getter: (T) -> UUID?, value: UUID?): Nullable
 }

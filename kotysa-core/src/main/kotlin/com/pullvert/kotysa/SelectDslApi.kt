@@ -9,8 +9,9 @@ import kotlin.reflect.KClass
 /**
  * @author Fred Montariol
  */
-interface SelectDslApi {
-    fun <T : Any> count(resultClass: KClass<T>, dsl: ((FieldProvider) -> ColumnField<T, *>)? = null, alias: String? = null): Long
+abstract class SelectDslApi protected constructor(){
+    @PublishedApi
+    internal abstract fun <T : Any> count(resultClass: KClass<T>, dsl: ((FieldProvider) -> ColumnField<T, *>)? = null, alias: String? = null): Long
 }
 
 /**

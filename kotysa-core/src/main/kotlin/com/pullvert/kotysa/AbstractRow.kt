@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -15,7 +16,7 @@ import kotlin.reflect.KClass
  * @author Fred Montariol
  */
 @Suppress("UNCHECKED_CAST")
-abstract class AbstractRow(private val fieldIndexMap: Map<Field, Int>) : SelectDslApi, ValueProvider {
+abstract class AbstractRow(private val fieldIndexMap: Map<Field, Int>) : SelectDslApi(), ValueProvider {
 
     override fun <T : Any> count(resultClass: KClass<T>, dsl: ((FieldProvider) -> ColumnField<T, *>)?, alias: String?): Long =
             this[fieldIndexMap.filterKeys { field ->
@@ -54,6 +55,12 @@ abstract class AbstractRow(private val fieldIndexMap: Map<Field, Int>) : SelectD
 
     override operator fun <T : Any> get(getter: (T) -> Boolean, alias: String?): Boolean =
             this[getIndexdByGetterAndAlias(getter, alias)]!!
+
+    override operator fun <T : Any> get(getter: (T) -> UUID, alias: String?): UUID =
+            this[getIndexdByGetterAndAlias(getter, alias)]!!
+
+    override operator fun <T : Any> get(getter: (T) -> UUID?, alias: String?, `_`: Nullable): UUID? =
+            this[getIndexdByGetterAndAlias(getter, alias)]
 
     /**
      * Returns the element at the specified index in the list of returned fields of row

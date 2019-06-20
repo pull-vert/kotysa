@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.*
 
 /**
  * @author Fred Montariol
@@ -34,6 +35,10 @@ interface FieldProvider {
     operator fun <T : Any> get(getter: (T) -> LocalTime?, alias: String? = null): NullableLocalTimeColumnField<T>
 
     operator fun <T : Any> get(getter: (T) -> Boolean, alias: String? = null): NotNullBooleanColumnField<T>
+
+    operator fun <T : Any> get(getter: (T) -> UUID, alias: String? = null): NotNullUuidColumnField<T>
+
+    operator fun <T : Any> get(getter: (T) -> UUID?, alias: String? = null): NullableUuidColumnField<T>
 }
 
 /**
@@ -61,56 +66,74 @@ interface TypedFieldProvider<T : Any> {
     operator fun get(getter: (T) -> LocalTime?, alias: String? = null): NullableLocalTimeColumnField<T>
 
     operator fun get(getter: (T) -> Boolean, alias: String? = null): NotNullBooleanColumnField<T>
+
+    operator fun get(getter: (T) -> UUID, alias: String? = null): NotNullUuidColumnField<T>
+
+    operator fun get(getter: (T) -> UUID?, alias: String? = null): NullableUuidColumnField<T>
 }
 
 open class SimpleFieldProvider(
-        override val availableColumns: Map<out (Any) -> Any?, Column<*, *>>
-) : FieldAccess(), FieldProvider {
-    override fun <T : Any> get(getter: (T) -> String, alias: String?) = getField(getter, alias)
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>
+) : FieldProvider {
 
-    override fun <T : Any> get(getter: (T) -> String?, alias: String?) = getField(getter, alias)
+    private val fieldAccess = FieldAccess(availableColumns)
 
-    override fun <T : Any> get(getter: (T) -> LocalDateTime, alias: String?) = getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> String, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> LocalDateTime?, alias: String?) = getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> String?, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> LocalDate, alias: String?) = getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> LocalDateTime, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> LocalDate?, alias: String?) = getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> LocalDateTime?, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> Instant, alias: String?) = getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> LocalDate, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> Instant?, alias: String?) = getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> LocalDate?, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> LocalTime, alias: String?) = getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> Instant, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> LocalTime?, alias: String?) = getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> Instant?, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> Boolean, alias: String?) = getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> LocalTime, alias: String?) = fieldAccess.getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> LocalTime?, alias: String?) = fieldAccess.getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> Boolean, alias: String?) = fieldAccess.getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> UUID, alias: String?) = fieldAccess.getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> UUID?, alias: String?) = fieldAccess.getField(getter, alias)
 }
 
 open class SimpleTypedFieldProvider<T : Any>(
-        override val availableColumns: Map<out (Any) -> Any?, Column<*, *>>
-) : FieldAccess(), TypedFieldProvider<T> {
-    override fun get(getter: (T) -> String, alias: String?) = getField(getter, alias)
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>
+) : TypedFieldProvider<T> {
 
-    override fun get(getter: (T) -> String?, alias: String?) = getField(getter, alias)
+    private val fieldAccess = FieldAccess(availableColumns)
 
-    override fun get(getter: (T) -> LocalDateTime, alias: String?) = getField(getter, alias)
+    override fun get(getter: (T) -> String, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> LocalDateTime?, alias: String?) = getField(getter, alias)
+    override fun get(getter: (T) -> String?, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> LocalDate, alias: String?) = getField(getter, alias)
+    override fun get(getter: (T) -> LocalDateTime, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> LocalDate?, alias: String?) = getField(getter, alias)
+    override fun get(getter: (T) -> LocalDateTime?, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> Instant, alias: String?) = getField(getter, alias)
+    override fun get(getter: (T) -> LocalDate, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> Instant?, alias: String?) = getField(getter, alias)
+    override fun get(getter: (T) -> LocalDate?, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> LocalTime, alias: String?) = getField(getter, alias)
+    override fun get(getter: (T) -> Instant, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> LocalTime?, alias: String?) = getField(getter, alias)
+    override fun get(getter: (T) -> Instant?, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> Boolean, alias: String?) = getField(getter, alias)
+    override fun get(getter: (T) -> LocalTime, alias: String?) = fieldAccess.getField(getter, alias)
+
+    override fun get(getter: (T) -> LocalTime?, alias: String?) = fieldAccess.getField(getter, alias)
+
+    override fun get(getter: (T) -> Boolean, alias: String?) = fieldAccess.getField(getter, alias)
+
+    override fun get(getter: (T) -> UUID, alias: String?) = fieldAccess.getField(getter, alias)
+
+    override fun get(getter: (T) -> UUID?, alias: String?) = fieldAccess.getField(getter, alias)
 }

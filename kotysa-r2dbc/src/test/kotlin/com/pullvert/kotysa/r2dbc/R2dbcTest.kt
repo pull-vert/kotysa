@@ -19,6 +19,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.*
 
 /**
  * @author Fred Montariol
@@ -123,7 +124,7 @@ class R2dbcTest {
 
     @Test
     fun `Verify deleteUserById works`() {
-        assertThat(repository.deleteUserById(jdoe.login).block())
+        assertThat(repository.deleteUserById(jdoe.id).block())
                 .isEqualTo(1)
         assertThat(repository.selectAllUsers().toIterable())
                 .hasSize(1)
@@ -159,15 +160,17 @@ class R2dbcTest {
         val newInstant = Instant.now()
         val newLocalTime = LocalTime.now()
         val newLocalDateTime = LocalDateTime.now()
-        repository.updateAllTypesNotNull("new", false, newLocalDate, newInstant, newLocalTime, newLocalDateTime,
-                newLocalDateTime).block()
+        val newUuid = UUID.randomUUID()
+        repository.updateAllTypesNotNull("new", false, newLocalDate, newInstant, newLocalTime,
+                newLocalDateTime, newLocalDateTime, newUuid).block()
         assertThat(repository.selectAllAllTypesNotNull().toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(
                         AllTypesNotNull(allTypesNotNull.id, "new", false, newLocalDate, newInstant,
-                                newLocalTime, newLocalDateTime, newLocalDateTime))
-        repository.updateAllTypesNotNull(allTypesNotNull.string, allTypesNotNull.boolean, allTypesNotNull.localDate, allTypesNotNull.instant,
-                allTypesNotNull.localTim, allTypesNotNull.localDateTime1, allTypesNotNull.localDateTime2).block()
+                                newLocalTime, newLocalDateTime, newLocalDateTime, newUuid))
+        repository.updateAllTypesNotNull(allTypesNotNull.string, allTypesNotNull.boolean, allTypesNotNull.localDate,
+                allTypesNotNull.instant, allTypesNotNull.localTim, allTypesNotNull.localDateTime1,
+                allTypesNotNull.localDateTime2, allTypesNotNull.uuid).block()
     }
 }
 
@@ -175,7 +178,7 @@ private val tables =
         tables {
             table<User> {
                 name = "users"
-                column { it[User::login].varchar().primaryKey }
+                column { it[User::id].uuid().primaryKey }
                 column { it[User::firstname].varchar().name("fname") }
                 column { it[User::lastname].varchar().name("lname") }
                 column { it[User::isAdmin].boolean() }
@@ -191,6 +194,7 @@ private val tables =
                 column { it[AllTypesNotNull::localTim].time9() }
                 column { it[AllTypesNotNull::localDateTime1].dateTime() }
                 column { it[AllTypesNotNull::localDateTime2].timestamp() }
+                column { it[AllTypesNotNull::uuid].uuid() }
             }
             table<AllTypesNullable> {
                 name = "all_types_nullable"
@@ -201,6 +205,7 @@ private val tables =
                 column { it[AllTypesNullable::localTim].time9() }
                 column { it[AllTypesNullable::localDateTime1].dateTime() }
                 column { it[AllTypesNullable::localDateTime2].timestamp() }
+                column { it[AllTypesNullable::uuid].uuid() }
             }
         }
 
@@ -238,8 +243,8 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun deleteAllFromAllTypesNullable() = sqlClient.deleteAllFromTable<AllTypesNullable>()
 
-    fun deleteUserById(id: String) = sqlClient.deleteFromTable<User>()
-            .where { it[User::login] eq id }
+    fun deleteUserById(id: UUID) = sqlClient.deleteFromTable<User>()
+            .where { it[User::id] eq id }
             .execute()
 
     fun selectAllUsers() = sqlClient.selectAll<User>()
@@ -268,16 +273,16 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun updateLastname(newLastname: String) = sqlClient.updateTable<User>()
             .set { it[User::lastname] = newLastname }
-            .where { it[User::login] eq jdoe.login }
+            .where { it[User::id] eq jdoe.id }
             .execute()
 
     fun updateAlias(newAlias: String?) = sqlClient.updateTable<User>()
             .set { it[User::alias] = newAlias }
-            .where { it[User::login] eq bboss.login }
+            .where { it[User::id] eq bboss.id }
             .execute()
 
     fun updateAllTypesNotNull(newString: String, newBoolean: Boolean, newLocalDate: LocalDate, newInstant: Instant, newLocalTim: LocalTime,
-                              newLocalDateTime1: LocalDateTime, newLocalDateTime2: LocalDateTime) =
+                              newLocalDateTime1: LocalDateTime, newLocalDateTime2: LocalDateTime, newUuid: UUID) =
             sqlClient.updateTable<AllTypesNotNull>()
                     .set { it[AllTypesNotNull::string] = newString }
                     .set { it[AllTypesNotNull::boolean] = newBoolean }
@@ -286,6 +291,7 @@ class UserRepository(dbClient: DatabaseClient) {
                     .set { it[AllTypesNotNull::localTim] = newLocalTim }
                     .set { it[AllTypesNotNull::localDateTime1] = newLocalDateTime1 }
                     .set { it[AllTypesNotNull::localDateTime2] = newLocalDateTime2 }
+                    .set { it[AllTypesNotNull::uuid] = newUuid }
                     .where { it[AllTypesNotNull::id] eq allTypesNotNull.id }
                     .execute()
 }

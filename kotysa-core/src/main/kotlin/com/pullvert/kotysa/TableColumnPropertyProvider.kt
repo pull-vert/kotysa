@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.*
 
 /**
  * @author Fred Montariol
@@ -35,4 +36,8 @@ interface TableColumnPropertyProvider<T : Any> {
     operator fun get(getter: (T) -> LocalTime?): NullableLocalTimeColumnProperty<T>
 
     operator fun get(getter: (T) -> Boolean): NotNullBooleanColumnProperty<T>
+
+    operator fun get(getter: (T) -> UUID): NotNullUuidColumnProperty<T>
+
+    operator fun get(getter: (T) -> UUID?): NullableUuidColumnProperty<T>
 }

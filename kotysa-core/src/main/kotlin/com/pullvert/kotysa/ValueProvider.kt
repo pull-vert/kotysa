@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.*
 
 /**
  * @author Fred Montariol
@@ -35,4 +36,8 @@ interface ValueProvider {
     operator fun <T : Any> get(getter: (T) -> LocalTime?, alias: String? = null, `_`: Nullable = Nullable.TRUE): LocalTime?
 
     operator fun <T : Any> get(getter: (T) -> Boolean, alias: String? = null): Boolean
+
+    operator fun <T : Any> get(getter: (T) -> UUID, alias: String? = null): UUID
+
+    operator fun <T : Any> get(getter: (T) -> UUID?, alias: String? = null, `_`: Nullable = Nullable.TRUE): UUID?
 }

@@ -8,6 +8,7 @@ import com.pullvert.kotysa.count
 import com.pullvert.kotysa.r2dbc.*
 import com.pullvert.kotysa.samples.*
 import org.springframework.data.r2dbc.core.DatabaseClient
+import java.util.*
 
 /**
  * @author Fred Montariol
@@ -22,8 +23,8 @@ class UserRepositoryR2dbc(dbClient: DatabaseClient) {
 
     fun deleteAll() = sqlClient.deleteAllFromTable<User>()
 
-    fun deleteById(id: String) = sqlClient.deleteFromTable<User>()
-            .where { it[User::login] eq id }
+    fun deleteById(id: UUID) = sqlClient.deleteFromTable<User>()
+            .where { it[User::id] eq id }
             .execute()
 
     fun selectAll() = sqlClient.selectAll<User>()

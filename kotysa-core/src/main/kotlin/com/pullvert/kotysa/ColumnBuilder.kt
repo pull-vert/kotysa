@@ -302,3 +302,37 @@ internal class BooleanColumnBuilderNotNullImpl<T : Any, U> internal constructor(
 
     override fun build() = BooleanColumnNotNull(entityGetter, columnName, sqlType, defaultValue)
 }
+
+interface UuidColumnBuilder<T : UuidColumnBuilder<T>> : ColumnBuilder<T>
+
+internal abstract class AbstractUuidColumnBuilder<T : UuidColumnBuilder<T>, U : Any> : AbstractColumnBuilder<T, U>(), UuidColumnBuilder<T> {
+    override val sqlType = SqlType.UUID
+}
+
+interface UuidColumnBuilderNotNull<U>
+    : UuidColumnBuilder<UuidColumnBuilderNotNull<U>>, ColumnNotNullBuilder<UuidColumnBuilderNotNull<U>, U>
+
+internal class UuidColumnBuilderNotNullImpl<T : Any, U> internal constructor(
+        override val entityGetter: (T) -> U
+) : AbstractUuidColumnBuilder<UuidColumnBuilderNotNull<U>, T>(), UuidColumnBuilderNotNull<U> {
+
+    private var defaultValue: U? = null
+
+    override fun setDefaultValue(defaultValue: U): UuidColumnBuilderNotNull<U> {
+        this.defaultValue = defaultValue
+        return this
+    }
+
+    override val primaryKey
+        get() = isPrimaryKey
+
+    override fun build() = UuidColumnNotNull(entityGetter, columnName, sqlType, isPK, defaultValue)
+}
+
+interface UuidColumnBuilderNullable : UuidColumnBuilder<UuidColumnBuilderNullable>, ColumnNullableBuilder<UuidColumnBuilderNullable>
+
+internal class UuidColumnBuilderNullableImpl<T : Any, U> internal constructor(
+        override val entityGetter: (T) -> U
+) : AbstractUuidColumnBuilder<UuidColumnBuilderNullable, T>(), UuidColumnBuilderNullable {
+    override fun build() = UuidColumnNullable(entityGetter, columnName, sqlType)
+}

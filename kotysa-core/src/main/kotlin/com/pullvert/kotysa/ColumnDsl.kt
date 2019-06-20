@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.*
 import kotlin.reflect.KFunction
 
 /**
@@ -57,6 +58,12 @@ class ColumnDsl<T : Any> internal constructor(
     fun NotNullBooleanColumnProperty<T>.boolean(): BooleanColumnBuilderNotNull<Boolean> =
             BooleanColumnBuilderNotNullImpl(getter)
 
+    fun NotNullUuidColumnProperty<T>.uuid(): UuidColumnBuilderNotNull<UUID> =
+            UuidColumnBuilderNotNullImpl(getter)
+
+    fun NullableUuidColumnProperty<T>.uuid(): UuidColumnBuilderNullable =
+            UuidColumnBuilderNullableImpl(getter)
+
     override fun get(getter: (T) -> String) = NotNullStringColumnProperty(getter)
 
     override fun get(getter: (T) -> String?): NullableStringColumnProperty<T> {
@@ -93,6 +100,13 @@ class ColumnDsl<T : Any> internal constructor(
     }
 
     override fun get(getter: (T) -> Boolean) = NotNullBooleanColumnProperty(getter)
+
+    override fun get(getter: (T) -> UUID) = NotNullUuidColumnProperty(getter)
+
+    override fun get(getter: (T) -> UUID?): NullableUuidColumnProperty<T> {
+        checkNullableGetter(getter)
+        return NullableUuidColumnProperty(getter)
+    }
 
     private fun checkNullableGetter(getter: (T) -> Any?) {
         if (getter !is KFunction<*>) {

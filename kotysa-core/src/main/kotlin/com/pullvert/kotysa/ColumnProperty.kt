@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.*
 
 /**
  * @author Fred Montariol
@@ -131,9 +132,30 @@ class NullableLocalTimeColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> LocalTime?
 ) : LocalTimeColumnProperty<T>(), NullableColumnProperty
 
+// Boolean
 /**
  * @author Fred Montariol
  */
 class NotNullBooleanColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> Boolean
 ) : AbstractColumnProperty<T>(), NotNullColumnProperty
+
+// UUID
+/**
+ * @author Fred Montariol
+ */
+abstract class UuidColumnProperty<T : Any> : AbstractColumnProperty<T>()
+
+/**
+ * @author Fred Montariol
+ */
+class NotNullUuidColumnProperty<T : Any> internal constructor(
+        override val getter: (T) -> UUID
+) : UuidColumnProperty<T>(), NotNullColumnProperty
+
+/**
+ * @author Fred Montariol
+ */
+class NullableUuidColumnProperty<T : Any> internal constructor(
+        override val getter: (T) -> UUID?
+) : UuidColumnProperty<T>(), NullableColumnProperty

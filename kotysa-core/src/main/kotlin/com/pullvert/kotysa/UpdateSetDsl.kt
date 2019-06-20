@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.*
 
 /**
  * @author Fred Montariol
@@ -15,59 +16,69 @@ import java.time.LocalTime
 @KotysaMarker
 class UpdateSetDsl<T : Any> internal constructor(
         private val init: (FieldSetter<T>) -> Unit,
-        override val availableColumns: Map<out (Any) -> Any?, Column<*, *>>
-) : FieldAccess(), FieldSetter<T> {
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>
+) : FieldSetter<T> {
 
+    private val fieldAccess = FieldAccess(availableColumns)
     private lateinit var columnField: ColumnField<T, *>
     private var value: Any? = null
 
     override fun set(getter: (T) -> String, value: String) {
-        addValue(getField(getter, null), value)
+        addValue(fieldAccess.getField(getter, null), value)
     }
 
     override fun set(getter: (T) -> String?, value: String?): Nullable {
-        addValue(getField(getter, null), value)
+        addValue(fieldAccess.getField(getter, null), value)
         return Nullable.TRUE
     }
 
     override fun set(getter: (T) -> LocalDateTime, value: LocalDateTime) {
-        addValue(getField(getter, null), value)
+        addValue(fieldAccess.getField(getter, null), value)
     }
 
     override fun set(getter: (T) -> LocalDateTime?, value: LocalDateTime?): Nullable {
-        addValue(getField(getter, null), value)
+        addValue(fieldAccess.getField(getter, null), value)
         return Nullable.TRUE
     }
 
     override fun set(getter: (T) -> LocalDate, value: LocalDate) {
-        addValue(getField(getter, null), value)
+        addValue(fieldAccess.getField(getter, null), value)
     }
 
     override fun set(getter: (T) -> LocalDate?, value: LocalDate?): Nullable {
-        addValue(getField(getter, null), value)
+        addValue(fieldAccess.getField(getter, null), value)
         return Nullable.TRUE
     }
 
     override fun set(getter: (T) -> Instant, value: Instant) {
-        addValue(getField(getter, null), value)
+        addValue(fieldAccess.getField(getter, null), value)
     }
 
     override fun set(getter: (T) -> Instant?, value: Instant?): Nullable {
-        addValue(getField(getter, null), value)
+        addValue(fieldAccess.getField(getter, null), value)
         return Nullable.TRUE
     }
 
     override fun set(getter: (T) -> LocalTime, value: LocalTime) {
-        addValue(getField(getter, null), value)
+        addValue(fieldAccess.getField(getter, null), value)
     }
 
     override fun set(getter: (T) -> LocalTime?, value: LocalTime?): Nullable {
-        addValue(getField(getter, null), value)
+        addValue(fieldAccess.getField(getter, null), value)
         return Nullable.TRUE
     }
 
     override fun set(getter: (T) -> Boolean, value: Boolean) {
-        addValue(getField(getter, null), value)
+        addValue(fieldAccess.getField(getter, null), value)
+    }
+
+    override fun set(getter: (T) -> UUID, value: UUID) {
+        addValue(fieldAccess.getField(getter, null), value)
+    }
+
+    override fun set(getter: (T) -> UUID?, value: UUID?): Nullable {
+        addValue(fieldAccess.getField(getter, null), value)
+        return Nullable.TRUE
     }
 
     private fun addValue(columnField: ColumnField<T, *>, value: Any?) {

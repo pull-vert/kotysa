@@ -234,3 +234,28 @@ internal class BooleanColumnNotNull<T : Any, U> internal constructor(
         override val defaultValue: U?,
         override val isPrimaryKey: Boolean = false
 ) : AbstractColumn<T, U>(), ColumnNotNull<T, U>
+
+/**
+ * @author Fred Montariol
+ */
+internal interface UuidColumn<T : Any, U> : Column<T, U>
+
+/**
+ * @author Fred Montariol
+ */
+internal class UuidColumnNotNull<T : Any, U> internal constructor(
+        override val entityGetter: (T) -> U,
+        override val name: String,
+        override val sqlType: SqlType,
+        override val isPrimaryKey: Boolean,
+        override val defaultValue: U?
+) : AbstractColumn<T, U>(), UuidColumn<T, U>, ColumnNotNull<T, U>
+
+/**
+ * @author Fred Montariol
+ */
+internal class UuidColumnNullable<T : Any, U> internal constructor(
+        override val entityGetter: (T) -> U,
+        override val name: String,
+        override val sqlType: SqlType
+) : AbstractColumn<T, U>(), UuidColumn<T, U>, ColumnNullable<T, U>

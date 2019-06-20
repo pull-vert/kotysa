@@ -9,6 +9,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KMutableProperty1
@@ -162,6 +163,7 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
                     Instant::class.createType() -> valueProvider[getter as (T) -> Instant?]
                     LocalTime::class.createType() -> valueProvider[getter as (T) -> LocalTime?]
                     Boolean::class.createType() -> valueProvider[getter as (T) -> Boolean]
+                    UUID::class.createType() -> valueProvider[getter as (T) -> UUID?]
                     else -> throw RuntimeException("should never happen")
                 }
 
@@ -225,6 +227,12 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
                         require(!getterType.isMarkedNullable) { "$getter is nullable, Boolean must not be nullable" }
                         NotNullBooleanColumnField(allColumns, getter as (Any) -> Boolean)
                     }
+                    UUID::class.createType() ->
+                        if (getterType.isMarkedNullable) {
+                            NullableUuidColumnField(allColumns, getter as (Any) -> UUID?)
+                        } else {
+                            NotNullUuidColumnField(allColumns, getter as (Any) -> UUID)
+                        }
                     else -> throw RuntimeException("should never happen")
                 }
                 selectedFields.add(field)

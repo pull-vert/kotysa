@@ -11,6 +11,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KTypeParameter
@@ -86,6 +87,7 @@ internal fun logValue(value: Any?) = when (value) {
     is Instant -> "\'${DateTimeFormatter.ISO_INSTANT.format(value)}\'"
     is LocalTime -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_TIME)}\'"
     is Boolean -> "$value"
+    is UUID -> "\'$value\'"
     else -> throw RuntimeException("${value.javaClass.canonicalName} is not supported yet")
 }
 

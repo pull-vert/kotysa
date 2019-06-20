@@ -134,7 +134,7 @@ public class JavaUser {
     @Override
     public String toString() {
         return "JavaUser{" +
-            "login='" + login + '\'' +
+            "id='" + login + '\'' +
             ", firstname='" + firstname + '\'' +
             ", lastname='" + lastname + '\'' +
             ", isAdmin=" + isAdmin +

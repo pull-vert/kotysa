@@ -147,6 +147,6 @@ class CoroutinesUserRepository(dbClient: DatabaseClient) {
 
     suspend fun updateLastname(newLastname: String) = sqlClient.updateTable<User>()
             .set { it[User::lastname] = newLastname }
-            .where { it[User::login] eq jdoe.login }
+            .where { it[User::id] eq jdoe.id }
             .execute()
 }

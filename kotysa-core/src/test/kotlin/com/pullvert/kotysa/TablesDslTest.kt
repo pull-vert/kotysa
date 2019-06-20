@@ -24,6 +24,7 @@ class TablesDslTest {
                 column { it[AllTypesNotNull::localTim].time9() }
                 column { it[AllTypesNotNull::localDateTime1].dateTime() }
                 column { it[AllTypesNotNull::localDateTime2].timestamp() }
+                column { it[AllTypesNotNull::uuid].uuid() }
             }
         }
         assertThat(tables.allColumns.values)
@@ -35,7 +36,8 @@ class TablesDslTest {
                         tuple("instant", SqlType.TIMESTAMP_WITH_TIME_ZONE, false),
                         tuple("localTim", SqlType.TIME9, false),
                         tuple("localDateTime1", SqlType.DATE_TIME, false),
-                        tuple("localDateTime2", SqlType.TIMESTAMP, false))
+                        tuple("localDateTime2", SqlType.TIMESTAMP, false),
+                        tuple("uuid", SqlType.UUID, false))
     }
 
     @Test
@@ -50,6 +52,7 @@ class TablesDslTest {
                 column { it[AllTypesNullable::localTim].time9() }
                 column { it[AllTypesNullable::localDateTime1].dateTime() }
                 column { it[AllTypesNullable::localDateTime2].timestamp() }
+                column { it[AllTypesNullable::uuid].uuid() }
             }
         }
         assertThat(tables.allColumns.values)
@@ -61,6 +64,7 @@ class TablesDslTest {
                         tuple("instant", SqlType.TIMESTAMP_WITH_TIME_ZONE, true),
                         tuple("localTim", SqlType.TIME9, true),
                         tuple("localDateTime1", SqlType.DATE_TIME, true),
-                        tuple("localDateTime2", SqlType.TIMESTAMP, true))
+                        tuple("localDateTime2", SqlType.TIMESTAMP, true),
+                        tuple("uuid", SqlType.UUID, true))
     }
 }
