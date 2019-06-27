@@ -186,7 +186,7 @@ private val tables =
             }
             table<AllTypesNotNull> {
                 name = "all_types"
-                column { it[AllTypesNotNull::id].varchar().primaryKey }
+                column { it[AllTypesNotNull::id].uuid().primaryKey }
                 column { it[AllTypesNotNull::string].varchar() }
                 column { it[AllTypesNotNull::boolean].boolean() }
                 column { it[AllTypesNotNull::localDate].date() }
@@ -198,7 +198,7 @@ private val tables =
             }
             table<AllTypesNullable> {
                 name = "all_types_nullable"
-                column { it[AllTypesNullable::id].varchar().primaryKey }
+                column { it[AllTypesNullable::id].uuid().primaryKey }
                 column { it[AllTypesNullable::string].varchar() }
                 column { it[AllTypesNullable::localDate].date() }
                 column { it[AllTypesNullable::instant].timestampWithTimeZone() }

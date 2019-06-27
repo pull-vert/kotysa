@@ -32,14 +32,14 @@ data class UserDto(
         val alias: String?
 )
 
-val allTypesNotNull = AllTypesNotNull("123", "", true, LocalDate.now(), Instant.now(), LocalTime.now(), LocalDateTime.now(), LocalDateTime.now(), UUID.randomUUID())
-val allTypesNullable = AllTypesNullable("456", null, null, null, null, null, null, null)
+val allTypesNotNull = AllTypesNotNull(UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f"), "", true, LocalDate.now(), Instant.now(), LocalTime.now(), LocalDateTime.now(), LocalDateTime.now(), UUID.randomUUID())
+val allTypesNullable = AllTypesNullable(UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"), null, null, null, null, null, null, null)
 
 /**
  * @author Fred Montariol
  */
 data class AllTypesNotNull(
-        val id: String,
+        val id: UUID,
         val string: String,
         val boolean: Boolean,
         val localDate: LocalDate,
@@ -54,7 +54,7 @@ data class AllTypesNotNull(
  * @author Fred Montariol
  */
 data class AllTypesNullable(
-        val id: String,
+        val id: UUID,
         val string: String?,
         val localDate: LocalDate?,
         val instant: Instant?,

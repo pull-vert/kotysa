@@ -58,7 +58,7 @@ val tables =
         tables {
             table<User> {
                 name = "users"
-                column { it[User::login].varchar().primaryKey }
+                column { it[User::id].uuid().primaryKey }
                 column { it[User::firstname].varchar().name("fname") }
                 column { it[User::lastname].varchar().name("lname") }
                 column { it[User::isAdmin].boolean() }
@@ -67,7 +67,7 @@ val tables =
         }
 
 data class User(
-        val login: String,
+        val id: UUID = UUID.randomUUID(),
         val firstname: String,
         val lastname: String,
         val isAdmin: Boolean,
@@ -91,8 +91,8 @@ fun insert() = sqlClient.insert(jdoe, bboss)
 
 fun deleteAll() = sqlClient.deleteAllFromTable<User>()
 
-fun deleteById(id: String) = sqlClient.deleteFromTable<User>()
-        .where { it[User::login] eq id }
+fun deleteById(id: UUID) = sqlClient.deleteFromTable<User>()
+        .where { it[User::id] eq id }
         .execute()
 
 fun selectAll() = sqlClient.selectAll<User>()
@@ -208,5 +208,10 @@ Supported data types will be updated as new types are added. Java 8+ ```java.tim
         <td>Boolean</td>
         <td>nullable Boolean is not allowed ! Representing a boolean state</td>
         <td>BOOLEAN</td>
+    </tr>
+    <tr>
+        <td>java.util.UUID</td>
+        <td>Universally unique identifier (128 bit value)</td>
+        <td>UUID</td>
     </tr>
 </table>

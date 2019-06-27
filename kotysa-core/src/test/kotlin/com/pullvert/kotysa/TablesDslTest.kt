@@ -17,7 +17,8 @@ class TablesDslTest {
         val tables = tables {
             table<AllTypesNotNull> {
                 name = "all_types"
-                column { it[AllTypesNotNull::string].varchar().primaryKey }
+                column { it[AllTypesNotNull::id].uuid().primaryKey }
+                column { it[AllTypesNotNull::string].varchar() }
                 column { it[AllTypesNotNull::boolean].boolean() }
                 column { it[AllTypesNotNull::localDate].date() }
                 column { it[AllTypesNotNull::instant].timestampWithTimeZone() }
@@ -30,6 +31,7 @@ class TablesDslTest {
         assertThat(tables.allColumns.values)
                 .extracting("name", "sqlType", "isNullable")
                 .containsExactly(
+                        tuple("id", SqlType.UUID, false),
                         tuple("string", SqlType.VARCHAR, false),
                         tuple("boolean", SqlType.BOOLEAN, false),
                         tuple("localDate", SqlType.DATE, false),
@@ -45,7 +47,7 @@ class TablesDslTest {
         val tables = tables {
             table<AllTypesNullable> {
                 name = "all_types_nullable"
-                column { it[AllTypesNullable::id].varchar().primaryKey } // required
+                column { it[AllTypesNullable::id].uuid().primaryKey }
                 column { it[AllTypesNullable::string].varchar() }
                 column { it[AllTypesNullable::localDate].date() }
                 column { it[AllTypesNullable::instant].timestampWithTimeZone() }
@@ -58,7 +60,7 @@ class TablesDslTest {
         assertThat(tables.allColumns.values)
                 .extracting("name", "sqlType", "isNullable")
                 .containsExactly(
-                        tuple("id", SqlType.VARCHAR, false),
+                        tuple("id", SqlType.UUID, false),
                         tuple("string", SqlType.VARCHAR, true),
                         tuple("localDate", SqlType.DATE, true),
                         tuple("instant", SqlType.TIMESTAMP_WITH_TIME_ZONE, true),

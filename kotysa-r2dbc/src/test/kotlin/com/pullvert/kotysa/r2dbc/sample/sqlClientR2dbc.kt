@@ -61,7 +61,7 @@ class UserRepositoryR2dbc(dbClient: DatabaseClient) {
     fun simplifiedExample() {
         sqlClient.apply {
             createTable<User>()
-                    .then(deleteFromTable<User>().execute()) // delete All users
+                    .then(deleteAllFromTable<User>())
                     .then(insert(jdoe, bboss))
                     .block()
 

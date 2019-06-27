@@ -63,7 +63,7 @@ class UserRepositoryR2dbcCoroutines(dbClient: DatabaseClient) {
     suspend fun simplifiedExample() {
         sqlClient.apply {
             createTable<User>()
-            deleteFromTable<User>().execute() // delete All users
+            deleteAllFromTable<User>()
             insert(jdoe, bboss)
 
             val john = select<User>()
