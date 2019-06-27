@@ -10,18 +10,18 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.*
 
-val jdoe = User(UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f"), "John", "Doe", false)
-val bboss = User(UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"), "Big", "Boss", true, "TheBoss")
+val jdoe = User("John", "Doe", false, id = UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f"))
+val bboss = User("Big", "Boss", true, "TheBoss", UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"))
 
 /**
  * @author Fred Montariol
  */
 data class User(
-        val id: UUID = UUID.randomUUID(),
         val firstname: String,
         val lastname: String,
         val isAdmin: Boolean,
-        val alias: String? = null
+        val alias: String? = null,
+        val id: UUID = UUID.randomUUID()
 )
 
 /**

@@ -69,11 +69,11 @@ val tables =
         }
 
 data class User(
-        val id: UUID = UUID.randomUUID(),
         val firstname: String,
         val lastname: String,
         val isAdmin: Boolean,
-        val alias: String? = null
+        val alias: String? = null,
+        val id: UUID = UUID.randomUUID()
 )
 ```
 
@@ -123,8 +123,8 @@ fun updateFirstname(newFirstname: String) = sqlClient.updateTable<User>()
         .set { it[User::firstname] = newFirstname }
         .execute()
 
-val jdoe = User("jdoe", "John", "Doe", false)
-val bboss = User("bboss", "Big", "Boss", true, "TheBoss")
+val jdoe = User("John", "Doe", false)
+val bboss = User("Big", "Boss", true, "TheBoss")
 
 data class UserDto(
 		val name: String,
