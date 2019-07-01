@@ -19,6 +19,7 @@ internal class SqlClientR2dbc(
         override val tables: Tables
 ) : ReactorSqlClient(), DefaultSqlClient {
 
+    @ExperimentalStdlibApi
     override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T> {
         return SqlClientSelectR2dbc.Select(client, tables, resultClass, dsl)
     }

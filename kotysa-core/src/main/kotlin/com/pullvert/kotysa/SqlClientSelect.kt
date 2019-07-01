@@ -10,11 +10,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.*
-import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
-import kotlin.reflect.KMutableProperty1
-import kotlin.reflect.KParameter
-import kotlin.reflect.full.createType
+import kotlin.reflect.*
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.withNullability
@@ -46,6 +42,7 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
             override val availableColumns: MutableMap<out (Any) -> Any?, Column<*, *>>
     ) : DefaultSqlClientCommon.Properties
 
+    @ExperimentalStdlibApi
     @Suppress("UNCHECKED_CAST")
     abstract class Select<T : Any> protected constructor(
             tables: Tables,
@@ -157,13 +154,13 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
 
         private fun valueProviderCall(getter: (T) -> Any?, valueProvider: ValueProvider): Any? =
                 when (getter.toCallable().returnType.withNullability(false)) {
-                    String::class.createType() -> valueProvider[getter as (T) -> String?]
-                    LocalDateTime::class.createType() -> valueProvider[getter as (T) -> LocalDateTime?]
-                    LocalDate::class.createType() -> valueProvider[getter as (T) -> LocalDate?]
-                    Instant::class.createType() -> valueProvider[getter as (T) -> Instant?]
-                    LocalTime::class.createType() -> valueProvider[getter as (T) -> LocalTime?]
-                    Boolean::class.createType() -> valueProvider[getter as (T) -> Boolean]
-                    UUID::class.createType() -> valueProvider[getter as (T) -> UUID?]
+                    typeOf<String>() -> valueProvider[getter as (T) -> String?]
+                    typeOf<LocalDateTime>() -> valueProvider[getter as (T) -> LocalDateTime?]
+                    typeOf<LocalDate>() -> valueProvider[getter as (T) -> LocalDate?]
+                    typeOf<Instant>() -> valueProvider[getter as (T) -> Instant?]
+                    typeOf<LocalTime>() -> valueProvider[getter as (T) -> LocalTime?]
+                    typeOf<Boolean>() -> valueProvider[getter as (T) -> Boolean]
+                    typeOf<UUID>() -> valueProvider[getter as (T) -> UUID?]
                     else -> throw RuntimeException("should never happen")
                 }
 
@@ -193,41 +190,41 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
             columns.forEach { (getter, _) ->
                 val getterType = getter.toCallable().returnType
                 val field = when (getterType.withNullability(false)) {
-                    String::class.createType() ->
+                    typeOf<String>() ->
                         if (getterType.isMarkedNullable) {
                             NullableStringColumnField(allColumns, getter as (Any) -> String?)
                         } else {
                             NotNullStringColumnField(allColumns, getter as (Any) -> String)
                         }
-                    LocalDateTime::class.createType() ->
+                    typeOf<LocalDateTime>() ->
                         if (getterType.isMarkedNullable) {
                             NullableLocalDateTimeColumnField(allColumns, getter as (Any) -> LocalDateTime?)
                         } else {
                             NotNullLocalDateTimeColumnField(allColumns, getter as (Any) -> LocalDateTime)
                         }
-                    LocalDate::class.createType() ->
+                    typeOf<LocalDate>() ->
                         if (getterType.isMarkedNullable) {
                             NullableLocalDateColumnField(allColumns, getter as (Any) -> LocalDate?)
                         } else {
                             NotNullLocalDateColumnField(allColumns, getter as (Any) -> LocalDate)
                         }
-                    Instant::class.createType() ->
+                    typeOf<Instant>() ->
                         if (getterType.isMarkedNullable) {
                             NullableInstantColumnField(allColumns, getter as (Any) -> Instant?)
                         } else {
                             NotNullInstantColumnField(allColumns, getter as (Any) -> Instant)
                         }
-                    LocalTime::class.createType() ->
+                    typeOf<LocalTime>() ->
                         if (getterType.isMarkedNullable) {
                             NullableLocalTimeColumnField(allColumns, getter as (Any) -> LocalTime?)
                         } else {
                             NotNullLocalTimeColumnField(allColumns, getter as (Any) -> LocalTime)
                         }
-                    Boolean::class.createType() -> {
+                    typeOf<Boolean>() -> {
                         require(!getterType.isMarkedNullable) { "$getter is nullable, Boolean must not be nullable" }
                         NotNullBooleanColumnField(allColumns, getter as (Any) -> Boolean)
                     }
-                    UUID::class.createType() ->
+                    typeOf<UUID>() ->
                         if (getterType.isMarkedNullable) {
                             NullableUuidColumnField(allColumns, getter as (Any) -> UUID?)
                         } else {

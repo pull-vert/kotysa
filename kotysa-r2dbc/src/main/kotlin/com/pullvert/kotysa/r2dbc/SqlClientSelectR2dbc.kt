@@ -14,6 +14,7 @@ import kotlin.reflect.KClass
  */
 internal class SqlClientSelectR2dbc private constructor() : DefaultSqlClientSelect() {
 
+    @ExperimentalStdlibApi
     internal class Select<T : Any> internal constructor(
             override val client: DatabaseClient,
             tables: Tables,
