@@ -34,10 +34,6 @@ fun <T : Any> Tables.checkTable(tableClass: KClass<out T>) {
     require(this.allTables.containsKey(tableClass)) { tableMustBeMapped(tableClass.qualifiedName) }
 }
 
-fun Tables.checkTables(tableClasses: Array<out KClass<*>>) {
-    tableClasses.forEach { tableClass -> checkTable(tableClass) }
-}
-
 private val logger = KotlinLogging.logger {}
 
 /**
