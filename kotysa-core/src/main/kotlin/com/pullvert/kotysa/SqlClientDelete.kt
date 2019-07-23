@@ -30,6 +30,9 @@ open class DefaultSqlClientDelete protected constructor() : DefaultSqlClientComm
 
     class Properties<T : Any>(
             override val tables: Tables,
+            /**
+             * targeted table to delete from
+             */
             val table: Table<T>,
             override val whereClauses: MutableList<WhereClause>,
             override val availableColumns: MutableMap<out (Any) -> Any?, Column<*, *>>
@@ -62,6 +65,12 @@ open class DefaultSqlClientDelete protected constructor() : DefaultSqlClientComm
             logger.debug { "Exec SQL : $deleteSql ${whereAndWhereDebug.second}" }
 
             "$deleteSql ${whereAndWhereDebug.first}"
+        }
+
+        fun deleteFromTableSqlDebug() = with(properties) {
+            val deleteSql = "DELETE FROM ${table.name}"
+            val whereDebug = whereClauseDebug(whereClauses, logger)
+            logger.debug { "Exec SQL : $deleteSql $whereDebug" }
         }
     }
 }

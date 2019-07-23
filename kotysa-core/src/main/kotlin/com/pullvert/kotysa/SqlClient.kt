@@ -75,7 +75,7 @@ interface DefaultSqlClient : SqlClient {
     }
 }
 
-internal fun logValue(value: Any?) = when (value) {
+private fun logValue(value: Any?) = when (value) {
     null -> "null"
     is String -> "\'$value\'"
     is LocalDate -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_DATE)}\'"
@@ -91,6 +91,7 @@ internal fun logValue(value: Any?) = when (value) {
  * @author Fred Montariol
  */
 open class DefaultSqlClientCommon protected constructor() {
+
     protected interface Properties {
         val tables: Tables
         val whereClauses: MutableList<WhereClause>
@@ -145,40 +146,43 @@ open class DefaultSqlClientCommon protected constructor() {
     protected interface Return {
         val properties: Properties
 
-        fun whereAndWhereDebug(whereClauses: MutableList<WhereClause>, logger: KLogger): Pair<String, String> {
-            if (whereClauses.isEmpty()) {
-                return Pair("", "")
-            }
+        fun stringValue(value: Any?) = logValue(value)
 
-            val wheres = whereClauses.joinToString(" AND ", "WHERE ") { whereClause ->
-                when (whereClause.operation) {
-                    Operation.EQ ->
-                        if (whereClause.value == null) {
-                            "${whereClause.field.fieldName} IS NULL"
-                        } else {
-                            "${whereClause.field.fieldName} = ?"
+        private fun whereClause(whereClauses: MutableList<WhereClause>) =
+                if (whereClauses.isEmpty()) {
+                    ""
+                } else {
+                    whereClauses.joinToString(" AND ", "WHERE ") { whereClause ->
+                        when (whereClause.operation) {
+                            Operation.EQ ->
+                                if (whereClause.value == null) {
+                                    "${whereClause.field.fieldName} IS NULL"
+                                } else {
+                                    "${whereClause.field.fieldName} = ?"
+                                }
+                            else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
                         }
-                    else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
-                }
-            }
-
-            val wheresDebug = if (logger.isDebugEnabled) {
-                whereClauses.joinToString(" AND ", "WHERE ") { whereClause ->
-                    when (whereClause.operation) {
-                        Operation.EQ ->
-                            if (whereClause.value == null) {
-                                "${whereClause.field.fieldName} IS NULL"
-                            } else {
-                                "${whereClause.field.fieldName} = ${logValue(whereClause.value)}"
-                            }
-                        else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
                     }
                 }
-            } else {
-                ""
-            }
 
-            return Pair(wheres, wheresDebug)
-        }
+        fun whereClauseDebug(whereClauses: MutableList<WhereClause>, logger: KLogger) =
+                if (whereClauses.isEmpty() || !logger.isDebugEnabled) {
+                    ""
+                } else {
+                    whereClauses.joinToString(" AND ", "WHERE ") { whereClause ->
+                        when (whereClause.operation) {
+                            Operation.EQ ->
+                                if (whereClause.value == null) {
+                                    "${whereClause.field.fieldName} IS NULL"
+                                } else {
+                                    "${whereClause.field.fieldName} = ${logValue(whereClause.value)}"
+                                }
+                            else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
+                        }
+                    }
+                }
+
+        fun whereAndWhereDebug(whereClauses: MutableList<WhereClause>, logger: KLogger): Pair<String, String> =
+                Pair(whereClause(whereClauses), whereClauseDebug(whereClauses, logger))
     }
 }

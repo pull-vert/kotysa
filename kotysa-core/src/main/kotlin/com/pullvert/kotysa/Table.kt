@@ -16,11 +16,15 @@ data class Tables internal constructor(
 )
 
 /**
- * One database Table model mapped by entity class [tableClass]
+ * A database Table model mapped by entity class [tableClass]
+ *
  * @author Fred Montariol
  */
-data class Table<T : Any> internal constructor(
+class Table<T : Any> internal constructor(
         internal val tableClass: KClass<T>,
+        /**
+         * Real name of this table in the database
+         */
         val name: String,
         val columns: Map<(T) -> Any?, Column<T, *>>
 )

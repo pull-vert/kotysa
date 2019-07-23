@@ -78,7 +78,7 @@ open class DefaultSqlClientUpdate protected constructor() : DefaultSqlClientComm
             if (logger.isDebugEnabled) {
                 val setSqlDebug = setValues.keys.joinToString(prefix = "SET ") { column ->
                     val columnValue = setValues[column]
-                    "${column.name} = ${logValue(columnValue)}"
+                    "${column.name} = ${stringValue(columnValue)}"
                 }
                 logger.debug("Exec SQL : $updateSql $setSqlDebug ${whereAndWhereDebug.second}")
             }

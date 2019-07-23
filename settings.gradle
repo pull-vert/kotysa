@@ -15,4 +15,6 @@ pluginManagement {
 rootProject.name = 'kotysa'
 
 include 'kotysa-core'
+
+//include 'kotysa-android'
 include 'kotysa-r2dbc'
