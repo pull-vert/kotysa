@@ -35,16 +35,25 @@ internal class SqlClientDeleteSqlLite private constructor() : DefaultSqlClientDe
         val client: SQLiteDatabase
 
         override fun execute() = with(properties) {
-            val whereParams = whereClauses
-                    .mapNotNull { whereClause -> whereClause.value }
-                    .map { whereValue -> stringValue(whereValue).replace("\'", "") }
-                    .toTypedArray()
-
+            var whereParams: Array<String>? = null
+            var whereClauseStr: String? = null
+            if (whereClauses.isNotEmpty()) {
+                val buildedWhereClause = whereClause(whereClauses)
+                if (buildedWhereClause.isNotEmpty()) {
+                    // remove 'WHERE '
+                    whereClauseStr = buildedWhereClause.substring(6)
+                }
+                whereParams = whereClauses
+                        .mapNotNull { whereClause ->
+                            whereClause.value
+                        }
+                        .map { whereValue -> stringValue(whereValue).replace("\'", "") }
+                        .toTypedArray()
+            }
             // debug query
             deleteFromTableSqlDebug()
 
-            // todo where = column1 = ? and column2 = ?
-            client.delete(table.name, "", whereParams)
+            client.delete(table.name, whereClauseStr, whereParams)
         }
     }
 }

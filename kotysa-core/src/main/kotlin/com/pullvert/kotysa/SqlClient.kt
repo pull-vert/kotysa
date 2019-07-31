@@ -148,7 +148,7 @@ open class DefaultSqlClientCommon protected constructor() {
 
         fun stringValue(value: Any?) = logValue(value)
 
-        private fun whereClause(whereClauses: MutableList<WhereClause>) =
+        fun whereClause(whereClauses: MutableList<WhereClause>) =
                 if (whereClauses.isEmpty()) {
                     ""
                 } else {
