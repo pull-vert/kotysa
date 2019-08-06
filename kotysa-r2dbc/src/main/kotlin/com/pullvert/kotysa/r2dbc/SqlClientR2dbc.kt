@@ -11,6 +11,7 @@ import reactor.kotlin.core.publisher.toFlux
 import kotlin.reflect.KClass
 
 /**
+ * see [spring-data-r2dbc doc](https://docs.spring.io/spring-data/r2dbc/docs/1.0.x/reference/html/#reference)
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
  * @author Fred Montariol
  */
