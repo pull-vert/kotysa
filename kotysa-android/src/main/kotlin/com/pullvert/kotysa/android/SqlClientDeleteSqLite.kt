@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 /**
  * @author Fred Montariol
  */
-internal class SqlClientDeleteSqlLite private constructor() : DefaultSqlClientDelete() {
+internal class SqlClientDeleteSqLite private constructor() : DefaultSqlClientDelete() {
 
     internal class Delete<T : Any> internal constructor(
             override val client: SQLiteDatabase,

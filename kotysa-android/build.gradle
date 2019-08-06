@@ -16,6 +16,10 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
     testImplementation "org.assertj:assertj-core:$assertj_version"
 
+    // todo unit test with database
+    // https://stackoverflow.com/questions/8499554/android-junit-test-for-sqliteopenhelper/13556184#13556184
+    // http://robolectric.org/getting-started/
+
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 }
 

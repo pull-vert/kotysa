@@ -73,6 +73,19 @@ interface DefaultSqlClient : SqlClient {
         }
         return "INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($values)"
     }
+
+    fun <T : Any> insertSqlDebug(row: T) {
+        if (logger.isDebugEnabled) {
+            val table = tables.getTable(row::class)
+            val columnNames = mutableSetOf<String>()
+            val valuesDebug = table.columns.values.joinToString { column ->
+                columnNames.add(column.name)
+                val columnValue = column.entityGetter(row)
+                logValue(columnValue)
+            }
+            logger.debug("Exec SQL : INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($valuesDebug)")
+        }
+    }
 }
 
 private fun logValue(value: Any?) = when (value) {

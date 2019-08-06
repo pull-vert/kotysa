@@ -49,7 +49,7 @@ internal class SqlClientR2dbc(
         rows.forEach { row -> tables.checkTable(row::class) }
 
         return rows.toFlux()
-                .flatMap { tableClass -> insert(tableClass) }
+                .flatMap { row -> insert(row) }
                 .then()
     }
 
