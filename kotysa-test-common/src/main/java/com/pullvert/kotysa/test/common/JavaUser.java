@@ -134,13 +134,13 @@ public class JavaUser {
     @Override
     public String toString() {
         return "JavaUser{" +
-            "id='" + login + '\'' +
-            ", firstname='" + firstname + '\'' +
-            ", lastname='" + lastname + '\'' +
-            ", isAdmin=" + isAdmin +
-            ", alias1='" + alias1 + '\'' +
-            ", alias2='" + alias2 + '\'' +
-            ", alias3='" + alias3 + '\'' +
-            '}';
+                "id='" + login + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", isAdmin=" + isAdmin +
+                ", alias1='" + alias1 + '\'' +
+                ", alias2='" + alias2 + '\'' +
+                ", alias3='" + alias3 + '\'' +
+                '}';
     }
 }

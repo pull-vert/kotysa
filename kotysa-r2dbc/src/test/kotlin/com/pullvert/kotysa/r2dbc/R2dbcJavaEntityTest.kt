@@ -4,7 +4,7 @@
 
 package com.pullvert.kotysa.r2dbc
 
-import com.pullvert.kotysa.*
+import com.pullvert.kotysa.tables
 import com.pullvert.kotysa.test.common.UserDto
 import com.pullvert.kotysa.test.common.bbossJava
 import com.pullvert.kotysa.test.common.jdoeJava

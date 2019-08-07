@@ -5,7 +5,6 @@
 package com.pullvert.kotysa.test.common.sample
 
 import com.pullvert.kotysa.tables
-import java.util.*
 
 val tables =
         tables {

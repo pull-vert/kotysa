@@ -4,7 +4,8 @@
 
 package com.pullvert.kotysa.r2dbc
 
-import com.pullvert.kotysa.*
+import com.pullvert.kotysa.count
+import com.pullvert.kotysa.tables
 import com.pullvert.kotysa.test.common.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
