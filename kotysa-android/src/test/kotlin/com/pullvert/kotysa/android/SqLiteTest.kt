@@ -15,10 +15,12 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 /**
+ * Android SDK 5.0 (API = 21) is the minimal that works
+ *
  * @author Fred Montariol
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE, sdk = [28])
+@Config(manifest = Config.NONE, sdk = [21])
 class SqLiteTest {
 
     private lateinit var dbHelper: DbHelper
