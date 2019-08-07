@@ -6,10 +6,13 @@ package com.pullvert.kotysa.r2dbc.sample
 
 import com.pullvert.kotysa.count
 import com.pullvert.kotysa.r2dbc.*
-import com.pullvert.kotysa.samples.*
+import com.pullvert.kotysa.test.common.User
+import com.pullvert.kotysa.test.common.sample.UserDto
+import com.pullvert.kotysa.test.common.sample.bboss
+import com.pullvert.kotysa.test.common.sample.jdoe
+import com.pullvert.kotysa.test.common.sample.tables
 import kotlinx.coroutines.FlowPreview
 import org.springframework.data.r2dbc.core.DatabaseClient
-import java.util.*
 
 /**
  * @author Fred Montariol
@@ -17,7 +20,7 @@ import java.util.*
 @FlowPreview
 @Suppress("UNUSED_VARIABLE")
 class UserRepositoryR2dbcCoroutines(dbClient: DatabaseClient) {
-    private val sqlClient = dbClient.coSqlClient(tables())
+    private val sqlClient = dbClient.coSqlClient(tables)
 
     suspend fun createTable() = sqlClient.createTable<User>()
 
@@ -25,7 +28,7 @@ class UserRepositoryR2dbcCoroutines(dbClient: DatabaseClient) {
 
     suspend fun deleteAll() = sqlClient.deleteAllFromTable<User>()
 
-    suspend fun deleteById(id: UUID) = sqlClient.deleteFromTable<User>()
+    suspend fun deleteById(id: String) = sqlClient.deleteFromTable<User>()
             .where { it[User::id] eq id }
             .execute()
 

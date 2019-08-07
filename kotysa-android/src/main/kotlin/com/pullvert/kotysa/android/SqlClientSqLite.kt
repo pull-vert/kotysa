@@ -70,3 +70,11 @@ internal class SqlClientSqLite(
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
+
+/**
+ * Create a [BlockingAndroidSqlClient] from a Android SqLite [SQLiteDatabase] with [Tables] mapping
+ *
+ * todo @sample sample
+ * @author Fred Montariol
+ */
+fun SQLiteDatabase.sqlClient(tables: Tables): BlockingAndroidSqlClient = SqlClientSqLite(this, tables)

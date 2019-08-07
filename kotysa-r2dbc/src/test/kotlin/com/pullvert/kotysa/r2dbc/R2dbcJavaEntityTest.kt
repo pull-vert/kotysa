@@ -5,6 +5,9 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
+import com.pullvert.kotysa.test.common.UserDto
+import com.pullvert.kotysa.test.common.bbossJava
+import com.pullvert.kotysa.test.common.jdoeJava
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
@@ -120,15 +123,15 @@ class R2dbcJavaEntityTest {
 
 private val tables =
         tables {
-            table<JavaUser> {
+            table<com.pullvert.kotysa.test.common.JavaUser> {
                 name = "java_users"
-                column { it[JavaUser::getLogin].varchar().primaryKey }
-                column { it[JavaUser::getFirstname].varchar().name("fname") }
-                column { it[JavaUser::getLastname].varchar().name("lname") }
-                column { it[JavaUser::isAdmin].boolean() }
-                column { it[JavaUser::getAlias1].varchar() }
-                column { it[JavaUser::getAlias2].varchar() }
-                column { it[JavaUser::getAlias3].varchar() }
+                column { it[com.pullvert.kotysa.test.common.JavaUser::getLogin].varchar().primaryKey }
+                column { it[com.pullvert.kotysa.test.common.JavaUser::getFirstname].varchar().name("fname") }
+                column { it[com.pullvert.kotysa.test.common.JavaUser::getLastname].varchar().name("lname") }
+                column { it[com.pullvert.kotysa.test.common.JavaUser::isAdmin].boolean() }
+                column { it[com.pullvert.kotysa.test.common.JavaUser::getAlias1].varchar() }
+                column { it[com.pullvert.kotysa.test.common.JavaUser::getAlias2].varchar() }
+                column { it[com.pullvert.kotysa.test.common.JavaUser::getAlias3].varchar() }
             }
         }
 
@@ -146,33 +149,33 @@ class JavaUserRepository(dbClient: DatabaseClient) {
                 .block()
     }
 
-    fun createTable() = sqlClient.createTable<JavaUser>()
+    fun createTable() = sqlClient.createTable<com.pullvert.kotysa.test.common.JavaUser>()
 
     fun insert() = sqlClient.insert(jdoeJava, bbossJava)
 
-    fun deleteAll() = sqlClient.deleteAllFromTable<JavaUser>()
+    fun deleteAll() = sqlClient.deleteAllFromTable<com.pullvert.kotysa.test.common.JavaUser>()
 
-    fun selectAll() = sqlClient.selectAll<JavaUser>()
+    fun selectAll() = sqlClient.selectAll<com.pullvert.kotysa.test.common.JavaUser>()
 
-    fun selectFirstByFirstame(firstname: String) = sqlClient.select<JavaUser>()
-            .where { it[JavaUser::getFirstname] eq firstname }
+    fun selectFirstByFirstame(firstname: String) = sqlClient.select<com.pullvert.kotysa.test.common.JavaUser>()
+            .where { it[com.pullvert.kotysa.test.common.JavaUser::getFirstname] eq firstname }
             .fetchFirst()
 
-    fun selectByAlias1(alias: String?) = sqlClient.select<JavaUser>()
-            .where { it[JavaUser::getAlias1] eq alias }
+    fun selectByAlias1(alias: String?) = sqlClient.select<com.pullvert.kotysa.test.common.JavaUser>()
+            .where { it[com.pullvert.kotysa.test.common.JavaUser::getAlias1] eq alias }
             .fetchAll()
 
-    fun selectByAlias2(alias: String?) = sqlClient.select<JavaUser>()
-            .where { it[JavaUser::getAlias2] eq alias }
+    fun selectByAlias2(alias: String?) = sqlClient.select<com.pullvert.kotysa.test.common.JavaUser>()
+            .where { it[com.pullvert.kotysa.test.common.JavaUser::getAlias2] eq alias }
             .fetchAll()
 
-    fun selectByAlias3(alias: String?) = sqlClient.select<JavaUser>()
-            .where { it[JavaUser::getAlias3] eq alias }
+    fun selectByAlias3(alias: String?) = sqlClient.select<com.pullvert.kotysa.test.common.JavaUser>()
+            .where { it[com.pullvert.kotysa.test.common.JavaUser::getAlias3] eq alias }
             .fetchAll()
 
     fun selectAllMappedToDto() =
             sqlClient.select {
-                UserDto("${it[JavaUser::getFirstname]} ${it[JavaUser::getLastname]}",
-                        it[JavaUser::getAlias1])
+                UserDto("${it[com.pullvert.kotysa.test.common.JavaUser::getFirstname]} ${it[com.pullvert.kotysa.test.common.JavaUser::getLastname]}",
+                        it[com.pullvert.kotysa.test.common.JavaUser::getAlias1])
             }.fetchAll()
 }

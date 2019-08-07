@@ -13,14 +13,16 @@ dependencies {
 
     compileOnly 'com.google.android:android:4.1.1.4'
 
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testCompile project(':kotysa-test-common')
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.robolectric:robolectric:4.0'
     testImplementation "org.assertj:assertj-core:$assertj_version"
+    testImplementation "ch.qos.logback:logback-classic:$logback_version"
 
-    // todo unit test with database
-    // https://stackoverflow.com/questions/8499554/android-junit-test-for-sqliteopenhelper/13556184#13556184
-    // http://robolectric.org/getting-started/
+    testCompile 'com.google.android:android:4.1.1.4'
 
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junit_version"
 }
 
 compileKotlin {

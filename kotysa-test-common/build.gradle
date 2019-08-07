@@ -1,0 +1,17 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+dependencies {
+    compile project(':kotysa-core')
+
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation "com.google.code.findbugs:jsr305:$jsr305_version"
+    implementation "org.springframework:spring-core:$spring_core_version"
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}

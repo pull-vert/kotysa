@@ -7,6 +7,11 @@ package com.pullvert.kotysa
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.Test
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.util.*
 
 /**
  * @author Fred Montariol
@@ -70,3 +75,32 @@ class TablesDslTest {
                         tuple("uuid", SqlType.UUID, true))
     }
 }
+
+/**
+ * @author Fred Montariol
+ */
+private data class AllTypesNotNull(
+        val id: UUID,
+        val string: String,
+        val boolean: Boolean,
+        val localDate: LocalDate,
+        val instant: Instant,
+        val localTim: LocalTime,
+        val localDateTime1: LocalDateTime,
+        val localDateTime2: LocalDateTime,
+        val uuid: UUID
+)
+
+/**
+ * @author Fred Montariol
+ */
+private data class AllTypesNullable(
+        val id: UUID,
+        val string: String?,
+        val localDate: LocalDate?,
+        val instant: Instant?,
+        val localTim: LocalTime?,
+        val localDateTime1: LocalDateTime?,
+        val localDateTime2: LocalDateTime?,
+        val uuid: UUID?
+)

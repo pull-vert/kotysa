@@ -5,7 +5,9 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
-import kotlinx.coroutines.flow.toList
+import com.pullvert.kotysa.test.common.Inherited
+import com.pullvert.kotysa.test.common.Nameable
+import com.pullvert.kotysa.test.common.inherited
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
@@ -103,11 +105,11 @@ class InheritanceRepository(dbClient: DatabaseClient) {
             sqlClient.select<Inherited>().where { it[Inherited::getId] eq id }.fetchOne()
 }
 
-inline fun <reified T : Entity<String>> InheritanceRepository.selectById(id: String) =
-        sqlClient.select<T>().where { it[Entity<String>::getId] eq id }.fetchOne()
+inline fun <reified T : com.pullvert.kotysa.test.common.Entity<String>> InheritanceRepository.selectById(id: String) =
+        sqlClient.select<T>().where { it[com.pullvert.kotysa.test.common.Entity<String>::getId] eq id }.fetchOne()
 
 inline fun <reified T : Nameable> InheritanceRepository.selectFirstByName(name: String) =
         sqlClient.select<T>().where { it[Nameable::name] eq name }.fetchFirst()
 
-inline fun <reified T : Entity<String>> InheritanceRepository.deleteById(id: String) =
-        sqlClient.deleteFromTable<T>().where { it[Entity<String>::getId] eq id }.execute()
+inline fun <reified T : com.pullvert.kotysa.test.common.Entity<String>> InheritanceRepository.deleteById(id: String) =
+        sqlClient.deleteFromTable<T>().where { it[com.pullvert.kotysa.test.common.Entity<String>::getId] eq id }.execute()

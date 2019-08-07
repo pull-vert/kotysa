@@ -2,16 +2,17 @@
  * Copyright 2019 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package com.pullvert.kotysa
+package com.pullvert.kotysa.test.common
 
+import com.pullvert.kotysa.tables
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.*
 
-val jdoe = User("John", "Doe", false, id = UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f"))
-val bboss = User("Big", "Boss", true, "TheBoss", UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"))
+val jdoe = User("John", "Doe", false, id = "123")
+val bboss = User("Big", "Boss", true, "TheBoss", "456")
 
 /**
  * @author Fred Montariol
@@ -21,7 +22,7 @@ data class User(
         val lastname: String,
         val isAdmin: Boolean,
         val alias: String? = null,
-        val id: UUID = UUID.randomUUID()
+        val id: String
 )
 
 /**
@@ -145,7 +146,7 @@ val tables =
         tables {
             table<User> {
                 name = "users"
-                column { it[User::id].uuid().primaryKey }
+                column { it[User::id].varchar().primaryKey }
                 column { it[User::firstname].varchar().name("fname") }
                 column { it[User::lastname].varchar().name("lname") }
                 column { it[User::isAdmin].boolean() }

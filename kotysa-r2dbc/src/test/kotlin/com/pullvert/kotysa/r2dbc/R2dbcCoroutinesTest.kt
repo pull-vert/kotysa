@@ -4,7 +4,7 @@
 
 package com.pullvert.kotysa.r2dbc
 
-import com.pullvert.kotysa.*
+import com.pullvert.kotysa.test.common.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.coroutineScope

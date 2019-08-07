@@ -5,6 +5,7 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
+import com.pullvert.kotysa.test.common.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Disabled
@@ -178,7 +179,7 @@ private val tables =
         tables {
             table<User> {
                 name = "users"
-                column { it[User::id].uuid().primaryKey }
+                column { it[User::id].varchar().primaryKey }
                 column { it[User::firstname].varchar().name("fname") }
                 column { it[User::lastname].varchar().name("lname") }
                 column { it[User::isAdmin].boolean() }
@@ -243,7 +244,7 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun deleteAllFromAllTypesNullable() = sqlClient.deleteAllFromTable<AllTypesNullable>()
 
-    fun deleteUserById(id: UUID) = sqlClient.deleteFromTable<User>()
+    fun deleteUserById(id: String) = sqlClient.deleteFromTable<User>()
             .where { it[User::id] eq id }
             .execute()
 

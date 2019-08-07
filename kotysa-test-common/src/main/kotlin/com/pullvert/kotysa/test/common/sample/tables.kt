@@ -2,16 +2,16 @@
  * Copyright 2019 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package com.pullvert.kotysa.samples
+package com.pullvert.kotysa.test.common.sample
 
 import com.pullvert.kotysa.tables
 import java.util.*
 
-fun tables() =
+val tables =
         tables {
             table<User> {
                 name = "users"
-                column { it[User::id].uuid().primaryKey }
+                column { it[User::id].varchar().primaryKey }
                 column { it[User::firstname].varchar().name("fname") }
                 column { it[User::lastname].varchar().name("lname") }
                 column { it[User::isAdmin].boolean() }
@@ -24,11 +24,11 @@ data class User(
         val lastname: String,
         val isAdmin: Boolean,
         val alias: String? = null,
-        val id: UUID = UUID.randomUUID()
+        val id: String
 )
 
-val jdoe = User("John", "Doe", false)
-val bboss = User("Big", "Boss", true, "TheBoss")
+val jdoe = User("John", "Doe", false, id = "123")
+val bboss = User("Big", "Boss", true, "TheBoss", "456")
 
 data class UserDto(
         val name: String,

@@ -17,8 +17,7 @@ dependencies {
     
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-reactive:$kotlinx_coroutines_version"
 
-    // the only way IDEA can resolve test classes
-    testImplementation(project(":kotysa-core").sourceSets.test.output)
+    testCompile project(':kotysa-test-common')
 
     testImplementation "org.springframework.fu:spring-fu-kofu:$spring_fu_version"
     testImplementation "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
