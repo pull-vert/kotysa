@@ -36,10 +36,53 @@ class SqLiteTest {
 
     @Test
     fun `Verify selectAll returns all users`() {
-        // todo implement select for SqLite then uncomment
-//        assertThat(repository.selectAll())
-//                .hasSize(2)
-//                .containsExactlyInAnyOrder(jdoe, bboss)
+        assertThat(repository.selectAll())
+                .hasSize(2)
+                .containsExactlyInAnyOrder(jdoe, bboss)
+    }
+
+    @Test
+    fun `Verify selectFirstByFirstame finds John`() {
+        assertThat(repository.selectFirstByFirstame("John"))
+                .isEqualTo(jdoe)
+    }
+
+    @Test(expected = NotImplementedError::class)
+    fun `Verify selectFirstByFirstame finds no Unknown`() {
+        repository.selectFirstByFirstame("Unknown")
+    }
+
+    @Test
+    fun `Verify selectByAlias finds TheBoss`() {
+        assertThat(repository.selectByAlias("TheBoss").toList())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(bboss)
+    }
+
+    @Test
+    fun `Verify selectByAlias with null alias finds John`() {
+        assertThat(repository.selectByAlias(null).toList())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(jdoe)
+    }
+
+    @Test
+    fun `Verify selectAllMappedToDto does the mapping`() {
+        assertThat(repository.selectAllMappedToDto().toList())
+                .hasSize(2)
+                .containsExactlyInAnyOrder(
+                        UserDto("John Doe", null),
+                        UserDto("Big Boss", "TheBoss"))
+    }
+
+    @Test
+    fun `Verify deleteAllFromUser works correctly`() {
+        assertThat(repository.deleteAll())
+                .isEqualTo(2)
+        assertThat(repository.selectAll().toList())
+                .isEmpty()
+        // re-insert users
+        repository.insert()
     }
 }
 

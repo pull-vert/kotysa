@@ -16,9 +16,10 @@ internal class SqlClientSqLite(
         private val client: SQLiteDatabase,
         override val tables: Tables
 ) : BlockingAndroidSqlClient(), DefaultSqlClient {
-    override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): BlockingSqlClientSelect.Select<T> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+
+    @ExperimentalStdlibApi
+    override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): BlockingSqlClientSelect.Select<T> =
+            SqlClientSelectSqLite.Select(client, tables, resultClass, dsl)
 
     override fun <T : Any> createTable(tableClass: KClass<T>) {
         val createTableSql = createTableSql(tableClass)
