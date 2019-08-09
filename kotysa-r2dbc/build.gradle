@@ -20,8 +20,6 @@ dependencies {
     testCompile project(':kotysa-test-common')
 
     testImplementation "org.springframework.fu:spring-fu-kofu:$spring_fu_version"
-    testImplementation "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
-    testImplementation "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
     testImplementation "io.r2dbc:r2dbc-h2:$r2dbc_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-reactive:$kotlinx_coroutines_version"
     testImplementation "ch.qos.logback:logback-classic:$logback_version"
