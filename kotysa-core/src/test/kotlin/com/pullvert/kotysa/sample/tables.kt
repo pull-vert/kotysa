@@ -2,7 +2,7 @@
  * Copyright 2019 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package com.pullvert.kotysa.test.common.sample
+package com.pullvert.kotysa.sample
 
 import com.pullvert.kotysa.tables
 
@@ -24,12 +24,4 @@ data class User(
         val isAdmin: Boolean,
         val alias: String? = null,
         val id: String
-)
-
-val jdoe = User("John", "Doe", false, id = "123")
-val bboss = User("Big", "Boss", true, "TheBoss", "456")
-
-data class UserDto(
-        val name: String,
-        val alias: String?
 )

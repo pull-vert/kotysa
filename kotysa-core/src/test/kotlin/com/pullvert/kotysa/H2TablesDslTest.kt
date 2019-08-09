@@ -16,10 +16,10 @@ import java.util.*
 /**
  * @author Fred Montariol
  */
-class TablesDslTest {
+class H2TablesDslTest {
     @Test
     fun `Test all supported column types for not null properties`() {
-        val tables = tables {
+        val tables = tables().h2 {
             table<AllTypesNotNull> {
                 name = "all_types"
                 column { it[AllTypesNotNull::id].uuid().primaryKey }
@@ -49,7 +49,7 @@ class TablesDslTest {
 
     @Test
     fun `Test all supported column types for nullable properties`() {
-        val tables = tables {
+        val tables = tables().h2 {
             table<AllTypesNullable> {
                 name = "all_types_nullable"
                 column { it[AllTypesNullable::id].uuid().primaryKey }

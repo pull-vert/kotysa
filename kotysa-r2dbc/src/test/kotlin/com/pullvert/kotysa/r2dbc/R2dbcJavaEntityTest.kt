@@ -122,7 +122,7 @@ class R2dbcJavaEntityTest {
 }
 
 private val tables =
-        tables {
+        tables().h2 {
             table<com.pullvert.kotysa.test.common.JavaUser> {
                 name = "java_users"
                 column { it[com.pullvert.kotysa.test.common.JavaUser::getLogin].varchar().primaryKey }

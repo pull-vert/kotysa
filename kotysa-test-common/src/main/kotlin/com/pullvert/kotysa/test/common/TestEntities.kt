@@ -25,6 +25,18 @@ data class User(
         val id: String
 )
 
+val tables =
+        tables().h2 {
+            table<User> {
+                name = "users"
+                column { it[User::id].varchar().primaryKey }
+                column { it[User::firstname].varchar().name("fname") }
+                column { it[User::lastname].varchar().name("lname") }
+                column { it[User::isAdmin].boolean() }
+                column { it[User::alias].varchar() }
+            }
+        }
+
 /**
  * @author Fred Montariol
  */
@@ -141,15 +153,3 @@ val bbossJava: JavaUser
         javaUser.alias3 = "TheBoss"
         return javaUser
     }
-
-val tables =
-        tables {
-            table<User> {
-                name = "users"
-                column { it[User::id].varchar().primaryKey }
-                column { it[User::firstname].varchar().name("fname") }
-                column { it[User::lastname].varchar().name("lname") }
-                column { it[User::isAdmin].boolean() }
-                column { it[User::alias].varchar() }
-            }
-        }

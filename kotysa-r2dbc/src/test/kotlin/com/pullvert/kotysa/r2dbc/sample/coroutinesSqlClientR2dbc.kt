@@ -7,10 +7,7 @@ package com.pullvert.kotysa.r2dbc.sample
 import com.pullvert.kotysa.count
 import com.pullvert.kotysa.r2dbc.*
 import com.pullvert.kotysa.test.common.User
-import com.pullvert.kotysa.test.common.sample.UserDto
-import com.pullvert.kotysa.test.common.sample.bboss
-import com.pullvert.kotysa.test.common.sample.jdoe
-import com.pullvert.kotysa.test.common.sample.tables
+import com.pullvert.kotysa.test.common.sample.*
 import kotlinx.coroutines.FlowPreview
 import org.springframework.data.r2dbc.core.DatabaseClient
 
@@ -20,7 +17,7 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 @FlowPreview
 @Suppress("UNUSED_VARIABLE")
 class UserRepositoryR2dbcCoroutines(dbClient: DatabaseClient) {
-    private val sqlClient = dbClient.coSqlClient(tables)
+    private val sqlClient = dbClient.coSqlClient(h2tables)
 
     suspend fun createTable() = sqlClient.createTable<User>()
 

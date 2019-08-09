@@ -57,7 +57,7 @@ more Kotysa modules will come soon
 
 ```kotlin
 val tables =
-        tables {
+        tables().h2 { // choose database type
             table<User> {
                 name = "users"
                 column { it[User::id].uuid().primaryKey }

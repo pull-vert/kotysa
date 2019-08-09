@@ -177,7 +177,7 @@ class R2dbcTest {
 }
 
 private val tables =
-        tables {
+        tables().h2 {
             table<User> {
                 name = "users"
                 column { it[User::id].varchar().primaryKey }
