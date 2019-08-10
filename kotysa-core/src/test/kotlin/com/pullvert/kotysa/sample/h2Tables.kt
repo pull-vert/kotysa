@@ -5,23 +5,24 @@
 package com.pullvert.kotysa.sample
 
 import com.pullvert.kotysa.tables
+import java.util.*
 
 fun h2tables() =
         tables().h2 { // choose database type
-            table<User> {
+            table<UserH2> {
                 name = "users"
-                column { it[User::id].varchar().primaryKey }
-                column { it[User::firstname].varchar().name("fname") }
-                column { it[User::lastname].varchar().name("lname") }
-                column { it[User::isAdmin].boolean() }
-                column { it[User::alias].varchar() }
+                column { it[UserH2::id].uuid().primaryKey }
+                column { it[UserH2::firstname].varchar().name("fname") }
+                column { it[UserH2::lastname].varchar().name("lname") }
+                column { it[UserH2::isAdmin].boolean() }
+                column { it[UserH2::alias].varchar() }
             }
         }
 
-data class User(
+data class UserH2(
         val firstname: String,
         val lastname: String,
         val isAdmin: Boolean,
         val alias: String? = null,
-        val id: String
+        val id: UUID
 )

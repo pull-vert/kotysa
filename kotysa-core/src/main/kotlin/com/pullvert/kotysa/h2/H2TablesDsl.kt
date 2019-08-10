@@ -19,6 +19,7 @@ class H2TablesDsl(init: H2TablesDsl.() -> Unit) : TablesDsl<H2TablesDsl, H2Table
         return h2TableDsl.initialize(h2TableDsl)
     }
 
+    @Suppress("UNCHECKED_CAST")
     inline fun <reified T : Any> table(noinline dsl: H2TableDsl<T>.() -> Unit) {
         table(T::class, dsl as H2TableDsl<*>.() -> Unit)
     }
