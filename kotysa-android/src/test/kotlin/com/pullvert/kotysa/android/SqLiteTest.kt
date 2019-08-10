@@ -38,13 +38,13 @@ class SqLiteTest {
     fun `Verify selectAll returns all users`() {
         assertThat(repository.selectAll())
                 .hasSize(2)
-                .containsExactlyInAnyOrder(jdoe, bboss)
+                .containsExactlyInAnyOrder(jdoeSqLite, bbossSqLite)
     }
 
     @Test
     fun `Verify selectFirstByFirstame finds John`() {
         assertThat(repository.selectFirstByFirstame("John"))
-                .isEqualTo(jdoe)
+                .isEqualTo(jdoeSqLite)
     }
 
     @Test(expected = NotImplementedError::class)
@@ -56,14 +56,14 @@ class SqLiteTest {
     fun `Verify selectByAlias finds TheBoss`() {
         assertThat(repository.selectByAlias("TheBoss").toList())
                 .hasSize(1)
-                .containsExactlyInAnyOrder(bboss)
+                .containsExactlyInAnyOrder(bbossSqLite)
     }
 
     @Test
     fun `Verify selectByAlias with null alias finds John`() {
         assertThat(repository.selectByAlias(null).toList())
                 .hasSize(1)
-                .containsExactlyInAnyOrder(jdoe)
+                .containsExactlyInAnyOrder(jdoeSqLite)
     }
 
     @Test
@@ -91,7 +91,7 @@ class SqLiteTest {
  */
 class UserRepository(dbClient: SQLiteDatabase) {
 
-    private val sqlClient = dbClient.sqlClient(tables)
+    private val sqlClient = dbClient.sqlClient(sqLiteTables)
 
     fun init() {
         createTable()
@@ -99,30 +99,30 @@ class UserRepository(dbClient: SQLiteDatabase) {
         insert()
     }
 
-    fun createTable() = sqlClient.createTable<User>()
+    fun createTable() = sqlClient.createTable<SqLiteUser>()
 
-    fun insert() = sqlClient.insert(jdoe, bboss)
+    fun insert() = sqlClient.insert(jdoeSqLite, bbossSqLite)
 
-    fun deleteAll() = sqlClient.deleteAllFromTable<User>()
+    fun deleteAll() = sqlClient.deleteAllFromTable<SqLiteUser>()
 
-    fun selectAll() = sqlClient.selectAll<User>()
+    fun selectAll() = sqlClient.selectAll<SqLiteUser>()
 
-    fun selectFirstByFirstame(firstname: String) = sqlClient.select<User>()
-            .where { it[User::firstname] eq firstname }
+    fun selectFirstByFirstame(firstname: String) = sqlClient.select<SqLiteUser>()
+            .where { it[SqLiteUser::firstname] eq firstname }
             .fetchFirst()
 
-    fun selectByAlias(alias: String?) = sqlClient.select<User>()
-            .where { it[User::alias] eq alias }
+    fun selectByAlias(alias: String?) = sqlClient.select<SqLiteUser>()
+            .where { it[SqLiteUser::alias] eq alias }
             .fetchAll()
 
     fun selectAllMappedToDto() =
             sqlClient.select {
-                UserDto("${it[User::firstname]} ${it[User::lastname]}",
-                        it[User::alias])
+                UserDto("${it[SqLiteUser::firstname]} ${it[SqLiteUser::lastname]}",
+                        it[SqLiteUser::alias])
             }.fetchAll()
 
-    fun updateLastname(newLastname: String) = sqlClient.updateTable<User>()
-            .set { it[User::lastname] = newLastname }
-            .where { it[User::id] eq jdoe.id }
+    fun updateLastname(newLastname: String) = sqlClient.updateTable<SqLiteUser>()
+            .set { it[SqLiteUser::lastname] = newLastname }
+            .where { it[SqLiteUser::id] eq jdoeSqLite.id }
             .execute()
 }

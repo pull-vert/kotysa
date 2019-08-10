@@ -4,77 +4,12 @@
 
 package com.pullvert.kotysa.test.common
 
-import com.pullvert.kotysa.tables
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.util.*
-
-val jdoe = User("John", "Doe", false, id = "123")
-val bboss = User("Big", "Boss", true, "TheBoss", "456")
-
-/**
- * @author Fred Montariol
- */
-data class User(
-        val firstname: String,
-        val lastname: String,
-        val isAdmin: Boolean,
-        val alias: String? = null,
-        val id: String
-)
-
-val tables =
-        tables().h2 {
-            table<User> {
-                name = "users"
-                column { it[User::id].varchar().primaryKey }
-                column { it[User::firstname].varchar().name("fname") }
-                column { it[User::lastname].varchar().name("lname") }
-                column { it[User::isAdmin].boolean() }
-                column { it[User::alias].varchar() }
-            }
-        }
-
 /**
  * @author Fred Montariol
  */
 data class UserDto(
         val name: String,
         val alias: String?
-)
-
-val allTypesNotNull = AllTypesNotNull(UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f"), "", true, LocalDate.now(), Instant.now(), LocalTime.now(), LocalDateTime.now(), LocalDateTime.now(), UUID.randomUUID())
-val allTypesNullable = AllTypesNullable(UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"), null, null, null, null, null, null, null)
-
-/**
- * @author Fred Montariol
- */
-data class AllTypesNotNull(
-        val id: UUID,
-        val string: String,
-        val boolean: Boolean,
-        val localDate: LocalDate,
-        val instant: Instant,
-        val localTim: LocalTime,
-        val localDateTime1: LocalDateTime,
-        val localDateTime2: LocalDateTime,
-        val uuid: UUID
-)
-
-/**
- * @author Fred Montariol
- */
-data class AllTypesNullable(
-        val id: UUID,
-        val string: String?,
-        val localDate: LocalDate?,
-        val instant: Instant?,
-        val localTim: LocalTime?,
-        val localDateTime1: LocalDateTime?,
-        val localDateTime2: LocalDateTime?,
-        val uuid: UUID?
 )
 
 // test inheritance

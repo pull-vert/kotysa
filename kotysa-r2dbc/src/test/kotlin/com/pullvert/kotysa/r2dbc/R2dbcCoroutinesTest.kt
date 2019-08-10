@@ -51,13 +51,13 @@ class R2DbcCoroutinesTest {
     fun `Verify selectAll returns all users`() = runBlockingTest {
         assertThat(repository.selectAll().toList())
                 .hasSize(2)
-                .containsExactlyInAnyOrder(jdoe, bboss)
+                .containsExactlyInAnyOrder(jdoeH2, bbossH2)
     }
 
     @Test
     fun `Verify selectFirstByFirstame finds John`() = runBlockingTest {
         assertThat(repository.selectFirstByFirstame("John"))
-                .isEqualTo(jdoe)
+                .isEqualTo(jdoeH2)
     }
 
     @Test
@@ -70,14 +70,14 @@ class R2DbcCoroutinesTest {
     fun `Verify selectByAlias finds TheBoss`() = runBlockingTest {
         assertThat(repository.selectByAlias("TheBoss").toList())
                 .hasSize(1)
-                .containsExactlyInAnyOrder(bboss)
+                .containsExactlyInAnyOrder(bbossH2)
     }
 
     @Test
     fun `Verify selectByAlias with null alias finds John`() = runBlockingTest {
         assertThat(repository.selectByAlias(null).toList())
                 .hasSize(1)
-                .containsExactlyInAnyOrder(jdoe)
+                .containsExactlyInAnyOrder(jdoeH2)
     }
 
     @Test
@@ -102,10 +102,10 @@ class R2DbcCoroutinesTest {
     @Test
     fun `Verify updateLastname works`() = runBlockingTest {
         repository.updateLastname("Do")
-        assertThat(repository.selectFirstByFirstame(jdoe.firstname))
+        assertThat(repository.selectFirstByFirstame(jdoeH2.firstname))
                 .extracting { user -> user?.lastname }
                 .isEqualTo("Do")
-        repository.updateLastname(jdoe.lastname)
+        repository.updateLastname(jdoeH2.lastname)
     }
 }
 
@@ -115,7 +115,7 @@ class R2DbcCoroutinesTest {
 @FlowPreview
 class CoroutinesUserRepository(dbClient: DatabaseClient) {
 
-    private val sqlClient = dbClient.coSqlClient(tables)
+    private val sqlClient = dbClient.coSqlClient(h2Tables)
 
     suspend fun init() = coroutineScope {
         createTable()
@@ -123,30 +123,30 @@ class CoroutinesUserRepository(dbClient: DatabaseClient) {
         insert()
     }
 
-    suspend fun createTable() = sqlClient.createTable<User>()
+    suspend fun createTable() = sqlClient.createTable<H2User>()
 
-    suspend fun insert() = sqlClient.insert(jdoe, bboss)
+    suspend fun insert() = sqlClient.insert(jdoeH2, bbossH2)
 
-    suspend fun deleteAll() = sqlClient.deleteAllFromTable<User>()
+    suspend fun deleteAll() = sqlClient.deleteAllFromTable<H2User>()
 
-    fun selectAll() = sqlClient.selectAll<User>()
+    fun selectAll() = sqlClient.selectAll<H2User>()
 
-    suspend fun selectFirstByFirstame(firstname: String) = sqlClient.select<User>()
-            .where { it[User::firstname] eq firstname }
+    suspend fun selectFirstByFirstame(firstname: String) = sqlClient.select<H2User>()
+            .where { it[H2User::firstname] eq firstname }
             .fetchFirstOrNull()
 
-    fun selectByAlias(alias: String?) = sqlClient.select<User>()
-            .where { it[User::alias] eq alias }
+    fun selectByAlias(alias: String?) = sqlClient.select<H2User>()
+            .where { it[H2User::alias] eq alias }
             .fetchAll()
 
     fun selectAllMappedToDto() =
             sqlClient.select {
-                UserDto("${it[User::firstname]} ${it[User::lastname]}",
-                        it[User::alias])
+                UserDto("${it[H2User::firstname]} ${it[H2User::lastname]}",
+                        it[H2User::alias])
             }.fetchAll()
 
-    suspend fun updateLastname(newLastname: String) = sqlClient.updateTable<User>()
-            .set { it[User::lastname] = newLastname }
-            .where { it[User::id] eq jdoe.id }
+    suspend fun updateLastname(newLastname: String) = sqlClient.updateTable<H2User>()
+            .set { it[H2User::lastname] = newLastname }
+            .where { it[H2User::id] eq jdoeH2.id }
             .execute()
 }
