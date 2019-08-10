@@ -8,16 +8,25 @@ import kotlin.reflect.KClass
 
 /**
  * @author Fred Montariol
- *
- * @sample com.pullvert.kotysa.sample.h2tables
  */
 @KotysaMarker
-abstract class TablesDsl<T : TablesDsl<T>>(private val init: T.() -> Unit) {
+abstract class TablesDsl<T : TablesDsl<T, U>, U : TableDsl<*, *>>(private val init: T.() -> Unit) {
+
+    private val tables = mutableMapOf<KClass<*>, Table<*>>()
+    private val allColumns = mutableMapOf<(Any) -> Any?, Column<*, *>>()
 
     @PublishedApi
-    internal val tables = mutableMapOf<KClass<*>, Table<*>>()
-    @PublishedApi
-    internal val allColumns = mutableMapOf<(Any) -> Any?, Column<*, *>>()
+    internal fun <T : Any> table(tableClass: KClass<T>, dsl: U.() -> Unit) {
+        if (tables.containsKey(tableClass)) {
+            throw IllegalStateException("Trying to map entity class \"${tableClass.qualifiedName}\" to multiple tables")
+        }
+        val table = initializeTable(tableClass, dsl)
+        tables[tableClass] = table
+        @Suppress("UNCHECKED_CAST")
+        allColumns.putAll(table.columns as Map<out (Any) -> Any?, Column<*, *>>)
+    }
+
+    protected abstract fun <T : Any> initializeTable(tableClass: KClass<T>, dsl: U.() -> Unit): Table<*>
 
     internal fun initialize(initialize: T): Tables {
         init(initialize)

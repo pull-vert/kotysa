@@ -12,6 +12,7 @@ import java.time.LocalTime
 import java.util.*
 
 /**
+ * see [H2 Data types](http://h2database.com/html/datatypes.html)
  * @author Fred Montariol
  */
 class H2ColumnDsl<T : Any> internal constructor(
