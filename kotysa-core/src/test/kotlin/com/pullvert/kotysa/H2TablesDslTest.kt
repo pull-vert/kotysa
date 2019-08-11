@@ -20,17 +20,17 @@ class H2TablesDslTest {
     @Test
     fun `Test all supported column types for not null properties`() {
         val tables = tables().h2 {
-            table<AllTypesNotNull> {
+            table<H2AllTypesNotNull> {
                 name = "all_types"
-                column { it[AllTypesNotNull::id].uuid().primaryKey }
-                column { it[AllTypesNotNull::string].varchar() }
-                column { it[AllTypesNotNull::boolean].boolean() }
-                column { it[AllTypesNotNull::localDate].date() }
-                column { it[AllTypesNotNull::instant].timestampWithTimeZone() }
-                column { it[AllTypesNotNull::localTim].time9() }
-                column { it[AllTypesNotNull::localDateTime1].dateTime() }
-                column { it[AllTypesNotNull::localDateTime2].timestamp() }
-                column { it[AllTypesNotNull::uuid].uuid() }
+                column { it[H2AllTypesNotNull::id].uuid().primaryKey }
+                column { it[H2AllTypesNotNull::string].varchar() }
+                column { it[H2AllTypesNotNull::boolean].boolean() }
+                column { it[H2AllTypesNotNull::localDate].date() }
+                column { it[H2AllTypesNotNull::instant].timestampWithTimeZone() }
+                column { it[H2AllTypesNotNull::localTim].time9() }
+                column { it[H2AllTypesNotNull::localDateTime1].dateTime() }
+                column { it[H2AllTypesNotNull::localDateTime2].timestamp() }
+                column { it[H2AllTypesNotNull::uuid].uuid() }
             }
         }
         assertThat(tables.allColumns.values)
@@ -50,16 +50,16 @@ class H2TablesDslTest {
     @Test
     fun `Test all supported column types for nullable properties`() {
         val tables = tables().h2 {
-            table<AllTypesNullable> {
+            table<H2AllTypesNullable> {
                 name = "all_types_nullable"
-                column { it[AllTypesNullable::id].uuid().primaryKey }
-                column { it[AllTypesNullable::string].varchar() }
-                column { it[AllTypesNullable::localDate].date() }
-                column { it[AllTypesNullable::instant].timestampWithTimeZone() }
-                column { it[AllTypesNullable::localTim].time9() }
-                column { it[AllTypesNullable::localDateTime1].dateTime() }
-                column { it[AllTypesNullable::localDateTime2].timestamp() }
-                column { it[AllTypesNullable::uuid].uuid() }
+                column { it[H2AllTypesNullable::id].uuid().primaryKey }
+                column { it[H2AllTypesNullable::string].varchar() }
+                column { it[H2AllTypesNullable::localDate].date() }
+                column { it[H2AllTypesNullable::instant].timestampWithTimeZone() }
+                column { it[H2AllTypesNullable::localTim].time9() }
+                column { it[H2AllTypesNullable::localDateTime1].dateTime() }
+                column { it[H2AllTypesNullable::localDateTime2].timestamp() }
+                column { it[H2AllTypesNullable::uuid].uuid() }
             }
         }
         assertThat(tables.allColumns.values)
@@ -79,7 +79,7 @@ class H2TablesDslTest {
 /**
  * @author Fred Montariol
  */
-private data class AllTypesNotNull(
+private data class H2AllTypesNotNull(
         val id: UUID,
         val string: String,
         val boolean: Boolean,
@@ -94,7 +94,7 @@ private data class AllTypesNotNull(
 /**
  * @author Fred Montariol
  */
-private data class AllTypesNullable(
+private data class H2AllTypesNullable(
         val id: UUID,
         val string: String?,
         val localDate: LocalDate?,

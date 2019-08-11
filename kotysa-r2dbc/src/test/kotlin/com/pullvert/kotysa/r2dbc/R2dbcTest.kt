@@ -5,7 +5,6 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.count
-import com.pullvert.kotysa.tables
 import com.pullvert.kotysa.test.common.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
@@ -49,14 +48,14 @@ class R2dbcTest {
     fun `Verify selectAll returns all users`() {
         assertThat(repository.selectAllUsers().toIterable())
                 .hasSize(2)
-                .containsExactlyInAnyOrder(jdoeH2, bbossH2)
+                .containsExactlyInAnyOrder(h2Jdoe, h2Bboss)
     }
 
     @Test
     fun `Verify selectAll returns all AllTypesNotNull`() {
         assertThat(repository.selectAllAllTypesNotNull().toIterable())
                 .hasSize(1)
-                .containsExactly(allTypesNotNullH2)
+                .containsExactly(h2AllTypesNotNull)
     }
 
     @Disabled("waiting for https://github.com/r2dbc/r2dbc-h2/issues/78")
@@ -64,7 +63,7 @@ class R2dbcTest {
     fun `Verify selectAll returns all AllTypesNullable`() {
         assertThat(repository.selectAllAllTypesNullable().toIterable())
                 .hasSize(1)
-                .containsExactly(allTypesNullableH2)
+                .containsExactly(h2AllTypesNullable)
     }
 
     @Test
@@ -81,8 +80,8 @@ class R2dbcTest {
 
     @Test
     fun `Verify selectFirstByFirstame finds John`() {
-        assertThat(repository.selectFirstByFirstame(jdoeH2.firstname).block())
-                .isEqualTo(jdoeH2)
+        assertThat(repository.selectFirstByFirstame(h2Jdoe.firstname).block())
+                .isEqualTo(h2Jdoe)
     }
 
     @Test
@@ -93,16 +92,16 @@ class R2dbcTest {
 
     @Test
     fun `Verify selectByAlias finds TheBoss`() {
-        assertThat(repository.selectAllByAlias(bbossH2.alias).toIterable())
+        assertThat(repository.selectAllByAlias(h2Bboss.alias).toIterable())
                 .hasSize(1)
-                .containsExactlyInAnyOrder(bbossH2)
+                .containsExactlyInAnyOrder(h2Bboss)
     }
 
     @Test
     fun `Verify selectByAlias with null alias finds John`() {
         assertThat(repository.selectAllByAlias(null).toIterable())
                 .hasSize(1)
-                .containsExactlyInAnyOrder(jdoeH2)
+                .containsExactlyInAnyOrder(h2Jdoe)
     }
 
     @Test
@@ -126,7 +125,7 @@ class R2dbcTest {
 
     @Test
     fun `Verify deleteUserById works`() {
-        assertThat(repository.deleteUserById(jdoeH2.id).block())
+        assertThat(repository.deleteUserById(h2Jdoe.id).block())
                 .isEqualTo(1)
         assertThat(repository.selectAllUsers().toIterable())
                 .hasSize(1)
@@ -137,23 +136,23 @@ class R2dbcTest {
     @Test
     fun `Verify updateLastname works`() {
         repository.updateLastname("Do").block()
-        assertThat(repository.selectFirstByFirstame(jdoeH2.firstname).block())
+        assertThat(repository.selectFirstByFirstame(h2Jdoe.firstname).block())
                 .extracting { user -> user?.lastname }
                 .isEqualTo("Do")
-        repository.updateLastname(jdoeH2.lastname).block()
+        repository.updateLastname(h2Jdoe.lastname).block()
     }
 
     @Test
     fun `Verify updateAlias works`() {
         repository.updateAlias("TheBigBoss").block()
-        assertThat(repository.selectFirstByFirstame(bbossH2.firstname).block())
+        assertThat(repository.selectFirstByFirstame(h2Bboss.firstname).block())
                 .extracting { user -> user?.alias }
                 .isEqualTo("TheBigBoss")
         repository.updateAlias(null).block()
-        assertThat(repository.selectFirstByFirstame(bbossH2.firstname).block())
+        assertThat(repository.selectFirstByFirstame(h2Bboss.firstname).block())
                 .extracting { user -> user?.alias }
                 .isEqualTo(null)
-        repository.updateAlias(bbossH2.alias).block()
+        repository.updateAlias(h2Bboss.alias).block()
     }
 
     @Test
@@ -168,55 +167,20 @@ class R2dbcTest {
         assertThat(repository.selectAllAllTypesNotNull().toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(
-                        AllTypesNotNullH2(allTypesNotNullH2.id, "new", false, newLocalDate, newInstant,
+                        H2AllTypesNotNull(h2AllTypesNotNull.id, "new", false, newLocalDate, newInstant,
                                 newLocalTime, newLocalDateTime, newLocalDateTime, newUuid))
-        repository.updateAllTypesNotNull(allTypesNotNullH2.string, allTypesNotNullH2.boolean, allTypesNotNullH2.localDate,
-                allTypesNotNullH2.instant, allTypesNotNullH2.localTim, allTypesNotNullH2.localDateTime1,
-                allTypesNotNullH2.localDateTime2, allTypesNotNullH2.uuid).block()
+        repository.updateAllTypesNotNull(h2AllTypesNotNull.string, h2AllTypesNotNull.boolean, h2AllTypesNotNull.localDate,
+                h2AllTypesNotNull.instant, h2AllTypesNotNull.localTim, h2AllTypesNotNull.localDateTime1,
+                h2AllTypesNotNull.localDateTime2, h2AllTypesNotNull.uuid).block()
     }
 }
-
-private val tables =
-        tables().h2 {
-            table<H2User> {
-                name = "users"
-                column { it[H2User::id].uuid().primaryKey }
-                column { it[H2User::firstname].varchar().name("fname") }
-                column { it[H2User::lastname].varchar().name("lname") }
-                column { it[H2User::isAdmin].boolean() }
-                column { it[H2User::alias].varchar() }
-            }
-            table<AllTypesNotNullH2> {
-                name = "all_types"
-                column { it[AllTypesNotNullH2::id].uuid().primaryKey }
-                column { it[AllTypesNotNullH2::string].varchar() }
-                column { it[AllTypesNotNullH2::boolean].boolean() }
-                column { it[AllTypesNotNullH2::localDate].date() }
-                column { it[AllTypesNotNullH2::instant].timestampWithTimeZone() }
-                column { it[AllTypesNotNullH2::localTim].time9() }
-                column { it[AllTypesNotNullH2::localDateTime1].dateTime() }
-                column { it[AllTypesNotNullH2::localDateTime2].timestamp() }
-                column { it[AllTypesNotNullH2::uuid].uuid() }
-            }
-            table<AllTypesNullableH2> {
-                name = "all_types_nullable"
-                column { it[AllTypesNullableH2::id].uuid().primaryKey }
-                column { it[AllTypesNullableH2::string].varchar() }
-                column { it[AllTypesNullableH2::localDate].date() }
-                column { it[AllTypesNullableH2::instant].timestampWithTimeZone() }
-                column { it[AllTypesNullableH2::localTim].time9() }
-                column { it[AllTypesNullableH2::localDateTime1].dateTime() }
-                column { it[AllTypesNullableH2::localDateTime2].timestamp() }
-                column { it[AllTypesNullableH2::uuid].uuid() }
-            }
-        }
 
 /**
  * @author Fred Montariol
  */
 class UserRepository(dbClient: DatabaseClient) {
 
-    private val sqlClient = dbClient.sqlClient(tables)
+    private val sqlClient = dbClient.sqlClient(h2Tables)
 
     fun init() {
         createTables()
@@ -230,20 +194,20 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun createTables() =
             sqlClient.createTable<H2User>()
-                    .then(sqlClient.createTable<AllTypesNotNullH2>())
-                    .then(sqlClient.createTable<AllTypesNullableH2>())
+                    .then(sqlClient.createTable<H2AllTypesNotNull>())
+                    .then(sqlClient.createTable<H2AllTypesNullable>())
 
-    fun insertUsers() = sqlClient.insert(jdoeH2, bbossH2)
+    fun insertUsers() = sqlClient.insert(h2Jdoe, h2Bboss)
 
-    fun insertJDoe() = sqlClient.insert(jdoeH2)
+    fun insertJDoe() = sqlClient.insert(h2Jdoe)
 
-    fun insertAllTypes() = sqlClient.insert(allTypesNotNullH2, allTypesNullableH2)
+    fun insertAllTypes() = sqlClient.insert(h2AllTypesNotNull, h2AllTypesNullable)
 
     fun deleteAllFromUsers() = sqlClient.deleteAllFromTable<H2User>()
 
-    fun deleteAllFromAllTypesNotNull() = sqlClient.deleteAllFromTable<AllTypesNotNullH2>()
+    fun deleteAllFromAllTypesNotNull() = sqlClient.deleteAllFromTable<H2AllTypesNotNull>()
 
-    fun deleteAllFromAllTypesNullable() = sqlClient.deleteAllFromTable<AllTypesNullableH2>()
+    fun deleteAllFromAllTypesNullable() = sqlClient.deleteAllFromTable<H2AllTypesNullable>()
 
     fun deleteUserById(id: UUID) = sqlClient.deleteFromTable<H2User>()
             .where { it[H2User::id] eq id }
@@ -255,9 +219,9 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun countUsersWithAlias() = sqlClient.select { count { it[H2User::alias] } }.fetchOne()
 
-    fun selectAllAllTypesNotNull() = sqlClient.selectAll<AllTypesNotNullH2>()
+    fun selectAllAllTypesNotNull() = sqlClient.selectAll<H2AllTypesNotNull>()
 
-    fun selectAllAllTypesNullable() = sqlClient.selectAll<AllTypesNullableH2>()
+    fun selectAllAllTypesNullable() = sqlClient.selectAll<H2AllTypesNullable>()
 
     fun selectFirstByFirstame(firstname: String) = sqlClient.select<H2User>()
             .where { it[H2User::firstname] eq firstname }
@@ -275,25 +239,25 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun updateLastname(newLastname: String) = sqlClient.updateTable<H2User>()
             .set { it[H2User::lastname] = newLastname }
-            .where { it[H2User::id] eq jdoeH2.id }
+            .where { it[H2User::id] eq h2Jdoe.id }
             .execute()
 
     fun updateAlias(newAlias: String?) = sqlClient.updateTable<H2User>()
             .set { it[H2User::alias] = newAlias }
-            .where { it[H2User::id] eq bbossH2.id }
+            .where { it[H2User::id] eq h2Bboss.id }
             .execute()
 
     fun updateAllTypesNotNull(newString: String, newBoolean: Boolean, newLocalDate: LocalDate, newInstant: Instant, newLocalTim: LocalTime,
                               newLocalDateTime1: LocalDateTime, newLocalDateTime2: LocalDateTime, newUuid: UUID) =
-            sqlClient.updateTable<AllTypesNotNullH2>()
-                    .set { it[AllTypesNotNullH2::string] = newString }
-                    .set { it[AllTypesNotNullH2::boolean] = newBoolean }
-                    .set { it[AllTypesNotNullH2::localDate] = newLocalDate }
-                    .set { it[AllTypesNotNullH2::instant] = newInstant }
-                    .set { it[AllTypesNotNullH2::localTim] = newLocalTim }
-                    .set { it[AllTypesNotNullH2::localDateTime1] = newLocalDateTime1 }
-                    .set { it[AllTypesNotNullH2::localDateTime2] = newLocalDateTime2 }
-                    .set { it[AllTypesNotNullH2::uuid] = newUuid }
-                    .where { it[AllTypesNotNullH2::id] eq allTypesNotNullH2.id }
+            sqlClient.updateTable<H2AllTypesNotNull>()
+                    .set { it[H2AllTypesNotNull::string] = newString }
+                    .set { it[H2AllTypesNotNull::boolean] = newBoolean }
+                    .set { it[H2AllTypesNotNull::localDate] = newLocalDate }
+                    .set { it[H2AllTypesNotNull::instant] = newInstant }
+                    .set { it[H2AllTypesNotNull::localTim] = newLocalTim }
+                    .set { it[H2AllTypesNotNull::localDateTime1] = newLocalDateTime1 }
+                    .set { it[H2AllTypesNotNull::localDateTime2] = newLocalDateTime2 }
+                    .set { it[H2AllTypesNotNull::uuid] = newUuid }
+                    .where { it[H2AllTypesNotNull::id] eq h2AllTypesNotNull.id }
                     .execute()
 }

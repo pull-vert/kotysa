@@ -21,7 +21,7 @@ class UserRepositoryR2dbcCoroutines(dbClient: DatabaseClient) {
 
     suspend fun createTable() = sqlClient.createTable<H2User>()
 
-    suspend fun insert() = sqlClient.insert(jdoeH2, bbossH2)
+    suspend fun insert() = sqlClient.insert(h2Jdoe, h2Bboss)
 
     suspend fun deleteAll() = sqlClient.deleteAllFromTable<H2User>()
 
@@ -64,7 +64,7 @@ class UserRepositoryR2dbcCoroutines(dbClient: DatabaseClient) {
         sqlClient.apply {
             createTable<H2User>()
             deleteAllFromTable<H2User>()
-            insert(jdoeH2, bbossH2)
+            insert(h2Jdoe, h2Bboss)
 
             val john = select<H2User>()
                     .where { it[H2User::firstname] eq "John" }

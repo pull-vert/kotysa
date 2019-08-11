@@ -51,13 +51,13 @@ class R2DbcCoroutinesTest {
     fun `Verify selectAll returns all users`() = runBlockingTest {
         assertThat(repository.selectAll().toList())
                 .hasSize(2)
-                .containsExactlyInAnyOrder(jdoeH2, bbossH2)
+                .containsExactlyInAnyOrder(h2Jdoe, h2Bboss)
     }
 
     @Test
     fun `Verify selectFirstByFirstame finds John`() = runBlockingTest {
         assertThat(repository.selectFirstByFirstame("John"))
-                .isEqualTo(jdoeH2)
+                .isEqualTo(h2Jdoe)
     }
 
     @Test
@@ -70,14 +70,14 @@ class R2DbcCoroutinesTest {
     fun `Verify selectByAlias finds TheBoss`() = runBlockingTest {
         assertThat(repository.selectByAlias("TheBoss").toList())
                 .hasSize(1)
-                .containsExactlyInAnyOrder(bbossH2)
+                .containsExactlyInAnyOrder(h2Bboss)
     }
 
     @Test
     fun `Verify selectByAlias with null alias finds John`() = runBlockingTest {
         assertThat(repository.selectByAlias(null).toList())
                 .hasSize(1)
-                .containsExactlyInAnyOrder(jdoeH2)
+                .containsExactlyInAnyOrder(h2Jdoe)
     }
 
     @Test
@@ -102,10 +102,10 @@ class R2DbcCoroutinesTest {
     @Test
     fun `Verify updateLastname works`() = runBlockingTest {
         repository.updateLastname("Do")
-        assertThat(repository.selectFirstByFirstame(jdoeH2.firstname))
+        assertThat(repository.selectFirstByFirstame(h2Jdoe.firstname))
                 .extracting { user -> user?.lastname }
                 .isEqualTo("Do")
-        repository.updateLastname(jdoeH2.lastname)
+        repository.updateLastname(h2Jdoe.lastname)
     }
 }
 
@@ -125,7 +125,7 @@ class CoroutinesUserRepository(dbClient: DatabaseClient) {
 
     suspend fun createTable() = sqlClient.createTable<H2User>()
 
-    suspend fun insert() = sqlClient.insert(jdoeH2, bbossH2)
+    suspend fun insert() = sqlClient.insert(h2Jdoe, h2Bboss)
 
     suspend fun deleteAll() = sqlClient.deleteAllFromTable<H2User>()
 
@@ -147,6 +147,6 @@ class CoroutinesUserRepository(dbClient: DatabaseClient) {
 
     suspend fun updateLastname(newLastname: String) = sqlClient.updateTable<H2User>()
             .set { it[H2User::lastname] = newLastname }
-            .where { it[H2User::id] eq jdoeH2.id }
+            .where { it[H2User::id] eq h2Jdoe.id }
             .execute()
 }

@@ -19,7 +19,7 @@ class UserRepositoryR2dbc(dbClient: DatabaseClient) {
 
     fun createTable() = sqlClient.createTable<H2User>()
 
-    fun insert() = sqlClient.insert(jdoeH2, bbossH2)
+    fun insert() = sqlClient.insert(h2Jdoe, h2Bboss)
 
     fun deleteAll() = sqlClient.deleteAllFromTable<H2User>()
 
@@ -62,7 +62,7 @@ class UserRepositoryR2dbc(dbClient: DatabaseClient) {
         sqlClient.apply {
             createTable<H2User>()
                     .then(deleteAllFromTable<H2User>())
-                    .then(insert(jdoeH2, bbossH2))
+                    .then(insert(h2Jdoe, h2Bboss))
                     .block()
 
             val john = select<H2User>()

@@ -66,7 +66,7 @@ open class Inherited(
     }
 }
 
-val jdoeJava: JavaUser
+val javaJdoe: JavaUser
     get() {
         val javaUser = JavaUser()
         javaUser.login = "jdoe"
@@ -76,7 +76,7 @@ val jdoeJava: JavaUser
         return javaUser
     }
 
-val bbossJava: JavaUser
+val javaBboss: JavaUser
     get() {
         val javaUser = JavaUser()
         javaUser.login = "bboss"

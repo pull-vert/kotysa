@@ -9,17 +9,17 @@ import java.util.*
 
 fun h2tables() =
         tables().h2 { // choose database type
-            table<UserH2> {
+            table<H2User> {
                 name = "users"
-                column { it[UserH2::id].uuid().primaryKey }
-                column { it[UserH2::firstname].varchar().name("fname") }
-                column { it[UserH2::lastname].varchar().name("lname") }
-                column { it[UserH2::isAdmin].boolean() }
-                column { it[UserH2::alias].varchar() }
+                column { it[H2User::id].uuid().primaryKey }
+                column { it[H2User::firstname].varchar().name("fname") }
+                column { it[H2User::lastname].varchar().name("lname") }
+                column { it[H2User::isAdmin].boolean() }
+                column { it[H2User::alias].varchar() }
             }
         }
 
-data class UserH2(
+data class H2User(
         val firstname: String,
         val lastname: String,
         val isAdmin: Boolean,

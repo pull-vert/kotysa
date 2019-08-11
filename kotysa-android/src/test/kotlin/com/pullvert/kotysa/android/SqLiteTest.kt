@@ -38,13 +38,13 @@ class SqLiteTest {
     fun `Verify selectAll returns all users`() {
         assertThat(repository.selectAll())
                 .hasSize(2)
-                .containsExactlyInAnyOrder(jdoeSqLite, bbossSqLite)
+                .containsExactlyInAnyOrder(sqLiteJdoe, sqLiteBboss)
     }
 
     @Test
     fun `Verify selectFirstByFirstame finds John`() {
         assertThat(repository.selectFirstByFirstame("John"))
-                .isEqualTo(jdoeSqLite)
+                .isEqualTo(sqLiteJdoe)
     }
 
     @Test(expected = NotImplementedError::class)
@@ -56,14 +56,14 @@ class SqLiteTest {
     fun `Verify selectByAlias finds TheBoss`() {
         assertThat(repository.selectByAlias("TheBoss").toList())
                 .hasSize(1)
-                .containsExactlyInAnyOrder(bbossSqLite)
+                .containsExactlyInAnyOrder(sqLiteBboss)
     }
 
     @Test
     fun `Verify selectByAlias with null alias finds John`() {
         assertThat(repository.selectByAlias(null).toList())
                 .hasSize(1)
-                .containsExactlyInAnyOrder(jdoeSqLite)
+                .containsExactlyInAnyOrder(sqLiteJdoe)
     }
 
     @Test
@@ -99,9 +99,13 @@ class UserRepository(dbClient: SQLiteDatabase) {
         insert()
     }
 
-    fun createTable() = sqlClient.createTable<SqLiteUser>()
+    fun createTable() {
+        sqlClient.createTable<SqLiteUser>()
+        sqlClient.createTable<SqLiteAllTypesNotNull>()
+        sqlClient.createTable<SqLiteAllTypesNullable>()
+    }
 
-    fun insert() = sqlClient.insert(jdoeSqLite, bbossSqLite)
+    fun insert() = sqlClient.insert(sqLiteJdoe, sqLiteBboss)
 
     fun deleteAll() = sqlClient.deleteAllFromTable<SqLiteUser>()
 
@@ -123,6 +127,6 @@ class UserRepository(dbClient: SQLiteDatabase) {
 
     fun updateLastname(newLastname: String) = sqlClient.updateTable<SqLiteUser>()
             .set { it[SqLiteUser::lastname] = newLastname }
-            .where { it[SqLiteUser::id] eq jdoeSqLite.id }
+            .where { it[SqLiteUser::id] eq sqLiteJdoe.id }
             .execute()
 }

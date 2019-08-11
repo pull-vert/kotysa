@@ -27,5 +27,5 @@ data class H2User(
         val id: UUID = UUID.randomUUID()
 )
 
-val jdoeH2 = H2User("John", "Doe", false)
-val bbossH2 = H2User("Big", "Boss", true, "TheBoss")
+val h2Jdoe = H2User("John", "Doe", false)
+val h2Bboss = H2User("Big", "Boss", true, "TheBoss")
