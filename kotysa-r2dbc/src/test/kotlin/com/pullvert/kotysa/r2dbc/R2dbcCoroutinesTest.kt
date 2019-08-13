@@ -13,8 +13,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.getBean
@@ -71,14 +71,14 @@ class R2DbcCoroutinesTest {
 
     @Test
     fun `Verify selectFirstByFirstameNotNullable finds no Unknown, throws NoResultException`() {
-        Assertions.assertThatThrownBy {
+        assertThatThrownBy {
             runBlockingTest { repository.selectFirstByFirstameNotNullable("Unknown") }
         }.isInstanceOf(NoResultException::class.java)
     }
 
     @Test
     fun `Verify selectOneNonUnique throws NonUniqueResultException`() {
-        Assertions.assertThatThrownBy {
+        assertThatThrownBy {
             runBlockingTest { repository.selectOneNonUnique() }
         }.isInstanceOf(NonUniqueResultException::class.java)
     }

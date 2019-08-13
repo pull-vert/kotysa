@@ -7,8 +7,8 @@ package com.pullvert.kotysa.r2dbc
 import com.pullvert.kotysa.NonUniqueResultException
 import com.pullvert.kotysa.count
 import com.pullvert.kotysa.test.common.*
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -94,9 +94,9 @@ class R2dbcTest {
 
     @Test
     fun `Verify selectOneNonUnique throws NonUniqueResultException`() {
-        Assertions.assertThatThrownBy { repository.selectOneNonUnique().block() }
+        assertThatThrownBy { repository.selectOneNonUnique().block() }
                 .isInstanceOf(NonUniqueResultException::class.java)
-        }
+    }
 
     @Test
     fun `Verify selectByAlias finds TheBoss`() {

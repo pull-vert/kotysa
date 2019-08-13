@@ -6,7 +6,6 @@ package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
@@ -130,6 +129,7 @@ private class CoroutineSqlClientSelectR2dbc private constructor() {
                 } catch (_: NoSuchElementException) {
                     throw NoResultException()
                 }
+
         override suspend fun fetchOneOrNull() = delegate.fetchOne().awaitFirstOrNull()
         override suspend fun fetchFirst() =
                 try {
@@ -137,6 +137,7 @@ private class CoroutineSqlClientSelectR2dbc private constructor() {
                 } catch (_: NoSuchElementException) {
                     throw NoResultException()
                 }
+
         override suspend fun fetchFirstOrNull() = delegate.fetchFirst().awaitFirstOrNull()
         @FlowPreview
         override fun fetchAll(batchSize: Int) = delegate.fetchAll().asFlow(batchSize)
