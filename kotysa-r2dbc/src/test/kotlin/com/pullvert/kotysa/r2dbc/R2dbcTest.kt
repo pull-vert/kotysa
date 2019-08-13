@@ -4,8 +4,10 @@
 
 package com.pullvert.kotysa.r2dbc
 
+import com.pullvert.kotysa.NonUniqueResultException
 import com.pullvert.kotysa.count
 import com.pullvert.kotysa.test.common.*
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Disabled
@@ -89,6 +91,12 @@ class R2dbcTest {
         assertThat(repository.selectFirstByFirstame("Unknown").block())
                 .isNull()
     }
+
+    @Test
+    fun `Verify selectOneNonUnique throws NonUniqueResultException`() {
+        Assertions.assertThatThrownBy { repository.selectOneNonUnique().block() }
+                .isInstanceOf(NonUniqueResultException::class.java)
+        }
 
     @Test
     fun `Verify selectByAlias finds TheBoss`() {
@@ -222,6 +230,9 @@ class UserRepository(dbClient: DatabaseClient) {
     fun selectAllAllTypesNotNull() = sqlClient.selectAll<H2AllTypesNotNull>()
 
     fun selectAllAllTypesNullable() = sqlClient.selectAll<H2AllTypesNullable>()
+
+    fun selectOneNonUnique() = sqlClient.select<H2User>()
+            .fetchOne()
 
     fun selectFirstByFirstame(firstname: String) = sqlClient.select<H2User>()
             .where { it[H2User::firstname] eq firstname }

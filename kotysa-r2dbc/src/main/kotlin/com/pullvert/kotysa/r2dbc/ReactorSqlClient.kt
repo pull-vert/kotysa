@@ -87,8 +87,19 @@ class ReactorSqlClientSelect private constructor() {
     interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T>
 
     interface Return<T : Any> : SqlClientSelect.Return<T> {
+        /**
+         * This Query return one result as [Mono], or an empty [Mono] if no result
+         *
+         * @throws NonUniqueResultException if more than one result
+         */
         fun fetchOne(): Mono<T>
+        /**
+         * This Query return one result as [Mono], or an empty [Mono] if no result
+         */
         fun fetchFirst(): Mono<T>
+        /**
+         * This Query can return several results as [Flux], or an empty [Flux] if no result
+         */
         fun fetchAll(): Flux<T>
     }
 }
@@ -105,6 +116,9 @@ class ReactorSqlClientDelete private constructor() {
     interface Where : SqlClientDelete.Where, Return
 
     interface Return : SqlClientDelete.Return {
+        /**
+         * Execute delete and return the number of deleted rows
+         */
         fun execute(): Mono<Int>
     }
 }
@@ -123,6 +137,9 @@ class ReactorSqlClientUpdate private constructor() {
     interface Where : SqlClientUpdate.Where, Return
 
     interface Return : SqlClientUpdate.Return {
+        /**
+         * Execute update
+         */
         fun execute(): Mono<Void>
     }
 }

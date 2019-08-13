@@ -33,27 +33,30 @@ class CoroutinesSqlClientSelect private constructor() {
 
     interface Return<T : Any> : SqlClientSelect.Return<T> {
         /**
-         * Non-nullable Coroutines variant of fetchOne.
+         * This Query return one result
+         *
+         * @throws NoResultException if no results
+         * @throws NonUniqueResultException if more than one result
          */
         suspend fun fetchOne(): T
-
         /**
-         * Nullable Coroutines variant of fetchOne.
+         * This Query return one result, or null if no results
+         *
+         * @throws NonUniqueResultException if more than one result
          */
         suspend fun fetchOneOrNull(): T?
-
         /**
-         * Non-nullable Coroutines variant of fetchFirst.
+         * This Query return the first result
+         *
+         * @throws NoResultException if no results
          */
         suspend fun fetchFirst(): T
-
         /**
-         * Nullable Coroutines variant of fetchFirst.
+         * This Query return the first result, or null if no results
          */
         suspend fun fetchFirstOrNull(): T?
-
         /**
-         * Coroutines [Flow] variant of fetchAll.
+         * This Query can return several results as [Flow], can be empty if no results
          *
          * Backpressure is controlled by [batchSize] parameter that controls the size of in-flight elements
          * and Reactive Stream's Subscription.request size.
@@ -75,6 +78,9 @@ class CoroutinesSqlClientDelete private constructor() {
     interface Where : SqlClientDelete.Where, Return
 
     interface Return : SqlClientDelete.Return {
+        /**
+         * Execute delete and return the number of deleted rows
+         */
         suspend fun execute(): Int
     }
 }
@@ -93,6 +99,9 @@ class CoroutinesSqlClientUpdate private constructor() {
     interface Where : SqlClientUpdate.Where, Return
 
     interface Return : SqlClientUpdate.Return {
+        /**
+         * Execute update
+         */
         suspend fun execute()
     }
 }

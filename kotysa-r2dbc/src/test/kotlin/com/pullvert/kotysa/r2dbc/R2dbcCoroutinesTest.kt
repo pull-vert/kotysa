@@ -4,6 +4,8 @@
 
 package com.pullvert.kotysa.r2dbc
 
+import com.pullvert.kotysa.NoResultException
+import com.pullvert.kotysa.NonUniqueResultException
 import com.pullvert.kotysa.test.common.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -11,6 +13,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
@@ -64,6 +67,20 @@ class R2DbcCoroutinesTest {
     fun `Verify selectFirstByFirstame finds no Unknown`() = runBlockingTest {
         assertThat(repository.selectFirstByFirstame("Unknown"))
                 .isNull()
+    }
+
+    @Test
+    fun `Verify selectFirstByFirstameNotNullable finds no Unknown, throws NoResultException`() {
+        Assertions.assertThatThrownBy {
+            runBlockingTest { repository.selectFirstByFirstameNotNullable("Unknown") }
+        }.isInstanceOf(NoResultException::class.java)
+    }
+
+    @Test
+    fun `Verify selectOneNonUnique throws NonUniqueResultException`() {
+        Assertions.assertThatThrownBy {
+            runBlockingTest { repository.selectOneNonUnique() }
+        }.isInstanceOf(NonUniqueResultException::class.java)
     }
 
     @Test
@@ -134,6 +151,13 @@ class CoroutinesUserRepository(dbClient: DatabaseClient) {
     suspend fun selectFirstByFirstame(firstname: String) = sqlClient.select<H2User>()
             .where { it[H2User::firstname] eq firstname }
             .fetchFirstOrNull()
+
+    suspend fun selectFirstByFirstameNotNullable(firstname: String) = sqlClient.select<H2User>()
+            .where { it[H2User::firstname] eq firstname }
+            .fetchFirst()
+
+    suspend fun selectOneNonUnique() = sqlClient.select<H2User>()
+            .fetchOne()
 
     fun selectByAlias(alias: String?) = sqlClient.select<H2User>()
             .where { it[H2User::alias] eq alias }

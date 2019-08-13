@@ -39,19 +39,38 @@ internal class SqlClientSelectSqLite private constructor() : DefaultSqlClientSel
 
         override fun fetchOne() = with(properties.selectInformation) {
             val cursor = fetch()
-            if (!cursor.moveToFirst()) throw TODO("create a new NoResultException in core for this case")
-            if (!cursor.isLast) {
-                throw TODO("create a new NotUniqueResultException in core for this case")
-            }
+            if (!cursor.moveToFirst()) throw NoResultException()
+            if (!cursor.isLast) throw NonUniqueResultException()
             val row = SqLiteRow(cursor, fieldIndexMap)
             select(row, row)
         }
 
+        override fun fetchOneOrNull() = with(properties.selectInformation) {
+            val cursor = fetch()
+            if (!cursor.moveToFirst()) {
+                null
+            } else {
+                if (!cursor.isLast) throw NonUniqueResultException()
+                val row = SqLiteRow(cursor, fieldIndexMap)
+                select(row, row)
+            }
+        }
+
         override fun fetchFirst() = with(properties.selectInformation) {
             val cursor = fetch()
-            if (!cursor.moveToFirst()) throw TODO("create a new NoResultException in core for this case")
+            if (!cursor.moveToFirst()) throw NoResultException()
             val row = SqLiteRow(cursor, fieldIndexMap)
             select(row, row)
+        }
+
+        override fun fetchFirstOrNull() = with(properties.selectInformation) {
+            val cursor = fetch()
+            if (!cursor.moveToFirst()) {
+                null
+            } else {
+                val row = SqLiteRow(cursor, fieldIndexMap)
+                select(row, row)
+            }
         }
 
         override fun fetchAll() = with(properties.selectInformation) {

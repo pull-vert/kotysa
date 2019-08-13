@@ -6,6 +6,7 @@ package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
 import io.r2dbc.spi.Row
+import org.springframework.dao.IncorrectResultSizeDataAccessException
 import org.springframework.data.r2dbc.core.DatabaseClient
 import kotlin.reflect.KClass
 
@@ -39,6 +40,7 @@ internal class SqlClientSelectR2dbc private constructor() : DefaultSqlClientSele
         val client: DatabaseClient
 
         override fun fetchOne() = fetch().one()
+                .onErrorMap(IncorrectResultSizeDataAccessException::class.java) { NonUniqueResultException() }
         override fun fetchFirst() = fetch().first()
         override fun fetchAll() = fetch().all()
 

@@ -27,8 +27,32 @@ class BlockingSqlClientSelect private constructor() {
     interface Where<T : Any> : SqlClientSelect.Where<T>, Return<T>
 
     interface Return<T : Any> : SqlClientSelect.Return<T> {
+        /**
+         * This Query return one result
+         *
+         * @throws NoResultException if no results
+         * @throws NonUniqueResultException if more than one result
+         */
         fun fetchOne(): T
+        /**
+         * This Query return one result, or null if no results
+         *
+         * @throws NonUniqueResultException if more than one result
+         */
+        fun fetchOneOrNull(): T?
+        /**
+         * This Query return the first result
+         *
+         * @throws NoResultException if no results
+         */
         fun fetchFirst(): T
+        /**
+         * This Query return the first result, or null if no results
+         */
+        fun fetchFirstOrNull(): T?
+        /**
+         * This Query can return several results as [List], can be empty if no results
+         */
         fun fetchAll(): List<T>
     }
 }
@@ -44,6 +68,9 @@ class BlockingSqlClientDelete private constructor() {
     interface Where : SqlClientDelete.Where, Return
 
     interface Return : SqlClientDelete.Return {
+        /**
+         * Execute delete and return the number of deleted rows
+         */
         fun execute(): Int
     }
 }
@@ -61,6 +88,9 @@ class BlockingSqlClientUpdate private constructor() {
     interface Where : SqlClientUpdate.Where, Return
 
     interface Return : SqlClientUpdate.Return {
+        /**
+         * Execute update
+         */
         fun execute()
     }
 }

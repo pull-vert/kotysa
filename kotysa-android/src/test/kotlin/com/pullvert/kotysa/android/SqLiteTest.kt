@@ -5,8 +5,11 @@
 package com.pullvert.kotysa.android
 
 import android.database.sqlite.SQLiteDatabase
+import com.pullvert.kotysa.NoResultException
+import com.pullvert.kotysa.NonUniqueResultException
 import com.pullvert.kotysa.test.common.*
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,9 +50,22 @@ class SqLiteTest {
                 .isEqualTo(sqLiteJdoe)
     }
 
-    @Test(expected = NotImplementedError::class)
+    @Test
     fun `Verify selectFirstByFirstame finds no Unknown`() {
-        repository.selectFirstByFirstame("Unknown")
+        assertThat(repository.selectFirstByFirstame("Unknown"))
+                .isNull()
+    }
+
+    @Test
+    fun `Verify selectFirstByFirstameNotNullable finds no Unknown, throws NoResultException`() {
+        assertThatThrownBy { repository.selectFirstByFirstameNotNullable("Unknown") }
+                .isInstanceOf(NoResultException::class.java)
+    }
+
+    @Test
+    fun `Verify selectOneNonUnique throws NonUniqueResultException`() {
+        assertThatThrownBy { repository.selectOneNonUnique() }
+                .isInstanceOf(NonUniqueResultException::class.java)
     }
 
     @Test
@@ -113,7 +129,14 @@ class UserRepository(dbClient: SQLiteDatabase) {
 
     fun selectFirstByFirstame(firstname: String) = sqlClient.select<SqLiteUser>()
             .where { it[SqLiteUser::firstname] eq firstname }
+            .fetchFirstOrNull()
+
+    fun selectFirstByFirstameNotNullable(firstname: String) = sqlClient.select<SqLiteUser>()
+            .where { it[SqLiteUser::firstname] eq firstname }
             .fetchFirst()
+
+    fun selectOneNonUnique() = sqlClient.select<SqLiteUser>()
+            .fetchOne()
 
     fun selectByAlias(alias: String?) = sqlClient.select<SqLiteUser>()
             .where { it[SqLiteUser::alias] eq alias }

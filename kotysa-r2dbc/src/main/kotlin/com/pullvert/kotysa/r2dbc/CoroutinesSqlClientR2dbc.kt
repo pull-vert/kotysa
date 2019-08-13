@@ -7,6 +7,7 @@ package com.pullvert.kotysa.r2dbc
 import com.pullvert.kotysa.*
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.reactive.flow.asFlow
@@ -85,12 +86,9 @@ private class CoroutinesSqlClientR2DbcImpl(
         tables: Tables
 ) : CoroutinesSqlClientR2dbc() {
 
-    private val delegate: ReactorSqlClient
+    private val delegate = SqlClientR2dbc(client, tables)
 
-    init {
-        delegate = SqlClientR2dbc(client, tables)
-    }
-
+    @ExperimentalStdlibApi
     override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): CoroutinesSqlClientSelect.Select<T> =
             CoroutineSqlClientSelectR2dbc.Select(delegate.select(resultClass, dsl))
 
@@ -126,12 +124,22 @@ private class CoroutineSqlClientSelectR2dbc private constructor() {
     private interface Return<T : Any> : CoroutinesSqlClientSelect.Return<T> {
         val delegate: ReactorSqlClientSelect.Return<T>
 
-        override suspend fun fetchOne(): T = delegate.fetchOne().awaitSingle()
-        override suspend fun fetchOneOrNull(): T? = delegate.fetchOne().awaitFirstOrNull()
-        override suspend fun fetchFirst(): T = delegate.fetchFirst().awaitSingle()
-        override suspend fun fetchFirstOrNull(): T? = delegate.fetchFirst().awaitFirstOrNull()
+        override suspend fun fetchOne() =
+                try {
+                    delegate.fetchOne().awaitSingle()
+                } catch (_: NoSuchElementException) {
+                    throw NoResultException()
+                }
+        override suspend fun fetchOneOrNull() = delegate.fetchOne().awaitFirstOrNull()
+        override suspend fun fetchFirst() =
+                try {
+                    delegate.fetchFirst().awaitFirst()
+                } catch (_: NoSuchElementException) {
+                    throw NoResultException()
+                }
+        override suspend fun fetchFirstOrNull() = delegate.fetchFirst().awaitFirstOrNull()
         @FlowPreview
-        override fun fetchAll(batchSize: Int): Flow<T> = delegate.fetchAll().asFlow(batchSize)
+        override fun fetchAll(batchSize: Int) = delegate.fetchAll().asFlow(batchSize)
     }
 }
 
