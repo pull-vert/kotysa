@@ -10,6 +10,7 @@ import com.pullvert.kotysa.*
 import kotlin.reflect.KClass
 
 /**
+ * @sample com.pullvert.kotysa.android.sample.UserRepositorySqLite
  * @author Fred Montariol
  */
 internal class SqlClientSqLite(

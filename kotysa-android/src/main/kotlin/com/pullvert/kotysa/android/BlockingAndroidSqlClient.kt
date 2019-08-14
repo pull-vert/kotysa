@@ -10,6 +10,7 @@ import kotlin.reflect.KClass
 /**
  * Android Sql Client
  *
+ * @sample com.pullvert.kotysa.android.sample.UserRepositorySqLite
  * @author Fred Montariol
  */
 abstract class BlockingAndroidSqlClient : BlockingSqlClient {
