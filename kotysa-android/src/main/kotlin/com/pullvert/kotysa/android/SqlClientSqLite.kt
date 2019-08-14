@@ -28,28 +28,9 @@ internal class SqlClientSqLite(
 
     override fun <T : Any> insert(row: T) {
         val table = tables.getTable(row::class)
-        val contentValues = ContentValues()
+        val contentValues = ContentValues(table.columns.size)
         table.columns.values
-                .forEach { column ->
-                    val value = column.entityGetter(row)
-                    if (value != null) {
-                        when (value) {
-                            is Int -> contentValues.put(column.name, value)
-                            is Byte -> contentValues.put(column.name, value)
-                            is Long -> contentValues.put(column.name, value)
-                            is Float -> contentValues.put(column.name, value)
-                            is Short -> contentValues.put(column.name, value)
-                            is Double -> contentValues.put(column.name, value)
-                            is String -> contentValues.put(column.name, value)
-                            is Boolean -> contentValues.put(column.name, value)
-                            is ByteArray -> contentValues.put(column.name, value)
-                            else -> throw UnsupportedOperationException(
-                                    "${value.javaClass.canonicalName} is not supported by Android SqLite")
-                        }
-                    } else {
-                        contentValues.putNull(column.name)
-                    }
-                }
+                .forEach { column -> contentValues.put(column.name, column.entityGetter(row)) }
 
         // debug query
         insertSqlDebug(row)
@@ -67,8 +48,27 @@ internal class SqlClientSqLite(
     override fun <T : Any> deleteFromTable(tableClass: KClass<T>): BlockingSqlClientDelete.Delete<T> =
             SqlClientDeleteSqLite.Delete(client, tables, tableClass)
 
-    override fun <T : Any> updateTable(tableClass: KClass<T>): BlockingSqlClientUpdate.Update<T> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun <T : Any> updateTable(tableClass: KClass<T>): BlockingSqlClientUpdate.Update<T> =
+            SqlClientUpdateSqLite.Update(client, tables, tableClass)
+}
+
+internal fun ContentValues.put(name: String, value: Any?) {
+    if (value != null) {
+        when (value) {
+            is Int -> put(name, value)
+            is Byte -> put(name, value)
+            is Long -> put(name, value)
+            is Float -> put(name, value)
+            is Short -> put(name, value)
+            is Double -> put(name, value)
+            is String -> put(name, value)
+            is Boolean -> put(name, value)
+            is ByteArray -> put(name, value)
+            else -> throw UnsupportedOperationException(
+                    "${value.javaClass.canonicalName} is not supported by Android SqLite")
+        }
+    } else {
+        putNull(name)
     }
 }
 

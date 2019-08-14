@@ -89,8 +89,8 @@ class BlockingSqlClientUpdate private constructor() {
 
     interface Return : SqlClientUpdate.Return {
         /**
-         * Execute update
+         * Execute update and return the number of updated rows
          */
-        fun execute()
+        fun execute(): Int
     }
 }

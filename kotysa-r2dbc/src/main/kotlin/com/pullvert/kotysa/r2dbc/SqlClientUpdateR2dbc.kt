@@ -63,7 +63,7 @@ internal class SqlClientUpdateR2dbc private constructor() : DefaultSqlClientUpda
                         index++
                     }
 
-            executeSpec.then()
+            executeSpec.fetch().rowsUpdated()
         }
     }
 }

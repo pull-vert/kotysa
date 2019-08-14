@@ -100,8 +100,8 @@ class CoroutinesSqlClientUpdate private constructor() {
 
     interface Return : SqlClientUpdate.Return {
         /**
-         * Execute update
+         * Execute update and return the number of updated rows
          */
-        suspend fun execute()
+        suspend fun execute(): Int
     }
 }

@@ -67,10 +67,14 @@ open class DefaultSqlClientDelete protected constructor() : DefaultSqlClientComm
             "$deleteSql ${whereAndWhereDebug.first}"
         }
 
-        fun deleteFromTableSqlDebug() = with(properties) {
-            val deleteSql = "DELETE FROM ${table.name}"
-            val whereDebug = whereClauseDebug(whereClauses, logger)
-            logger.debug { "Exec SQL : $deleteSql $whereDebug" }
+        fun deleteFromTableSqlDebug() {
+            if (logger.isDebugEnabled) {
+                with(properties) {
+                    val deleteSql = "DELETE FROM ${table.name}"
+                    val whereDebug = whereClauseDebug(whereClauses, logger)
+                    logger.debug { "Exec SQL : $deleteSql $whereDebug" }
+                }
+            }
         }
     }
 }

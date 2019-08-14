@@ -138,8 +138,8 @@ class ReactorSqlClientUpdate private constructor() {
 
     interface Return : SqlClientUpdate.Return {
         /**
-         * Execute update
+         * Execute update and return the number of updated rows
          */
-        fun execute(): Mono<Void>
+        fun execute(): Mono<Int>
     }
 }

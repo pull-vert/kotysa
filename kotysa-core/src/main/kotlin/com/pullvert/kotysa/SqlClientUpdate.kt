@@ -85,5 +85,19 @@ open class DefaultSqlClientUpdate protected constructor() : DefaultSqlClientComm
 
             "$updateSql $setSql ${whereAndWhereDebug.first}"
         }
+
+        fun updateTableSqlDebug() {
+            if (logger.isDebugEnabled) {
+                with(properties) {
+                    val updateSql = "UPDATE ${table.name}"
+                    val setSqlDebug = setValues.keys.joinToString(prefix = "SET ") { column ->
+                        val columnValue = setValues[column]
+                        "${column.name} = ${stringValue(columnValue)}"
+                    }
+                    val whereDebug = whereClauseDebug(whereClauses, logger)
+                    logger.debug("Exec SQL : $updateSql $setSqlDebug $whereDebug")
+                }
+            }
+        }
     }
 }

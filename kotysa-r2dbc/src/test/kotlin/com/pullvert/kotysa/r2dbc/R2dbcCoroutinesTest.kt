@@ -118,7 +118,8 @@ class R2DbcCoroutinesTest {
 
     @Test
     fun `Verify updateLastname works`() = runBlockingTest {
-        repository.updateLastname("Do")
+        assertThat(repository.updateLastname("Do"))
+                .isEqualTo(1)
         assertThat(repository.selectFirstByFirstame(h2Jdoe.firstname))
                 .extracting { user -> user?.lastname }
                 .isEqualTo("Do")

@@ -131,6 +131,7 @@ private class CoroutineSqlClientSelectR2dbc private constructor() {
                 }
 
         override suspend fun fetchOneOrNull() = delegate.fetchOne().awaitFirstOrNull()
+
         override suspend fun fetchFirst() =
                 try {
                     delegate.fetchFirst().awaitFirst()
@@ -139,6 +140,7 @@ private class CoroutineSqlClientSelectR2dbc private constructor() {
                 }
 
         override suspend fun fetchFirstOrNull() = delegate.fetchFirst().awaitFirstOrNull()
+
         @FlowPreview
         override fun fetchAll(batchSize: Int) = delegate.fetchAll().asFlow(batchSize)
     }
@@ -180,9 +182,7 @@ private class CoroutineSqlClientUpdateR2dbc private constructor() {
     private interface Return : CoroutinesSqlClientUpdate.Return {
         val delegate: ReactorSqlClientUpdate.Return
 
-        override suspend fun execute() {
-            delegate.execute().awaitFirstOrNull()
-        }
+        override suspend fun execute() = delegate.execute().awaitSingle()
     }
 }
 

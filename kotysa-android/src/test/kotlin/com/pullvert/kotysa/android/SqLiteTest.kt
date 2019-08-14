@@ -100,6 +100,16 @@ class SqLiteTest {
         // re-insert users
         repository.insert()
     }
+
+    @Test
+    fun `Verify updateLastname works`() {
+        assertThat(repository.updateLastname("Do"))
+                .isEqualTo(1)
+        assertThat(repository.selectFirstByFirstame(h2Jdoe.firstname))
+                .extracting { user -> user?.lastname }
+                .isEqualTo("Do")
+        repository.updateLastname(h2Jdoe.lastname)
+    }
 }
 
 /**

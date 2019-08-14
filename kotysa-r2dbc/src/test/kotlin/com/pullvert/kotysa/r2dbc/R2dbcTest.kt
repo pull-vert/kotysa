@@ -143,7 +143,8 @@ class R2dbcTest {
 
     @Test
     fun `Verify updateLastname works`() {
-        repository.updateLastname("Do").block()
+        assertThat(repository.updateLastname("Do").block())
+                .isEqualTo(1)
         assertThat(repository.selectFirstByFirstame(h2Jdoe.firstname).block())
                 .extracting { user -> user?.lastname }
                 .isEqualTo("Do")
@@ -152,11 +153,13 @@ class R2dbcTest {
 
     @Test
     fun `Verify updateAlias works`() {
-        repository.updateAlias("TheBigBoss").block()
+        assertThat(repository.updateAlias("TheBigBoss").block())
+                .isEqualTo(1)
         assertThat(repository.selectFirstByFirstame(h2Bboss.firstname).block())
                 .extracting { user -> user?.alias }
                 .isEqualTo("TheBigBoss")
-        repository.updateAlias(null).block()
+        assertThat(repository.updateAlias(null).block())
+                .isEqualTo(1)
         assertThat(repository.selectFirstByFirstame(h2Bboss.firstname).block())
                 .extracting { user -> user?.alias }
                 .isEqualTo(null)
