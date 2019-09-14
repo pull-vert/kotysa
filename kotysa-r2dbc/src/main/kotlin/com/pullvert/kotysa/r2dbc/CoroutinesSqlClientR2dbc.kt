@@ -5,11 +5,11 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
-import kotlinx.coroutines.reactive.flow.asFlow
 import org.springframework.data.r2dbc.core.DatabaseClient
 import kotlin.reflect.KClass
 
@@ -95,8 +95,8 @@ private class CoroutineSqlClientSelectR2dbc private constructor() {
 
         override suspend fun fetchFirstOrNull() = delegate.fetchFirst().awaitFirstOrNull()
 
-        @FlowPreview
-        override fun fetchAll(batchSize: Int) = delegate.fetchAll().asFlow(batchSize)
+        @ExperimentalCoroutinesApi
+        override fun fetchAll() = delegate.fetchAll().asFlow()
     }
 }
 

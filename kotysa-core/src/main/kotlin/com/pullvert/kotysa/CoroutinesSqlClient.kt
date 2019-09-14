@@ -4,6 +4,7 @@
 
 package com.pullvert.kotysa
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlin.reflect.KClass
@@ -23,7 +24,7 @@ abstract class CoroutinesSqlClient {
 
     inline fun <reified T : Any> select() = selectInternal(T::class, null)
 
-    @FlowPreview
+    @ExperimentalCoroutinesApi
     inline fun <reified T : Any> selectAll() = selectInternal(T::class, null).fetchAll()
 
     suspend inline fun <reified T : Any> countAll() = selectInternal(Long::class) { count<T>() }.fetchOne()
@@ -118,12 +119,9 @@ class CoroutinesSqlClientSelect private constructor() {
 
         /**
          * This Query can return several results as [Flow], can be empty if no results
-         *
-         * Backpressure is controlled by [batchSize] parameter that controls the size of in-flight elements
-         * and Reactive Stream's Subscription.request size.
          */
-        @FlowPreview
-        fun fetchAll(batchSize: Int = 1): Flow<T>
+        @ExperimentalCoroutinesApi
+        fun fetchAll(): Flow<T>
     }
 }
 
