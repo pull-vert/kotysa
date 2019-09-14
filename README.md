@@ -11,8 +11,13 @@ sqlClient.apply {
     deleteAllFromTable<User>()
     insert(jdoe, bboss)
     
-    val john = select<User>()
-            .where { it[User::firstname] eq "John" }
+    val count = countAll<H2User>()
+    
+    val all = selectAll<H2User>()
+    
+    val johny = select { UserWithRoleDto(it[H2User::lastname], it[H2Role::label]) }
+            .innerJoinOn<H2Role> { it[H2User::roleId] }
+            .where { it[H2User::alias] eq "Johny" }
             .fetchFirst()
 }
 ```

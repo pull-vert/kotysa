@@ -9,4 +9,7 @@ data class UserDto(
         val alias: String?
 )
 
-
+data class UserWithRoleDto(
+        val lastname: String,
+        val role: String
+)

@@ -17,13 +17,20 @@ abstract class TableDsl<T : Any, U : TableDsl<T, U>>(
 
     lateinit var name: String
     private val columns = mutableMapOf<(T) -> Any?, Column<T, *>>()
+    lateinit var primaryKey: PrimaryKey
 
     protected fun addColumn(column: Column<T, *>) {
-        if (columns.containsKey(column.entityGetter)) {
-            throw IllegalStateException("Trying to map property \"${column.entityGetter}\" to multiple columns")
+        require(!columns.containsKey(column.entityGetter)) {
+            "Trying to map property \"${column.entityGetter}\" to multiple columns"
         }
         require(tableClass.members.contains(column.entityGetter.toCallable())) {
             "Trying to map property \"${column.entityGetter}\", which is not a property of entity class \"${tableClass.qualifiedName}\""
+        }
+        if (column.isPrimaryKey) {
+            check(!::primaryKey.isInitialized) {
+                "Table must not declare more than one Primary Key"
+            }
+            primaryKey = SinglePrimaryKey(column)
         }
         columns[column.entityGetter] = column
     }
@@ -32,10 +39,10 @@ abstract class TableDsl<T : Any, U : TableDsl<T, U>>(
     internal fun initialize(initialize: U): Table<*> {
         init(initialize)
         require(::name.isInitialized) { "Table name is mandatory" }
+        require(::primaryKey.isInitialized) { "Table primary key is mandatory" }
         require(columns.isNotEmpty()) { "Table must declare at least one column" }
-        require(columns.values.count { column -> column.isPrimaryKey } <= 1) { "Table must not declare more than one Primary Key Column" }
-        val table = Table(tableClass, name, columns)
-        // associate table to Column
+        val table = TableImpl(tableClass, name, columns, primaryKey)
+        // associate table to all its columns
         columns.forEach { (_, c) -> c.table = table }
         return table
     }

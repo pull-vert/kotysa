@@ -70,13 +70,13 @@ class R2dbcTest {
 
     @Test
     fun `Verify countUsers returns 2`() {
-        assertThat(repository.countAllUsers().block())
+        assertThat(repository.countAllUsers().block()!!)
                 .isEqualTo(2L)
     }
 
     @Test
     fun `Verify countUsers with alias returns 1`() {
-        assertThat(repository.countUsersWithAlias().block())
+        assertThat(repository.countUsersWithAlias().block()!!)
                 .isEqualTo(1L)
     }
 
@@ -117,13 +117,23 @@ class R2dbcTest {
         assertThat(repository.selectAllMappedToDto().toIterable())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(
-                        UserDto("John Doe", null),
-                        UserDto("Big Boss", "TheBoss"))
+                        UserDto("${h2Jdoe.firstname} ${h2Jdoe.lastname}", h2Jdoe.alias),
+                        UserDto("${h2Bboss.firstname} ${h2Bboss.lastname}", h2Bboss.alias))
+    }
+
+    @Test
+    fun `Verify selectWithJoin works correctly`() {
+        assertThat(repository.selectWithJoin().toIterable())
+                .hasSize(2)
+                .containsExactlyInAnyOrder(
+                        UserWithRoleDto(h2Jdoe.lastname, h2User.label),
+                        UserWithRoleDto(h2Bboss.lastname, h2Admin.label)
+                )
     }
 
     @Test
     fun `Verify deleteAllFromUser works correctly`() {
-        assertThat(repository.deleteAllFromUsers().block())
+        assertThat(repository.deleteAllFromUsers().block()!!)
                 .isEqualTo(2)
         assertThat(repository.selectAllUsers().toIterable())
                 .isEmpty()
@@ -133,17 +143,39 @@ class R2dbcTest {
 
     @Test
     fun `Verify deleteUserById works`() {
-        assertThat(repository.deleteUserById(h2Jdoe.id).block())
+        assertThat(repository.deleteUserById(h2Jdoe.id).block()!!)
                 .isEqualTo(1)
         assertThat(repository.selectAllUsers().toIterable())
                 .hasSize(1)
+                .containsOnly(h2Bboss)
+        // re-insertUsers jdoe
+        repository.insertJDoe().block()
+    }
+
+    @Test
+    fun `Verify deleteUserWithJoin works`() {
+        assertThat(repository.deleteUserWithJoin(h2User.label).block()!!)
+                .isEqualTo(1)
+        assertThat(repository.selectAllUsers().toIterable())
+                .hasSize(1)
+                .containsOnly(h2Bboss)
         // re-insertUsers jdoe
         repository.insertJDoe().block()
     }
 
     @Test
     fun `Verify updateLastname works`() {
-        assertThat(repository.updateLastname("Do").block())
+        assertThat(repository.updateLastname("Do").block()!!)
+                .isEqualTo(1)
+        assertThat(repository.selectFirstByFirstame(h2Jdoe.firstname).block())
+                .extracting { user -> user?.lastname }
+                .isEqualTo("Do")
+        repository.updateLastname(h2Jdoe.lastname).block()
+    }
+
+    @Test
+    fun `Verify updateWithJoin works`() {
+        assertThat(repository.updateWithJoin("Do", h2User.label).block()!!)
                 .isEqualTo(1)
         assertThat(repository.selectFirstByFirstame(h2Jdoe.firstname).block())
                 .extracting { user -> user?.lastname }
@@ -153,12 +185,12 @@ class R2dbcTest {
 
     @Test
     fun `Verify updateAlias works`() {
-        assertThat(repository.updateAlias("TheBigBoss").block())
+        assertThat(repository.updateAlias("TheBigBoss").block()!!)
                 .isEqualTo(1)
         assertThat(repository.selectFirstByFirstame(h2Bboss.firstname).block())
                 .extracting { user -> user?.alias }
                 .isEqualTo("TheBigBoss")
-        assertThat(repository.updateAlias(null).block())
+        assertThat(repository.updateAlias(null).block()!!)
                 .isEqualTo(1)
         assertThat(repository.selectFirstByFirstame(h2Bboss.firstname).block())
                 .extracting { user -> user?.alias }
@@ -195,24 +227,31 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun init() {
         createTables()
+                .then(deleteAllFromRole())
                 .then(deleteAllFromUsers())
                 .then(deleteAllFromAllTypesNotNull())
                 .then(deleteAllFromAllTypesNullable())
+                .then(insertRoles())
                 .then(insertUsers())
                 .then(insertAllTypes())
                 .block()
     }
 
     fun createTables() =
-            sqlClient.createTable<H2User>()
+            sqlClient.createTable<H2Role>()
+                    .then(sqlClient.createTable<H2User>())
                     .then(sqlClient.createTable<H2AllTypesNotNull>())
                     .then(sqlClient.createTable<H2AllTypesNullable>())
+
+    fun insertRoles() = sqlClient.insert(h2User, h2Admin)
 
     fun insertUsers() = sqlClient.insert(h2Jdoe, h2Bboss)
 
     fun insertJDoe() = sqlClient.insert(h2Jdoe)
 
     fun insertAllTypes() = sqlClient.insert(h2AllTypesNotNull, h2AllTypesNullable)
+
+    fun deleteAllFromRole() = sqlClient.deleteAllFromTable<H2Role>()
 
     fun deleteAllFromUsers() = sqlClient.deleteAllFromTable<H2User>()
 
@@ -222,6 +261,11 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun deleteUserById(id: UUID) = sqlClient.deleteFromTable<H2User>()
             .where { it[H2User::id] eq id }
+            .execute()
+
+    fun deleteUserWithJoin(roleLabel: String) = sqlClient.deleteFromTable<H2User>()
+            .innerJoinOn<H2Role> { it[H2User::roleId] }
+            .where { it[H2Role::label] eq roleLabel }
             .execute()
 
     fun selectAllUsers() = sqlClient.selectAll<H2User>()
@@ -251,6 +295,11 @@ class UserRepository(dbClient: DatabaseClient) {
                         it[H2User::alias])
             }.fetchAll()
 
+    fun selectWithJoin() =
+            sqlClient.select { UserWithRoleDto(it[H2User::lastname], it[H2Role::label]) }
+                    .innerJoinOn<H2Role> { it[H2User::roleId] }
+                    .fetchAll()
+
     fun updateLastname(newLastname: String) = sqlClient.updateTable<H2User>()
             .set { it[H2User::lastname] = newLastname }
             .where { it[H2User::id] eq h2Jdoe.id }
@@ -259,6 +308,12 @@ class UserRepository(dbClient: DatabaseClient) {
     fun updateAlias(newAlias: String?) = sqlClient.updateTable<H2User>()
             .set { it[H2User::alias] = newAlias }
             .where { it[H2User::id] eq h2Bboss.id }
+            .execute()
+
+    fun updateWithJoin(newLastname: String, roleLabel: String) = sqlClient.updateTable<H2User>()
+            .set { it[H2User::lastname] = newLastname }
+            .innerJoinOn<H2Role> { it[H2User::roleId] }
+            .where { it[H2Role::label] eq roleLabel }
             .execute()
 
     fun updateAllTypesNotNull(newString: String, newBoolean: Boolean, newLocalDate: LocalDate, newInstant: Instant, newLocalTim: LocalTime,

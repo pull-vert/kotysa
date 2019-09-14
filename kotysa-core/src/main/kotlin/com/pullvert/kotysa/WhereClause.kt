@@ -7,7 +7,7 @@ package com.pullvert.kotysa
 /**
  * @author Fred Montariol
  */
-data class WhereClause internal constructor(
+class WhereClause internal constructor(
         internal val field: Field,
         internal val operation: Operation,
         val value: Any?

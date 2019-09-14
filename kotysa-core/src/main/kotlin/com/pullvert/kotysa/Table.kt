@@ -10,9 +10,10 @@ import kotlin.reflect.KClass
  * All Mapped Tables
  * @author Fred Montariol
  */
-data class Tables internal constructor(
+class Tables internal constructor(
         val allTables: Map<KClass<*>, Table<*>>,
-        internal val allColumns: Map<out (Any) -> Any?, Column<*, *>>
+        internal val allColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        internal val dbType: DbType
 )
 
 /**
@@ -20,11 +21,37 @@ data class Tables internal constructor(
  *
  * @author Fred Montariol
  */
-class Table<T : Any> internal constructor(
-        internal val tableClass: KClass<T>,
-        /**
-         * Real name of this table in the database
-         */
-        val name: String,
-        val columns: Map<(T) -> Any?, Column<T, *>>
-)
+interface Table<T : Any> {
+    val tableClass: KClass<T>
+    /**
+     * Real name of this table in the database
+     */
+    val name: String
+    val columns: Map<(T) -> Any?, Column<T, *>>
+    val primaryKey: PrimaryKey
+}
+
+/**
+ * @author Fred Montariol
+ */
+internal class TableImpl<T : Any> internal constructor(
+        override val tableClass: KClass<T>,
+        override val name: String,
+        override val columns: Map<(T) -> Any?, Column<T, *>>,
+        override val primaryKey: PrimaryKey
+) : Table<T> {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as TableImpl<*>
+
+        if (name != other.name) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
+}

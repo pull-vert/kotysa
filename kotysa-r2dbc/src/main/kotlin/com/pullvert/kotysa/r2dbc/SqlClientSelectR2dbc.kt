@@ -8,6 +8,8 @@ import com.pullvert.kotysa.*
 import io.r2dbc.spi.Row
 import org.springframework.dao.IncorrectResultSizeDataAccessException
 import org.springframework.data.r2dbc.core.DatabaseClient
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import kotlin.reflect.KClass
 
 /**
@@ -18,10 +20,21 @@ internal class SqlClientSelectR2dbc private constructor() : DefaultSqlClientSele
     @ExperimentalStdlibApi
     internal class Select<T : Any> internal constructor(
             override val client: DatabaseClient,
-            tables: Tables,
-            resultClass: KClass<T>,
-            dsl: (SelectDslApi.(ValueProvider) -> T)?
-    ) : DefaultSqlClientSelect.Select<T>(tables, resultClass, dsl), ReactorSqlClientSelect.Select<T>, Return<T> {
+            override val tables: Tables,
+            override val resultClass: KClass<T>,
+            override val dsl: (SelectDslApi.(ValueProvider) -> T)?
+    ) : ReactorSqlClientSelect.Select<T>(), DefaultSqlClientSelect.Select<T>, Whereable<T>, Return<T> {
+        override val properties: Properties<T> = initProperties()
+
+        override fun <U : Any> joinOn(joinClass: KClass<U>, alias: String?, type: JoinType, dsl: (FieldProvider) -> ColumnField<*, *>): ReactorSqlClientSelect.Join<T> {
+            val join = Join(client, properties)
+            join.addJoinClause(dsl, joinClass, alias, type)
+            return join
+        }
+    }
+
+    private interface Whereable<T : Any> : DefaultSqlClientSelect.Whereable<T>, ReactorSqlClientSelect.Whereable<T> {
+        val client: DatabaseClient
 
         override fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): ReactorSqlClientSelect.Where<T> {
             val where = Where(client, properties)
@@ -29,6 +42,11 @@ internal class SqlClientSelectR2dbc private constructor() : DefaultSqlClientSele
             return where
         }
     }
+
+    private class Join<T : Any> internal constructor(
+            override val client: DatabaseClient,
+            override val properties: Properties<T>
+    ) : DefaultSqlClientSelect.Join<T>, ReactorSqlClientSelect.Join<T>, Whereable<T>, Return<T>
 
     private class Where<T : Any> internal constructor(
             override val client: DatabaseClient,
@@ -39,14 +57,15 @@ internal class SqlClientSelectR2dbc private constructor() : DefaultSqlClientSele
 
         val client: DatabaseClient
 
-        override fun fetchOne() = fetch().one()
+        override fun fetchOne(): Mono<T> = fetch().one()
                 .onErrorMap(IncorrectResultSizeDataAccessException::class.java) { NonUniqueResultException() }
-        override fun fetchFirst() = fetch().first()
-        override fun fetchAll() = fetch().all()
+
+        override fun fetchFirst(): Mono<T> = fetch().first()
+        override fun fetchAll(): Flux<T> = fetch().all()
 
         private fun fetch() = with(properties) {
-            var executeSpec = client.execute()
-                    .sql(selectSql())
+            var executeSpec = client.execute().sql(selectSql())
+
             whereClauses
                     .mapNotNull { whereClause -> whereClause.value }
                     .forEachIndexed { index, value ->

@@ -92,6 +92,16 @@ class SqLiteTest {
     }
 
     @Test
+    fun `Verify selectWithJoin works correctly`() {
+        assertThat(repository.selectWithJoin())
+                .hasSize(2)
+                .containsExactlyInAnyOrder(
+                        UserWithRoleDto(sqLiteJdoe.lastname, sqLiteUser.label),
+                        UserWithRoleDto(sqLiteBboss.lastname, sqLiteAdmin.label)
+                )
+    }
+
+    @Test
     fun `Verify deleteAllFromUser works correctly`() {
         assertThat(repository.deleteAll())
                 .isEqualTo(2)
@@ -102,13 +112,44 @@ class SqLiteTest {
     }
 
     @Test
+    fun `Verify deleteUserById works`() {
+        assertThat(repository.deleteUserById(sqLiteJdoe.id))
+                .isEqualTo(1)
+        assertThat(repository.selectAll())
+                .hasSize(1)
+        // re-insertUsers jdoe
+        repository.insertJDoe()
+    }
+
+    @Test
+    fun `Verify deleteUserWithJoin works`() {
+        assertThat(repository.deleteUserWithJoin(sqLiteUser.label))
+                .isEqualTo(1)
+        assertThat(repository.selectAll())
+                .hasSize(1)
+                .containsOnly(sqLiteBboss)
+        // re-insertUsers jdoe
+        repository.insertJDoe()
+    }
+
+    @Test
     fun `Verify updateLastname works`() {
         assertThat(repository.updateLastname("Do"))
                 .isEqualTo(1)
-        assertThat(repository.selectFirstByFirstame(h2Jdoe.firstname))
+        assertThat(repository.selectFirstByFirstame(sqLiteJdoe.firstname))
                 .extracting { user -> user?.lastname }
                 .isEqualTo("Do")
-        repository.updateLastname(h2Jdoe.lastname)
+        repository.updateLastname(sqLiteJdoe.lastname)
+    }
+
+    @Test
+    fun `Verify updateWithJoin works`() {
+        assertThat(repository.updateWithJoin("Do", sqLiteUser.label))
+                .isEqualTo(1)
+        assertThat(repository.selectFirstByFirstame(sqLiteJdoe.firstname))
+                .extracting { user -> user?.lastname }
+                .isEqualTo("Do")
+        repository.updateLastname(sqLiteJdoe.lastname)
     }
 }
 
@@ -122,18 +163,33 @@ class UserRepository(dbClient: SQLiteDatabase) {
     fun init() {
         createTable()
         deleteAll()
+        insertRoles()
         insert()
     }
 
     fun createTable() {
+        sqlClient.createTable<SqLiteRole>()
         sqlClient.createTable<SqLiteUser>()
         sqlClient.createTable<SqLiteAllTypesNotNull>()
         sqlClient.createTable<SqLiteAllTypesNullable>()
     }
 
+    fun insertRoles() = sqlClient.insert(sqLiteUser, sqLiteAdmin)
+
     fun insert() = sqlClient.insert(sqLiteJdoe, sqLiteBboss)
 
+    fun insertJDoe() = sqlClient.insert(sqLiteJdoe)
+
     fun deleteAll() = sqlClient.deleteAllFromTable<SqLiteUser>()
+
+    fun deleteUserById(id: String) = sqlClient.deleteFromTable<SqLiteUser>()
+            .where { it[SqLiteUser::id] eq id }
+            .execute()
+
+    fun deleteUserWithJoin(roleLabel: String) = sqlClient.deleteFromTable<SqLiteUser>()
+            .innerJoinOn<SqLiteRole> { it[SqLiteUser::roleId] }
+            .where { it[SqLiteRole::label] eq roleLabel }
+            .execute()
 
     fun selectAll() = sqlClient.selectAll<SqLiteUser>()
 
@@ -158,8 +214,19 @@ class UserRepository(dbClient: SQLiteDatabase) {
                         it[SqLiteUser::alias])
             }.fetchAll()
 
+    fun selectWithJoin() =
+            sqlClient.select { UserWithRoleDto(it[SqLiteUser::lastname], it[SqLiteRole::label]) }
+                    .innerJoinOn<SqLiteRole> { it[SqLiteUser::roleId] }
+                    .fetchAll()
+
     fun updateLastname(newLastname: String) = sqlClient.updateTable<SqLiteUser>()
             .set { it[SqLiteUser::lastname] = newLastname }
             .where { it[SqLiteUser::id] eq sqLiteJdoe.id }
+            .execute()
+
+    fun updateWithJoin(newLastname: String, roleLabel: String) = sqlClient.updateTable<SqLiteUser>()
+            .set { it[SqLiteUser::lastname] = newLastname }
+            .innerJoinOn<SqLiteRole> { it[SqLiteUser::roleId] }
+            .where { it[SqLiteRole::label] eq roleLabel }
             .execute()
 }

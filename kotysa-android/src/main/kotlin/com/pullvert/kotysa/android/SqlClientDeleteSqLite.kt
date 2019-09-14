@@ -11,15 +11,34 @@ import kotlin.reflect.KClass
 /**
  * @author Fred Montariol
  */
-internal class SqlClientDeleteSqLite private constructor() : DefaultSqlClientDelete() {
+internal class SqlClientDeleteSqLite private constructor() : DefaultSqlClientDeleteOrUpdate() {
 
     internal class Delete<T : Any> internal constructor(
             override val client: SQLiteDatabase,
-            tables: Tables,
-            tableClass: KClass<T>
-    ) : DefaultSqlClientDelete.Delete<T>(tables, tableClass), BlockingSqlClientDelete.Delete<T>, Return<T> {
+            override val tables: Tables,
+            override val tableClass: KClass<T>
+    ) : BlockingSqlClientDeleteOrUpdate.DeleteOrUpdate<T>(), DeleteOrUpdate<T>, Return<T> {
+        override val properties: Properties<T> = initProperties()
 
-        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): BlockingSqlClientDelete.Where {
+        override fun <U : Any> joinOn(joinClass: KClass<U>, alias: String?, type: JoinType,
+                                      dsl: (FieldProvider) -> ColumnField<*, *>): BlockingSqlClientDeleteOrUpdate.Join<T> {
+            val join = Join(client, properties)
+            join.addJoinClause(dsl, joinClass, alias, type)
+            return join
+        }
+
+        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): BlockingSqlClientDeleteOrUpdate.TypedWhere<T> {
+            val where = TypedWhere(client, properties)
+            where.addWhereClause(dsl)
+            return where
+        }
+    }
+
+    private class Join<T : Any> internal constructor(
+            override val client: SQLiteDatabase,
+            override val properties: Properties<T>
+    ) : DefaultSqlClientDeleteOrUpdate.Join<T>, BlockingSqlClientDeleteOrUpdate.Join<T>, Return<T> {
+        override fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): BlockingSqlClientDeleteOrUpdate.Where {
             val where = Where(client, properties)
             where.addWhereClause(dsl)
             return where
@@ -29,31 +48,32 @@ internal class SqlClientDeleteSqLite private constructor() : DefaultSqlClientDel
     private class Where<T : Any> internal constructor(
             override val client: SQLiteDatabase,
             override val properties: Properties<T>
-    ) : DefaultSqlClientDelete.Where<T>, BlockingSqlClientDelete.Where, Return<T>
+    ) : DefaultSqlClientDeleteOrUpdate.Where<T>, BlockingSqlClientDeleteOrUpdate.Where, Return<T>
 
-    private interface Return<T : Any> : DefaultSqlClientDelete.Return<T>, BlockingSqlClientDelete.Return {
+    private class TypedWhere<T : Any> internal constructor(
+            override val client: SQLiteDatabase,
+            override val properties: Properties<T>
+    ) : DefaultSqlClientDeleteOrUpdate.TypedWhere<T>, BlockingSqlClientDeleteOrUpdate.TypedWhere<T>, Return<T>
+
+    private interface Return<T : Any> : DefaultSqlClientDeleteOrUpdate.Return<T>, BlockingSqlClientDeleteOrUpdate.Return {
         val client: SQLiteDatabase
 
         override fun execute() = with(properties) {
             var whereParams: Array<String>? = null
-            var whereClauseStr: String? = null
             if (whereClauses.isNotEmpty()) {
-                val buildedWhereClause = whereClause(whereClauses)
-                if (buildedWhereClause.isNotEmpty()) {
-                    // remove 'WHERE '
-                    whereClauseStr = buildedWhereClause.substring(6)
-                }
                 whereParams = whereClauses
-                        .mapNotNull { whereClause ->
-                            whereClause.value
-                        }
+                        .mapNotNull { whereClause -> whereClause.value }
                         .map { whereValue -> stringValue(whereValue).replace("\'", "") }
                         .toTypedArray()
             }
-            // debug query
-            deleteFromTableSqlDebug()
 
-            client.delete(table.name, whereClauseStr, whereParams)
+            val deleteFromTableSql = deleteFromTableSql()
+            val whereClause = if (deleteFromTableSql.isNotEmpty()) {
+                deleteFromTableSql
+            } else {
+                null
+            }
+            client.delete(table.name, whereClause, whereParams)
         }
     }
 }

@@ -11,7 +11,7 @@ import com.pullvert.kotysa.sqlite.SqLiteTablesDsl
  * Supported Database Choice
  * @author Fred Montariol
  */
-object DatabaseChoice {
+object DbTypeChoice {
 
     /**
      * Configure Functional Table Mapping support for H2
@@ -19,7 +19,7 @@ object DatabaseChoice {
      */
     fun h2(dsl: H2TablesDsl.() -> Unit): Tables {
         val h2TablesDsl = H2TablesDsl(dsl)
-        return h2TablesDsl.initialize(h2TablesDsl)
+        return h2TablesDsl.initialize(h2TablesDsl, DbType.H2)
     }
 
     /**
@@ -28,7 +28,7 @@ object DatabaseChoice {
      */
     fun sqlite(dsl: SqLiteTablesDsl.() -> Unit): Tables {
         val sqLiteTablesDsl = SqLiteTablesDsl(dsl)
-        return sqLiteTablesDsl.initialize(sqLiteTablesDsl)
+        return sqLiteTablesDsl.initialize(sqLiteTablesDsl, DbType.SQLITE)
     }
 }
 
@@ -36,7 +36,7 @@ object DatabaseChoice {
  * Choose the database's Type
  *
  * @see TablesDsl
- * @see DatabaseChoice
+ * @see DbTypeChoice
  * @author Fred Montariol
  */
-fun tables() = DatabaseChoice
+fun tables() = DbTypeChoice

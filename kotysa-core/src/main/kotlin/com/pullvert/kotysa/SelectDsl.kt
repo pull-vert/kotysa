@@ -27,105 +27,104 @@ class SelectDsl<T> internal constructor(
     private val fieldIndexMap = mutableMapOf<Field, Int>()
     private val selectedGetters = mutableListOf<(Any) -> Any?>()
     private val selectedFields = mutableListOf<Field>()
-    private val selectedTables = mutableSetOf<Table<*>>()
+    private val selectedTables = mutableSetOf<AliasedTable<*>>()
 
     override fun <T : Any> count(resultClass: KClass<T>, dsl: ((FieldProvider) -> ColumnField<T, *>)?, alias: String?): Long {
         if (dsl == null) {
             tables.checkTable(resultClass)
         }
         val columnField = dsl?.invoke(SimpleFieldProvider(availableColumns))
-        val table = tables.getTable(resultClass)
-        if (!selectedTables.contains(table)) {
-            selectedTables.add(table)
+        val aliasedTable = AliasedTable(tables.getTable(resultClass), alias)
+        if (!selectedTables.contains(aliasedTable)) {
+            selectedTables.add(aliasedTable)
         }
         addField(CountField(dsl, columnField, alias))
         return Long.MAX_VALUE
     }
 
-
-
     override operator fun <T : Any> get(getter: (T) -> String, alias: String?): String {
         val field = fieldAccess.getField(getter, alias)
-        addColumnField(getter, field)
+        addColumnField(getter, field, alias)
         return ""
     }
 
     override operator fun <T : Any> get(getter: (T) -> String?, alias: String?, `_`: Nullable): String? {
         val field = fieldAccess.getField(getter, alias)
-        addColumnField(getter, field)
+        addColumnField(getter, field, alias)
         return null
     }
 
     override operator fun <T : Any> get(getter: (T) -> LocalDateTime, alias: String?): LocalDateTime {
         val field = fieldAccess.getField(getter, alias)
-        addColumnField(getter, field)
+        addColumnField(getter, field, alias)
         return LocalDateTime.MAX
     }
 
     override operator fun <T : Any> get(getter: (T) -> LocalDateTime?, alias: String?, `_`: Nullable): LocalDateTime? {
         val field = fieldAccess.getField(getter, alias)
-        addColumnField(getter, field)
+        addColumnField(getter, field, alias)
         return null
     }
 
     override operator fun <T : Any> get(getter: (T) -> LocalDate, alias: String?): LocalDate {
         val field = fieldAccess.getField(getter, alias)
-        addColumnField(getter, field)
+        addColumnField(getter, field, alias)
         return LocalDate.MAX
     }
 
     override operator fun <T : Any> get(getter: (T) -> LocalDate?, alias: String?, `_`: Nullable): LocalDate? {
         val field = fieldAccess.getField(getter, alias)
-        addColumnField(getter, field)
+        addColumnField(getter, field, alias)
         return null
     }
 
     override operator fun <T : Any> get(getter: (T) -> Instant, alias: String?): Instant {
         val field = fieldAccess.getField(getter, alias)
-        addColumnField(getter, field)
+        addColumnField(getter, field, alias)
         return Instant.MAX
     }
 
     override operator fun <T : Any> get(getter: (T) -> Instant?, alias: String?, `_`: Nullable): Instant? {
         val field = fieldAccess.getField(getter, alias)
-        addColumnField(getter, field)
+        addColumnField(getter, field, alias)
         return null
     }
 
     override operator fun <T : Any> get(getter: (T) -> LocalTime, alias: String?): LocalTime {
         val field = fieldAccess.getField(getter, alias)
-        addColumnField(getter, field)
+        addColumnField(getter, field, alias)
         return LocalTime.MAX
     }
 
     override operator fun <T : Any> get(getter: (T) -> LocalTime?, alias: String?, `_`: Nullable): LocalTime? {
         val field = fieldAccess.getField(getter, alias)
-        addColumnField(getter, field)
+        addColumnField(getter, field, alias)
         return null
     }
 
     override operator fun <T : Any> get(getter: (T) -> Boolean, alias: String?): Boolean {
         val field = fieldAccess.getField(getter, alias)
-        addColumnField(getter, field)
+        addColumnField(getter, field, alias)
         return false
     }
 
     override fun <T : Any> get(getter: (T) -> UUID, alias: String?): UUID {
         val field = fieldAccess.getField(getter, alias)
-        addColumnField(getter, field)
+        addColumnField(getter, field, alias)
         return UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f")
     }
 
     override fun <T : Any> get(getter: (T) -> UUID?, alias: String?, `_`: Nullable): UUID? {
         val field = fieldAccess.getField(getter, alias)
-        addColumnField(getter, field)
+        addColumnField(getter, field, alias)
         return null
     }
 
-    private fun <T : Any> addColumnField(getter: (T) -> Any?, columnField: ColumnField<*, *>) {
+    private fun <T : Any> addColumnField(getter: (T) -> Any?, columnField: ColumnField<*, *>, alias: String?) {
         addFieldAndGetter(columnField, getter)
-        if (!selectedTables.contains(columnField.column.table)) {
-            selectedTables.add(columnField.column.table)
+        val aliasedTable = AliasedTable(columnField.column.table, alias)
+        if (!selectedTables.contains(aliasedTable)) {
+            selectedTables.add(aliasedTable)
         }
     }
 

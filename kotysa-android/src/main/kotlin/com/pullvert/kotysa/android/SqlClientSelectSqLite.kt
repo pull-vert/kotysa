@@ -17,10 +17,22 @@ internal class SqlClientSelectSqLite private constructor() : DefaultSqlClientSel
     @ExperimentalStdlibApi
     internal class Select<T : Any> internal constructor(
             override val client: SQLiteDatabase,
-            tables: Tables,
-            resultClass: KClass<T>,
-            dsl: (SelectDslApi.(ValueProvider) -> T)?
-    ) : DefaultSqlClientSelect.Select<T>(tables, resultClass, dsl), BlockingSqlClientSelect.Select<T>, Return<T> {
+            override val tables: Tables,
+            override val resultClass: KClass<T>,
+            override val dsl: (SelectDslApi.(ValueProvider) -> T)?
+    ) : BlockingSqlClientSelect.Select<T>(), DefaultSqlClientSelect.Select<T>, Whereable<T>, Return<T> {
+
+        override val properties: Properties<T> = initProperties()
+
+        override fun <U : Any> joinOn(joinClass: KClass<U>, alias: String?, type: JoinType, dsl: (FieldProvider) -> ColumnField<*, *>): BlockingSqlClientSelect.Join<T> {
+            val join = Join(client, properties)
+            join.addJoinClause(dsl, joinClass, alias, type)
+            return join
+        }
+    }
+
+    private interface Whereable<T : Any> : DefaultSqlClientSelect.Whereable<T>, BlockingSqlClientSelect.Whereable<T> {
+        val client: SQLiteDatabase
 
         override fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): BlockingSqlClientSelect.Where<T> {
             val where = Where(client, properties)
@@ -28,6 +40,11 @@ internal class SqlClientSelectSqLite private constructor() : DefaultSqlClientSel
             return where
         }
     }
+
+    private class Join<T : Any> internal constructor(
+            override val client: SQLiteDatabase,
+            override val properties: Properties<T>
+    ) : DefaultSqlClientSelect.Join<T>, BlockingSqlClientSelect.Join<T>, Whereable<T>, Return<T>
 
     private class Where<T : Any> internal constructor(
             override val client: SQLiteDatabase,
@@ -87,9 +104,7 @@ internal class SqlClientSelectSqLite private constructor() : DefaultSqlClientSel
             var whereParams: Array<String>? = null
             if (whereClauses.isNotEmpty()) {
                 whereParams = whereClauses
-                        .mapNotNull { whereClause ->
-                            whereClause.value
-                        }
+                        .mapNotNull { whereClause -> whereClause.value }
                         .map { whereValue -> stringValue(whereValue).replace("\'", "") }
                         .toTypedArray()
             }

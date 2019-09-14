@@ -28,7 +28,6 @@ class WhereDsl internal constructor(
         availableColumns: Map<out (Any) -> Any?, Column<*, *>>
 ) : SimpleFieldProvider(availableColumns), CommonWhereDsl {
 
-    @Suppress("UNCHECKED_CAST")
     internal fun initialize(): WhereClause {
         return init(this)
     }

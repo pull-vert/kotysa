@@ -12,6 +12,14 @@ data class UserDto(
         val alias: String?
 )
 
+/**
+ * @author Fred Montariol
+ */
+data class UserWithRoleDto(
+        val lastname: String,
+        val role: String
+)
+
 // test inheritance
 val inherited = Inherited("id", "name", "firstname")
 

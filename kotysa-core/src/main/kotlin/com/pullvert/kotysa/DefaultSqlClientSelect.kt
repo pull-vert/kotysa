@@ -15,58 +15,48 @@ import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.withNullability
 
-/**
- * @author Fred Montariol
- */
-open class SqlClientSelect private constructor() {
-    interface Select<T : Any> : Return<T> {
-        fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
-    }
-
-    interface Where<T : Any> : Return<T>
-
-    interface Return<T : Any>
-}
-
-
 private val logger = KotlinLogging.logger {}
 
 /**
  * @author Fred Montariol
  */
 open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientCommon() {
-    class Properties<T : Any>(
+
+    class Properties<T : Any> internal constructor(
             override val tables: Tables,
             val selectInformation: SelectInformation<T>,
-            override val whereClauses: MutableList<WhereClause>,
-            override val availableColumns: MutableMap<out (Any) -> Any?, Column<*, *>>
-    ) : DefaultSqlClientCommon.Properties
+            override val availableColumns: MutableMap<(Any) -> Any?, Column<*, *>>
+    ) : DefaultSqlClientCommon.Properties {
+        override val whereClauses: MutableList<WhereClause> = mutableListOf()
+        override val joinClauses: MutableList<JoinClause> = mutableListOf()
+    }
+
+    protected interface WithProperties<T : Any> : DefaultSqlClientCommon.WithProperties {
+        override val properties: Properties<T>
+    }
 
     @ExperimentalStdlibApi
     @Suppress("UNCHECKED_CAST")
-    abstract class Select<T : Any> protected constructor(
-            tables: Tables,
-            resultClass: KClass<T>,
-            dsl: (SelectDslApi.(ValueProvider) -> T)?
-    ) : DefaultSqlClientCommon.Instruction(), SqlClientSelect.Select<T>, Return<T> {
+    protected interface Select<T : Any> : Instruction {
 
-        final override val properties: Properties<T>
-        private val selectInformation: SelectInformation<T>
+        val tables: Tables
+        val resultClass: KClass<T>
+        val dsl: (SelectDslApi.(ValueProvider) -> T)?
 
-        init {
+        fun initProperties(): Properties<T> {
             if (dsl == null) {
                 tables.checkTable(resultClass)
             }
-            selectInformation = if (dsl != null) {
-                SelectDsl(dsl, tables).initialize()
+            val selectInformation = if (dsl != null) {
+                SelectDsl(dsl!!, tables).initialize()
             } else {
                 selectInformationForSingleClass(resultClass, tables)
             }
-            // build availableColumns Map
-            val availableColumns = mutableMapOf<(Any) -> Any?, Column<*, *>>()
+            val properties = Properties(tables, selectInformation, mutableMapOf())
+            // init availableColumns with all selected tables columns
             selectInformation.selectedTables
-                    .forEach { table -> addAvailableColumnsFromTable(availableColumns, table) }
-            properties = Properties(tables, selectInformation, mutableListOf(), availableColumns)
+                    .forEach { table -> addAvailableColumnsFromTable(properties, table) }
+            return properties
         }
 
         @Suppress("UNCHECKED_CAST")
@@ -149,7 +139,7 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
                 }
                 instance
             }
-            return SelectInformation(fieldIndexMap, selectedFields, setOf(table), select)
+            return SelectInformation(fieldIndexMap, selectedFields, setOf(AliasedTable(table)), select)
         }
 
         private fun valueProviderCall(getter: (T) -> Any?, valueProvider: ValueProvider): Any? =
@@ -239,18 +229,23 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
         }
     }
 
-    protected interface Where<T : Any> : DefaultSqlClientCommon.Where, SqlClientSelect.Where<T>, Return<T>
+    protected interface Whereable<T : Any> : DefaultSqlClientCommon.Whereable, WithProperties<T>
 
-    protected interface Return<T : Any> : DefaultSqlClientCommon.Return, SqlClientSelect.Return<T> {
-        override val properties: Properties<T>
+    protected interface Join<T : Any> : DefaultSqlClientCommon.Join, WithProperties<T>
 
+    protected interface Where<T : Any> : DefaultSqlClientCommon.Where, WithProperties<T>
+
+    protected interface Return<T : Any> : DefaultSqlClientCommon.Return, WithProperties<T> {
         fun selectSql() = with(properties) {
             val selects = selectInformation.selectedFields.joinToString(prefix = "SELECT ") { field -> field.fieldName }
-            val froms = selectInformation.selectedTables.joinToString(prefix = "FROM ") { table -> table.name }
-            val whereAndWhereDebug = whereAndWhereDebug(whereClauses, logger)
-            logger.debug { "Exec SQL : $selects $froms ${whereAndWhereDebug.second}" }
+            val froms = selectInformation.selectedTables
+                    .filterNot { aliasedTable -> joinClauses.map { joinClause -> joinClause.table }.contains(aliasedTable) }
+                    .joinToString(prefix = "FROM ") { aliasedTable -> aliasedTable.declaration }
+            val joins = joins()
+            val wheres = wheres()
+            logger.debug { "Exec SQL : $selects $froms $joins $wheres" }
 
-            "$selects $froms ${whereAndWhereDebug.first}"
+            "$selects $froms $joins $wheres"
         }
     }
 }
@@ -258,9 +253,9 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
 /**
  * @author Fred Montariol
  */
-data class SelectInformation<T>(
+class SelectInformation<T> internal constructor(
         val fieldIndexMap: Map<Field, Int>,
         internal val selectedFields: List<Field>,
-        internal val selectedTables: Set<Table<*>>,
+        internal val selectedTables: Set<AliasedTable<*>>,
         val select: SelectDslApi.(ValueProvider) -> T
 )

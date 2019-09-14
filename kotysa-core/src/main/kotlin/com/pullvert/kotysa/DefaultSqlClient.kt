@@ -4,7 +4,6 @@
 
 package com.pullvert.kotysa
 
-import mu.KLogger
 import mu.KotlinLogging
 import java.time.Instant
 import java.time.LocalDate
@@ -16,11 +15,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KTypeParameter
 import kotlin.reflect.full.allSuperclasses
-
-/**
- * @author Fred Montariol
- */
-interface SqlClient
 
 
 private fun tableMustBeMapped(tableName: String?) = "Requested table \"$tableName\" is not mapped"
@@ -39,7 +33,7 @@ private val logger = KotlinLogging.logger {}
 /**
  * @author Fred Montariol
  */
-interface DefaultSqlClient : SqlClient {
+interface DefaultSqlClient {
     val tables: Tables
 
     fun createTableSql(tableClass: KClass<*>): String {
@@ -105,42 +99,63 @@ private fun logValue(value: Any?) = when (value) {
  */
 open class DefaultSqlClientCommon protected constructor() {
 
-    protected interface Properties {
+    interface Properties {
         val tables: Tables
         val whereClauses: MutableList<WhereClause>
-        val availableColumns: MutableMap<out (Any) -> Any?, Column<*, *>>
+        val joinClauses: MutableList<JoinClause>
+        val availableColumns: MutableMap<(Any) -> Any?, Column<*, *>>
     }
 
-    abstract class Instruction protected constructor() {
+    protected interface Instruction {
         @Suppress("UNCHECKED_CAST")
-        protected fun <T : Any> addAvailableColumnsFromTable(
-                availableColumns: MutableMap<(Any) -> Any?, Column<*, *>>,
+        fun <T : Any> addAvailableColumnsFromTable(
+                properties: Properties,
                 table: Table<T>
-        ) {
-            table.columns.forEach { (key, value) ->
-                // 1) add mapped getter
-                availableColumns[key as (Any) -> Any?] = value
+        ) = properties.apply {
+            if (joinClauses.isEmpty() ||
+                    !joinClauses.map { joinClause -> joinClause.table.table }.contains(table)) {
+                table.columns.forEach { (key, value) ->
+                    // 1) add mapped getter
+                    availableColumns[key as (Any) -> Any?] = value
 
-                val getterCallable = key.toCallable()
+                    val getterCallable = key.toCallable()
 
-                // 2) add overridden parent getters associated with this column
-                table.tableClass.allSuperclasses
-                        .flatMap { superClass -> superClass.members }
-                        .filter { callable ->
-                            callable.isAbstract
-                                    && callable.name == getterCallable.name
-                                    && (callable is KProperty1<*, *> || callable.name.startsWith("get"))
-                                    && (callable.returnType == getterCallable.returnType
-                                    || callable.returnType.classifier is KTypeParameter)
-                        }
-                        .forEach { callable ->
-                            availableColumns[callable as (Any) -> Any?] = value
-                        }
+                    // 2) add overridden parent getters associated with this column
+                    table.tableClass.allSuperclasses
+                            .flatMap { superClass -> superClass.members }
+                            .filter { callable ->
+                                callable.isAbstract
+                                        && callable.name == getterCallable.name
+                                        && (callable is KProperty1<*, *> || callable.name.startsWith("get"))
+                                        && (callable.returnType == getterCallable.returnType
+                                        || callable.returnType.classifier is KTypeParameter)
+                            }
+                            .forEach { callable ->
+                                availableColumns[callable as (Any) -> Any?] = value
+                            }
+                }
             }
         }
     }
 
-    protected interface Where : Return {
+    interface WithProperties {
+        val properties: Properties
+    }
+
+    protected interface Whereable : WithProperties
+
+    protected interface Join : WithProperties, Instruction {
+        fun <T : Any> addJoinClause(dsl: (FieldProvider) -> ColumnField<*, *>, joinClass: KClass<T>, alias: String?, type: JoinType) {
+            properties.apply {
+                tables.checkTable(joinClass)
+                val aliasedTable = AliasedTable(tables.getTable(joinClass), alias)
+                joinClauses.add(JoinDsl(dsl, aliasedTable, type, availableColumns).initialize())
+                addAvailableColumnsFromTable(this, aliasedTable)
+            }
+        }
+    }
+
+    protected interface Where : WithProperties {
         fun addWhereClause(dsl: WhereDsl.(FieldProvider) -> WhereClause) {
             properties.apply {
                 whereClauses.add(WhereDsl(dsl, availableColumns).initialize())
@@ -148,7 +163,7 @@ open class DefaultSqlClientCommon protected constructor() {
         }
     }
 
-    protected interface TypedWhere<T : Any> : Return {
+    protected interface TypedWhere<T : Any> : WithProperties {
         fun addWhereClause(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause) {
             properties.apply {
                 whereClauses.add(TypedWhereDsl(dsl, availableColumns).initialize())
@@ -156,46 +171,42 @@ open class DefaultSqlClientCommon protected constructor() {
         }
     }
 
-    protected interface Return {
-        val properties: Properties
+    interface Return : WithProperties {
 
         fun stringValue(value: Any?) = logValue(value)
 
-        fun whereClause(whereClauses: MutableList<WhereClause>) =
-                if (whereClauses.isEmpty()) {
-                    ""
-                } else {
-                    whereClauses.joinToString(" AND ", "WHERE ") { whereClause ->
-                        when (whereClause.operation) {
-                            Operation.EQ ->
-                                if (whereClause.value == null) {
-                                    "${whereClause.field.fieldName} IS NULL"
-                                } else {
-                                    "${whereClause.field.fieldName} = ?"
-                                }
-                            else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
-                        }
+        fun joins() =
+                properties.joinClauses.joinToString { joinClause ->
+                    require(joinClause.table.primaryKey is SinglePrimaryKey<*, *>) {
+                        "Only table with single column primary key is currently supported, ${joinClause.table.name} is not"
                     }
+                    val joinedTableFieldName = "${joinClause.table.prefix}.${joinClause.table.primaryKey.column.name}"
+
+                    "${joinClause.type.sql} ${joinClause.table.declaration} ON ${joinClause.field.fieldName} = $joinedTableFieldName"
                 }
 
-        fun whereClauseDebug(whereClauses: MutableList<WhereClause>, logger: KLogger) =
-                if (whereClauses.isEmpty() || !logger.isDebugEnabled) {
-                    ""
-                } else {
-                    whereClauses.joinToString(" AND ", "WHERE ") { whereClause ->
-                        when (whereClause.operation) {
-                            Operation.EQ ->
-                                if (whereClause.value == null) {
-                                    "${whereClause.field.fieldName} IS NULL"
-                                } else {
-                                    "${whereClause.field.fieldName} = ${logValue(whereClause.value)}"
-                                }
-                            else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
+        fun wheres(withWhere: Boolean = true): String = with(properties) {
+            if (whereClauses.isEmpty()) {
+                return ""
+            }
+            val where = StringBuilder()
+            if (withWhere) {
+                where.append("WHERE ")
+            }
+            whereClauses.forEach { whereClause ->
+                when (whereClause.operation) {
+                    Operation.EQ ->
+                        if (whereClause.value == null) {
+                            val nullWhereClause = "${whereClause.field.fieldName} IS NULL"
+                            where.append(nullWhereClause).append(" AND ")
+                        } else {
+                            val notNullWhereClause = "${whereClause.field.fieldName} = "
+                            where.append(notNullWhereClause).append("?").append(" AND ")
                         }
-                    }
+                    else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
                 }
-
-        fun whereAndWhereDebug(whereClauses: MutableList<WhereClause>, logger: KLogger): Pair<String, String> =
-                Pair(whereClause(whereClauses), whereClauseDebug(whereClauses, logger))
+            }
+            return where.dropLast(5).toString()
+        }
     }
 }

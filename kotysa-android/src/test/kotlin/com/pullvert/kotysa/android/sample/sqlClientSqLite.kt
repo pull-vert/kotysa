@@ -5,8 +5,7 @@
 package com.pullvert.kotysa.android.sample
 
 import android.database.sqlite.SQLiteDatabase
-import com.pullvert.kotysa.android.*
-import com.pullvert.kotysa.count
+import com.pullvert.kotysa.android.sqlClient
 import com.pullvert.kotysa.test.common.sample.*
 
 /**
@@ -16,56 +15,33 @@ import com.pullvert.kotysa.test.common.sample.*
 class UserRepositorySqLite(dbClient: SQLiteDatabase) {
     private val sqlClient = dbClient.sqlClient(sqlitetables)
 
-    fun createTable() = sqlClient.createTable<SqLiteUser>()
-
-    fun insert() = sqlClient.insert(sqLiteJdoe, sqLiteBboss)
-
-    fun deleteAll() = sqlClient.deleteAllFromTable<SqLiteUser>()
-
-    fun deleteById(id: String) = sqlClient.deleteFromTable<SqLiteUser>()
-            .where { it[SqLiteUser::id] eq id }
-            .execute()
-
-    fun selectAll() = sqlClient.selectAll<SqLiteUser>()
-
-    fun countAll() = sqlClient.countAll<SqLiteUser>()
-
-    fun countWithAlias() = sqlClient.select { count { it[SqLiteUser::alias] } }.fetchOne()
-
-    fun selectAllMappedToDto() =
-            sqlClient.select {
-                UserDto("${it[SqLiteUser::firstname]} ${it[SqLiteUser::lastname]}",
-                        it[SqLiteUser::alias])
-            }.fetchAll()
-
-    fun selectFirstByFirstname(firstname: String) = sqlClient.select<SqLiteUser>()
-            .where { it[SqLiteUser::firstname] eq firstname }
-            // null String forbidden              ^^^^^^^^^
-            .fetchFirst()
-
-    fun selectByAlias(alias: String?) = sqlClient.select<SqLiteUser>()
-            .where { it[SqLiteUser::alias] eq alias }
-            // null String accepted           ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
-            .fetchAll()
-
-    fun updateFirstname(newFirstname: String) = sqlClient.updateTable<SqLiteUser>()
-            .set { it[SqLiteUser::firstname] = newFirstname }
-            .execute()
-
-    fun updateAlias(newAlias: String?) = sqlClient.updateTable<SqLiteUser>()
-            .set { it[SqLiteUser::alias] = newAlias }
-            .execute()
-
-
     fun simplifiedExample() {
         sqlClient.apply {
             createTable<SqLiteUser>()
             deleteAllFromTable<SqLiteUser>()
             insert(sqLiteJdoe, sqLiteBboss)
 
-            val john = select<SqLiteUser>()
-                    .where { it[SqLiteUser::firstname] eq "John" }
+            val count = countAll<H2User>()
+
+            val all = selectAll<H2User>()
+
+            val johny = select { UserWithRoleDto(it[H2User::lastname], it[H2Role::label]) }
+                    .innerJoinOn<H2Role> { it[H2User::roleId] }
+                    .where { it[H2User::alias] eq "Johny" }
+                    // null String accepted        ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
                     .fetchFirst()
+
+            val nbUpdated = updateTable<H2User>()
+                    .set { it[H2User::lastname] = "NewLastName" }
+                    .innerJoinOn<H2Role> { it[H2User::roleId] }
+                    .where { it[H2Role::label] eq h2User.label }
+                    // null String forbidden      ^^^^^^^^^^^^
+                    .execute()
+
+            val nbDeleted = deleteFromTable<H2User>()
+                    .innerJoinOn<H2Role> { it[H2User::roleId] }
+                    .where { it[H2Role::label] eq h2User.label }
+                    .execute()
         }
     }
 }

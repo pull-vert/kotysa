@@ -6,20 +6,40 @@ package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
 import org.springframework.data.r2dbc.core.DatabaseClient
+import reactor.core.publisher.Mono
 import kotlin.reflect.KClass
 
 /**
  * @author Fred Montariol
  */
-internal class SqlClientDeleteR2dbc private constructor() : DefaultSqlClientDelete() {
+internal class SqlClientDeleteR2dbc private constructor() : DefaultSqlClientDeleteOrUpdate() {
 
     internal class Delete<T : Any> internal constructor(
             override val client: DatabaseClient,
-            tables: Tables,
-            tableClass: KClass<T>
-    ) : DefaultSqlClientDelete.Delete<T>(tables, tableClass), ReactorSqlClientDelete.Delete<T>, Return<T> {
+            override val tables: Tables,
+            override val tableClass: KClass<T>
+    ) : ReactorSqlClientDeleteOrUpdate.DeleteOrUpdate<T>(), DeleteOrUpdate<T>, Return<T> {
+        override val properties: Properties<T> = initProperties()
 
-        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): ReactorSqlClientDelete.Where {
+        override fun <U : Any> joinOn(joinClass: KClass<U>, alias: String?, type: JoinType,
+                                      dsl: (FieldProvider) -> ColumnField<*, *>): ReactorSqlClientDeleteOrUpdate.Join {
+            val join = Join(client, properties)
+            join.addJoinClause(dsl, joinClass, alias, type)
+            return join
+        }
+
+        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): ReactorSqlClientDeleteOrUpdate.TypedWhere<T> {
+            val where = TypedWhere(client, properties)
+            where.addWhereClause(dsl)
+            return where
+        }
+    }
+
+    private class Join<T : Any> internal constructor(
+            override val client: DatabaseClient,
+            override val properties: Properties<T>
+    ) : DefaultSqlClientDeleteOrUpdate.Join<T>, ReactorSqlClientDeleteOrUpdate.Join, Return<T> {
+        override fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): ReactorSqlClientDeleteOrUpdate.Where {
             val where = Where(client, properties)
             where.addWhereClause(dsl)
             return where
@@ -29,14 +49,18 @@ internal class SqlClientDeleteR2dbc private constructor() : DefaultSqlClientDele
     private class Where<T : Any> internal constructor(
             override val client: DatabaseClient,
             override val properties: Properties<T>
-    ) : DefaultSqlClientDelete.Where<T>, ReactorSqlClientDelete.Where, Return<T>
+    ) : DefaultSqlClientDeleteOrUpdate.Where<T>, ReactorSqlClientDeleteOrUpdate.Where, Return<T>
 
-    private interface Return<T : Any> : DefaultSqlClientDelete.Return<T>, ReactorSqlClientDelete.Return {
+    private class TypedWhere<T : Any> internal constructor(
+            override val client: DatabaseClient,
+            override val properties: Properties<T>
+    ) : DefaultSqlClientDeleteOrUpdate.TypedWhere<T>, ReactorSqlClientDeleteOrUpdate.TypedWhere<T>, Return<T>
+
+    private interface Return<T : Any> : DefaultSqlClientDeleteOrUpdate.Return<T>, ReactorSqlClientDeleteOrUpdate.Return {
         val client: DatabaseClient
 
-        override fun execute() = with(properties) {
-            var executeSpec = client.execute()
-                    .sql(deleteFromTableSql())
+        override fun execute(): Mono<Int> = with(properties) {
+            var executeSpec = client.execute().sql(deleteFromTableSql())
 
             whereClauses
                     .mapNotNull { whereClause -> whereClause.value }

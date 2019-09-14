@@ -9,6 +9,9 @@ package com.pullvert.kotysa
  * @author Fred Montariol
  */
 interface Column<T : Any, U> {
+    /**
+     * Table this column is in
+     */
     var table: Table<T>
     val entityGetter: (T) -> U
     val name: String

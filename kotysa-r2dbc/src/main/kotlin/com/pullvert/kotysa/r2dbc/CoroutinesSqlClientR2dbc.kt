@@ -14,76 +14,13 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 import kotlin.reflect.KClass
 
 /**
- * Coroutines Sql Client, to be used with R2dbc
- *
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbcCoroutines
  * @author Fred Montariol
  */
-abstract class CoroutinesSqlClientR2dbc : CoroutinesSqlClient {
-
-    @PublishedApi
-    internal abstract fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): CoroutinesSqlClientSelect.Select<T>
-
-    @PublishedApi
-    internal abstract suspend fun <T : Any> createTable(tableClass: KClass<T>)
-
-    @PublishedApi
-    internal abstract fun <T : Any> deleteFromTable(tableClass: KClass<T>): CoroutinesSqlClientDelete.Delete<T>
-
-    @PublishedApi
-    internal abstract fun <T : Any> updateTable(tableClass: KClass<T>): CoroutinesSqlClientUpdate.Update<T>
-}
-
-/**
- * @author Fred Montariol
- */
-inline fun <reified T : Any> CoroutinesSqlClientR2dbc.select(noinline dsl: SelectDslApi.(ValueProvider) -> T) = select(T::class, dsl)
-
-/**
- * @author Fred Montariol
- */
-inline fun <reified T : Any> CoroutinesSqlClientR2dbc.select() = select(T::class, null)
-
-/**
- * @author Fred Montariol
- */
-@FlowPreview
-inline fun <reified T : Any> CoroutinesSqlClientR2dbc.selectAll(batchSize: Int = 1) = select(T::class, null).fetchAll(batchSize)
-
-/**
- * @author Fred Montariol
- */
-suspend inline fun <reified T : Any> CoroutinesSqlClientR2dbc.countAll() = select(Long::class) { count<T>() }.fetchOne()
-
-/**
- * @author Fred Montariol
- */
-suspend inline fun <reified T : Any> CoroutinesSqlClientR2dbc.createTable() = createTable(T::class)
-
-/**
- * @author Fred Montariol
- */
-inline fun <reified T : Any> CoroutinesSqlClientR2dbc.deleteFromTable() = deleteFromTable(T::class)
-
-/**
- * @author Fred Montariol
- */
-suspend inline fun <reified T : Any> CoroutinesSqlClientR2dbc.deleteAllFromTable() = deleteFromTable(T::class).execute()
-
-/**
- * @author Fred Montariol
- */
-inline fun <reified T : Any> CoroutinesSqlClientR2dbc.updateTable() = updateTable(T::class)
-
-
-/**
- * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbcCoroutines
- * @author Fred Montariol
- */
-private class CoroutinesSqlClientR2DbcImpl(
+private class CoroutinesSqlClientR2Dbc internal constructor(
         client: DatabaseClient,
         tables: Tables
-) : CoroutinesSqlClientR2dbc() {
+) : CoroutinesSqlClient() {
 
     private val delegate = SqlClientR2dbc(client, tables)
 
@@ -95,10 +32,10 @@ private class CoroutinesSqlClientR2DbcImpl(
         delegate.createTable(tableClass).awaitFirstOrNull()
     }
 
-    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): CoroutinesSqlClientDelete.Delete<T> =
+    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): CoroutinesSqlClientDeleteOrUpdate.DeleteOrUpdate<T> =
             CoroutineSqlClientDeleteR2dbc.Delete(delegate.deleteFromTable(tableClass))
 
-    override fun <T : Any> updateTable(tableClass: KClass<T>): CoroutinesSqlClientUpdate.Update<T> =
+    override fun <T : Any> updateTable(tableClass: KClass<T>): CoroutinesSqlClientDeleteOrUpdate.Update<T> =
             CoroutineSqlClientUpdateR2dbc.Update(delegate.updateTable(tableClass))
 
     override suspend fun <T : Any> insert(row: T) {
@@ -114,16 +51,33 @@ private class CoroutinesSqlClientR2DbcImpl(
  * @author Fred Montariol
  */
 private class CoroutineSqlClientSelectR2dbc private constructor() {
-    internal class Select<T : Any> internal constructor(override val delegate: ReactorSqlClientSelect.Select<T>) : CoroutinesSqlClientSelect.Select<T>, Return<T> {
-        override fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): CoroutinesSqlClientSelect.Where<T> = Where(delegate.where(dsl))
+    internal class Select<T : Any> internal constructor(
+            override val delegate: ReactorSqlClientSelect.Select<T>
+    ) : CoroutinesSqlClientSelect.Select<T>(), Whereable<T>, Return<T> {
+        override fun <U : Any> joinOn(joinClass: KClass<U>, alias: String?, type: JoinType,
+                                      dsl: (FieldProvider) -> ColumnField<*, *>): CoroutinesSqlClientSelect.Join<T> =
+                Join(delegate.joinOn(joinClass, alias, type, dsl))
     }
 
-    private class Where<T : Any> internal constructor(override val delegate: ReactorSqlClientSelect.Where<T>) : CoroutinesSqlClientSelect.Where<T>, Return<T>
+    private interface Whereable<T : Any> : CoroutinesSqlClientSelect.Whereable<T> {
+        val delegate: ReactorSqlClientSelect.Whereable<T>
+
+        override fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): CoroutinesSqlClientSelect.Where<T> =
+                Where(delegate.where(dsl))
+    }
+
+    private class Join<T : Any> internal constructor(
+            override val delegate: ReactorSqlClientSelect.Join<T>
+    ) : CoroutinesSqlClientSelect.Join<T>, Whereable<T>, Return<T>
+
+    private class Where<T : Any> internal constructor(
+            override val delegate: ReactorSqlClientSelect.Where<T>
+    ) : CoroutinesSqlClientSelect.Where<T>, Return<T>
 
     private interface Return<T : Any> : CoroutinesSqlClientSelect.Return<T> {
         val delegate: ReactorSqlClientSelect.Return<T>
 
-        override suspend fun fetchOne() =
+        override suspend fun fetchOne(): T =
                 try {
                     delegate.fetchOne().awaitSingle()
                 } catch (_: NoSuchElementException) {
@@ -132,7 +86,7 @@ private class CoroutineSqlClientSelectR2dbc private constructor() {
 
         override suspend fun fetchOneOrNull() = delegate.fetchOne().awaitFirstOrNull()
 
-        override suspend fun fetchFirst() =
+        override suspend fun fetchFirst(): T =
                 try {
                     delegate.fetchFirst().awaitFirst()
                 } catch (_: NoSuchElementException) {
@@ -150,15 +104,34 @@ private class CoroutineSqlClientSelectR2dbc private constructor() {
  * @author Fred Montariol
  */
 private class CoroutineSqlClientDeleteR2dbc private constructor() {
-    internal class Delete<T : Any> internal constructor(override val delegate: ReactorSqlClientDelete.Delete<T>) : CoroutinesSqlClientDelete.Delete<T>, Return {
+    internal class Delete<T : Any> internal constructor(
+            override val delegate: ReactorSqlClientDeleteOrUpdate.DeleteOrUpdate<T>
+    ) : CoroutinesSqlClientDeleteOrUpdate.DeleteOrUpdate<T>(), Return {
+        override fun <U : Any> joinOn(joinClass: KClass<U>, alias: String?, type: JoinType,
+                                      dsl: (FieldProvider) -> ColumnField<*, *>): CoroutinesSqlClientDeleteOrUpdate.Join<T> =
+            Join(delegate.joinOn(joinClass, alias, type, dsl))
 
-        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): CoroutinesSqlClientDelete.Where = Where(delegate.where(dsl))
+        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): CoroutinesSqlClientDeleteOrUpdate.TypedWhere<T> =
+                TypedWhere(delegate.where(dsl))
     }
 
-    private class Where internal constructor(override val delegate: ReactorSqlClientDelete.Where) : CoroutinesSqlClientDelete.Where, Return
+    private class Join<T : Any> internal constructor(
+            override val delegate: ReactorSqlClientDeleteOrUpdate.Join
+    ) : CoroutinesSqlClientDeleteOrUpdate.Join<T>, Return {
+        override fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): CoroutinesSqlClientDeleteOrUpdate.Where =
+                Where(delegate.where(dsl))
+    }
 
-    private interface Return : CoroutinesSqlClientDelete.Return {
-        val delegate: ReactorSqlClientDelete.Return
+    private class Where internal constructor(
+            override val delegate: ReactorSqlClientDeleteOrUpdate.Where
+    ) : CoroutinesSqlClientDeleteOrUpdate.Where, Return
+
+    private class TypedWhere<T : Any> internal constructor(
+            override val delegate: ReactorSqlClientDeleteOrUpdate.TypedWhere<T>
+    ) : CoroutinesSqlClientDeleteOrUpdate.TypedWhere<T>, Return
+
+    private interface Return : CoroutinesSqlClientDeleteOrUpdate.Return {
+        val delegate: ReactorSqlClientDeleteOrUpdate.Return
 
         override suspend fun execute(): Int = delegate.execute().awaitSingle()
     }
@@ -168,28 +141,49 @@ private class CoroutineSqlClientDeleteR2dbc private constructor() {
  * @author Fred Montariol
  */
 private class CoroutineSqlClientUpdateR2dbc private constructor() {
-    internal class Update<T : Any> internal constructor(override val delegate: ReactorSqlClientUpdate.Update<T>) : CoroutinesSqlClientUpdate.Update<T>, Return {
-        override fun set(dsl: (FieldSetter<T>) -> Unit): CoroutinesSqlClientUpdate.Update<T> {
+    internal class Update<T : Any> internal constructor(
+            override val delegate: ReactorSqlClientDeleteOrUpdate.Update<T>
+    ) : CoroutinesSqlClientDeleteOrUpdate.Update<T>(), Return {
+
+        override fun set(dsl: (FieldSetter<T>) -> Unit): CoroutinesSqlClientDeleteOrUpdate.Update<T> {
             delegate.set(dsl)
             return this
         }
 
-        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): CoroutinesSqlClientUpdate.Where = Where(delegate.where(dsl))
+        override fun <U : Any> joinOn(joinClass: KClass<U>, alias: String?, type: JoinType,
+                                      dsl: (FieldProvider) -> ColumnField<*, *>): CoroutinesSqlClientDeleteOrUpdate.Join<T> =
+                Join(delegate.joinOn(joinClass, alias, type, dsl))
+
+        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): CoroutinesSqlClientDeleteOrUpdate.TypedWhere<T> =
+                TypedWhere(delegate.where(dsl))
     }
 
-    private class Where internal constructor(override val delegate: ReactorSqlClientUpdate.Where) : CoroutinesSqlClientUpdate.Where, Return
+    private class Join<T : Any> internal constructor(
+            override val delegate: ReactorSqlClientDeleteOrUpdate.Join
+    ) : CoroutinesSqlClientDeleteOrUpdate.Join<T>, Return {
+        override fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): CoroutinesSqlClientDeleteOrUpdate.Where =
+                Where(delegate.where(dsl))
+    }
 
-    private interface Return : CoroutinesSqlClientUpdate.Return {
-        val delegate: ReactorSqlClientUpdate.Return
+    private class Where internal constructor(
+            override val delegate: ReactorSqlClientDeleteOrUpdate.Where
+    ) : CoroutinesSqlClientDeleteOrUpdate.Where, Return
 
-        override suspend fun execute() = delegate.execute().awaitSingle()
+    private class TypedWhere<T : Any> internal constructor(
+            override val delegate: ReactorSqlClientDeleteOrUpdate.TypedWhere<T>
+    ) : CoroutinesSqlClientDeleteOrUpdate.TypedWhere<T>, Return
+
+    private interface Return : CoroutinesSqlClientDeleteOrUpdate.Return {
+        val delegate: ReactorSqlClientDeleteOrUpdate.Return
+
+        override suspend fun execute(): Int = delegate.execute().awaitSingle()
     }
 }
 
 /**
- * Create a [CoroutinesSqlClientR2dbc] from a R2DBC [DatabaseClient] with [Tables] mapping
+ * Create a [CoroutinesSqlClient] from a R2DBC [DatabaseClient] with [Tables] mapping
  *
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbcCoroutines
  * @author Fred Montariol
  */
-fun DatabaseClient.coSqlClient(tables: Tables): CoroutinesSqlClientR2dbc = CoroutinesSqlClientR2DbcImpl(this, tables)
+fun DatabaseClient.coSqlClient(tables: Tables): CoroutinesSqlClient = CoroutinesSqlClientR2Dbc(this, tables)

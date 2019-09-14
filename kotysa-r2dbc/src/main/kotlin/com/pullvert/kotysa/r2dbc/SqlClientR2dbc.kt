@@ -21,9 +21,8 @@ internal class SqlClientR2dbc(
 ) : ReactorSqlClient(), DefaultSqlClient {
 
     @ExperimentalStdlibApi
-    override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T> {
-        return SqlClientSelectR2dbc.Select(client, tables, resultClass, dsl)
-    }
+    override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T> =
+            SqlClientSelectR2dbc.Select(client, tables, resultClass, dsl)
 
     override fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void> {
         val createTableSql = createTableSql(tableClass)
@@ -54,10 +53,10 @@ internal class SqlClientR2dbc(
                 .then()
     }
 
-    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): ReactorSqlClientDelete.Delete<T> =
+    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): ReactorSqlClientDeleteOrUpdate.DeleteOrUpdate<T> =
             SqlClientDeleteR2dbc.Delete(client, tables, tableClass)
 
-    override fun <T : Any> updateTable(tableClass: KClass<T>): ReactorSqlClientUpdate.Update<T> =
+    override fun <T : Any> updateTable(tableClass: KClass<T>): ReactorSqlClientDeleteOrUpdate.Update<T> =
             SqlClientUpdateR2dbc.Update(client, tables, tableClass)
 }
 

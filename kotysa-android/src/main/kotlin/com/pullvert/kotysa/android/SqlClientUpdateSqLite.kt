@@ -12,20 +12,39 @@ import kotlin.reflect.KClass
 /**
  * @author Fred Montariol
  */
-internal class SqlClientUpdateSqLite private constructor() : DefaultSqlClientUpdate() {
+internal class SqlClientUpdateSqLite private constructor() : DefaultSqlClientDeleteOrUpdate() {
 
     internal class Update<T : Any> internal constructor(
             override val client: SQLiteDatabase,
-            tables: Tables,
-            tableClass: KClass<T>
-    ) : DefaultSqlClientUpdate.Update<T>(tables, tableClass), BlockingSqlClientUpdate.Update<T>, Return<T> {
+            override val tables: Tables,
+            override val tableClass: KClass<T>
+    ) : BlockingSqlClientDeleteOrUpdate.Update<T>(), DefaultSqlClientDeleteOrUpdate.Update<T>, Return<T> {
+        override val properties: Properties<T> = initProperties()
 
-        override fun set(dsl: (FieldSetter<T>) -> Unit): BlockingSqlClientUpdate.Update<T> {
+        override fun set(dsl: (FieldSetter<T>) -> Unit): BlockingSqlClientDeleteOrUpdate.Update<T> {
             addSetValue(dsl)
             return this
         }
 
-        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): BlockingSqlClientUpdate.Where {
+        override fun <U : Any> joinOn(joinClass: KClass<U>, alias: String?, type: JoinType,
+                                      dsl: (FieldProvider) -> ColumnField<*, *>): BlockingSqlClientDeleteOrUpdate.Join<T> {
+            val join = Join(client, properties)
+            join.addJoinClause(dsl, joinClass, alias, type)
+            return join
+        }
+
+        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): BlockingSqlClientDeleteOrUpdate.TypedWhere<T> {
+            val where = TypedWhere(client, properties)
+            where.addWhereClause(dsl)
+            return where
+        }
+    }
+
+    private class Join<T : Any> internal constructor(
+            override val client: SQLiteDatabase,
+            override val properties: Properties<T>
+    ) : DefaultSqlClientDeleteOrUpdate.Join<T>, BlockingSqlClientDeleteOrUpdate.Join<T>, Return<T> {
+        override fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): BlockingSqlClientDeleteOrUpdate.Where {
             val where = Where(client, properties)
             where.addWhereClause(dsl)
             return where
@@ -35,9 +54,14 @@ internal class SqlClientUpdateSqLite private constructor() : DefaultSqlClientUpd
     private class Where<T : Any> internal constructor(
             override val client: SQLiteDatabase,
             override val properties: Properties<T>
-    ) : DefaultSqlClientUpdate.Where<T>, BlockingSqlClientUpdate.Where, Return<T>
+    ) : DefaultSqlClientDeleteOrUpdate.Where<T>, BlockingSqlClientDeleteOrUpdate.Where, Return<T>
 
-    private interface Return<T : Any> : DefaultSqlClientUpdate.Return<T>, BlockingSqlClientUpdate.Return {
+    private class TypedWhere<T : Any> internal constructor(
+            override val client: SQLiteDatabase,
+            override val properties: Properties<T>
+    ) : DefaultSqlClientDeleteOrUpdate.TypedWhere<T>, BlockingSqlClientDeleteOrUpdate.TypedWhere<T>, Return<T>
+
+    private interface Return<T : Any> : DefaultSqlClientDeleteOrUpdate.Return<T>, BlockingSqlClientDeleteOrUpdate.Return {
         val client: SQLiteDatabase
 
         override fun execute() = with(properties) {
@@ -45,24 +69,20 @@ internal class SqlClientUpdateSqLite private constructor() : DefaultSqlClientUpd
             setValues.forEach { (column, value) -> contentValues.put(column.name, value) }
 
             var whereParams: Array<String>? = null
-            var whereClauseStr: String? = null
             if (whereClauses.isNotEmpty()) {
-                val buildedWhereClause = whereClause(whereClauses)
-                if (buildedWhereClause.isNotEmpty()) {
-                    // remove 'WHERE '
-                    whereClauseStr = buildedWhereClause.substring(6)
-                }
                 whereParams = whereClauses
-                        .mapNotNull { whereClause ->
-                            whereClause.value
-                        }
+                        .mapNotNull { whereClause -> whereClause.value }
                         .map { whereValue -> stringValue(whereValue).replace("\'", "") }
                         .toTypedArray()
             }
-            // debug query
-            updateTableSqlDebug()
 
-            client.update(table.name, contentValues, whereClauseStr, whereParams)
+            val updateTableSql = updateTableSql()
+            val whereClause = if (updateTableSql.isNotEmpty()) {
+                updateTableSql
+            } else {
+                null
+            }
+            client.update(table.name, contentValues, whereClause, whereParams)
         }
     }
 }
