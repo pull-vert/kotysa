@@ -16,11 +16,11 @@ import java.util.*
  * @author Fred Montariol
  */
 class H2ColumnDsl<T : Any> internal constructor(
-        init: H2ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*>
+        init: H2ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T>
 ) : ColumnDsl<T, H2ColumnDsl<T>>(init) {
 
-    fun NotNullStringColumnProperty<T>.varchar(): VarcharColumnBuilderNotNull<String> =
-            VarcharColumnBuilderNotNullImpl(getter)
+    fun NotNullStringColumnProperty<T>.varchar() =
+            VarcharColumnBuilderNotNull(getter)
 
     fun NullableStringColumnProperty<T>.varchar(): VarcharColumnBuilderNullable =
             VarcharColumnBuilderNullableImpl(getter)
