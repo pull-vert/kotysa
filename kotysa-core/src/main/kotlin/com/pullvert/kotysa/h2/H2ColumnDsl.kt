@@ -5,11 +5,6 @@
 package com.pullvert.kotysa.h2
 
 import com.pullvert.kotysa.*
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.util.*
 
 /**
  * see [H2 Data types](http://h2database.com/html/datatypes.html)
@@ -19,48 +14,33 @@ class H2ColumnDsl<T : Any> internal constructor(
         init: H2ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T>
 ) : ColumnDsl<T, H2ColumnDsl<T>>(init) {
 
-    fun NotNullStringColumnProperty<T>.varchar() =
-            VarcharColumnBuilderNotNull(getter)
+    fun NotNullStringColumnProperty<T>.varchar() = VarcharColumnBuilderNotNull(getter)
 
-    fun NullableStringColumnProperty<T>.varchar(): VarcharColumnBuilderNullable =
-            VarcharColumnBuilderNullableImpl(getter)
+    fun NullableStringColumnProperty<T>.varchar() = VarcharColumnBuilderNullable(getter)
 
-    fun NotNullLocalDateTimeColumnProperty<T>.timestamp(): TimestampColumnBuilderNotNull<LocalDateTime> =
-            TimestampColumnBuilderNotNullImpl(getter)
+    fun NotNullLocalDateTimeColumnProperty<T>.timestamp() = TimestampColumnBuilderNotNull(getter)
 
-    fun NullableLocalDateTimeColumnProperty<T>.timestamp(): TimestampColumnBuilderNullable =
-            TimestampColumnBuilderNullableImpl(getter)
+    fun NullableLocalDateTimeColumnProperty<T>.timestamp() = TimestampColumnBuilderNullable(getter)
 
-    fun NotNullLocalDateTimeColumnProperty<T>.dateTime(): DateTimeColumnBuilderNotNull<LocalDateTime> =
-            DateTimeColumnBuilderNotNullImpl(getter)
+    fun NotNullLocalDateTimeColumnProperty<T>.dateTime() = DateTimeColumnBuilderNotNull(getter)
 
-    fun NullableLocalDateTimeColumnProperty<T>.dateTime(): DateTimeColumnBuilderNullable =
-            DateTimeColumnBuilderNullableImpl(getter)
+    fun NullableLocalDateTimeColumnProperty<T>.dateTime() = DateTimeColumnBuilderNullable(getter)
 
-    fun NotNullLocalDateColumnProperty<T>.date(): DateColumnBuilderNotNull<LocalDate> =
-            DateColumnBuilderNotNullImpl(getter)
+    fun NotNullLocalDateColumnProperty<T>.date() = DateColumnBuilderNotNull(getter)
 
-    fun NullableLocalDateColumnProperty<T>.date(): DateColumnBuilderNullable =
-            DateColumnBuilderNullableImpl(getter)
+    fun NullableLocalDateColumnProperty<T>.date() = DateColumnBuilderNullable(getter)
 
-    fun NotNullInstantColumnProperty<T>.timestampWithTimeZone(): TimestampWithTimeZoneColumnBuilderNotNull<Instant> =
-            TimestampWithTimeZoneColumnBuilderNotNullImpl(getter)
+    fun NotNullInstantColumnProperty<T>.timestampWithTimeZone() = TimestampWithTimeZoneColumnBuilderNotNull(getter)
 
-    fun NullableInstantColumnProperty<T>.timestampWithTimeZone(): TimestampWithTimeZoneColumnBuilderNullable =
-            TimestampWithTimeZoneColumnBuilderNullableImpl(getter)
+    fun NullableInstantColumnProperty<T>.timestampWithTimeZone() = TimestampWithTimeZoneColumnBuilderNullable(getter)
 
-    fun NotNullLocalTimeColumnProperty<T>.time9(): Time9ColumnBuilderNotNull<LocalTime> =
-            Time9ColumnBuilderNotNullImpl(getter)
+    fun NotNullLocalTimeColumnProperty<T>.time9() = Time9ColumnBuilderNotNull(getter)
 
-    fun NullableLocalTimeColumnProperty<T>.time9(): Time9ColumnBuilderNullable =
-            Time9ColumnBuilderNullableImpl(getter)
+    fun NullableLocalTimeColumnProperty<T>.time9() = Time9ColumnBuilderNullable(getter)
 
-    fun NotNullBooleanColumnProperty<T>.boolean(): BooleanColumnBuilderNotNull<Boolean> =
-            BooleanColumnBuilderNotNullImpl(getter)
+    fun NotNullBooleanColumnProperty<T>.boolean() = BooleanColumnBuilderNotNull(getter)
 
-    fun NotNullUuidColumnProperty<T>.uuid(): UuidColumnBuilderNotNull<UUID> =
-            UuidColumnBuilderNotNullImpl(getter)
+    fun NotNullUuidColumnProperty<T>.uuid() = UuidColumnBuilderNotNull(getter)
 
-    fun NullableUuidColumnProperty<T>.uuid(): UuidColumnBuilderNullable =
-            UuidColumnBuilderNullableImpl(getter)
+    fun NullableUuidColumnProperty<T>.uuid() = UuidColumnBuilderNullable(getter)
 }

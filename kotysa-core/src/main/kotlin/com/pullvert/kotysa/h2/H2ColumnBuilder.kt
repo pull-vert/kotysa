@@ -8,7 +8,7 @@ import com.pullvert.kotysa.ColumnNotNullBuilder
 import com.pullvert.kotysa.ColumnNullableBuilder
 import com.pullvert.kotysa.SqlType
 
-internal class TimestampWithTimeZoneColumnBuilderNotNull<T : Any, U> internal constructor(
+class TimestampWithTimeZoneColumnBuilderNotNull<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U
 ) : ColumnNotNullBuilder<TimestampWithTimeZoneColumnBuilderNotNull<T, U>, T, U>() {
     override val sqlType = SqlType.TIMESTAMP_WITH_TIME_ZONE
@@ -26,7 +26,7 @@ internal class TimestampWithTimeZoneColumnBuilderNotNull<T : Any, U> internal co
     override fun build() = TimestampWithTimeZoneColumnNotNull(entityGetter, columnName, sqlType, isPK, defaultValue)
 }
 
-internal class TimestampWithTimeZoneColumnBuilderNullable<T : Any, U> internal constructor(
+class TimestampWithTimeZoneColumnBuilderNullable<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U
 ) : ColumnNullableBuilder<TimestampWithTimeZoneColumnBuilderNullable<T, U>, T>() {
     override val sqlType = SqlType.TIMESTAMP_WITH_TIME_ZONE
@@ -34,7 +34,7 @@ internal class TimestampWithTimeZoneColumnBuilderNullable<T : Any, U> internal c
     override fun build() = TimestampWithTimeZoneColumnNullable(entityGetter, columnName, sqlType)
 }
 
-internal class Time9ColumnBuilderNotNull<T : Any, U> internal constructor(
+class Time9ColumnBuilderNotNull<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U
 ) : ColumnNotNullBuilder<Time9ColumnBuilderNotNull<T, U>, T, U>() {
     override val sqlType = SqlType.TIME9
@@ -52,7 +52,7 @@ internal class Time9ColumnBuilderNotNull<T : Any, U> internal constructor(
     override fun build() = Time9ColumnNotNull(entityGetter, columnName, sqlType, isPK, defaultValue)
 }
 
-internal class Time9ColumnBuilderNullable<T : Any, U> internal constructor(
+class Time9ColumnBuilderNullable<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U
 ) : ColumnNullableBuilder<Time9ColumnBuilderNullable<T, U>, T>() {
     override val sqlType = SqlType.TIME9

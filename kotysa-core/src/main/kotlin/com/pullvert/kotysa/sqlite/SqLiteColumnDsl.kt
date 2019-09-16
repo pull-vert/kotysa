@@ -5,35 +5,26 @@
 package com.pullvert.kotysa.sqlite
 
 import com.pullvert.kotysa.*
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 /**
  * see [SqLite Data types](https://www.sqlite.org/datatype3.html)
  * @author Fred Montariol
  */
 class SqLiteColumnDsl<T : Any> internal constructor(
-        init: SqLiteColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*>
+        init: SqLiteColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T>
 ) : ColumnDsl<T, SqLiteColumnDsl<T>>(init) {
 
-    fun NotNullStringColumnProperty<T>.varchar(): VarcharColumnBuilderNotNull<String> =
-            VarcharColumnBuilderNotNullImpl(getter)
+    fun NotNullStringColumnProperty<T>.varchar() = VarcharColumnBuilderNotNull(getter)
 
-    fun NullableStringColumnProperty<T>.varchar(): VarcharColumnBuilderNullable =
-            VarcharColumnBuilderNullableImpl(getter)
+    fun NullableStringColumnProperty<T>.varchar() = VarcharColumnBuilderNullable(getter)
 
-    fun NotNullLocalDateTimeColumnProperty<T>.dateTime(): DateTimeColumnBuilderNotNull<LocalDateTime> =
-            DateTimeColumnBuilderNotNullImpl(getter)
+    fun NotNullLocalDateTimeColumnProperty<T>.dateTime() = DateTimeColumnBuilderNotNull(getter)
 
-    fun NullableLocalDateTimeColumnProperty<T>.dateTime(): DateTimeColumnBuilderNullable =
-            DateTimeColumnBuilderNullableImpl(getter)
+    fun NullableLocalDateTimeColumnProperty<T>.dateTime() = DateTimeColumnBuilderNullable(getter)
 
-    fun NotNullLocalDateColumnProperty<T>.date(): DateColumnBuilderNotNull<LocalDate> =
-            DateColumnBuilderNotNullImpl(getter)
+    fun NotNullLocalDateColumnProperty<T>.date() = DateColumnBuilderNotNull(getter)
 
-    fun NullableLocalDateColumnProperty<T>.date(): DateColumnBuilderNullable =
-            DateColumnBuilderNullableImpl(getter)
+    fun NullableLocalDateColumnProperty<T>.date() = DateColumnBuilderNullable(getter)
 
-    fun NotNullBooleanColumnProperty<T>.boolean(): BooleanColumnBuilderNotNull<Boolean> =
-            BooleanColumnBuilderNotNullImpl(getter)
+    fun NotNullBooleanColumnProperty<T>.boolean() = BooleanColumnBuilderNotNull(getter)
 }
