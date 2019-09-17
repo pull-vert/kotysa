@@ -22,7 +22,7 @@ dependencies {
 
 compileKotlin {
     kotlinOptions {
-        freeCompilerArgs = ['-Xjvm-default=enable', "-XXLanguage:+InlineClasses"]
+        freeCompilerArgs = ['-Xjvm-default=enable', "-Xinline-classes"]
         jvmTarget = '1.8'
     }
 }

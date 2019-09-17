@@ -21,8 +21,7 @@ private fun tableMustBeMapped(tableName: String?) = "Requested table \"$tableNam
 
 @Suppress("UNCHECKED_CAST")
 fun <T : Any> Tables.getTable(tableClass: KClass<out T>): Table<T> =
-        this.allTables[tableClass] as Table<T>?
-                ?: throw IllegalArgumentException(tableMustBeMapped(tableClass.qualifiedName))
+        requireNotNull(this.allTables[tableClass] as Table<T>?) { tableMustBeMapped(tableClass.qualifiedName) }
 
 fun <T : Any> Tables.checkTable(tableClass: KClass<out T>) {
     require(this.allTables.containsKey(tableClass)) { tableMustBeMapped(tableClass.qualifiedName) }

@@ -4,6 +4,8 @@
 
 package com.pullvert.kotysa
 
+import kotlin.reflect.KClass
+
 /**
  * One database Table's Column model mapped by entity's [entityGetter]
  * @author Fred Montariol
@@ -18,7 +20,9 @@ interface Column<T : Any, U> {
     val sqlType: SqlType
     val isPrimaryKey: Boolean
     val isNullable: Boolean
-    val defaultValue: Any?
+    val defaultValue: U?
+    var fkClass: KClass<*>?
+    var fkColumn: Column<*, *>?
 }
 
 /**
@@ -36,7 +40,7 @@ internal interface ColumnNullable<T : Any, U> : Column<T, U> {
     override val isNullable: Boolean
         get() = true
 
-    override val defaultValue: Nothing?
+    override val defaultValue: U?
         get() = null
 
     override val isPrimaryKey: Boolean
@@ -47,8 +51,8 @@ internal interface ColumnNullable<T : Any, U> : Column<T, U> {
  * @author Fred Montariol
  */
 internal abstract class AbstractColumn<T : Any, U> : Column<T, U> {
-
     override lateinit var table: Table<T>
+    override var fkColumn: Column<*, *>? = null
 }
 
 /**
@@ -64,7 +68,8 @@ internal class VarcharColumnNotNull<T : Any, U> internal constructor(
         override val name: String,
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
-        override val defaultValue: U
+        override val defaultValue: U,
+        override var fkClass: KClass<*>?
 ) : AbstractColumn<T, U>(), VarcharColumn<T, U>, ColumnNotNull<T, U>
 
 /**
@@ -73,7 +78,8 @@ internal class VarcharColumnNotNull<T : Any, U> internal constructor(
 internal class VarcharColumnNullable<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U,
         override val name: String,
-        override val sqlType: SqlType
+        override val sqlType: SqlType,
+        override var fkClass: KClass<*>?
 ) : AbstractColumn<T, U>(), VarcharColumn<T, U>, ColumnNullable<T, U>
 
 /**
@@ -89,7 +95,8 @@ internal class TimestampColumnNotNull<T : Any, U> internal constructor(
         override val name: String,
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
-        override val defaultValue: U?
+        override val defaultValue: U?,
+        override var fkClass: KClass<*>?
 ) : AbstractColumn<T, U>(), TimestampColumn<T, U>, ColumnNotNull<T, U>
 
 /**
@@ -98,7 +105,8 @@ internal class TimestampColumnNotNull<T : Any, U> internal constructor(
 internal class TimestampColumnNullable<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U,
         override val name: String,
-        override val sqlType: SqlType
+        override val sqlType: SqlType,
+        override var fkClass: KClass<*>?
 ) : AbstractColumn<T, U>(), TimestampColumn<T, U>, ColumnNullable<T, U>
 
 /**
@@ -114,7 +122,8 @@ internal class DateColumnNotNull<T : Any, U> internal constructor(
         override val name: String,
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
-        override val defaultValue: U?
+        override val defaultValue: U?,
+        override var fkClass: KClass<*>?
 ) : AbstractColumn<T, U>(), DateColumn<T, U>, ColumnNotNull<T, U>
 
 /**
@@ -123,7 +132,8 @@ internal class DateColumnNotNull<T : Any, U> internal constructor(
 internal class DateColumnNullable<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U,
         override val name: String,
-        override val sqlType: SqlType
+        override val sqlType: SqlType,
+        override var fkClass: KClass<*>?
 ) : AbstractColumn<T, U>(), DateColumn<T, U>, ColumnNullable<T, U>
 
 /**
@@ -139,7 +149,8 @@ internal class DateTimeColumnNotNull<T : Any, U> internal constructor(
         override val name: String,
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
-        override val defaultValue: U?
+        override val defaultValue: U?,
+        override var fkClass: KClass<*>?
 ) : AbstractColumn<T, U>(), DateTimeColumn<T, U>, ColumnNotNull<T, U>
 
 /**
@@ -148,7 +159,8 @@ internal class DateTimeColumnNotNull<T : Any, U> internal constructor(
 internal class DateTimeColumnNullable<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U,
         override val name: String,
-        override val sqlType: SqlType
+        override val sqlType: SqlType,
+        override var fkClass: KClass<*>?
 ) : AbstractColumn<T, U>(), DateTimeColumn<T, U>, ColumnNullable<T, U>
 
 /**
@@ -164,7 +176,8 @@ internal class TimeColumnNotNull<T : Any, U> internal constructor(
         override val name: String,
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
-        override val defaultValue: U?
+        override val defaultValue: U?,
+        override var fkClass: KClass<*>?
 ) : AbstractColumn<T, U>(), TimeColumn<T, U>, ColumnNotNull<T, U>
 
 /**
@@ -173,7 +186,8 @@ internal class TimeColumnNotNull<T : Any, U> internal constructor(
 internal class TimeColumnNullable<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U,
         override val name: String,
-        override val sqlType: SqlType
+        override val sqlType: SqlType,
+        override var fkClass: KClass<*>?
 ) : AbstractColumn<T, U>(), TimeColumn<T, U>, ColumnNullable<T, U>
 
 /**
@@ -184,7 +198,8 @@ internal class BooleanColumnNotNull<T : Any, U> internal constructor(
         override val name: String,
         override val sqlType: SqlType,
         override val defaultValue: U?,
-        override val isPrimaryKey: Boolean = false
+        override val isPrimaryKey: Boolean = false,
+        override var fkClass: KClass<*>?
 ) : AbstractColumn<T, U>(), ColumnNotNull<T, U>
 
 /**
@@ -200,7 +215,8 @@ internal class UuidColumnNotNull<T : Any, U> internal constructor(
         override val name: String,
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
-        override val defaultValue: U?
+        override val defaultValue: U?,
+        override var fkClass: KClass<*>?
 ) : AbstractColumn<T, U>(), UuidColumn<T, U>, ColumnNotNull<T, U>
 
 /**
@@ -209,5 +225,6 @@ internal class UuidColumnNotNull<T : Any, U> internal constructor(
 internal class UuidColumnNullable<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U,
         override val name: String,
-        override val sqlType: SqlType
+        override val sqlType: SqlType,
+        override var fkClass: KClass<*>?
 ) : AbstractColumn<T, U>(), UuidColumn<T, U>, ColumnNullable<T, U>

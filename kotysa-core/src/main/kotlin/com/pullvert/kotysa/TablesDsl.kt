@@ -31,6 +31,17 @@ abstract class TablesDsl<T : TablesDsl<T, U>, U : TableDsl<*, *>>(private val in
     internal fun initialize(initialize: T, dbType: DbType): Tables {
         init(initialize)
         require(tables.isNotEmpty()) { "Tables must declare at least one table" }
-        return Tables(tables, allColumns, dbType)
+        val tables = Tables(tables, allColumns, dbType)
+        // resolve foreign keys to actual primary key column
+        allColumns.filterValues { column -> column.fkClass != null }
+                .forEach { (_, column) ->
+                    val referencedTable = tables.getTable(column.fkClass!!)
+                    val referencedTablePK = referencedTable.primaryKey
+                    require(referencedTablePK is SinglePrimaryKey<*, *>) {
+                        "Only table with single column primary key is currently supported, ${referencedTable.name} is not"
+                    }
+                    column.fkColumn = referencedTablePK.column
+                }
+        return tables
     }
 }

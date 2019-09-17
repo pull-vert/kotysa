@@ -7,16 +7,6 @@ package com.pullvert.kotysa
 import kotlin.reflect.KClass
 
 /**
- * All Mapped Tables
- * @author Fred Montariol
- */
-class Tables internal constructor(
-        val allTables: Map<KClass<*>, Table<*>>,
-        internal val allColumns: Map<out (Any) -> Any?, Column<*, *>>,
-        internal val dbType: DbType
-)
-
-/**
  * A database Table model mapped by entity class [tableClass]
  *
  * @author Fred Montariol
@@ -55,3 +45,13 @@ internal class TableImpl<T : Any> internal constructor(
         return name.hashCode()
     }
 }
+
+/**
+ * All Mapped Tables
+ * @author Fred Montariol
+ */
+class Tables internal constructor(
+        val allTables: Map<KClass<*>, Table<*>>,
+        internal val allColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        internal val dbType: DbType
+)

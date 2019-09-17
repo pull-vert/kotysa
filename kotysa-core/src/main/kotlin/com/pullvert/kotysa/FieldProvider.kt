@@ -72,7 +72,7 @@ interface TypedFieldProvider<T : Any> {
     operator fun get(getter: (T) -> UUID?, alias: String? = null): NullableUuidColumnField<T>
 }
 
-open class SimpleFieldProvider(
+open class SimpleFieldProvider internal constructor(
         availableColumns: Map<out (Any) -> Any?, Column<*, *>>
 ) : FieldProvider {
 
@@ -105,7 +105,7 @@ open class SimpleFieldProvider(
     override fun <T : Any> get(getter: (T) -> UUID?, alias: String?) = fieldAccess.getField(getter, alias)
 }
 
-open class SimpleTypedFieldProvider<T : Any>(
+open class SimpleTypedFieldProvider<T : Any> internal constructor(
         availableColumns: Map<out (Any) -> Any?, Column<*, *>>
 ) : TypedFieldProvider<T> {
 

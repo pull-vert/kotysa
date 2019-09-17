@@ -105,7 +105,7 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
                 // Then try to invoke var or setter for each unassociated getter
                 if (associatedColumns.size < table.columns.size) {
                     table.columns
-                            .filter { (_, column) -> !associatedColumns.contains(column) }
+                            .filterValues { column -> !associatedColumns.contains(column) }
                             .forEach { (getter, column) ->
                                 if (getter is KMutableProperty1<T, Any?>) {
                                     getter.set(instance, valueProviderCall(getter, it))
