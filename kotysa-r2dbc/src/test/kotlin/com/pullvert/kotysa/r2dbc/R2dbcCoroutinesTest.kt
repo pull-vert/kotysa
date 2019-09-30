@@ -8,7 +8,6 @@ import com.pullvert.kotysa.NoResultException
 import com.pullvert.kotysa.NonUniqueResultException
 import com.pullvert.kotysa.test.common.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
@@ -28,7 +27,6 @@ import org.springframework.fu.kofu.r2dbc.r2dbcH2
  * @author Fred Montariol
  */
 @ExperimentalCoroutinesApi
-@FlowPreview
 class R2DbcCoroutinesTest {
     private val context =
             application(WebApplicationType.NONE) {
@@ -130,7 +128,6 @@ class R2DbcCoroutinesTest {
 /**
  * @author Fred Montariol
  */
-@FlowPreview
 class CoroutinesUserRepository(dbClient: DatabaseClient) {
 
     private val sqlClient = dbClient.coSqlClient(h2Tables)

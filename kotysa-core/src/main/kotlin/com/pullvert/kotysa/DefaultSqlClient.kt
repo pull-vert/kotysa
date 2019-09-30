@@ -38,7 +38,7 @@ interface DefaultSqlClient {
     fun createTableSql(tableClass: KClass<*>): String {
         val table = tables.getTable(tableClass)
         var primaryKey: String? = null
-        var foreighKey: String? = null // todo
+        var foreignKeys = "" // todo
         val columns = table.columns.values.joinToString { column ->
             if (column.isPrimaryKey) {
                 primaryKey = "CONSTRAINT pk_${table.name} PRIMARY KEY (${column.name})"
@@ -46,7 +46,7 @@ interface DefaultSqlClient {
             val nullability = if (column.isNullable) "NULL" else "NOT NULL"
             "${column.name} ${column.sqlType.fullType} $nullability"
         }
-        val createTableSql = "CREATE TABLE IF NOT EXISTS ${table.name} ($columns, $primaryKey, $foreighKey)"
+        val createTableSql = "CREATE TABLE IF NOT EXISTS ${table.name} ($columns, $primaryKey$foreignKeys)"
         logger.debug { "Exec SQL : $createTableSql" }
         return createTableSql
     }

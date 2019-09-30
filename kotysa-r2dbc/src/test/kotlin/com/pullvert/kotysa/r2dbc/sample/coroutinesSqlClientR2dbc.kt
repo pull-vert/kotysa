@@ -6,13 +6,11 @@ package com.pullvert.kotysa.r2dbc.sample
 
 import com.pullvert.kotysa.r2dbc.coSqlClient
 import com.pullvert.kotysa.test.common.sample.*
-import kotlinx.coroutines.FlowPreview
 import org.springframework.data.r2dbc.core.DatabaseClient
 
 /**
  * @author Fred Montariol
  */
-@FlowPreview
 @Suppress("UNUSED_VARIABLE")
 class UserRepositoryR2dbcCoroutines(dbClient: DatabaseClient) {
     private val sqlClient = dbClient.coSqlClient(h2tables)
