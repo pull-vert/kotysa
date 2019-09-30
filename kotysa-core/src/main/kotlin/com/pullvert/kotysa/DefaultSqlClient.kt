@@ -38,10 +38,15 @@ interface DefaultSqlClient {
     fun createTableSql(tableClass: KClass<*>): String {
         val table = tables.getTable(tableClass)
         var primaryKey: String? = null
-        var foreignKeys = "" // todo
+        val foreignKeys = StringBuilder()
         val columns = table.columns.values.joinToString { column ->
             if (column.isPrimaryKey) {
-                primaryKey = "CONSTRAINT pk_${table.name} PRIMARY KEY (${column.name})"
+                primaryKey = "CONSTRAINT PK_${table.name} PRIMARY KEY (${column.name})"
+            }
+            column.fkColumn?.also { fkColumn ->
+                foreignKeys.append(", ")
+                foreignKeys.append("CONSTRAINT FK_${fkColumn.table.name} FOREIGN KEY (${column.name}) " +
+                        "REFERENCES ${fkColumn.table.name}(${fkColumn.name})")
             }
             val nullability = if (column.isNullable) "NULL" else "NOT NULL"
             "${column.name} ${column.sqlType.fullType} $nullability"

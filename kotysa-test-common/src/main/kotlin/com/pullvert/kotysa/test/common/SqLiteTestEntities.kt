@@ -23,7 +23,7 @@ val sqLiteTables =
                 column { it[SqLiteUser::firstname].varchar().name("fname") }
                 column { it[SqLiteUser::lastname].varchar().name("lname") }
                 column { it[SqLiteUser::isAdmin].boolean() }
-                column { it[SqLiteUser::roleId].varchar() }
+                column { it[SqLiteUser::roleId].varchar().foreignKey<SqLiteRole>() }
                 column { it[SqLiteUser::alias].varchar() }
             }
             table<SqLiteAllTypesNotNull> {

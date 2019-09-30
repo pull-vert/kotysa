@@ -24,7 +24,7 @@ val h2Tables =
                 column { it[H2User::firstname].varchar().name("fname") }
                 column { it[H2User::lastname].varchar().name("lname") }
                 column { it[H2User::isAdmin].boolean() }
-                column { it[H2User::roleId].uuid() }
+                column { it[H2User::roleId].uuid().foreignKey<H2Role>() }
                 column { it[H2User::alias].varchar() }
             }
             table<H2AllTypesNotNull> {

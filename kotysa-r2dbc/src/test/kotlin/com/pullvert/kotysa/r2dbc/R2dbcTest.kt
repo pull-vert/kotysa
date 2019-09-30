@@ -227,8 +227,8 @@ class UserRepository(dbClient: DatabaseClient) {
 
     fun init() {
         createTables()
-                .then(deleteAllFromRole())
                 .then(deleteAllFromUsers())
+                .then(deleteAllFromRole())
                 .then(deleteAllFromAllTypesNotNull())
                 .then(deleteAllFromAllTypesNullable())
                 .then(insertRoles())

@@ -50,7 +50,7 @@ class R2DbcCoroutinesTest {
 
     @Test
     fun `Verify selectAll returns all users`() = runBlockingTest {
-        assertThat(repository.selectAll().toList())
+        assertThat(repository.selectAllUsers().toList())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(h2Jdoe, h2Bboss)
     }
@@ -106,12 +106,12 @@ class R2DbcCoroutinesTest {
 
     @Test
     fun `Verify deleteAllFromUser works correctly`() = runBlockingTest {
-        assertThat(repository.deleteAll())
+        assertThat(repository.deleteAllFromUsers())
                 .isEqualTo(2)
-        assertThat(repository.selectAll().toList())
+        assertThat(repository.selectAllUsers().toList())
                 .isEmpty()
         // re-insert users
-        repository.insert()
+        repository.insertUsers()
     }
 
     @Test
@@ -133,18 +133,27 @@ class CoroutinesUserRepository(dbClient: DatabaseClient) {
     private val sqlClient = dbClient.coSqlClient(h2Tables)
 
     suspend fun init() = coroutineScope {
-        createTable()
-        deleteAll()
-        insert()
+        createTables()
+        deleteAllFromUsers()
+        deleteAllFromRole()
+        insertRoles()
+        insertUsers()
     }
 
-    suspend fun createTable() = sqlClient.createTable<H2User>()
+    suspend fun createTables() {
+        sqlClient.createTable<H2Role>()
+        sqlClient.createTable<H2User>()
+    }
 
-    suspend fun insert() = sqlClient.insert(h2Jdoe, h2Bboss)
+    suspend fun insertRoles() = sqlClient.insert(h2User, h2Admin)
 
-    suspend fun deleteAll() = sqlClient.deleteAllFromTable<H2User>()
+    suspend fun insertUsers() = sqlClient.insert(h2Jdoe, h2Bboss)
 
-    fun selectAll() = sqlClient.selectAll<H2User>()
+    suspend fun deleteAllFromRole() = sqlClient.deleteAllFromTable<H2Role>()
+
+    suspend fun deleteAllFromUsers() = sqlClient.deleteAllFromTable<H2User>()
+
+    fun selectAllUsers() = sqlClient.selectAll<H2User>()
 
     suspend fun selectFirstByFirstame(firstname: String) = sqlClient.select<H2User>()
             .where { it[H2User::firstname] eq firstname }
