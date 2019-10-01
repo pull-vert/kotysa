@@ -18,10 +18,10 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.data.r2dbc.core.DatabaseClient
 import org.springframework.fu.kofu.application
 import org.springframework.fu.kofu.r2dbc.r2dbcH2
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZonedDateTime
 import java.util.*
 
 /**
@@ -201,19 +201,19 @@ class R2dbcTest {
     @Test
     fun `Verify updateAll works`() {
         val newLocalDate = LocalDate.now()
-        val newInstant = Instant.now()
+        val newZonedDateTime = ZonedDateTime.now()
         val newLocalTime = LocalTime.now()
         val newLocalDateTime = LocalDateTime.now()
         val newUuid = UUID.randomUUID()
-        repository.updateAllTypesNotNull("new", false, newLocalDate, newInstant, newLocalTime,
+        repository.updateAllTypesNotNull("new", false, newLocalDate, newZonedDateTime, newLocalTime,
                 newLocalDateTime, newLocalDateTime, newUuid).block()
         assertThat(repository.selectAllAllTypesNotNull().toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(
-                        H2AllTypesNotNull(h2AllTypesNotNull.id, "new", false, newLocalDate, newInstant,
+                        H2AllTypesNotNull(h2AllTypesNotNull.id, "new", false, newLocalDate, newZonedDateTime,
                                 newLocalTime, newLocalDateTime, newLocalDateTime, newUuid))
         repository.updateAllTypesNotNull(h2AllTypesNotNull.string, h2AllTypesNotNull.boolean, h2AllTypesNotNull.localDate,
-                h2AllTypesNotNull.instant, h2AllTypesNotNull.localTim, h2AllTypesNotNull.localDateTime1,
+                h2AllTypesNotNull.zonedDateTime, h2AllTypesNotNull.localTim, h2AllTypesNotNull.localDateTime1,
                 h2AllTypesNotNull.localDateTime2, h2AllTypesNotNull.uuid).block()
     }
 }
@@ -316,13 +316,14 @@ class UserRepository(dbClient: DatabaseClient) {
             .where { it[H2Role::label] eq roleLabel }
             .execute()
 
-    fun updateAllTypesNotNull(newString: String, newBoolean: Boolean, newLocalDate: LocalDate, newInstant: Instant, newLocalTim: LocalTime,
-                              newLocalDateTime1: LocalDateTime, newLocalDateTime2: LocalDateTime, newUuid: UUID) =
+    fun updateAllTypesNotNull(newString: String, newBoolean: Boolean, newLocalDate: LocalDate,
+                              newZonedDateTime: ZonedDateTime, newLocalTim: LocalTime, newLocalDateTime1: LocalDateTime,
+                              newLocalDateTime2: LocalDateTime, newUuid: UUID) =
             sqlClient.updateTable<H2AllTypesNotNull>()
                     .set { it[H2AllTypesNotNull::string] = newString }
                     .set { it[H2AllTypesNotNull::boolean] = newBoolean }
                     .set { it[H2AllTypesNotNull::localDate] = newLocalDate }
-                    .set { it[H2AllTypesNotNull::instant] = newInstant }
+                    .set { it[H2AllTypesNotNull::zonedDateTime] = newZonedDateTime }
                     .set { it[H2AllTypesNotNull::localTim] = newLocalTim }
                     .set { it[H2AllTypesNotNull::localDateTime1] = newLocalDateTime1 }
                     .set { it[H2AllTypesNotNull::localDateTime2] = newLocalDateTime2 }

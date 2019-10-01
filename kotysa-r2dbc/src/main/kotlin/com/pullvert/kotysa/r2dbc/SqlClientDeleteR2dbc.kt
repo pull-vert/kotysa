@@ -60,7 +60,7 @@ internal class SqlClientDeleteR2dbc private constructor() : DefaultSqlClientDele
         val client: DatabaseClient
 
         override fun execute(): Mono<Int> = with(properties) {
-            var executeSpec = client.execute().sql(deleteFromTableSql())
+            var executeSpec = client.execute(deleteFromTableSql())
 
             whereClauses
                     .mapNotNull { whereClause -> whereClause.value }

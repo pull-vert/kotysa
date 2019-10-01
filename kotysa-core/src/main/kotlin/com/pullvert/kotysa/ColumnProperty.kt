@@ -4,10 +4,10 @@
 
 package com.pullvert.kotysa
 
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZonedDateTime
 import java.util.*
 
 /**
@@ -92,25 +92,25 @@ class NullableLocalDateColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> LocalDate?
 ) : LocalDateColumnProperty<T>(), NullableColumnProperty
 
-// Instant
+// ZonedDateTime
 /**
  * @author Fred Montariol
  */
-abstract class InstantColumnProperty<T : Any> : AbstractColumnProperty<T>()
+abstract class ZonedDateTimeColumnProperty<T : Any> : AbstractColumnProperty<T>()
 
 /**
  * @author Fred Montariol
  */
-class NotNullInstantColumnProperty<T : Any> internal constructor(
-        override val getter: (T) -> Instant
-) : InstantColumnProperty<T>(), NotNullColumnProperty
+class NotNullZonedDateTimeColumnProperty<T : Any> internal constructor(
+        override val getter: (T) -> ZonedDateTime
+) : ZonedDateTimeColumnProperty<T>(), NotNullColumnProperty
 
 /**
  * @author Fred Montariol
  */
-class NullableInstantColumnProperty<T : Any> internal constructor(
-        override val getter: (T) -> Instant?
-) : InstantColumnProperty<T>(), NullableColumnProperty
+class NullableZonedDateTimeColumnProperty<T : Any> internal constructor(
+        override val getter: (T) -> ZonedDateTime?
+) : ZonedDateTimeColumnProperty<T>(), NullableColumnProperty
 
 // LocalTime
 /**

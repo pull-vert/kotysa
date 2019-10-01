@@ -26,12 +26,11 @@ internal class SqlClientR2dbc(
 
     override fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void> {
         val createTableSql = createTableSql(tableClass)
-        return client.execute().sql(createTableSql).then()
+        return client.execute(createTableSql).then()
     }
 
     override fun <T : Any> insert(row: T): Mono<Void> {
-        var executeSpec = client.execute()
-                .sql(insertSql(row))
+        var executeSpec = client.execute(insertSql(row))
         val table = tables.getTable(row::class)
         table.columns.values.forEachIndexed { index, column ->
             val value = column.entityGetter(row)

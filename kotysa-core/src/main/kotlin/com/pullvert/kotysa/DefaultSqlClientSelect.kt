@@ -5,10 +5,10 @@
 package com.pullvert.kotysa
 
 import mu.KotlinLogging
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZonedDateTime
 import java.util.*
 import kotlin.reflect.*
 import kotlin.reflect.full.memberFunctions
@@ -147,7 +147,7 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
                     typeOf<String>() -> valueProvider[getter as (T) -> String?]
                     typeOf<LocalDateTime>() -> valueProvider[getter as (T) -> LocalDateTime?]
                     typeOf<LocalDate>() -> valueProvider[getter as (T) -> LocalDate?]
-                    typeOf<Instant>() -> valueProvider[getter as (T) -> Instant?]
+                    typeOf<ZonedDateTime>() -> valueProvider[getter as (T) -> ZonedDateTime?]
                     typeOf<LocalTime>() -> valueProvider[getter as (T) -> LocalTime?]
                     typeOf<Boolean>() -> valueProvider[getter as (T) -> Boolean]
                     typeOf<UUID>() -> valueProvider[getter as (T) -> UUID?]
@@ -198,11 +198,11 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
                         } else {
                             NotNullLocalDateColumnField(allColumns, getter as (Any) -> LocalDate)
                         }
-                    typeOf<Instant>() ->
+                    typeOf<ZonedDateTime>() ->
                         if (getterType.isMarkedNullable) {
-                            NullableInstantColumnField(allColumns, getter as (Any) -> Instant?)
+                            NullableZonedDateTimeColumnField(allColumns, getter as (Any) -> ZonedDateTime?)
                         } else {
-                            NotNullInstantColumnField(allColumns, getter as (Any) -> Instant)
+                            NotNullZonedDateTimeColumnField(allColumns, getter as (Any) -> ZonedDateTime)
                         }
                     typeOf<LocalTime>() ->
                         if (getterType.isMarkedNullable) {

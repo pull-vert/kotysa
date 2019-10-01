@@ -4,10 +4,10 @@
 
 package com.pullvert.kotysa
 
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZonedDateTime
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -41,10 +41,10 @@ abstract class AbstractRow(private val fieldIndexMap: Map<Field, Int>) : SelectD
     override operator fun <T : Any> get(getter: (T) -> LocalDate?, alias: String?, `_`: Nullable): LocalDate? =
             this[getIndexdByGetterAndAlias(getter, alias)]
 
-    override operator fun <T : Any> get(getter: (T) -> Instant, alias: String?): Instant =
+    override operator fun <T : Any> get(getter: (T) -> ZonedDateTime, alias: String?): ZonedDateTime =
             this[getIndexdByGetterAndAlias(getter, alias)]!!
 
-    override operator fun <T : Any> get(getter: (T) -> Instant?, alias: String?, `_`: Nullable): Instant? =
+    override operator fun <T : Any> get(getter: (T) -> ZonedDateTime?, alias: String?, `_`: Nullable): ZonedDateTime? =
             this[getIndexdByGetterAndAlias(getter, alias)]
 
     override operator fun <T : Any> get(getter: (T) -> LocalTime, alias: String?): LocalTime =

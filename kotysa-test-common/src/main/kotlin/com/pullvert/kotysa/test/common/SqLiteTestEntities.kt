@@ -5,10 +5,8 @@
 package com.pullvert.kotysa.test.common
 
 import com.pullvert.kotysa.tables
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 
 val sqLiteTables =
         tables().sqlite {
@@ -77,8 +75,6 @@ data class SqLiteAllTypesNotNull(
         val string: String,
         val boolean: Boolean,
         val localDate: LocalDate,
-        val instant: Instant,
-        val localTim: LocalTime,
         val localDateTime: LocalDateTime
 )
 
@@ -89,10 +85,8 @@ data class SqLiteAllTypesNullable(
         val id: String,
         val string: String?,
         val localDate: LocalDate?,
-        val instant: Instant?,
-        val localTim: LocalTime?,
         val localDateTime: LocalDateTime?
 )
 
-val allTypesNotNullSqLite = SqLiteAllTypesNotNull("abc", "", true, LocalDate.now(), Instant.now(), LocalTime.now(), LocalDateTime.now())
-val allTypesNullableSqLite = SqLiteAllTypesNullable("def", null, null, null, null, null)
+val allTypesNotNullSqLite = SqLiteAllTypesNotNull("abc", "", true, LocalDate.now(), LocalDateTime.now())
+val allTypesNullableSqLite = SqLiteAllTypesNullable("def", null, null, null)

@@ -64,7 +64,7 @@ internal class SqlClientSelectR2dbc private constructor() : DefaultSqlClientSele
         override fun fetchAll(): Flux<T> = fetch().all()
 
         private fun fetch() = with(properties) {
-            var executeSpec = client.execute().sql(selectSql())
+            var executeSpec = client.execute(selectSql())
 
             whereClauses
                     .mapNotNull { whereClause -> whereClause.value }

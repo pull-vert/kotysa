@@ -4,10 +4,10 @@
 
 package com.pullvert.kotysa
 
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZonedDateTime
 import java.util.*
 
 /**
@@ -50,11 +50,11 @@ class UpdateSetDsl<T : Any> internal constructor(
         return Nullable.TRUE
     }
 
-    override fun set(getter: (T) -> Instant, value: Instant) {
+    override fun set(getter: (T) -> ZonedDateTime, value: ZonedDateTime) {
         addValue(fieldAccess.getField(getter, null), value)
     }
 
-    override fun set(getter: (T) -> Instant?, value: Instant?): Nullable {
+    override fun set(getter: (T) -> ZonedDateTime?, value: ZonedDateTime?): Nullable {
         addValue(fieldAccess.getField(getter, null), value)
         return Nullable.TRUE
     }

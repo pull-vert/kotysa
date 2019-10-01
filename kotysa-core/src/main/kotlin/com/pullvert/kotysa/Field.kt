@@ -4,10 +4,10 @@
 
 package com.pullvert.kotysa
 
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZonedDateTime
 import java.util.*
 
 /**
@@ -126,20 +126,20 @@ class NullableLocalDateColumnField<T : Any> internal constructor(
 /**
  * @author Fred Montariol
  */
-class NotNullInstantColumnField<T : Any> internal constructor(
+class NotNullZonedDateTimeColumnField<T : Any> internal constructor(
         availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
-        getter: (T) -> Instant,
+        getter: (T) -> ZonedDateTime,
         alias: String? = null
-) : ColumnField<T, Instant>(availableColumns, getter, alias), NotNullField
+) : ColumnField<T, ZonedDateTime>(availableColumns, getter, alias), NotNullField
 
 /**
  * @author Fred Montariol
  */
-class NullableInstantColumnField<T : Any> internal constructor(
+class NullableZonedDateTimeColumnField<T : Any> internal constructor(
         availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
-        getter: (T) -> Instant?,
+        getter: (T) -> ZonedDateTime?,
         alias: String? = null
-) : ColumnField<T, Instant?>(availableColumns, getter, alias), NotNullField
+) : ColumnField<T, ZonedDateTime?>(availableColumns, getter, alias), NotNullField
 
 /**
  * @author Fred Montariol

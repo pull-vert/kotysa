@@ -4,10 +4,10 @@
 
 package com.pullvert.kotysa
 
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZonedDateTime
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -78,13 +78,13 @@ class SelectDsl<T> internal constructor(
         return null
     }
 
-    override operator fun <T : Any> get(getter: (T) -> Instant, alias: String?): Instant {
+    override operator fun <T : Any> get(getter: (T) -> ZonedDateTime, alias: String?): ZonedDateTime {
         val field = fieldAccess.getField(getter, alias)
         addColumnField(getter, field, alias)
-        return Instant.MAX
+        return ZonedDateTime.now()
     }
 
-    override operator fun <T : Any> get(getter: (T) -> Instant?, alias: String?, `_`: Nullable): Instant? {
+    override operator fun <T : Any> get(getter: (T) -> ZonedDateTime?, alias: String?, `_`: Nullable): ZonedDateTime? {
         val field = fieldAccess.getField(getter, alias)
         addColumnField(getter, field, alias)
         return null

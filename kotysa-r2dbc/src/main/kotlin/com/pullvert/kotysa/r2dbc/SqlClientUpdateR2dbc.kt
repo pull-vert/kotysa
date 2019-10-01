@@ -6,6 +6,7 @@ package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
 import org.springframework.data.r2dbc.core.DatabaseClient
+import org.springframework.data.r2dbc.core.bind
 import reactor.core.publisher.Mono
 import kotlin.reflect.KClass
 
@@ -67,7 +68,7 @@ internal class SqlClientUpdateR2dbc private constructor() : DefaultSqlClientDele
         override fun execute(): Mono<Int> = with(properties) {
             require(setValues.isNotEmpty()) { "At least one value must be set in Update" }
 
-            var executeSpec = client.execute().sql(updateTableSql())
+            var executeSpec = client.execute(updateTableSql())
 
             var index = 0
             setValues.forEach { (column, value) ->

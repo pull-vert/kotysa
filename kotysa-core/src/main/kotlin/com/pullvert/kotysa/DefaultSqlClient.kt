@@ -5,10 +5,10 @@
 package com.pullvert.kotysa
 
 import mu.KotlinLogging
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.reflect.KClass
@@ -92,7 +92,7 @@ private fun logValue(value: Any?) = when (value) {
     is String -> "\'$value\'"
     is LocalDate -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_DATE)}\'"
     is LocalDateTime -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}\'"
-    is Instant -> "\'${DateTimeFormatter.ISO_INSTANT.format(value)}\'"
+    is ZonedDateTime -> "\'${DateTimeFormatter.ISO_ZONED_DATE_TIME.format(value)}\'"
     is LocalTime -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_TIME)}\'"
     is Boolean -> "$value"
     is UUID -> "\'$value\'"

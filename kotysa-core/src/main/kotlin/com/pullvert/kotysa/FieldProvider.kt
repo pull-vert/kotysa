@@ -4,10 +4,10 @@
 
 package com.pullvert.kotysa
 
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZonedDateTime
 import java.util.*
 
 /**
@@ -26,9 +26,9 @@ interface FieldProvider {
 
     operator fun <T : Any> get(getter: (T) -> LocalDate?, alias: String? = null): NullableLocalDateColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> Instant, alias: String? = null): NotNullInstantColumnField<T>
+    operator fun <T : Any> get(getter: (T) -> ZonedDateTime, alias: String? = null): NotNullZonedDateTimeColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> Instant?, alias: String? = null): NullableInstantColumnField<T>
+    operator fun <T : Any> get(getter: (T) -> ZonedDateTime?, alias: String? = null): NullableZonedDateTimeColumnField<T>
 
     operator fun <T : Any> get(getter: (T) -> LocalTime, alias: String? = null): NotNullLocalTimeColumnField<T>
 
@@ -57,9 +57,9 @@ interface TypedFieldProvider<T : Any> {
 
     operator fun get(getter: (T) -> LocalDate?, alias: String? = null): NullableLocalDateColumnField<T>
 
-    operator fun get(getter: (T) -> Instant, alias: String? = null): NotNullInstantColumnField<T>
+    operator fun get(getter: (T) -> ZonedDateTime, alias: String? = null): NotNullZonedDateTimeColumnField<T>
 
-    operator fun get(getter: (T) -> Instant?, alias: String? = null): NullableInstantColumnField<T>
+    operator fun get(getter: (T) -> ZonedDateTime?, alias: String? = null): NullableZonedDateTimeColumnField<T>
 
     operator fun get(getter: (T) -> LocalTime, alias: String? = null): NotNullLocalTimeColumnField<T>
 
@@ -90,9 +90,9 @@ open class SimpleFieldProvider internal constructor(
 
     override fun <T : Any> get(getter: (T) -> LocalDate?, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> Instant, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> ZonedDateTime, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> Instant?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> ZonedDateTime?, alias: String?) = fieldAccess.getField(getter, alias)
 
     override fun <T : Any> get(getter: (T) -> LocalTime, alias: String?) = fieldAccess.getField(getter, alias)
 
@@ -123,9 +123,9 @@ open class SimpleTypedFieldProvider<T : Any> internal constructor(
 
     override fun get(getter: (T) -> LocalDate?, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> Instant, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> ZonedDateTime, alias: String?) = fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> Instant?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> ZonedDateTime?, alias: String?) = fieldAccess.getField(getter, alias)
 
     override fun get(getter: (T) -> LocalTime, alias: String?) = fieldAccess.getField(getter, alias)
 

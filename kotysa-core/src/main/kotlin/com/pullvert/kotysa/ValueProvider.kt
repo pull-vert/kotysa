@@ -4,10 +4,7 @@
 
 package com.pullvert.kotysa
 
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
+import java.time.*
 import java.util.*
 
 /**
@@ -27,9 +24,9 @@ interface ValueProvider {
 
     operator fun <T : Any> get(getter: (T) -> LocalDate?, alias: String? = null, `_`: Nullable = Nullable.TRUE): LocalDate?
 
-    operator fun <T : Any> get(getter: (T) -> Instant, alias: String? = null): Instant
+    operator fun <T : Any> get(getter: (T) -> ZonedDateTime, alias: String? = null): ZonedDateTime
 
-    operator fun <T : Any> get(getter: (T) -> Instant?, alias: String? = null, `_`: Nullable = Nullable.TRUE): Instant?
+    operator fun <T : Any> get(getter: (T) -> ZonedDateTime?, alias: String? = null, `_`: Nullable = Nullable.TRUE): ZonedDateTime?
 
     operator fun <T : Any> get(getter: (T) -> LocalTime, alias: String? = null): LocalTime
 

@@ -4,10 +4,7 @@
 
 package com.pullvert.kotysa
 
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
+import java.time.*
 import java.util.*
 import kotlin.reflect.KFunction
 
@@ -40,11 +37,11 @@ abstract class ColumnDsl<T : Any, U : ColumnDsl<T, U>> internal constructor(
         return NullableLocalDateColumnProperty(getter)
     }
 
-    override fun get(getter: (T) -> Instant) = NotNullInstantColumnProperty(getter)
+    override fun get(getter: (T) -> ZonedDateTime) = NotNullZonedDateTimeColumnProperty(getter)
 
-    override fun get(getter: (T) -> Instant?): NullableInstantColumnProperty<T> {
+    override fun get(getter: (T) -> ZonedDateTime?): NullableZonedDateTimeColumnProperty<T> {
         checkNullableGetter(getter)
-        return NullableInstantColumnProperty(getter)
+        return NullableZonedDateTimeColumnProperty(getter)
     }
 
     override fun get(getter: (T) -> LocalTime) = NotNullLocalTimeColumnProperty(getter)
