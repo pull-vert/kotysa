@@ -1,5 +1,4 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm'
     id 'org.jetbrains.dokka'
 }
 
@@ -9,7 +8,7 @@ repositories {
 
 dependencies {
     compile project(':kotysa-core')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 
     compileOnly 'com.google.android:android:4.1.1.4'
 
@@ -22,7 +21,7 @@ dependencies {
 
     testCompile 'com.google.android:android:4.1.1.4'
 
-    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junit_version"
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
 }
 
 compileKotlin {

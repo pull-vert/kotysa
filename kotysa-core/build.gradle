@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm'
     id 'org.jetbrains.dokka'
 }
 
@@ -11,13 +10,13 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     implementation "io.github.microutils:kotlin-logging:$kotlin_logging_version"
 
-    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version"
+    compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-core'
 
     testImplementation "ch.qos.logback:logback-classic:$logback_version"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testImplementation "org.assertj:assertj-core:$assertj_version"
 
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 compileKotlin {

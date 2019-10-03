@@ -1,5 +1,4 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm'
     id 'org.jetbrains.dokka'
 }
 
@@ -12,22 +11,30 @@ dependencies {
     compile project(':kotysa-core')
 
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
-    implementation "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
-    implementation "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
+    compile 'io.projectreactor.kotlin:reactor-kotlin-extensions'
+    compile "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
     
-    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-reactive:$kotlinx_coroutines_version"
+    compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-reactive'
 
     testCompile project(':kotysa-test-common')
 
     testImplementation "org.springframework.fu:spring-fu-kofu:$spring_fu_version"
-    testImplementation "io.r2dbc:r2dbc-h2:$r2dbc_version"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-reactive:$kotlinx_coroutines_version"
+    testImplementation 'io.r2dbc:r2dbc-h2'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactive'
     testImplementation "ch.qos.logback:logback-classic:$logback_version"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinx_coroutines_version"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test'
     testImplementation "org.assertj:assertj-core:$assertj_version"
 
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "io.r2dbc:r2dbc-bom:$r2dbc_bom_version"
+        mavenBom "io.projectreactor:reactor-bom:Dysprosium-RELEASE"
+        mavenBom "org.testcontainers:testcontainers-bom:1.12.0"
+    }
 }
 
 compileKotlin {
