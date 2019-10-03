@@ -3,7 +3,7 @@
 
 # Kotysa
 
-Kotysa (**Ko**tlin **Ty**pe-**Sa**fe) Sql client is a type-safe object mapping and SQL generator.
+Kotysa Sql client is a **Ko**tlin **ty**pe-**sa**fe functional object mapping and SQL generator.
 
 ```kotlin
 sqlClient.apply {
@@ -26,17 +26,18 @@ sqlClient.apply {
 
 Kotysa is agnostic from Sql Engine, written in Kotlin for Kotlin users.
 
-Type safety relies on Entity properties' (or getters') type and nullability.
+Type safety relies on type and nullability of the Entity property (or getter).
 
+Easy to use :
 * Create Kotlin entities : data classes are great for that !
-* [Describe Database Model with Type-Safe DSL](#describe-database-model-with-type-safe-dsl) based on these entities
-* [Write Type-Safe Queries with SqlClient](#write-type-safe-queries-with-sqlclient), Kotysa generates SQL for you !
+* [Describe database model with type-safe DSL](#describe-database-model-with-type-safe-dsl) based on these entities
+* [Write type-safe queries with SqlClient DSL](#write-type-safe-queries-with-sqlclient), Kotysa generates SQL for you !
 
-Kotysa provide [Coroutines first class support](#coroutines-first-class-support)
+Kotysa provides [Coroutines first class support](#coroutines-first-class-support)
 
 [Check Kotysa available column SQL types](#data-types)
 
-Kotysa is **not production ready yet**, some key features are still missing. Early releases will continue to be provided with new features.
+Kotysa is **not production ready yet**, some key features are still missing. Early early release will provide new features.
 
 ## Dependency
 
@@ -61,18 +62,6 @@ more Kotysa modules will come soon
 ```tables``` functional DSL is used to define all mapped tables' structure, by linking every table to a class (aka Entity).
 
 ```kotlin
-val tables =
-        tables().h2 { // choose database type
-            table<User> {
-                name = "users"
-                column { it[User::id].uuid().primaryKey }
-                column { it[User::firstname].varchar().name("fname") }
-                column { it[User::lastname].varchar().name("lname") }
-                column { it[User::isAdmin].boolean() }
-                column { it[User::alias].varchar() }
-            }
-        }
-
 data class User(
         val firstname: String,
         val lastname: String,
@@ -80,6 +69,24 @@ data class User(
         val alias: String? = null,
         val id: UUID = UUID.randomUUID()
 )
+
+data class Role(
+        val label: String,
+        val id: UUID = UUID.randomUUID()
+)
+
+val tables =
+        tables().h2 { // choose database type
+            table<User> {
+                name = "users"
+                column { it[User::id].uuid().primaryKey }
+                column { it[User::firstname].varchar().name("fname") }
+                column { it[User::lastname].varchar().name("lname") }                
+                column { it[User::isAdmin].boolean() }
+                column { it[User::roleId].uuid().foreignKey<Role>() }
+                column { it[User::alias].varchar() }
+            }
+        }
 ```
 
 ### Write Type-Safe Queries with SqlClient
@@ -89,7 +96,7 @@ data class User(
 * ```createTable<T>``` for table creation
 * ```insert``` for single or multiple rows insertion
 * ```deleteFromTable<T>``` that returns number of deleted rows
-* ```updateTable<T>``` to update fields
+* ```updateTable<T>``` to update fields, returns number of updated rows
 
 ```kotlin
 fun createTable() = sqlClient.createTable<User>()
@@ -139,10 +146,7 @@ data class UserDto(
 
 ### Use SqlClient with R2dbc
 
-**SqlClient** has one Reactive (using Reactor ```Mono``` and ```Flux```) implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient``` : [SqlClientR2dbc](kotysa-r2dbc/src/main/kotlin/com/pullvert/kotysa/r2dbc/SqlClientR2dbc.kt), it can be obtained via an Extension function directly on ```DatabaseClient``` :
-```kotlin
-fun DatabaseClient.sqlClient(tables: Tables) : ReactorSqlClient
-```
+**SqlClient** has one reactive implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient```, it can be obtained via an Extension function directly on ```DatabaseClient```. It provide an API using Reactor ```Mono``` and ```Flux```.
 
 ```kotlin
 class UserRepository(dbClient: DatabaseClient) {
@@ -155,10 +159,7 @@ class UserRepository(dbClient: DatabaseClient) {
 
 ### Coroutines first class support
 
-**SqlClient** has one Coroutines (using ```suspend``` and kotlinx-coroutines ```Flow```) implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient``` : [CoroutineSqlClientR2dbc](kotysa-r2dbc/src/main/kotlin/com/pullvert/kotysa/r2dbc/CoroutinesSqlClientR2dbc.kt), it can be obtained via an Extension function directly on ```DatabaseClient``` :
-```kotlin
-fun DatabaseClient.coSqlClient(tables: Tables): CoroutinesSqlClientR2dbc
-```
+**SqlClient** has one Coroutines implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient```, it can be obtained via an Extension function directly on ```DatabaseClient```. It provide an API using ```suspend``` functions and kotlinx-coroutines ```Flow```.
 
 ```kotlin
 class UserRepository(dbClient: DatabaseClient) {
