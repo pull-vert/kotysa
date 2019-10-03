@@ -73,8 +73,7 @@ publishing {
             artifact javadocJar
             pom {
                 name = project.name
-                description = 'Kotysa (Kotlin Type-Safe) is a SqlClient, agnostic from your chosen Sql Engine, ' +
-                        'written in Kotlin for Kotlin users'
+                description = 'Kotysa Sql client is a Kotlin type-safe functional object mapping and SQL generator'
                 url = 'https://github.com/pull-vert/kotysa'
                 licenses {
                     license {
