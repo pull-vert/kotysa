@@ -11,7 +11,7 @@ dependencies {
     compile project(':kotysa-core')
 
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
-    compile 'io.projectreactor.kotlin:reactor-kotlin-extensions'
+    compile "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
     compile "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
     
     compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-reactive'
@@ -32,8 +32,7 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom "io.r2dbc:r2dbc-bom:$r2dbc_bom_version"
-        mavenBom "io.projectreactor:reactor-bom:Dysprosium-RELEASE"
-        mavenBom "org.testcontainers:testcontainers-bom:1.12.0"
+//        mavenBom "org.testcontainers:testcontainers-bom:1.12.0"
     }
 }
 

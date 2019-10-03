@@ -3,13 +3,7 @@ dependencies {
 
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation "com.google.code.findbugs:jsr305:$jsr305_version"
-    implementation 'org.springframework:spring-core'
-}
-
-dependencyManagement {
-    imports {
-        mavenBom 'org.springframework:spring-framework-bom:5.2.0.RELEASE'
-    }
+    implementation "org.springframework:spring-core:$spring_core_version"
 }
 
 compileKotlin {
