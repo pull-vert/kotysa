@@ -4,7 +4,10 @@
 
 package com.pullvert.kotysa
 
-import java.time.*
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.util.*
 
 /**
@@ -24,9 +27,9 @@ interface ValueProvider {
 
     operator fun <T : Any> get(getter: (T) -> LocalDate?, alias: String? = null, `_`: Nullable = Nullable.TRUE): LocalDate?
 
-    operator fun <T : Any> get(getter: (T) -> ZonedDateTime, alias: String? = null): ZonedDateTime
+    operator fun <T : Any> get(getter: (T) -> OffsetDateTime, alias: String? = null): OffsetDateTime
 
-    operator fun <T : Any> get(getter: (T) -> ZonedDateTime?, alias: String? = null, `_`: Nullable = Nullable.TRUE): ZonedDateTime?
+    operator fun <T : Any> get(getter: (T) -> OffsetDateTime?, alias: String? = null, `_`: Nullable = Nullable.TRUE): OffsetDateTime?
 
     operator fun <T : Any> get(getter: (T) -> LocalTime, alias: String? = null): LocalTime
 

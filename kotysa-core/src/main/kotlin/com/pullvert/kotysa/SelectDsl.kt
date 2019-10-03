@@ -7,7 +7,7 @@ package com.pullvert.kotysa
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZonedDateTime
+import java.time.OffsetDateTime
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -78,13 +78,13 @@ class SelectDsl<T> internal constructor(
         return null
     }
 
-    override operator fun <T : Any> get(getter: (T) -> ZonedDateTime, alias: String?): ZonedDateTime {
+    override operator fun <T : Any> get(getter: (T) -> OffsetDateTime, alias: String?): OffsetDateTime {
         val field = fieldAccess.getField(getter, alias)
         addColumnField(getter, field, alias)
-        return ZonedDateTime.now()
+        return OffsetDateTime.now()
     }
 
-    override operator fun <T : Any> get(getter: (T) -> ZonedDateTime?, alias: String?, `_`: Nullable): ZonedDateTime? {
+    override operator fun <T : Any> get(getter: (T) -> OffsetDateTime?, alias: String?, `_`: Nullable): OffsetDateTime? {
         val field = fieldAccess.getField(getter, alias)
         addColumnField(getter, field, alias)
         return null

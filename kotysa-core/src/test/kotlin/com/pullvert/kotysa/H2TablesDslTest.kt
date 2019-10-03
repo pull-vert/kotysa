@@ -23,7 +23,7 @@ class H2TablesDslTest {
                 column { it[H2AllTypesNotNull::string].varchar() }
                 column { it[H2AllTypesNotNull::boolean].boolean() }
                 column { it[H2AllTypesNotNull::localDate].date() }
-                column { it[H2AllTypesNotNull::zonedDateTime].timestampWithTimeZone() }
+                column { it[H2AllTypesNotNull::offsetDateTime].timestampWithTimeZone() }
                 column { it[H2AllTypesNotNull::localTim].time9() }
                 column { it[H2AllTypesNotNull::localDateTime1].dateTime() }
                 column { it[H2AllTypesNotNull::localDateTime2].timestamp() }
@@ -37,7 +37,7 @@ class H2TablesDslTest {
                         tuple("string", SqlType.VARCHAR, false),
                         tuple("boolean", SqlType.BOOLEAN, false),
                         tuple("localDate", SqlType.DATE, false),
-                        tuple("zonedDateTime", SqlType.TIMESTAMP_WITH_TIME_ZONE, false),
+                        tuple("offsetDateTime", SqlType.TIMESTAMP_WITH_TIME_ZONE, false),
                         tuple("localTim", SqlType.TIME9, false),
                         tuple("localDateTime1", SqlType.DATE_TIME, false),
                         tuple("localDateTime2", SqlType.TIMESTAMP, false),
@@ -52,7 +52,7 @@ class H2TablesDslTest {
                 column { it[H2AllTypesNullable::id].uuid().primaryKey }
                 column { it[H2AllTypesNullable::string].varchar() }
                 column { it[H2AllTypesNullable::localDate].date() }
-                column { it[H2AllTypesNullable::zonedDateTime].timestampWithTimeZone() }
+                column { it[H2AllTypesNullable::offsetDateTime].timestampWithTimeZone() }
                 column { it[H2AllTypesNullable::localTim].time9() }
                 column { it[H2AllTypesNullable::localDateTime1].dateTime() }
                 column { it[H2AllTypesNullable::localDateTime2].timestamp() }
@@ -65,7 +65,7 @@ class H2TablesDslTest {
                         tuple("id", SqlType.UUID, false),
                         tuple("string", SqlType.VARCHAR, true),
                         tuple("localDate", SqlType.DATE, true),
-                        tuple("zonedDateTime", SqlType.TIMESTAMP_WITH_TIME_ZONE, true),
+                        tuple("offsetDateTime", SqlType.TIMESTAMP_WITH_TIME_ZONE, true),
                         tuple("localTim", SqlType.TIME9, true),
                         tuple("localDateTime1", SqlType.DATE_TIME, true),
                         tuple("localDateTime2", SqlType.TIMESTAMP, true),
@@ -81,7 +81,7 @@ private data class H2AllTypesNotNull(
         val string: String,
         val boolean: Boolean,
         val localDate: LocalDate,
-        val zonedDateTime: ZonedDateTime,
+        val offsetDateTime: OffsetDateTime,
         val localTim: LocalTime,
         val localDateTime1: LocalDateTime,
         val localDateTime2: LocalDateTime,
@@ -95,7 +95,7 @@ private data class H2AllTypesNullable(
         val id: UUID,
         val string: String?,
         val localDate: LocalDate?,
-        val zonedDateTime: ZonedDateTime?,
+        val offsetDateTime: OffsetDateTime?,
         val localTim: LocalTime?,
         val localDateTime1: LocalDateTime?,
         val localDateTime2: LocalDateTime?,

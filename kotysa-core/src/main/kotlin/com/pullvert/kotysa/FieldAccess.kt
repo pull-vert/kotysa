@@ -7,7 +7,7 @@ package com.pullvert.kotysa
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZonedDateTime
+import java.time.OffsetDateTime
 import java.util.*
 
 /**
@@ -34,11 +34,11 @@ internal class FieldAccess internal constructor(private val availableColumns: Ma
     internal fun <T : Any> getField(getter: (T) -> LocalDate?, alias: String?) =
             NullableLocalDateColumnField(availableColumns, getter, alias)
 
-    internal fun <T : Any> getField(getter: (T) -> ZonedDateTime, alias: String?) =
-            NotNullZonedDateTimeColumnField(availableColumns, getter, alias)
+    internal fun <T : Any> getField(getter: (T) -> OffsetDateTime, alias: String?) =
+            NotNullOffsetDateTimeColumnField(availableColumns, getter, alias)
 
-    internal fun <T : Any> getField(getter: (T) -> ZonedDateTime?, alias: String?) =
-            NullableZonedDateTimeColumnField(availableColumns, getter, alias)
+    internal fun <T : Any> getField(getter: (T) -> OffsetDateTime?, alias: String?) =
+            NullableOffsetDateTimeColumnField(availableColumns, getter, alias)
 
     internal fun <T : Any> getField(getter: (T) -> LocalTime, alias: String?) =
             NotNullLocalTimeColumnField(availableColumns, getter, alias)

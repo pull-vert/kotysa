@@ -8,7 +8,7 @@ import mu.KotlinLogging
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZonedDateTime
+import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.reflect.KClass
@@ -63,13 +63,8 @@ interface DefaultSqlClient {
             columnNames.add(column.name)
             "?"
         }
-        if (logger.isDebugEnabled) {
-            val valuesDebug = table.columns.values.joinToString { column ->
-                val columnValue = column.entityGetter(row)
-                logValue(columnValue)
-            }
-            logger.debug("Exec SQL : INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($valuesDebug)")
-        }
+
+        logger.debug { "Exec SQL : INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($values)" }
         return "INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($values)"
     }
 
@@ -79,24 +74,23 @@ interface DefaultSqlClient {
             val columnNames = mutableSetOf<String>()
             val valuesDebug = table.columns.values.joinToString { column ->
                 columnNames.add(column.name)
-                val columnValue = column.entityGetter(row)
-                logValue(columnValue)
+                "?"
             }
             logger.debug("Exec SQL : INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($valuesDebug)")
         }
     }
 }
 
-private fun logValue(value: Any?) = when (value) {
+private fun Any?.dbValue(): String = when (this) {
     null -> "null"
-    is String -> "\'$value\'"
-    is LocalDate -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_DATE)}\'"
-    is LocalDateTime -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}\'"
-    is ZonedDateTime -> "\'${DateTimeFormatter.ISO_ZONED_DATE_TIME.format(value)}\'"
-    is LocalTime -> "\'${value.format(DateTimeFormatter.ISO_LOCAL_TIME)}\'"
-    is Boolean -> "$value"
-    is UUID -> "\'$value\'"
-    else -> throw RuntimeException("${value.javaClass.canonicalName} is not supported yet")
+    is String -> "$this"
+    is Boolean -> "$this"
+    is UUID -> "$this"
+    is LocalDate -> this.format(DateTimeFormatter.ISO_LOCAL_DATE)
+    is LocalDateTime -> this.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+    is LocalTime -> this.format(DateTimeFormatter.ISO_LOCAL_TIME)
+    is OffsetDateTime -> this.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+    else -> throw RuntimeException("${this.javaClass.canonicalName} is not supported yet")
 }
 
 /**
@@ -178,7 +172,7 @@ open class DefaultSqlClientCommon protected constructor() {
 
     interface Return : WithProperties {
 
-        fun stringValue(value: Any?) = logValue(value)
+        fun stringValue(value: Any?) = value.dbValue()
 
         fun joins() =
                 properties.joinClauses.joinToString { joinClause ->

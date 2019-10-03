@@ -7,7 +7,7 @@ package com.pullvert.kotysa
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZonedDateTime
+import java.time.OffsetDateTime
 import java.util.*
 
 /**
@@ -27,9 +27,9 @@ interface FieldSetter<T : Any> {
 
     operator fun set(getter: (T) -> LocalDate?, value: LocalDate?): Nullable
 
-    operator fun set(getter: (T) -> ZonedDateTime, value: ZonedDateTime)
+    operator fun set(getter: (T) -> OffsetDateTime, value: OffsetDateTime)
 
-    operator fun set(getter: (T) -> ZonedDateTime?, value: ZonedDateTime?): Nullable
+    operator fun set(getter: (T) -> OffsetDateTime?, value: OffsetDateTime?): Nullable
 
     operator fun set(getter: (T) -> LocalTime, value: LocalTime)
 

@@ -7,7 +7,7 @@ package com.pullvert.kotysa
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZonedDateTime
+import java.time.OffsetDateTime
 import java.util.*
 
 /**
@@ -92,25 +92,25 @@ class NullableLocalDateColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> LocalDate?
 ) : LocalDateColumnProperty<T>(), NullableColumnProperty
 
-// ZonedDateTime
+// OffsetDateTime
 /**
  * @author Fred Montariol
  */
-abstract class ZonedDateTimeColumnProperty<T : Any> : AbstractColumnProperty<T>()
+abstract class OffsetDateTimeColumnProperty<T : Any> : AbstractColumnProperty<T>()
 
 /**
  * @author Fred Montariol
  */
-class NotNullZonedDateTimeColumnProperty<T : Any> internal constructor(
-        override val getter: (T) -> ZonedDateTime
-) : ZonedDateTimeColumnProperty<T>(), NotNullColumnProperty
+class NotNullOffsetDateTimeColumnProperty<T : Any> internal constructor(
+        override val getter: (T) -> OffsetDateTime
+) : OffsetDateTimeColumnProperty<T>(), NotNullColumnProperty
 
 /**
  * @author Fred Montariol
  */
-class NullableZonedDateTimeColumnProperty<T : Any> internal constructor(
-        override val getter: (T) -> ZonedDateTime?
-) : ZonedDateTimeColumnProperty<T>(), NullableColumnProperty
+class NullableOffsetDateTimeColumnProperty<T : Any> internal constructor(
+        override val getter: (T) -> OffsetDateTime?
+) : OffsetDateTimeColumnProperty<T>(), NullableColumnProperty
 
 // LocalTime
 /**

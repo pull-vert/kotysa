@@ -30,9 +30,9 @@ class H2ColumnDsl<T : Any> internal constructor(
 
     fun NullableLocalDateColumnProperty<T>.date() = DateColumnBuilderNullable(getter)
 
-    fun NotNullZonedDateTimeColumnProperty<T>.timestampWithTimeZone() = TimestampWithTimeZoneColumnBuilderNotNull(getter)
+    fun NotNullOffsetDateTimeColumnProperty<T>.timestampWithTimeZone() = TimestampWithTimeZoneColumnBuilderNotNull(getter)
 
-    fun NullableZonedDateTimeColumnProperty<T>.timestampWithTimeZone() = TimestampWithTimeZoneColumnBuilderNullable(getter)
+    fun NullableOffsetDateTimeColumnProperty<T>.timestampWithTimeZone() = TimestampWithTimeZoneColumnBuilderNullable(getter)
 
     fun NotNullLocalTimeColumnProperty<T>.time9() = Time9ColumnBuilderNotNull(getter)
 

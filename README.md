@@ -202,6 +202,11 @@ Supported data types will be updated as new types are added. Java 8+ ```java.tim
         <td>DATETIME</td>
     </tr>
     <tr>
+        <td>java.time.OffsetDateTime</td>
+        <td>Represents a date+time with timezone</td>
+        <td>TIMESTAMP WITH TIME ZONE</td>
+    </tr>
+    <tr>
         <td>java.time.LocalTime</td>
         <td>Represents a time without a date part and without timezone</td>
         <td>TIME(9)</td>

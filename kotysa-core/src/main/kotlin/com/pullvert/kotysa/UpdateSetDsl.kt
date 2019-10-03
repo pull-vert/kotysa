@@ -7,7 +7,7 @@ package com.pullvert.kotysa
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZonedDateTime
+import java.time.OffsetDateTime
 import java.util.*
 
 /**
@@ -50,11 +50,11 @@ class UpdateSetDsl<T : Any> internal constructor(
         return Nullable.TRUE
     }
 
-    override fun set(getter: (T) -> ZonedDateTime, value: ZonedDateTime) {
+    override fun set(getter: (T) -> OffsetDateTime, value: OffsetDateTime) {
         addValue(fieldAccess.getField(getter, null), value)
     }
 
-    override fun set(getter: (T) -> ZonedDateTime?, value: ZonedDateTime?): Nullable {
+    override fun set(getter: (T) -> OffsetDateTime?, value: OffsetDateTime?): Nullable {
         addValue(fieldAccess.getField(getter, null), value)
         return Nullable.TRUE
     }

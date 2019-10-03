@@ -105,7 +105,7 @@ internal class SqlClientSelectSqLite private constructor() : DefaultSqlClientSel
             if (whereClauses.isNotEmpty()) {
                 whereParams = whereClauses
                         .mapNotNull { whereClause -> whereClause.value }
-                        .map { whereValue -> stringValue(whereValue).replace("\'", "") }
+                        .map { whereValue -> stringValue(whereValue) }
                         .toTypedArray()
             }
 

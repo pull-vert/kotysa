@@ -37,11 +37,11 @@ abstract class ColumnDsl<T : Any, U : ColumnDsl<T, U>> internal constructor(
         return NullableLocalDateColumnProperty(getter)
     }
 
-    override fun get(getter: (T) -> ZonedDateTime) = NotNullZonedDateTimeColumnProperty(getter)
+    override fun get(getter: (T) -> OffsetDateTime) = NotNullOffsetDateTimeColumnProperty(getter)
 
-    override fun get(getter: (T) -> ZonedDateTime?): NullableZonedDateTimeColumnProperty<T> {
+    override fun get(getter: (T) -> OffsetDateTime?): NullableOffsetDateTimeColumnProperty<T> {
         checkNullableGetter(getter)
-        return NullableZonedDateTimeColumnProperty(getter)
+        return NullableOffsetDateTimeColumnProperty(getter)
     }
 
     override fun get(getter: (T) -> LocalTime) = NotNullLocalTimeColumnProperty(getter)

@@ -7,7 +7,7 @@ package com.pullvert.kotysa
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZonedDateTime
+import java.time.OffsetDateTime
 import java.util.*
 
 /**
@@ -27,9 +27,9 @@ interface TableColumnPropertyProvider<T : Any> {
 
     operator fun get(getter: (T) -> LocalDate?): NullableLocalDateColumnProperty<T>
 
-    operator fun get(getter: (T) -> ZonedDateTime): NotNullZonedDateTimeColumnProperty<T>
+    operator fun get(getter: (T) -> OffsetDateTime): NotNullOffsetDateTimeColumnProperty<T>
 
-    operator fun get(getter: (T) -> ZonedDateTime?): NullableZonedDateTimeColumnProperty<T>
+    operator fun get(getter: (T) -> OffsetDateTime?): NullableOffsetDateTimeColumnProperty<T>
 
     operator fun get(getter: (T) -> LocalTime): NotNullLocalTimeColumnProperty<T>
 

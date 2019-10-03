@@ -72,7 +72,7 @@ internal class SqlClientUpdateSqLite private constructor() : DefaultSqlClientDel
             if (whereClauses.isNotEmpty()) {
                 whereParams = whereClauses
                         .mapNotNull { whereClause -> whereClause.value }
-                        .map { whereValue -> stringValue(whereValue).replace("\'", "") }
+                        .map { whereValue -> stringValue(whereValue) }
                         .toTypedArray()
             }
 

@@ -18,5 +18,5 @@ include 'kotysa-core'
 
 include 'kotysa-test-common'
 
-//include 'kotysa-android'
+include 'kotysa-android'
 include 'kotysa-r2dbc'

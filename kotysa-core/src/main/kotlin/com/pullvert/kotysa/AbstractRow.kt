@@ -7,7 +7,7 @@ package com.pullvert.kotysa
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZonedDateTime
+import java.time.OffsetDateTime
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -41,10 +41,10 @@ abstract class AbstractRow(private val fieldIndexMap: Map<Field, Int>) : SelectD
     override operator fun <T : Any> get(getter: (T) -> LocalDate?, alias: String?, `_`: Nullable): LocalDate? =
             this[getIndexdByGetterAndAlias(getter, alias)]
 
-    override operator fun <T : Any> get(getter: (T) -> ZonedDateTime, alias: String?): ZonedDateTime =
+    override operator fun <T : Any> get(getter: (T) -> OffsetDateTime, alias: String?): OffsetDateTime =
             this[getIndexdByGetterAndAlias(getter, alias)]!!
 
-    override operator fun <T : Any> get(getter: (T) -> ZonedDateTime?, alias: String?, `_`: Nullable): ZonedDateTime? =
+    override operator fun <T : Any> get(getter: (T) -> OffsetDateTime?, alias: String?, `_`: Nullable): OffsetDateTime? =
             this[getIndexdByGetterAndAlias(getter, alias)]
 
     override operator fun <T : Any> get(getter: (T) -> LocalTime, alias: String?): LocalTime =
