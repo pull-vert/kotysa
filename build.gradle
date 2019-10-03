@@ -10,9 +10,11 @@ println("Using Gradle version: $gradle.gradleVersion")
 
 subprojects {
     apply plugin: 'org.jetbrains.kotlin.jvm'
-    apply plugin: 'maven-publish'
-    apply plugin: 'com.jfrog.bintray'
     apply plugin: 'io.spring.dependency-management'
+    if (name != "kotysa-test-common") {
+        apply plugin: 'maven-publish'
+        apply plugin: 'com.jfrog.bintray'
+    }
 
     repositories {
         jcenter()
