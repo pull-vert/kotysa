@@ -1,3 +1,7 @@
+plugins {
+    id 'com.jfrog.bintray' apply false
+}
+
 dependencies {
     compile project(':kotysa-core')
 
