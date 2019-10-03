@@ -16,7 +16,7 @@ sqlClient.apply {
     val all = selectAll<User>()
     
     val johny = select { UserWithRoleDto(it[User::lastname], it[Role::label]) }
-            .innerJoinOn<Role> { it[H2User::roleId] }
+            .innerJoinOn<Role> { it[User::roleId] }
             .where { it[User::alias] eq "Johny" }
             .fetchFirst()
 }
@@ -66,6 +66,7 @@ data class User(
         val firstname: String,
         val lastname: String,
         val isAdmin: Boolean,
+        val roleId: UUID,
         val alias: String? = null,
         val id: UUID = UUID.randomUUID()
 )
@@ -77,6 +78,11 @@ data class Role(
 
 val tables =
         tables().h2 { // choose database type
+            table<Role> {
+                name = "roles"
+                column { it[Role::id].uuid().primaryKey }
+                column { it[Role::label].varchar() }
+            }
             table<User> {
                 name = "users"
                 column { it[User::id].uuid().primaryKey }
