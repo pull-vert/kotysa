@@ -4,9 +4,10 @@
 
 package com.pullvert.kotysa.android
 
-import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 import com.pullvert.kotysa.NoResultException
 import com.pullvert.kotysa.NonUniqueResultException
+import com.pullvert.kotysa.Tables
 import com.pullvert.kotysa.test.common.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -33,7 +34,7 @@ class SqLiteTest {
     @Before
     fun setup() {
         dbHelper = DbHelper(RuntimeEnvironment.application)
-        repository = UserRepository(dbHelper.writableDatabase)
+        repository = UserRepository(dbHelper, sqLiteTables)
         repository.init()
     }
 
@@ -156,9 +157,9 @@ class SqLiteTest {
 /**
  * @author Fred Montariol
  */
-class UserRepository(dbClient: SQLiteDatabase) {
+class UserRepository(sqLiteOpenHelper: SQLiteOpenHelper, tables: Tables) {
 
-    private val sqlClient = dbClient.sqlClient(sqLiteTables)
+    private val sqlClient = sqLiteOpenHelper.sqlClient(tables)
 
     fun init() {
         createTable()

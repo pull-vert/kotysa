@@ -6,6 +6,7 @@ package com.pullvert.kotysa.android
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 import com.pullvert.kotysa.*
 import kotlin.reflect.KClass
 
@@ -14,18 +15,18 @@ import kotlin.reflect.KClass
  * @author Fred Montariol
  */
 internal class SqlClientSqLite(
-        private val client: SQLiteDatabase,
+        private val client: SQLiteOpenHelper,
         override val tables: Tables
 ) : BlockingSqlClient(), DefaultSqlClient {
 
     @ExperimentalStdlibApi
     override fun <T : Any> select(resultClass: KClass<T>,
                                   dsl: (SelectDslApi.(ValueProvider) -> T)?): BlockingSqlClientSelect.Select<T> =
-            SqlClientSelectSqLite.Select(client, tables, resultClass, dsl)
+            SqlClientSelectSqLite.Select(client.readableDatabase, tables, resultClass, dsl)
 
     override fun <T : Any> createTable(tableClass: KClass<T>) {
         val createTableSql = createTableSql(tableClass)
-        return client.execSQL(createTableSql)
+        return client.writableDatabase.execSQL(createTableSql)
     }
 
     override fun <T : Any> insert(row: T) {
@@ -37,7 +38,7 @@ internal class SqlClientSqLite(
         // debug query
         insertSqlDebug(row)
 
-        client.insert(table.name, null, contentValues)
+        client.writableDatabase.insert(table.name, null, contentValues)
     }
 
     override fun insert(vararg rows: Any) {
@@ -48,10 +49,10 @@ internal class SqlClientSqLite(
     }
 
     override fun <T : Any> deleteFromTable(tableClass: KClass<T>): BlockingSqlClientDeleteOrUpdate.DeleteOrUpdate<T> =
-            SqlClientDeleteSqLite.Delete(client, tables, tableClass)
+            SqlClientDeleteSqLite.Delete(client.writableDatabase, tables, tableClass)
 
     override fun <T : Any> updateTable(tableClass: KClass<T>): BlockingSqlClientDeleteOrUpdate.Update<T> =
-            SqlClientUpdateSqLite.Update(client, tables, tableClass)
+            SqlClientUpdateSqLite.Update(client.writableDatabase, tables, tableClass)
 }
 
 internal fun ContentValues.put(name: String, value: Any?) {
@@ -80,4 +81,4 @@ internal fun ContentValues.put(name: String, value: Any?) {
  * @sample com.pullvert.kotysa.android.sample.UserRepositorySqLite
  * @author Fred Montariol
  */
-fun SQLiteDatabase.sqlClient(tables: Tables): BlockingSqlClient = SqlClientSqLite(this, tables)
+fun SQLiteOpenHelper.sqlClient(tables: Tables): BlockingSqlClient = SqlClientSqLite(this, tables)

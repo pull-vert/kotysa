@@ -4,7 +4,8 @@
 
 package com.pullvert.kotysa.android.sample
 
-import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+import com.pullvert.kotysa.Tables
 import com.pullvert.kotysa.android.sqlClient
 import com.pullvert.kotysa.test.common.sample.*
 
@@ -12,8 +13,9 @@ import com.pullvert.kotysa.test.common.sample.*
  * @author Fred Montariol
  */
 @Suppress("UNUSED_VARIABLE")
-class UserRepositorySqLite(dbClient: SQLiteDatabase) {
-    private val sqlClient = dbClient.sqlClient(sqlitetables)
+class UserRepositorySqLite(sqLiteOpenHelper: SQLiteOpenHelper, tables: Tables) {
+
+    private val sqlClient = sqLiteOpenHelper.sqlClient(tables)
 
     fun simplifiedExample() {
         sqlClient.apply {

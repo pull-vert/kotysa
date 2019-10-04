@@ -17,8 +17,8 @@ internal class DbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
     companion object {
         private val TAG = DbHelper::class.java.simpleName
 
-        private val DATABASE_NAME = "simpledatabase.sqlite"
-        private val DATABASE_VERSION = 1
+        private const val DATABASE_NAME = "simpledatabase.sqlite"
+        private const val DATABASE_VERSION = 1
     }
 
     override fun onCreate(db: SQLiteDatabase) {
