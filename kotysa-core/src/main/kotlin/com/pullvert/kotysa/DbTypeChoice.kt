@@ -15,6 +15,7 @@ object DbTypeChoice {
 
     /**
      * Configure Functional Table Mapping support for H2
+     * @sample com.pullvert.kotysa.sample.h2tables
      * @see H2TablesDsl
      */
     fun h2(dsl: H2TablesDsl.() -> Unit): Tables {
@@ -24,6 +25,7 @@ object DbTypeChoice {
 
     /**
      * Configure Functional Table Mapping support for SqLite
+     * @sample com.pullvert.kotysa.sample.h2tables
      * @see H2TablesDsl
      */
     fun sqlite(dsl: SqLiteTablesDsl.() -> Unit): Tables {

@@ -5,43 +5,87 @@
 package com.pullvert.kotysa.r2dbc.sample
 
 import com.pullvert.kotysa.r2dbc.sqlClient
-import com.pullvert.kotysa.test.common.sample.*
+import com.pullvert.kotysa.tables
 import org.springframework.data.r2dbc.core.DatabaseClient
+import java.util.*
+
 
 /**
  * @author Fred Montariol
  */
 @Suppress("UNUSED_VARIABLE")
 class UserRepositoryR2dbc(dbClient: DatabaseClient) {
-    private val sqlClient = dbClient.sqlClient(h2tables)
 
-    fun simplifiedExample() {
-        sqlClient.apply {
-            createTable<H2User>() // CREATE TABLE IF NOT EXISTS
-                    .then(deleteAllFromTable<H2User>())
-                    .then(insert(h2Jdoe, h2Bboss))
+    private data class Role(
+            val label: String,
+            val id: UUID = UUID.randomUUID()
+    )
 
-            val count = countAll<H2User>()
+    private data class User(
+            val firstname: String,
+            val lastname: String,
+            val isAdmin: Boolean,
+            val roleId: UUID,
+            val alias: String? = null,
+            val id: UUID = UUID.randomUUID()
+    )
 
-            val all = selectAll<H2User>()
+    private val tables =
+            tables().h2 {
+                table<Role> {
+                    name = "roles"
+                    column { it[Role::id].uuid().primaryKey }
+                    column { it[Role::label].varchar() }
+                }
+                table<User> {
+                    name = "users"
+                    column { it[User::id].uuid().primaryKey }
+                    column { it[User::firstname].varchar().name("fname") }
+                    column { it[User::lastname].varchar().name("lname") }
+                    column { it[User::isAdmin].boolean() }
+                    column { it[User::roleId].uuid().foreignKey<Role>() }
+                    column { it[User::alias].varchar() }
+                }
+            }
 
-            val johny = select { UserWithRoleDto(it[H2User::lastname], it[H2Role::label]) }
-                    .innerJoinOn<H2Role> { it[H2User::roleId] }
-                    .where { it[H2User::alias] eq "Johny" }
-                    // null String accepted        ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
-                    .fetchFirst()
+    private val roleUser = Role("user")
+    private val roleAdmin = Role("admin")
 
-            val nbUpdated = updateTable<H2User>()
-                    .set { it[H2User::lastname] = "NewLastName" }
-                    .innerJoinOn<H2Role> { it[H2User::roleId] }
-                    .where { it[H2Role::label] eq h2User.label }
-                    // null String forbidden      ^^^^^^^^^^^^
-                    .execute()
+    private val userJdoe = User("John", "Doe", false, roleUser.id)
+    private val userBboss = User("Big", "Boss", true, roleAdmin.id, "TheBoss")
 
-            val nbDeleted = deleteFromTable<H2User>()
-                    .innerJoinOn<H2Role> { it[H2User::roleId] }
-                    .where { it[H2Role::label] eq h2User.label }
-                    .execute()
-        }
+    private class UserWithRoleDto(
+            val lastname: String,
+            val role: String
+    )
+
+    private val sqlClient = dbClient.sqlClient(tables)
+
+    fun simplifiedExample() = sqlClient.run {
+        createTable<User>() // CREATE TABLE IF NOT EXISTS
+                .then(deleteAllFromTable<User>())
+                .then(insert(userJdoe, userBboss))
+
+        val count = countAll<User>()
+
+        val all = selectAll<User>()
+
+        val johny = select { UserWithRoleDto(it[User::lastname], it[Role::label]) }
+                .innerJoinOn<Role> { it[User::roleId] }
+                .where { it[User::alias] eq "Johny" }
+                // null String accepted        ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
+                .fetchFirst()
+
+        val nbUpdated = updateTable<User>()
+                .set { it[User::lastname] = "NewLastName" }
+                .innerJoinOn<Role> { it[User::roleId] }
+                .where { it[Role::label] eq roleUser.label }
+                // null String forbidden      ^^^^^^^^^^^^
+                .execute()
+
+        val nbDeleted = deleteFromTable<User>()
+                .innerJoinOn<Role> { it[User::roleId] }
+                .where { it[Role::label] eq roleUser.label }
+                .execute()
     }
 }
