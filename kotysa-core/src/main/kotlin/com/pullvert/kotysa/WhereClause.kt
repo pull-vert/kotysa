@@ -14,5 +14,5 @@ class WhereClause internal constructor(
 )
 
 internal enum class Operation {
-    EQ, NEQ, SUP, INF
+    EQ, NOT_EQ, LIKE, STARTS_WITH, ENDS_WITH, SUP, INF
 }
