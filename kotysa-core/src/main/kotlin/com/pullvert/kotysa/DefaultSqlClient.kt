@@ -4,7 +4,7 @@
 
 package com.pullvert.kotysa
 
-import mu.KotlinLogging
+import com.github.michaelbull.logging.InlineLogger
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -27,7 +27,7 @@ fun <T : Any> Tables.checkTable(tableClass: KClass<out T>) {
     require(this.allTables.containsKey(tableClass)) { tableMustBeMapped(tableClass.qualifiedName) }
 }
 
-private val logger = KotlinLogging.logger {}
+private val logger = InlineLogger("DefaultSqlClient")
 
 /**
  * @author Fred Montariol
@@ -69,14 +69,14 @@ interface DefaultSqlClient {
     }
 
     fun <T : Any> insertSqlDebug(row: T) {
-        if (logger.isDebugEnabled) {
+        logger.debug {
             val table = tables.getTable(row::class)
             val columnNames = mutableSetOf<String>()
             val valuesDebug = table.columns.values.joinToString { column ->
                 columnNames.add(column.name)
                 "?"
             }
-            logger.debug("Exec SQL : INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($valuesDebug)")
+            "Exec SQL : INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($valuesDebug)"
         }
     }
 }

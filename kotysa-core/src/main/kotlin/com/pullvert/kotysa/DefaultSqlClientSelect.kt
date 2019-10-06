@@ -4,7 +4,7 @@
 
 package com.pullvert.kotysa
 
-import mu.KotlinLogging
+import com.github.michaelbull.logging.InlineLogger
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -15,7 +15,7 @@ import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.withNullability
 
-private val logger = KotlinLogging.logger {}
+private val logger = InlineLogger("DefaultSqlClientSelect")
 
 /**
  * @author Fred Montariol

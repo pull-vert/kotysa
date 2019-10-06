@@ -8,7 +8,7 @@ println("Using Kotlin compiler version: $KotlinCompilerVersion.VERSION")
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
-    implementation "io.github.microutils:kotlin-logging:$kotlin_logging_version"
+    implementation "com.michael-bull.kotlin-inline-logger:kotlin-inline-logger-jvm:1.0.0"
 
     compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-core'
 

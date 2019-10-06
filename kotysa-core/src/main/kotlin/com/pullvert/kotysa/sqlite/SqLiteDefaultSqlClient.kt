@@ -4,13 +4,13 @@
 
 package com.pullvert.kotysa.sqlite
 
+import com.github.michaelbull.logging.InlineLogger
 import com.pullvert.kotysa.DefaultSqlClientDeleteOrUpdate
-import mu.KLogger
 
 /**
  * @author Fred Montariol
  */
-internal fun DefaultSqlClientDeleteOrUpdate.Return<*>.sqLiteDeleteFromTableSql(logger: KLogger) = with(properties) {
+internal fun DefaultSqlClientDeleteOrUpdate.Return<*>.sqLiteDeleteFromTableSql(logger: InlineLogger) = with(properties) {
     val joinsAndWheres = joinsWithExistsAndWheres(false)
     logger.debug {
         val joinsAndWheresDebug = if (joinsAndWheres.isNotEmpty()) {
@@ -26,7 +26,7 @@ internal fun DefaultSqlClientDeleteOrUpdate.Return<*>.sqLiteDeleteFromTableSql(l
 /**
  * @author Fred Montariol
  */
-internal fun DefaultSqlClientDeleteOrUpdate.Return<*>.sqLiteUpdateTableSql(logger: KLogger) = with(properties) {
+internal fun DefaultSqlClientDeleteOrUpdate.Return<*>.sqLiteUpdateTableSql(logger: InlineLogger) = with(properties) {
     val joinsAndWheres = joinsWithExistsAndWheres(false)
     logger.debug {
         val setSqlDebug = setValues.keys.joinToString(prefix = "SET ") { column -> "${column.name} = ?" }

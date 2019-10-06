@@ -4,13 +4,13 @@
 
 package com.pullvert.kotysa.h2
 
+import com.github.michaelbull.logging.InlineLogger
 import com.pullvert.kotysa.DefaultSqlClientDeleteOrUpdate
-import mu.KLogger
 
 /**
  * @author Fred Montariol
  */
-internal fun DefaultSqlClientDeleteOrUpdate.Return<*>.h2DeleteFromTableSql(logger: KLogger) = with(properties) {
+internal fun DefaultSqlClientDeleteOrUpdate.Return<*>.h2DeleteFromTableSql(logger: InlineLogger) = with(properties) {
     val deleteSql = "DELETE FROM ${table.name}"
     val joinsAndWheres = joinsWithExistsAndWheres()
     logger.debug { "Exec SQL (H2) : $deleteSql $joinsAndWheres" }
@@ -21,7 +21,7 @@ internal fun DefaultSqlClientDeleteOrUpdate.Return<*>.h2DeleteFromTableSql(logge
 /**
  * @author Fred Montariol
  */
-internal fun DefaultSqlClientDeleteOrUpdate.Return<*>.h2UpdateTableSql(logger: KLogger) = with(properties) {
+internal fun DefaultSqlClientDeleteOrUpdate.Return<*>.h2UpdateTableSql(logger: InlineLogger) = with(properties) {
     val updateSql = "UPDATE ${table.name}"
     val setSql = setValues.keys.joinToString(prefix = "SET ") { column -> "${column.name} = ?" }
     val joinsAndWheres = joinsWithExistsAndWheres()
