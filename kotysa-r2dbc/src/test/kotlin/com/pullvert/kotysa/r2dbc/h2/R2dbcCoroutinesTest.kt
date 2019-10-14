@@ -2,10 +2,11 @@
  * Copyright 2019 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package com.pullvert.kotysa.r2dbc
+package com.pullvert.kotysa.r2dbc.h2
 
 import com.pullvert.kotysa.NoResultException
 import com.pullvert.kotysa.NonUniqueResultException
+import com.pullvert.kotysa.r2dbc.coSqlClient
 import com.pullvert.kotysa.test.common.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
