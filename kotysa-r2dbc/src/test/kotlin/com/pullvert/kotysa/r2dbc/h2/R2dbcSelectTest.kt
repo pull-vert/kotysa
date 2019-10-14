@@ -21,7 +21,7 @@ import org.springframework.fu.kofu.r2dbc.r2dbcH2
 /**
  * @author Fred Montariol
  */
-class R2dbcUserSelectTest {
+class R2dbcSelectTest {
     private val context =
             application(WebApplicationType.NONE) {
                 beans {
@@ -60,35 +60,9 @@ class R2dbcUserSelectTest {
     }
 
     @Test
-    fun `Verify selectFirstByFirstame finds John`() {
-        assertThat(repository.selectFirstByFirstame(h2Jdoe.firstname).block())
-                .isEqualTo(h2Jdoe)
-    }
-
-    @Test
-    fun `Verify selectFirstByFirstame finds no Unknown`() {
-        assertThat(repository.selectFirstByFirstame("Unknown").block())
-                .isNull()
-    }
-
-    @Test
     fun `Verify selectOneNonUnique throws NonUniqueResultException`() {
         assertThatThrownBy { repository.selectOneNonUnique().block() }
                 .isInstanceOf(NonUniqueResultException::class.java)
-    }
-
-    @Test
-    fun `Verify selectByAlias finds TheBoss`() {
-        assertThat(repository.selectAllByAlias(h2Bboss.alias).toIterable())
-                .hasSize(1)
-                .containsExactlyInAnyOrder(h2Bboss)
-    }
-
-    @Test
-    fun `Verify selectByAlias with null alias finds John`() {
-        assertThat(repository.selectAllByAlias(null).toIterable())
-                .hasSize(1)
-                .containsExactlyInAnyOrder(h2Jdoe)
     }
 
     @Test
@@ -122,10 +96,6 @@ class UserRepositorySelect(dbClient: DatabaseClient) : AbstractUserRepository(db
 
     fun selectOneNonUnique() = sqlClient.select<H2User>()
             .fetchOne()
-
-    fun selectAllByAlias(alias: String?) = sqlClient.select<H2User>()
-            .where { it[H2User::alias] eq alias }
-            .fetchAll()
 
     fun selectAllMappedToDto() =
             sqlClient.select {
