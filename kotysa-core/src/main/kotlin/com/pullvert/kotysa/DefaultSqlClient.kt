@@ -27,7 +27,7 @@ fun <T : Any> Tables.checkTable(tableClass: KClass<out T>) {
     require(this.allTables.containsKey(tableClass)) { tableMustBeMapped(tableClass.qualifiedName) }
 }
 
-private val logger = InlineLogger("DefaultSqlClient")
+private val logger = InlineLogger("com.pullvert.kotysa.DefaultSqlClient")
 
 /**
  * @author Fred Montariol
@@ -193,17 +193,23 @@ open class DefaultSqlClientCommon protected constructor() {
                 where.append("WHERE ")
             }
             whereClauses.forEach { whereClause ->
-                when (whereClause.operation) {
-                    Operation.EQ ->
-                        if (whereClause.value == null) {
-                            val nullWhereClause = "${whereClause.field.fieldName} IS NULL"
-                            where.append(nullWhereClause).append(" AND ")
-                        } else {
-                            val notNullWhereClause = "${whereClause.field.fieldName} = "
-                            where.append(notNullWhereClause).append("?").append(" AND ")
+                where.append(
+                        when (whereClause.operation) {
+                            Operation.EQ ->
+                                if (whereClause.value == null) {
+                                    "${whereClause.field.fieldName} IS NULL AND "
+                                } else {
+                                    "${whereClause.field.fieldName} = ? AND "
+                                }
+                            Operation.NOT_EQ ->
+                                if (whereClause.value == null) {
+                                    "${whereClause.field.fieldName} IS NOT NULL AND "
+                                } else {
+                                    "${whereClause.field.fieldName} <> ? AND "
+                                }
+                            else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
                         }
-                    else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
-                }
+                )
             }
             return where.dropLast(5).toString()
         }

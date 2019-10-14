@@ -11,7 +11,7 @@ import com.pullvert.kotysa.sqlite.sqLiteDeleteFromTableSql
 import com.pullvert.kotysa.sqlite.sqLiteUpdateTableSql
 import kotlin.reflect.KClass
 
-private val logger = InlineLogger("DefaultSqlClientDeleteOrUpdate")
+private val logger = InlineLogger("com.pullvert.kotysa.DefaultSqlClientDeleteOrUpdate")
 
 /**
  * @author Fred Montariol

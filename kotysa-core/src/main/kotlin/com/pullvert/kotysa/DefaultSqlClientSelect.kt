@@ -15,7 +15,7 @@ import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.withNullability
 
-private val logger = InlineLogger("DefaultSqlClientSelect")
+private val logger = InlineLogger("com.pullvert.kotysa.DefaultSqlClientSelect")
 
 /**
  * @author Fred Montariol
