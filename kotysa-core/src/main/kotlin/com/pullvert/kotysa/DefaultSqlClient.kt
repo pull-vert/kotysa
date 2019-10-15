@@ -207,6 +207,8 @@ open class DefaultSqlClientCommon protected constructor() {
                                 } else {
                                     "${whereClause.field.fieldName} <> ? AND "
                                 }
+                            Operation.CONTAINS, Operation.STARTS_WITH, Operation.ENDS_WITH ->
+                                "${whereClause.field.fieldName} LIKE ? AND "
                             else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
                         }
                 )

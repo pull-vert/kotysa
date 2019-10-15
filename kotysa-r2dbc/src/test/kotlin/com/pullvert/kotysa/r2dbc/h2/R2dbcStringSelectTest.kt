@@ -91,6 +91,45 @@ class R2dbcStringSelectTest {
                 .hasSize(1)
                 .containsExactlyInAnyOrder(h2Bboss)
     }
+
+    @Test
+    fun `Verify selectAllByFirstameContains get John by searching oh`() {
+        assertThat(repository.selectAllByFirstameContains("oh").toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(h2Jdoe)
+    }
+
+    @Test
+    fun `Verify selectAllByFirstameContains get nothing by searching boz`() {
+        assertThat(repository.selectAllByFirstameContains("boz").toIterable())
+                .hasSize(0)
+    }
+
+    @Test
+    fun `Verify selectAllByFirstameStartsWith get John by searching Joh`() {
+        assertThat(repository.selectAllByFirstameStartsWith("Joh").toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(h2Jdoe)
+    }
+
+    @Test
+    fun `Verify selectAllByFirstameStartsWith get nothing by searching oh`() {
+        assertThat(repository.selectAllByFirstameStartsWith("oh").toIterable())
+                .hasSize(0)
+    }
+
+    @Test
+    fun `Verify selectAllByFirstameEndsWith get John by searching ohn`() {
+        assertThat(repository.selectAllByFirstameEndsWith("ohn").toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(h2Jdoe)
+    }
+
+    @Test
+    fun `Verify selectAllByFirstameEndsWith get nothing by searching joh`() {
+        assertThat(repository.selectAllByFirstameEndsWith("joh").toIterable())
+                .hasSize(0)
+    }
 }
 
 /**
@@ -108,5 +147,17 @@ class UserRepositoryStringSelect(dbClient: DatabaseClient) : AbstractUserReposit
 
     fun selectAllByAliasNotEq(alias: String?) = sqlClient.select<H2User>()
             .where { it[H2User::alias] notEq alias }
+            .fetchAll()
+
+    fun selectAllByFirstameContains(firstnameContains: String) = sqlClient.select<H2User>()
+            .where { it[H2User::firstname] contains firstnameContains }
+            .fetchAll()
+
+    fun selectAllByFirstameStartsWith(firstnameStartsWith: String) = sqlClient.select<H2User>()
+            .where { it[H2User::firstname] startsWith firstnameStartsWith }
+            .fetchAll()
+
+    fun selectAllByFirstameEndsWith(firstnameEndsWith: String) = sqlClient.select<H2User>()
+            .where { it[H2User::firstname] endsWith firstnameEndsWith }
             .fetchAll()
 }

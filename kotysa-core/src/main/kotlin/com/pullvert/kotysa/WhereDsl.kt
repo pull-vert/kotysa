@@ -14,35 +14,49 @@ interface CommonWhereDsl {
 
     // operations on String
 
-    infix fun <U : Any> NotNullStringColumnField<U>.eq(value: String) = WhereClause(this, Operation.EQ, value)
+    infix fun <U : Any> NotNullStringColumnField<U>.eq(value: String) =
+            WhereClause(this, Operation.EQ, value)
 
-    infix fun <U : Any> NotNullStringColumnField<U>.notEq(value: String) = WhereClause(this, Operation.NOT_EQ, value)
+    infix fun <U : Any> NotNullStringColumnField<U>.notEq(value: String) =
+            WhereClause(this, Operation.NOT_EQ, value)
 
-    infix fun <U : Any> NotNullStringColumnField<U>.like(value: String) = WhereClause(this, Operation.LIKE, value)
+    infix fun <U : Any> NotNullStringColumnField<U>.contains(value: String) =
+            WhereClause(this, Operation.CONTAINS, "%$value%")
 
-    infix fun <U : Any> NotNullStringColumnField<U>.startsWith(value: String) = WhereClause(this, Operation.STARTS_WITH, value)
+    infix fun <U : Any> NotNullStringColumnField<U>.startsWith(value: String) =
+            WhereClause(this, Operation.STARTS_WITH, "$value%")
 
-    infix fun <U : Any> NotNullStringColumnField<U>.endsWith(value: String) = WhereClause(this, Operation.ENDS_WITH, value)
+    infix fun <U : Any> NotNullStringColumnField<U>.endsWith(value: String) =
+            WhereClause(this, Operation.ENDS_WITH, "%$value")
 
-    infix fun <U : Any> NullableStringColumnField<U>.eq(value: String?) = WhereClause(this, Operation.EQ, value)
+    infix fun <U : Any> NullableStringColumnField<U>.eq(value: String?) =
+            WhereClause(this, Operation.EQ, value)
 
-    infix fun <U : Any> NullableStringColumnField<U>.notEq(value: String?) = WhereClause(this, Operation.NOT_EQ, value)
+    infix fun <U : Any> NullableStringColumnField<U>.notEq(value: String?) =
+            WhereClause(this, Operation.NOT_EQ, value)
 
-    infix fun <U : Any> NullableStringColumnField<U>.like(value: String) = WhereClause(this, Operation.LIKE, value)
+    infix fun <U : Any> NullableStringColumnField<U>.contains(value: String) =
+            WhereClause(this, Operation.CONTAINS, "%$value%")
 
-    infix fun <U : Any> NullableStringColumnField<U>.startsWith(value: String) = WhereClause(this, Operation.STARTS_WITH, value)
+    infix fun <U : Any> NullableStringColumnField<U>.startsWith(value: String) =
+            WhereClause(this, Operation.STARTS_WITH, "$value%")
 
-    infix fun <U : Any> NullableStringColumnField<U>.endsWith(value: String) = WhereClause(this, Operation.ENDS_WITH, value)
+    infix fun <U : Any> NullableStringColumnField<U>.endsWith(value: String) =
+            WhereClause(this, Operation.ENDS_WITH, "%$value")
 
     // operations on UUID
 
-    infix fun <U : Any> NotNullUuidColumnField<U>.eq(value: UUID) = WhereClause(this, Operation.EQ, value)
+    infix fun <U : Any> NotNullUuidColumnField<U>.eq(value: UUID) =
+            WhereClause(this, Operation.EQ, value)
 
-    infix fun <U : Any> NotNullUuidColumnField<U>.notEq(value: UUID) = WhereClause(this, Operation.NOT_EQ, value)
+    infix fun <U : Any> NotNullUuidColumnField<U>.notEq(value: UUID) =
+            WhereClause(this, Operation.NOT_EQ, value)
 
-    infix fun <U : Any> NullableUuidColumnField<U>.eq(value: UUID?) = WhereClause(this, Operation.EQ, value)
+    infix fun <U : Any> NullableUuidColumnField<U>.eq(value: UUID?) =
+            WhereClause(this, Operation.EQ, value)
 
-    infix fun <U : Any> NullableUuidColumnField<U>.notEq(value: UUID?) = WhereClause(this, Operation.NOT_EQ, value)
+    infix fun <U : Any> NullableUuidColumnField<U>.notEq(value: UUID?) =
+            WhereClause(this, Operation.NOT_EQ, value)
 }
 
 /**

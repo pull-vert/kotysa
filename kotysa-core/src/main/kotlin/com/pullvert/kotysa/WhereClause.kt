@@ -9,10 +9,10 @@ package com.pullvert.kotysa
  */
 class WhereClause internal constructor(
         internal val field: Field,
-        internal val operation: Operation,
+        val operation: Operation,
         val value: Any?
 )
 
-internal enum class Operation {
-    EQ, NOT_EQ, LIKE, STARTS_WITH, ENDS_WITH, SUP, INF
+enum class Operation {
+    EQ, NOT_EQ, CONTAINS, STARTS_WITH, ENDS_WITH, SUP, INF
 }
