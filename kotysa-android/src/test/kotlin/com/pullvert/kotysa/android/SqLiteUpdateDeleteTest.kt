@@ -1,0 +1,97 @@
+/*
+ * Copyright 2019 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+package com.pullvert.kotysa.android
+
+import android.database.sqlite.SQLiteOpenHelper
+import com.pullvert.kotysa.Tables
+import com.pullvert.kotysa.test.common.*
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
+
+/**
+ * @author Fred Montariol
+ */
+class SqLiteUpdateDeleteTest : AbstractSqLiteTest<UserRepositoryUpdateDelete>() {
+
+    override fun getRepository(dbHelper: DbHelper, sqLiteTables: Tables) =
+            UserRepositoryUpdateDelete(dbHelper, sqLiteTables)
+
+    @Test
+    fun `Verify deleteAllFromUser works correctly`() {
+        assertThat(repository.deleteAll())
+                .isEqualTo(2)
+        assertThat(repository.selectAll().toList())
+                .isEmpty()
+        // re-insert users
+        repository.insert()
+    }
+
+    @Test
+    fun `Verify deleteUserById works`() {
+        assertThat(repository.deleteUserById(sqLiteJdoe.id))
+                .isEqualTo(1)
+        assertThat(repository.selectAll())
+                .hasSize(1)
+        // re-insertUsers jdoe
+        repository.insertJDoe()
+    }
+
+    @Test
+    fun `Verify deleteUserWithJoin works`() {
+        assertThat(repository.deleteUserWithJoin(sqLiteUser.label))
+                .isEqualTo(1)
+        assertThat(repository.selectAll())
+                .hasSize(1)
+                .containsOnly(sqLiteBboss)
+        // re-insertUsers jdoe
+        repository.insertJDoe()
+    }
+
+    @Test
+    fun `Verify updateLastname works`() {
+        assertThat(repository.updateLastname("Do"))
+                .isEqualTo(1)
+        assertThat(repository.selectFirstByFirstame(sqLiteJdoe.firstname))
+                .extracting { user -> user?.lastname }
+                .isEqualTo("Do")
+        repository.updateLastname(sqLiteJdoe.lastname)
+    }
+
+    @Test
+    fun `Verify updateWithJoin works`() {
+        assertThat(repository.updateWithJoin("Do", sqLiteUser.label))
+                .isEqualTo(1)
+        assertThat(repository.selectFirstByFirstame(sqLiteJdoe.firstname))
+                .extracting { user -> user?.lastname }
+                .isEqualTo("Do")
+        repository.updateLastname(sqLiteJdoe.lastname)
+    }
+}
+
+/**
+ * @author Fred Montariol
+ */
+class UserRepositoryUpdateDelete(sqLiteOpenHelper: SQLiteOpenHelper, tables: Tables) : AbstractUserRepository(sqLiteOpenHelper, tables) {
+
+    fun deleteUserById(id: String) = sqlClient.deleteFromTable<SqLiteUser>()
+            .where { it[SqLiteUser::id] eq id }
+            .execute()
+
+    fun deleteUserWithJoin(roleLabel: String) = sqlClient.deleteFromTable<SqLiteUser>()
+            .innerJoinOn<SqLiteRole> { it[SqLiteUser::roleId] }
+            .where { it[SqLiteRole::label] eq roleLabel }
+            .execute()
+
+    fun updateLastname(newLastname: String) = sqlClient.updateTable<SqLiteUser>()
+            .set { it[SqLiteUser::lastname] = newLastname }
+            .where { it[SqLiteUser::id] eq sqLiteJdoe.id }
+            .execute()
+
+    fun updateWithJoin(newLastname: String, roleLabel: String) = sqlClient.updateTable<SqLiteUser>()
+            .set { it[SqLiteUser::lastname] = newLastname }
+            .innerJoinOn<SqLiteRole> { it[SqLiteUser::roleId] }
+            .where { it[SqLiteRole::label] eq roleLabel }
+            .execute()
+}
