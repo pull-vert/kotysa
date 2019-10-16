@@ -6,37 +6,17 @@ package com.pullvert.kotysa.r2dbc.h2
 
 import com.pullvert.kotysa.test.common.*
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.getBean
-import org.springframework.boot.WebApplicationType
-import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.data.r2dbc.core.DatabaseClient
-import org.springframework.fu.kofu.application
-import org.springframework.fu.kofu.r2dbc.r2dbcH2
 import java.util.*
 
 /**
  * @author Fred Montariol
  */
-class R2dbcUpdateDeleteTest {
-    private val context =
-            application(WebApplicationType.NONE) {
-                beans {
-                    bean<UserRepositoryUpdateDelete>()
-                }
-                listener<ApplicationReadyEvent> {
-                    ref<UserRepositoryUpdateDelete>().init()
-                }
-                r2dbcH2()
-            }.run()
+class R2dbcUpdateDeleteTest : AbstractR2dbcTest() {
+    override val context = startContext<UserRepositoryUpdateDelete>()
 
-    private val repository = context.getBean<UserRepositoryUpdateDelete>()
-
-    @AfterAll
-    fun afterAll() {
-        context.close()
-    }
+    private val repository = getRepository<UserRepositoryUpdateDelete>()
 
     @Test
     fun `Verify deleteAllFromUser works correctly`() {

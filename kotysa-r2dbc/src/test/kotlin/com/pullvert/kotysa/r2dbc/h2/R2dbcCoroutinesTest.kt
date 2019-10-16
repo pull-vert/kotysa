@@ -6,48 +6,26 @@ package com.pullvert.kotysa.r2dbc.h2
 
 import com.pullvert.kotysa.NoResultException
 import com.pullvert.kotysa.NonUniqueResultException
+import com.pullvert.kotysa.r2dbc.Repository
 import com.pullvert.kotysa.r2dbc.coSqlClient
 import com.pullvert.kotysa.test.common.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.getBean
-import org.springframework.boot.WebApplicationType
-import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.data.r2dbc.core.DatabaseClient
-import org.springframework.fu.kofu.application
-import org.springframework.fu.kofu.r2dbc.r2dbcH2
 
 /**
  * @author Fred Montariol
  */
 @ExperimentalCoroutinesApi
-class R2DbcCoroutinesTest {
-    private val context =
-            application(WebApplicationType.NONE) {
-                beans {
-                    bean<CoroutinesUserRepository>()
-                }
-                listener<ApplicationReadyEvent> {
-                    runBlocking {
-                        ref<CoroutinesUserRepository>().init()
-                    }
-                }
-                r2dbcH2()
-            }.run()
+class R2DbcCoroutinesTest : AbstractR2dbcTest() {
+    override val context = startContext<CoroutinesUserRepository>()
 
-    private val repository = context.getBean<CoroutinesUserRepository>()
-
-    @AfterAll
-    fun afterAll() {
-        context.close()
-    }
+    private val repository = getRepository<CoroutinesUserRepository>()
 
     @Test
     fun `Verify selectAll returns all users`() = runBlockingTest {
@@ -129,11 +107,11 @@ class R2DbcCoroutinesTest {
 /**
  * @author Fred Montariol
  */
-class CoroutinesUserRepository(dbClient: DatabaseClient) {
+class CoroutinesUserRepository(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.coSqlClient(h2Tables)
 
-    suspend fun init() = coroutineScope {
+    override fun init() = runBlocking {
         createTables()
         deleteAllFromUsers()
         deleteAllFromRole()

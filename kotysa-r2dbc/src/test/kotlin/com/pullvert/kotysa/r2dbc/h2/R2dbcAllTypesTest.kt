@@ -4,17 +4,12 @@
 
 package com.pullvert.kotysa.r2dbc.h2
 
+import com.pullvert.kotysa.r2dbc.Repository
 import com.pullvert.kotysa.r2dbc.sqlClient
 import com.pullvert.kotysa.test.common.*
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.getBean
-import org.springframework.boot.WebApplicationType
-import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.data.r2dbc.core.DatabaseClient
-import org.springframework.fu.kofu.application
-import org.springframework.fu.kofu.r2dbc.r2dbcH2
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -24,24 +19,10 @@ import java.util.*
 /**
  * @author Fred Montariol
  */
-class R2dbcAllTypesTest {
-    private val context =
-            application(WebApplicationType.NONE) {
-                beans {
-                    bean<AllTypesRepository>()
-                }
-                listener<ApplicationReadyEvent> {
-                    ref<AllTypesRepository>().init()
-                }
-                r2dbcH2()
-            }.run()
+class R2dbcAllTypesTest : AbstractR2dbcTest() {
+    override val context = startContext<AllTypesRepository>()
 
-    private val repository = context.getBean<AllTypesRepository>()
-
-    @AfterAll
-    fun afterAll() {
-        context.close()
-    }
+    private val repository = getRepository<AllTypesRepository>()
 
     @Test
     fun `Verify selectAllAllTypesNotNull returns all AllTypesNotNull`() {
@@ -80,11 +61,11 @@ class R2dbcAllTypesTest {
 /**
  * @author Fred Montariol
  */
-class AllTypesRepository(dbClient: DatabaseClient) {
+class AllTypesRepository(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.sqlClient(h2Tables)
 
-    fun init() {
+    override fun init() {
         createTables()
                 .then(deleteAllFromAllTypesNotNull())
                 .then(deleteAllFromAllTypesNullable())

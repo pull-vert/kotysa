@@ -8,36 +8,16 @@ import com.pullvert.kotysa.test.common.H2User
 import com.pullvert.kotysa.test.common.h2Bboss
 import com.pullvert.kotysa.test.common.h2Jdoe
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.getBean
-import org.springframework.boot.WebApplicationType
-import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.data.r2dbc.core.DatabaseClient
-import org.springframework.fu.kofu.application
-import org.springframework.fu.kofu.r2dbc.r2dbcH2
 
 /**
  * @author Fred Montariol
  */
-class R2dbcStringSelectTest {
-    private val context =
-            application(WebApplicationType.NONE) {
-                beans {
-                    bean<UserRepositoryStringSelect>()
-                }
-                listener<ApplicationReadyEvent> {
-                    ref<UserRepositoryStringSelect>().init()
-                }
-                r2dbcH2()
-            }.run()
+class R2dbcStringSelectTest : AbstractR2dbcTest() {
+    override val context = startContext<UserRepositoryStringSelect>()
 
-    private val repository = context.getBean<UserRepositoryStringSelect>()
-
-    @AfterAll
-    fun afterAll() {
-        context.close()
-    }
+    private val repository = getRepository<UserRepositoryStringSelect>()
 
     @Test
     fun `Verify selectFirstByFirstame finds John`() {

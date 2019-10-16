@@ -5,7 +5,6 @@
 package com.pullvert.kotysa.android
 
 import android.database.sqlite.SQLiteOpenHelper
-import com.pullvert.kotysa.NoResultException
 import com.pullvert.kotysa.NonUniqueResultException
 import com.pullvert.kotysa.Tables
 import com.pullvert.kotysa.test.common.*

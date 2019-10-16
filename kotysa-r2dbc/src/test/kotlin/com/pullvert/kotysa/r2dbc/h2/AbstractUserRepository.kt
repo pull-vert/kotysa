@@ -1,5 +1,10 @@
+/*
+ * Copyright 2019 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package com.pullvert.kotysa.r2dbc.h2
 
+import com.pullvert.kotysa.r2dbc.Repository
 import com.pullvert.kotysa.r2dbc.sqlClient
 import com.pullvert.kotysa.test.common.*
 import org.springframework.data.r2dbc.core.DatabaseClient
@@ -7,11 +12,11 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 /**
  * @author Fred Montariol
  */
-abstract class AbstractUserRepository(dbClient: DatabaseClient) {
+abstract class AbstractUserRepository(dbClient: DatabaseClient) : Repository {
 
     protected val sqlClient = dbClient.sqlClient(h2Tables)
 
-    fun init() {
+    override fun init() {
         createTables()
                 .then(deleteAllFromUsers())
                 .then(deleteAllFromRole())

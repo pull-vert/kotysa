@@ -9,36 +9,16 @@ import com.pullvert.kotysa.count
 import com.pullvert.kotysa.test.common.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.getBean
-import org.springframework.boot.WebApplicationType
-import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.data.r2dbc.core.DatabaseClient
-import org.springframework.fu.kofu.application
-import org.springframework.fu.kofu.r2dbc.r2dbcH2
 
 /**
  * @author Fred Montariol
  */
-class R2dbcSelectTest {
-    private val context =
-            application(WebApplicationType.NONE) {
-                beans {
-                    bean<UserRepositorySelect>()
-                }
-                listener<ApplicationReadyEvent> {
-                    ref<UserRepositorySelect>().init()
-                }
-                r2dbcH2()
-            }.run()
+class R2dbcSelectTest : AbstractR2dbcTest() {
+    override val context = startContext<UserRepositorySelect>()
 
-    private val repository = context.getBean<UserRepositorySelect>()
-
-    @AfterAll
-    fun afterAll() {
-        context.close()
-    }
+    private val repository = getRepository<UserRepositorySelect>()
 
     @Test
     fun `Verify selectAll returns all users`() {

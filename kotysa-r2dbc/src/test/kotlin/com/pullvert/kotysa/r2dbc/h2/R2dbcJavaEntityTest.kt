@@ -4,6 +4,7 @@
 
 package com.pullvert.kotysa.r2dbc.h2
 
+import com.pullvert.kotysa.r2dbc.Repository
 import com.pullvert.kotysa.r2dbc.sqlClient
 import com.pullvert.kotysa.tables
 import com.pullvert.kotysa.test.common.JavaUser
@@ -11,36 +12,16 @@ import com.pullvert.kotysa.test.common.UserDto
 import com.pullvert.kotysa.test.common.javaBboss
 import com.pullvert.kotysa.test.common.javaJdoe
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.getBean
-import org.springframework.boot.WebApplicationType
-import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.data.r2dbc.core.DatabaseClient
-import org.springframework.fu.kofu.application
-import org.springframework.fu.kofu.r2dbc.r2dbcH2
 
 /**
  * @author Fred Montariol
  */
-class R2dbcJavaEntityTest {
-    private val context =
-            application(WebApplicationType.NONE) {
-                beans {
-                    bean<JavaUserRepository>()
-                }
-                listener<ApplicationReadyEvent> {
-                    ref<JavaUserRepository>().init()
-                }
-                r2dbcH2()
-            }.run()
+class R2dbcJavaEntityTest : AbstractR2dbcTest() {
+    override val context = startContext<JavaUserRepository>()
 
-    private val repository = context.getBean<JavaUserRepository>()
-
-    @AfterAll
-    fun afterAll() {
-        context.close()
-    }
+    private val repository = getRepository<JavaUserRepository>()
 
     @Test
     fun `Verify selectAll returns all users`() {
@@ -140,11 +121,11 @@ private val tables =
 /**
  * @author Fred Montariol
  */
-class JavaUserRepository(dbClient: DatabaseClient) {
+class JavaUserRepository(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.sqlClient(tables)
 
-    fun init() {
+    override fun init() {
         createTable()
                 .then(deleteAll())
                 .then(insert())
