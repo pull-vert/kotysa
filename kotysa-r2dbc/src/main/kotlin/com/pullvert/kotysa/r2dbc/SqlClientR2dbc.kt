@@ -18,30 +18,17 @@ import kotlin.reflect.KClass
 internal class SqlClientR2dbc(
         private val client: DatabaseClient,
         override val tables: Tables
-) : ReactorSqlClient(), DefaultSqlClient {
+) : AbstractSqlClientR2dbc(client, tables) {
 
     @ExperimentalStdlibApi
     override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T> =
             SqlClientSelectR2dbc.Select(client, tables, resultClass, dsl)
 
-    override fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void> {
-        val createTableSql = createTableSql(tableClass)
-        return client.execute(createTableSql).then()
-    }
+    override fun <T : Any> createTable(tableClass: KClass<T>) =
+            executeCreateTable(tableClass).then()
 
-    override fun <T : Any> insert(row: T): Mono<Void> {
-        var executeSpec = client.execute(insertSql(row))
-        val table = tables.getTable(row::class)
-        table.columns.values.forEachIndexed { index, column ->
-            val value = column.entityGetter(row)
-            executeSpec = if (value == null) {
-                executeSpec.bindNull(index, (column.entityGetter.toCallable().returnType.classifier as KClass<*>).java)
-            } else {
-                executeSpec.bind(index, value)
-            }
-        }
-        return executeSpec.then()
-    }
+    override fun <T : Any> insert(row: T) =
+            executeInsert(row).then()
 
     override fun insert(vararg rows: Any): Mono<Void> {
         // fail-fast : check that all tables are mapped Tables
