@@ -136,7 +136,7 @@ class CoroutinesSqlClientDeleteOrUpdate private constructor() {
                 joinOn(joinClass, alias, type, dsl)
 
         protected abstract fun <U : Any> joinOn(
-                joinClass: KClass<U>, alias: String?, type: JoinType, dsl: (FieldProvider) -> ColumnField<*, *>): Join<T>
+                joinClass: KClass<U>, alias: String?, type: JoinType, dsl: (FieldProvider) -> ColumnField<*, *>): Join
 
         abstract fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): TypedWhere<T>
     }
@@ -145,7 +145,7 @@ class CoroutinesSqlClientDeleteOrUpdate private constructor() {
         abstract fun set(dsl: (FieldSetter<T>) -> Unit): Update<T>
     }
 
-    interface Join<T : Any> : Return {
+    interface Join : Return {
         fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where
     }
 

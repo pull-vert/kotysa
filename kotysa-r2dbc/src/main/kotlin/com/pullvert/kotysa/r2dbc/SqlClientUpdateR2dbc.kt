@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
 /**
  * @author Fred Montariol
  */
-internal class SqlClientUpdateR2dbc private constructor() : DefaultSqlClientDeleteOrUpdate() {
+internal class SqlClientUpdateR2dbc private constructor() : AbstractSqlClientUpdateR2dbc() {
 
     internal class Update<T : Any> internal constructor(
             override val client: DatabaseClient,
@@ -62,32 +62,8 @@ internal class SqlClientUpdateR2dbc private constructor() : DefaultSqlClientDele
             override val properties: Properties<T>
     ) : DefaultSqlClientDeleteOrUpdate.TypedWhere<T>, ReactorSqlClientDeleteOrUpdate.TypedWhere<T>, Return<T>
 
-    private interface Return<T : Any> : DefaultSqlClientDeleteOrUpdate.Return<T>, ReactorSqlClientDeleteOrUpdate.Return {
-        val client: DatabaseClient
+    private interface Return<T : Any> : AbstractSqlClientUpdateR2dbc.Return<T>, ReactorSqlClientDeleteOrUpdate.Return {
 
-        override fun execute(): Mono<Int> = with(properties) {
-            require(setValues.isNotEmpty()) { "At least one value must be set in Update" }
-
-            var executeSpec = client.execute(updateTableSql())
-
-            var index = 0
-            setValues.forEach { (column, value) ->
-                executeSpec = if (value == null) {
-                    executeSpec.bindNull(index, (column.entityGetter.toCallable().returnType.classifier as KClass<*>).java)
-                } else {
-                    executeSpec.bind(index, value)
-                }
-                index++
-            }
-
-            whereClauses
-                    .mapNotNull { whereClause -> whereClause.value }
-                    .forEach { value ->
-                        executeSpec = executeSpec.bind(index, value)
-                        index++
-                    }
-
-            executeSpec.fetch().rowsUpdated()
-        }
+        override fun execute(): Mono<Int> = fetch().rowsUpdated()
     }
 }

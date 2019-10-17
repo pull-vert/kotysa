@@ -12,15 +12,14 @@ import kotlin.reflect.KClass
  * see [spring-data-r2dbc doc](https://docs.spring.io/spring-data/r2dbc/docs/1.0.x/reference/html/#reference)
  * @author Fred Montariol
  */
-internal abstract class AbstractSqlClientR2dbc(
-        private val client: DatabaseClient,
-        override val tables: Tables
-) : ReactorSqlClient(), DefaultSqlClient {
+internal interface AbstractSqlClientR2dbc : DefaultSqlClient {
 
-    protected fun <T : Any> executeCreateTable(tableClass: KClass<T>) =
+    val client: DatabaseClient
+
+    fun <T : Any> executeCreateTable(tableClass: KClass<T>) =
             client.execute(createTableSql(tableClass))
 
-    protected fun <T : Any> executeInsert(row: T): DatabaseClient.GenericExecuteSpec {
+    fun <T : Any> executeInsert(row: T): DatabaseClient.GenericExecuteSpec {
         var executeSpec = client.execute(insertSql(row))
         val table = tables.getTable(row::class)
         table.columns.values.forEachIndexed { index, column ->

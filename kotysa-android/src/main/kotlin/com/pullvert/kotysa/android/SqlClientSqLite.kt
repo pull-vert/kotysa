@@ -42,8 +42,7 @@ internal class SqlClientSqLite(
     }
 
     override fun insert(vararg rows: Any) {
-        // fail-fast : check that all tables are mapped Tables
-        rows.forEach { row -> tables.checkTable(row::class) }
+        checkRowsAreMapped(rows)
 
         rows.forEach { row -> insert(row) }
     }

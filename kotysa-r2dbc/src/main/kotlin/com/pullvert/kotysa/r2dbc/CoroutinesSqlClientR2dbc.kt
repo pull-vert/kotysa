@@ -10,6 +10,7 @@ import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.data.r2dbc.core.DatabaseClient
+import org.springframework.data.r2dbc.core.await
 import kotlin.reflect.KClass
 
 /**
@@ -17,18 +18,24 @@ import kotlin.reflect.KClass
  * @author Fred Montariol
  */
 private class CoroutinesSqlClientR2Dbc internal constructor(
-        client: DatabaseClient,
-        tables: Tables
-) : CoroutinesSqlClient() {
-
-    private val delegate = SqlClientR2dbc(client, tables)
+        override val client: DatabaseClient,
+        override val tables: Tables
+) : CoroutinesSqlClient(), AbstractSqlClientR2dbc {
 
     @ExperimentalStdlibApi
     override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): CoroutinesSqlClientSelect.Select<T> =
             CoroutineSqlClientSelectR2dbc.Select(delegate.select(resultClass, dsl))
 
-    override suspend fun <T : Any> createTable(tableClass: KClass<T>) {
-        delegate.createTable(tableClass).awaitFirstOrNull()
+    override suspend fun <T : Any> createTable(tableClass: KClass<T>) =
+            executeCreateTable(tableClass).await()
+
+    override suspend fun <T : Any> insert(row: T) =
+            executeInsert(row).await()
+
+    override suspend fun insert(vararg rows: Any) {
+        checkRowsAreMapped(rows)
+
+        rows.forEach { row -> insert(row) }
     }
 
     override fun <T : Any> deleteFromTable(tableClass: KClass<T>): CoroutinesSqlClientDeleteOrUpdate.DeleteOrUpdate<T> =
@@ -36,14 +43,6 @@ private class CoroutinesSqlClientR2Dbc internal constructor(
 
     override fun <T : Any> updateTable(tableClass: KClass<T>): CoroutinesSqlClientDeleteOrUpdate.Update<T> =
             CoroutineSqlClientUpdateR2dbc.Update(delegate.updateTable(tableClass))
-
-    override suspend fun <T : Any> insert(row: T) {
-        delegate.insert(row).awaitFirstOrNull()
-    }
-
-    override suspend fun insert(vararg rows: Any) {
-        delegate.insert(*rows).awaitFirstOrNull()
-    }
 }
 
 /**

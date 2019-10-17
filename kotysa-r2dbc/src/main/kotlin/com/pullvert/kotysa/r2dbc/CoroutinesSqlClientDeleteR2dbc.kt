@@ -12,23 +12,23 @@ import kotlin.reflect.KClass
 /**
  * @author Fred Montariol
  */
-internal class SqlClientDeleteR2dbc private constructor() : AbstractSqlClientDeleteR2dbc() {
+internal class CoroutinesSqlClientDeleteR2dbc private constructor() : AbstractSqlClientDeleteR2dbc() {
 
     internal class Delete<T : Any> internal constructor(
             override val client: DatabaseClient,
             override val tables: Tables,
             override val tableClass: KClass<T>
-    ) : ReactorSqlClientDeleteOrUpdate.DeleteOrUpdate<T>(), DeleteOrUpdate<T>, Return<T> {
+    ) : CoroutinesSqlClientDeleteOrUpdate.DeleteOrUpdate<T>(), DeleteOrUpdate<T>, Return<T> {
         override val properties: Properties<T> = initProperties()
 
         override fun <U : Any> joinOn(joinClass: KClass<U>, alias: String?, type: JoinType,
-                                      dsl: (FieldProvider) -> ColumnField<*, *>): ReactorSqlClientDeleteOrUpdate.Join {
+                                      dsl: (FieldProvider) -> ColumnField<*, *>): CoroutinesSqlClientDeleteOrUpdate.Join {
             val join = Join(client, properties)
             join.addJoinClause(dsl, joinClass, alias, type)
             return join
         }
 
-        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): ReactorSqlClientDeleteOrUpdate.TypedWhere<T> {
+        override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): CoroutinesSqlClientDeleteOrUpdate.TypedWhere<T> {
             val where = TypedWhere(client, properties)
             where.addWhereClause(dsl)
             return where

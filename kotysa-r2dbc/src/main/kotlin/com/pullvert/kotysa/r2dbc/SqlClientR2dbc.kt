@@ -16,9 +16,9 @@ import kotlin.reflect.KClass
  * @author Fred Montariol
  */
 internal class SqlClientR2dbc(
-        private val client: DatabaseClient,
+        override val client: DatabaseClient,
         override val tables: Tables
-) : AbstractSqlClientR2dbc(client, tables) {
+) : ReactorSqlClient(), AbstractSqlClientR2dbc {
 
     @ExperimentalStdlibApi
     override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T> =
@@ -31,8 +31,7 @@ internal class SqlClientR2dbc(
             executeInsert(row).then()
 
     override fun insert(vararg rows: Any): Mono<Void> {
-        // fail-fast : check that all tables are mapped Tables
-        rows.forEach { row -> tables.checkTable(row::class) }
+        checkRowsAreMapped(rows)
 
         return rows.toFlux()
                 .flatMap { row -> insert(row) }
