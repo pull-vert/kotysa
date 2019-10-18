@@ -21,7 +21,7 @@ internal class SqlClientDeleteSqLite private constructor() : DefaultSqlClientDel
         override val properties: Properties<T> = initProperties()
 
         override fun <U : Any> joinOn(joinClass: KClass<U>, alias: String?, type: JoinType,
-                                      dsl: (FieldProvider) -> ColumnField<*, *>): BlockingSqlClientDeleteOrUpdate.Join<T> {
+                                      dsl: (FieldProvider) -> ColumnField<*, *>): BlockingSqlClientDeleteOrUpdate.Join {
             val join = Join(client, properties)
             join.addJoinClause(dsl, joinClass, alias, type)
             return join
@@ -37,7 +37,7 @@ internal class SqlClientDeleteSqLite private constructor() : DefaultSqlClientDel
     private class Join<T : Any> internal constructor(
             override val client: SQLiteDatabase,
             override val properties: Properties<T>
-    ) : DefaultSqlClientDeleteOrUpdate.Join<T>, BlockingSqlClientDeleteOrUpdate.Join<T>, Return<T> {
+    ) : DefaultSqlClientDeleteOrUpdate.Join<T>, BlockingSqlClientDeleteOrUpdate.Join, Return<T> {
         override fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): BlockingSqlClientDeleteOrUpdate.Where {
             val where = Where(client, properties)
             where.addWhereClause(dsl)

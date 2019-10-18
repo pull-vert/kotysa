@@ -42,7 +42,7 @@ internal class SqlClientSqLite(
     }
 
     override fun insert(vararg rows: Any) {
-        checkRowsAreMapped(rows)
+        checkRowsAreMapped(*rows)
 
         rows.forEach { row -> insert(row) }
     }

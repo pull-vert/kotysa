@@ -12,14 +12,19 @@ import kotlin.reflect.KClass
 /**
  * @author Fred Montariol
  */
-internal class CoroutinesSqlClientDeleteR2dbc private constructor() : AbstractSqlClientDeleteR2dbc() {
+internal class CoroutinesSqlClientUpdateR2dbc private constructor() : AbstractSqlClientUpdateR2dbc() {
 
-	internal class Delete<T : Any> internal constructor(
+	internal class Update<T : Any> internal constructor(
 			override val client: DatabaseClient,
 			override val tables: Tables,
 			override val tableClass: KClass<T>
-	) : CoroutinesSqlClientDeleteOrUpdate.DeleteOrUpdate<T>(), DeleteOrUpdate<T>, Return<T> {
+	) : CoroutinesSqlClientDeleteOrUpdate.Update<T>(), DefaultSqlClientDeleteOrUpdate.Update<T>, Return<T> {
 		override val properties: Properties<T> = initProperties()
+
+		override fun set(dsl: (FieldSetter<T>) -> Unit): CoroutinesSqlClientDeleteOrUpdate.Update<T> {
+			addSetValue(dsl)
+			return this
+		}
 
 		override fun <U : Any> joinOn(joinClass: KClass<U>, alias: String?, type: JoinType,
 									  dsl: (FieldProvider) -> ColumnField<*, *>): CoroutinesSqlClientDeleteOrUpdate.Join {
@@ -56,7 +61,7 @@ internal class CoroutinesSqlClientDeleteR2dbc private constructor() : AbstractSq
 			override val properties: Properties<T>
 	) : DefaultSqlClientDeleteOrUpdate.TypedWhere<T>, CoroutinesSqlClientDeleteOrUpdate.TypedWhere<T>, Return<T>
 
-	private interface Return<T : Any> : AbstractSqlClientDeleteR2dbc.Return<T>, CoroutinesSqlClientDeleteOrUpdate.Return {
+	private interface Return<T : Any> : AbstractSqlClientUpdateR2dbc.Return<T>, CoroutinesSqlClientDeleteOrUpdate.Return {
 
 		override suspend fun execute(): Int = fetch().rowsUpdated().awaitSingle() // fixme replace when https://github.com/spring-projects/spring-data-r2dbc/issues/212
 	}
