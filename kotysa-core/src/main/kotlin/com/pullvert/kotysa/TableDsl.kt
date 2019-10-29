@@ -38,7 +38,9 @@ abstract class TableDsl<T : Any, U : TableDsl<T, U>>(
     @PublishedApi
     internal fun initialize(initialize: U): Table<*> {
         init(initialize)
-        require(::name.isInitialized) { "Table name is mandatory" }
+        if(!::name.isInitialized) {
+            name = tableClass.simpleName!!
+        }
         require(::primaryKey.isInitialized) { "Table primary key is mandatory" }
         require(columns.isNotEmpty()) { "Table must declare at least one column" }
         val table = TableImpl(tableClass, name, columns, primaryKey)

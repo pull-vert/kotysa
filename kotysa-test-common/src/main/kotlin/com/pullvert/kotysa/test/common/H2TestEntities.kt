@@ -50,6 +50,11 @@ val h2Tables =
                 column { it[H2AllTypesNullable::localDateTime2].timestamp() }
                 column { it[H2AllTypesNullable::uuid].uuid() }
             }
+            table<H2Uuid> {
+                column { it[H2Uuid::id].uuid().primaryKey }
+                column { it[H2Uuid::roleIdNotNull].uuid().foreignKey<H2Role>() }
+                column { it[H2Uuid::roleIdNullable].uuid().foreignKey<H2Role>() }
+            }
         }
 
 /**
@@ -109,3 +114,15 @@ data class H2AllTypesNullable(
 
 val h2AllTypesNotNull = H2AllTypesNotNull(UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f"), "", true, LocalDate.now(), OffsetDateTime.now(), LocalTime.now(), LocalDateTime.now(), LocalDateTime.now(), UUID.randomUUID())
 val h2AllTypesNullable = H2AllTypesNullable(UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"), null, null, null, null, null, null, null)
+
+/**
+ * @author Fred Montariol
+ */
+data class H2Uuid(
+        val roleIdNotNull: UUID,
+        val roleIdNullable: UUID? = null,
+        val id: UUID = UUID.randomUUID()
+)
+
+val h2UuidWithNullable = H2Uuid(h2User.id, h2Admin.id)
+val h2UuidWithoutNullable = H2Uuid(h2User.id)

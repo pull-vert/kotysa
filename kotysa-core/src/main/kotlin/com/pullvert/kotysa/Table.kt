@@ -19,6 +19,7 @@ interface Table<T : Any> {
     val name: String
     val columns: Map<(T) -> Any?, Column<T, *>>
     val primaryKey: PrimaryKey
+    val foreignKeys: Set<ForeignKey>
 }
 
 /**
@@ -28,7 +29,8 @@ internal class TableImpl<T : Any> internal constructor(
         override val tableClass: KClass<T>,
         override val name: String,
         override val columns: Map<(T) -> Any?, Column<T, *>>,
-        override val primaryKey: PrimaryKey
+        override val primaryKey: PrimaryKey,
+        override val foreignKeys: Set<ForeignKey>
 ) : Table<T> {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
