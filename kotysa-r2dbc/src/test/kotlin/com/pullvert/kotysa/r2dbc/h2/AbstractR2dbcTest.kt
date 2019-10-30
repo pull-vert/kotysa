@@ -16,24 +16,28 @@ import org.springframework.fu.kofu.r2dbc.r2dbcH2
 /**
  * @author Fred Montariol
  */
-abstract class AbstractR2dbcTest {
-    protected inline fun <reified T : Repository> startContext() =
-            application(WebApplicationType.NONE) {
-                beans {
-                    bean<T>()
-                }
-                listener<ApplicationReadyEvent> {
-                    ref<T>().init()
-                }
-                r2dbcH2()
-            }.run()
+abstract class AbstractR2dbcTest<T : Repository> {
 
-    protected abstract val context: ConfigurableApplicationContext
+	protected abstract val repository: T
 
-    protected inline fun <reified T : Repository> getRepository() = context.getBean<T>()
+	protected inline fun <reified U : Repository> startContext() =
+			application(WebApplicationType.NONE) {
+				beans {
+					bean<U>()
+				}
+				listener<ApplicationReadyEvent> {
+					ref<U>().init()
+				}
+				r2dbcH2()
+			}.run()
 
-    @AfterAll
-    fun afterAll() {
-        context.close()
-    }
+	protected abstract val context: ConfigurableApplicationContext
+
+	protected inline fun <reified U : Repository> getContextRepository() = context.getBean<U>()
+
+	@AfterAll
+	fun afterAll() {
+		repository.delete()
+		context.close()
+	}
 }

@@ -8,13 +8,13 @@ package com.pullvert.kotysa
  * @author Fred Montariol
  */
 interface PrimaryKey {
-    val name: String
+    val name: String?
 }
 
 /**
  * @author Fred Montariol
  */
 internal class SinglePrimaryKey<T : Any, U> internal constructor(
-        override val name: String,
+        override val name: String?,
         internal val column: Column<T, U>
 ): PrimaryKey

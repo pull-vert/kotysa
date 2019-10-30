@@ -8,14 +8,14 @@ package com.pullvert.kotysa
  * @author Fred Montariol
  */
 interface ForeignKey {
-	val name: String
+	val name: String?
 }
 
 /**
  * @author Fred Montariol
  */
 internal data class SingleForeignKey<T : Any, U> internal constructor(
-		override val name: String,
+		override val name: String?,
 		internal val column: Column<T, U>,
 		internal var referencedColumn: Column<*, *>
 ) : ForeignKey

@@ -11,46 +11,41 @@ import kotlin.reflect.KClass
  */
 @KotysaMarker
 abstract class TableDsl<T : Any, U : TableDsl<T, U>>(
-        private val init: U.() -> Unit,
-        private val tableClass: KClass<T>
+		private val init: U.() -> Unit,
+		private val tableClass: KClass<T>
 ) {
 
-    lateinit var name: String
-    private val columns = mutableMapOf<(T) -> Any?, Column<T, *>>()
-    private lateinit var singleColumnPrimaryKey: Column<*, *>
+	lateinit var name: String
+	private val columns = mutableMapOf<(T) -> Any?, Column<T, *>>()
+	lateinit var primaryKey: PrimaryKey
 
-    protected fun addColumn(column: Column<T, *>) {
-        require(!columns.containsKey(column.entityGetter)) {
-            "Trying to map property \"${column.entityGetter}\" to multiple columns"
-        }
-        require(tableClass.members.contains(column.entityGetter.toCallable())) {
-            "Trying to map property \"${column.entityGetter}\", which is not a property of entity class \"${tableClass.qualifiedName}\""
-        }
-        if (column.isPrimaryKey) {
-            check(!::singleColumnPrimaryKey.isInitialized) {
-                "Table must not declare more than one Primary Key"
-            }
-            singleColumnPrimaryKey = column
-        }
-        columns[column.entityGetter] = column
-    }
+	protected fun addColumn(column: Column<T, *>) {
+		require(!columns.containsKey(column.entityGetter)) {
+			"Trying to map property \"${column.entityGetter}\" to multiple columns"
+		}
+		require(tableClass.members.contains(column.entityGetter.toCallable())) {
+			"Trying to map property \"${column.entityGetter}\", which is not a property of entity class \"${tableClass.qualifiedName}\""
+		}
+		if (column.isPrimaryKey) {
+			check(!::primaryKey.isInitialized) {
+				"Table must not declare more than one Primary Key"
+			}
+			primaryKey = SinglePrimaryKey(column.pkName, column)
+		}
+		columns[column.entityGetter] = column
+	}
 
-    @PublishedApi
-    internal fun initialize(initialize: U): Table<*> {
-        init(initialize)
-        if(!::name.isInitialized) {
-            name = tableClass.simpleName!!
-        }
-        require(::singleColumnPrimaryKey.isInitialized) { "Table primary key is mandatory" }
-        require(columns.isNotEmpty()) { "Table must declare at least one column" }
-
-        // only single column PK is supported
-        val pkName = singleColumnPrimaryKey.pkName ?: "PK_$name"
-        val primaryKey = SinglePrimaryKey(pkName, singleColumnPrimaryKey)
-
-        val table = TableImpl(tableClass, name, columns, primaryKey)
-        // associate table to all its columns
-        columns.forEach { (_, c) -> c.table = table }
-        return table
-    }
+	@PublishedApi
+	internal fun initialize(initialize: U): Table<*> {
+		init(initialize)
+		if (!::name.isInitialized) {
+			name = tableClass.simpleName!!
+		}
+		require(::primaryKey.isInitialized) { "Table primary key is mandatory" }
+		require(columns.isNotEmpty()) { "Table must declare at least one column" }
+		val table = TableImpl(tableClass, name, columns, primaryKey)
+		// associate table to all its columns
+		columns.forEach { (_, c) -> c.table = table }
+		return table
+	}
 }

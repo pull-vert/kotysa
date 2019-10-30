@@ -14,34 +14,38 @@ import org.springframework.data.r2dbc.core.DatabaseClient
  */
 abstract class AbstractUserRepository(dbClient: DatabaseClient) : Repository {
 
-    protected val sqlClient = dbClient.sqlClient(h2Tables)
+	protected val sqlClient = dbClient.sqlClient(h2Tables)
 
-    override fun init() {
-        createTables()
-                .then(deleteAllFromUsers())
-                .then(deleteAllFromRole())
-                .then(insertRoles())
-                .then(insertUsers())
-                .block()
-    }
+	override fun init() {
+		createTables()
+				.then(insertRoles())
+				.then(insertUsers())
+				.block()
+	}
 
-    fun createTables() =
-            sqlClient.createTable<H2Role>()
-                    .then(sqlClient.createTable<H2User>())
+	override fun delete() {
+		deleteAllFromUsers()
+				.then(deleteAllFromRole())
+				.block()
+	}
 
-    fun insertRoles() = sqlClient.insert(h2User, h2Admin)
+	fun createTables() =
+			sqlClient.createTable<H2Role>()
+					.then(sqlClient.createTable<H2User>())
 
-    fun insertUsers() = sqlClient.insert(h2Jdoe, h2Bboss)
+	fun insertRoles() = sqlClient.insert(h2User, h2Admin)
 
-    fun insertJDoe() = sqlClient.insert(h2Jdoe)
+	fun insertUsers() = sqlClient.insert(h2Jdoe, h2Bboss)
 
-    fun deleteAllFromRole() = sqlClient.deleteAllFromTable<H2Role>()
+	fun insertJDoe() = sqlClient.insert(h2Jdoe)
 
-    fun deleteAllFromUsers() = sqlClient.deleteAllFromTable<H2User>()
+	fun deleteAllFromRole() = sqlClient.deleteAllFromTable<H2Role>()
 
-    fun selectAllUsers() = sqlClient.selectAll<H2User>()
+	fun deleteAllFromUsers() = sqlClient.deleteAllFromTable<H2User>()
 
-    fun selectFirstByFirstame(firstname: String) = sqlClient.select<H2User>()
-            .where { it[H2User::firstname] eq firstname }
-            .fetchFirst()
+	fun selectAllUsers() = sqlClient.selectAll<H2User>()
+
+	fun selectFirstByFirstame(firstname: String) = sqlClient.select<H2User>()
+			.where { it[H2User::firstname] eq firstname }
+			.fetchFirst()
 }

@@ -18,81 +18,85 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 /**
  * @author Fred Montariol
  */
-class R2dbcInheritanceTest : AbstractR2dbcTest() {
-    override val context = startContext<InheritanceRepository>()
+class R2dbcInheritanceTest : AbstractR2dbcTest<InheritanceRepository>() {
+	override val context = startContext<InheritanceRepository>()
 
-    private val repository = getRepository<InheritanceRepository>()
+	override val repository = getContextRepository<InheritanceRepository>()
 
-    @Test
-    fun `Verify extension function selectById finds inherited`() {
-        assertThat(repository.selectById<Inherited>("id").block())
-                .isEqualTo(inherited)
-    }
+	@Test
+	fun `Verify extension function selectById finds inherited`() {
+		assertThat(repository.selectById<Inherited>("id").block())
+				.isEqualTo(inherited)
+	}
 
-    @Test
-    fun `Verify selectInheritedById finds inherited`() {
-        assertThat(repository.selectInheritedById("id").block())
-                .isEqualTo(inherited)
-    }
+	@Test
+	fun `Verify selectInheritedById finds inherited`() {
+		assertThat(repository.selectInheritedById("id").block())
+				.isEqualTo(inherited)
+	}
 
-    @Test
-    fun `Verify selectFirstByName finds inherited`() {
-        assertThat(repository.selectFirstByName<Inherited>("name").block())
-                .isEqualTo(inherited)
-    }
+	@Test
+	fun `Verify selectFirstByName finds inherited`() {
+		assertThat(repository.selectFirstByName<Inherited>("name").block())
+				.isEqualTo(inherited)
+	}
 
-    @Test
-    fun `Verify deleteById deletes inherited`() {
-        assertThat(repository.deleteById<Inherited>("id").block())
-                .isEqualTo(1)
-        assertThat(repository.selectAll().toIterable())
-                .isEmpty()
-        // re-insert
-        repository.insert().block()
-    }
+	@Test
+	fun `Verify deleteById deletes inherited`() {
+		assertThat(repository.deleteById<Inherited>("id").block()!!)
+				.isEqualTo(1)
+		assertThat(repository.selectAll().toIterable())
+				.isEmpty()
+		// re-insert
+		repository.insert().block()
+	}
 }
 
 private val tables =
-        tables().h2 {
-            table<Inherited> {
-                name = "inherited"
-                column { it[Inherited::getId].varchar().primaryKey() }
-                column { it[Inherited::name].varchar() }
-                column { it[Inherited::firstname].varchar() }
-            }
-        }
+		tables().h2 {
+			table<Inherited> {
+				name = "inherited"
+				column { it[Inherited::getId].varchar().primaryKey() }
+				column { it[Inherited::name].varchar() }
+				column { it[Inherited::firstname].varchar() }
+			}
+		}
 
 /**
  * @author Fred Montariol
  */
 class InheritanceRepository(dbClient: DatabaseClient) : Repository {
 
-    val sqlClient = dbClient.sqlClient(tables)
+	val sqlClient = dbClient.sqlClient(tables)
 
-    override fun init() {
-        createTable()
-                .then(deleteAll())
-                .then(insert())
-                .block()
-    }
+	override fun init() {
+		createTable()
+				.then(insert())
+				.block()
+	}
 
-    fun createTable() = sqlClient.createTable<Inherited>()
+	override fun delete() {
+		deleteAll()
+				.block()
+	}
 
-    fun insert() = sqlClient.insert(inherited)
+	fun createTable() = sqlClient.createTable<Inherited>()
 
-    fun deleteAll() = sqlClient.deleteAllFromTable<Inherited>()
+	fun insert() = sqlClient.insert(inherited)
 
-    fun selectAll() = sqlClient.selectAll<Inherited>()
+	fun deleteAll() = sqlClient.deleteAllFromTable<Inherited>()
 
-    fun selectInheritedById(id: String) =
-            sqlClient.select<Inherited>().where { it[Inherited::getId] eq id }.fetchOne()
+	fun selectAll() = sqlClient.selectAll<Inherited>()
+
+	fun selectInheritedById(id: String) =
+			sqlClient.select<Inherited>().where { it[Inherited::getId] eq id }.fetchOne()
 }
 
 inline fun <reified T : Entity<String>> InheritanceRepository.selectById(id: String) =
-        sqlClient.select<T>().where { it[Entity<String>::getId] eq id }.fetchOne()
+		sqlClient.select<T>().where { it[Entity<String>::getId] eq id }.fetchOne()
 
 inline fun <reified T : Nameable> InheritanceRepository.selectFirstByName(name: String) =
-        sqlClient.select<T>().where { it[Nameable::name] eq name }.fetchFirst()
+		sqlClient.select<T>().where { it[Nameable::name] eq name }.fetchFirst()
 
 inline fun <reified T : Entity<String>> InheritanceRepository.deleteById(id: String) =
-        sqlClient.deleteFromTable<T>().where { it[Entity<String>::getId] eq id }.execute()
+		sqlClient.deleteFromTable<T>().where { it[Entity<String>::getId] eq id }.execute()

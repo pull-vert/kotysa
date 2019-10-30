@@ -15,17 +15,17 @@ import java.util.*
 /**
  * @author Fred Montariol
  */
-class R2dbcUuidSelectTest : AbstractR2dbcTest() {
-    override val context = startContext<UuidRepositorySelect>()
+class R2dbcUuidSelectTest : AbstractR2dbcTest<UuidRepositorySelect>() {
+	override val context = startContext<UuidRepositorySelect>()
 
-    private val repository = getRepository<UuidRepositorySelect>()
+	override val repository = getContextRepository<UuidRepositorySelect>()
 
-    @Test
-    fun `Verify selectAllByRoleIdNotNull finds BigBoss`() {
-        assertThat(repository.selectAllByRoleIdNotNull(h2User.id).toIterable())
-                .hasSize(2)
-                .containsExactlyInAnyOrder(h2UuidWithNullable, h2UuidWithoutNullable)
-    }
+	@Test
+	fun `Verify selectAllByRoleIdNotNull finds BigBoss`() {
+		assertThat(repository.selectAllByRoleIdNotNull(h2User.id).toIterable())
+				.hasSize(2)
+				.containsExactlyInAnyOrder(h2UuidWithNullable, h2UuidWithoutNullable)
+	}
 }
 
 /**
@@ -33,30 +33,34 @@ class R2dbcUuidSelectTest : AbstractR2dbcTest() {
  */
 class UuidRepositorySelect(dbClient: DatabaseClient) : Repository {
 
-    private val sqlClient = dbClient.sqlClient(h2Tables)
+	private val sqlClient = dbClient.sqlClient(h2Tables)
 
-    override fun init() {
-        createTables()
-                .then(deleteAllFromUuid())
-                .then(deleteAllFromRole())
-                .then(insertRoles())
-                .then(insertUuids())
-                .block()
-    }
+	override fun init() {
+		createTables()
+				.then(insertRoles())
+				.then(insertUuids())
+				.block()
+	}
 
-    fun createTables() =
-            sqlClient.createTable<H2Role>()
-                    .then(sqlClient.createTable<H2Uuid>())
+	override fun delete() {
+		deleteAllFromUuid()
+				.then(deleteAllFromRole())
+				.block()
+	}
 
-    fun insertRoles() = sqlClient.insert(h2User, h2Admin)
+	fun createTables() =
+			sqlClient.createTable<H2Role>()
+					.then(sqlClient.createTable<H2Uuid>())
 
-    fun insertUuids() = sqlClient.insert(h2UuidWithNullable, h2UuidWithoutNullable)
+	fun insertRoles() = sqlClient.insert(h2User, h2Admin)
 
-    fun deleteAllFromRole() = sqlClient.deleteAllFromTable<H2Role>()
+	fun insertUuids() = sqlClient.insert(h2UuidWithNullable, h2UuidWithoutNullable)
 
-    fun deleteAllFromUuid() = sqlClient.deleteAllFromTable<H2Uuid>()
+	fun deleteAllFromRole() = sqlClient.deleteAllFromTable<H2Role>()
 
-    fun selectAllByRoleIdNotNull(roleId: UUID) = sqlClient.select<H2Uuid>()
-            .where { it[H2Uuid::roleIdNotNull] eq roleId }
-            .fetchAll()
+	fun deleteAllFromUuid() = sqlClient.deleteAllFromTable<H2Uuid>()
+
+	fun selectAllByRoleIdNotNull(roleId: UUID) = sqlClient.select<H2Uuid>()
+			.where { it[H2Uuid::roleIdNotNull] eq roleId }
+			.fetchAll()
 }
