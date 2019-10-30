@@ -10,7 +10,7 @@ fun sqlitetables() =
         tables().sqlite { // choose database type
             table<SqLiteUser> {
                 name = "users"
-                column { it[SqLiteUser::id].varchar().primaryKey }
+                column { it[SqLiteUser::id].varchar().primaryKey() }
                 column { it[SqLiteUser::firstname].varchar().name("fname") }
                 column { it[SqLiteUser::lastname].varchar().name("lname") }
                 column { it[SqLiteUser::isAdmin].boolean() }

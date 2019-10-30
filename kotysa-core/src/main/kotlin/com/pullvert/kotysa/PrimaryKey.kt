@@ -7,9 +7,14 @@ package com.pullvert.kotysa
 /**
  * @author Fred Montariol
  */
-interface PrimaryKey
+interface PrimaryKey {
+    val name: String
+}
 
 /**
  * @author Fred Montariol
  */
-internal inline class SinglePrimaryKey<T : Any, U>(internal val column: Column<T, U>): PrimaryKey
+internal class SinglePrimaryKey<T : Any, U> internal constructor(
+        override val name: String,
+        internal val column: Column<T, U>
+): PrimaryKey

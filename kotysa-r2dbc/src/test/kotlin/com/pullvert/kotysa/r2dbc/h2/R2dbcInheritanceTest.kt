@@ -56,7 +56,7 @@ private val tables =
         tables().h2 {
             table<Inherited> {
                 name = "inherited"
-                column { it[Inherited::getId].varchar().primaryKey }
+                column { it[Inherited::getId].varchar().primaryKey() }
                 column { it[Inherited::name].varchar() }
                 column { it[Inherited::firstname].varchar() }
             }

@@ -12,12 +12,12 @@ val sqLiteTables =
         tables().sqlite {
             table<SqLiteRole> {
                 name = "roles"
-                column { it[SqLiteRole::id].varchar().primaryKey }
+                column { it[SqLiteRole::id].varchar().primaryKey() }
                 column { it[SqLiteRole::label].varchar() }
             }
             table<SqLiteUser> {
                 name = "users"
-                column { it[SqLiteUser::id].varchar().primaryKey }
+                column { it[SqLiteUser::id].varchar().primaryKey() }
                 column { it[SqLiteUser::firstname].varchar().name("fname") }
                 column { it[SqLiteUser::lastname].varchar().name("lname") }
                 column { it[SqLiteUser::isAdmin].boolean() }
@@ -26,7 +26,7 @@ val sqLiteTables =
             }
             table<SqLiteAllTypesNotNull> {
                 name = "all_types"
-                column { it[SqLiteAllTypesNotNull::id].varchar().primaryKey }
+                column { it[SqLiteAllTypesNotNull::id].varchar().primaryKey() }
                 column { it[SqLiteAllTypesNotNull::string].varchar() }
                 column { it[SqLiteAllTypesNotNull::boolean].boolean() }
                 column { it[SqLiteAllTypesNotNull::localDate].date() }
@@ -34,7 +34,7 @@ val sqLiteTables =
             }
             table<SqLiteAllTypesNullable> {
                 name = "all_types_nullable"
-                column { it[SqLiteAllTypesNullable::id].varchar().primaryKey }
+                column { it[SqLiteAllTypesNullable::id].varchar().primaryKey() }
                 column { it[SqLiteAllTypesNullable::string].varchar() }
                 column { it[SqLiteAllTypesNullable::localDate].date() }
                 column { it[SqLiteAllTypesNullable::localDateTime].dateTime() }

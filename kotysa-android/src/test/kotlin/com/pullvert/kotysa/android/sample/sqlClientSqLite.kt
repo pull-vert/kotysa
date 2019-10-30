@@ -32,12 +32,12 @@ class UserRepositorySqLite(sqLiteOpenHelper: SQLiteOpenHelper) {
                 // choose database type
                 table<Role> {
                     name = "roles"
-                    column { it[Role::id].varchar().primaryKey }
+                    column { it[Role::id].varchar().primaryKey() }
                     column { it[Role::label].varchar() }
                 }
                 table<User> {
                     name = "users"
-                    column { it[User::id].varchar().primaryKey }
+                    column { it[User::id].varchar().primaryKey() }
                     column { it[User::firstname].varchar().name("fname") }
                     column { it[User::lastname].varchar().name("lname") }
                     column { it[User::isAdmin].boolean() }

@@ -10,10 +10,12 @@ import kotlin.reflect.KClass
 abstract class ColumnBuilder<T : ColumnBuilder<T, U>, U : Any> {
 
     protected var isPK: Boolean = false
+    protected var pkName: String? = null
     protected abstract val sqlType: SqlType
     internal abstract val entityGetter: (U) -> Any?
     internal lateinit var columnName: String
     protected var fkClass: KClass<*>? = null
+    protected var fkName: String? = null
 
     internal val columnNameInitialized
         get() = ::columnName.isInitialized
@@ -23,19 +25,14 @@ abstract class ColumnBuilder<T : ColumnBuilder<T, U>, U : Any> {
         return this as T
     }
 
-    inline fun <reified V : Any> foreignKey() = foreignKey(V::class)
+    inline fun <reified V : Any> foreignKey(fkName: String? = null) = foreignKey(V::class, fkName)
 
     @PublishedApi
-    internal fun <V : Any> foreignKey(fkClass: KClass<V>): T {
+    internal fun <V : Any> foreignKey(fkClass: KClass<V>, fkName: String?): T {
         this.fkClass = fkClass
+        this.fkName = fkName
         return this as T
     }
-
-    protected val isPrimaryKey: T
-        get() {
-            isPK = true
-            return this as T
-        }
 
     internal abstract fun build(): Column<U, *>
 }
@@ -45,9 +42,15 @@ abstract class ColumnNotNullNoPkBuilder<T : ColumnNotNullNoPkBuilder<T, U, V>, U
 }
 
 abstract class ColumnNotNullBuilder<T : ColumnNotNullBuilder<T, U, V>, U : Any, V> : ColumnNotNullNoPkBuilder<T, U, V>() {
-    abstract val primaryKey: T
 
     abstract override fun setDefaultValue(defaultValue: V): T
+
+    @Suppress("UNCHECKED_CAST")
+    fun primaryKey(pkName: String? = null): T {
+        isPK = true
+        this.pkName = pkName
+        return this as T
+    }
 }
 
 abstract class ColumnNullableBuilder<T : ColumnNullableBuilder<T, U>, U : Any> : ColumnBuilder<T, U>()
@@ -65,10 +68,8 @@ class VarcharColumnBuilderNotNull<T : Any, U> internal constructor(
         return this
     }
 
-    override val primaryKey
-        get() = isPrimaryKey
-
-    override fun build() = VarcharColumnNotNull(entityGetter, columnName, sqlType, isPK, defaultValue, fkClass)
+    override fun build() =
+            VarcharColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
 }
 
 class VarcharColumnBuilderNullable<T : Any, U> internal constructor(
@@ -76,7 +77,7 @@ class VarcharColumnBuilderNullable<T : Any, U> internal constructor(
 ) : ColumnNullableBuilder<VarcharColumnBuilderNullable<T, U>, T>() {
     override val sqlType = SqlType.VARCHAR
 
-    override fun build() = VarcharColumnNullable(entityGetter, columnName, sqlType, fkClass)
+    override fun build() = VarcharColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
 }
 
 class TimestampColumnBuilderNotNull<T : Any, U> internal constructor(
@@ -91,10 +92,8 @@ class TimestampColumnBuilderNotNull<T : Any, U> internal constructor(
         return this
     }
 
-    override val primaryKey
-        get() = isPrimaryKey
-
-    override fun build() = TimestampColumnNotNull(entityGetter, columnName, sqlType, isPK, defaultValue, fkClass)
+    override fun build() =
+            TimestampColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
 }
 
 class TimestampColumnBuilderNullable<T : Any, U> internal constructor(
@@ -102,7 +101,7 @@ class TimestampColumnBuilderNullable<T : Any, U> internal constructor(
 ) : ColumnNullableBuilder<TimestampColumnBuilderNullable<T, U>, T>() {
     override val sqlType = SqlType.TIMESTAMP
 
-    override fun build() = TimestampColumnNullable(entityGetter, columnName, sqlType, fkClass)
+    override fun build() = TimestampColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
 }
 
 class DateColumnBuilderNotNull<T : Any, U> internal constructor(
@@ -117,10 +116,8 @@ class DateColumnBuilderNotNull<T : Any, U> internal constructor(
         return this
     }
 
-    override val primaryKey
-        get() = isPrimaryKey
-
-    override fun build() = DateColumnNotNull(entityGetter, columnName, sqlType, isPK, defaultValue, fkClass)
+    override fun build() =
+            DateColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
 }
 
 class DateColumnBuilderNullable<T : Any, U> internal constructor(
@@ -128,7 +125,7 @@ class DateColumnBuilderNullable<T : Any, U> internal constructor(
 ) : ColumnNullableBuilder<DateColumnBuilderNullable<T, U>, T>() {
     override val sqlType = SqlType.DATE
 
-    override fun build() = DateColumnNullable(entityGetter, columnName, sqlType, fkClass)
+    override fun build() = DateColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
 }
 
 class DateTimeColumnBuilderNotNull<T : Any, U> internal constructor(
@@ -143,10 +140,8 @@ class DateTimeColumnBuilderNotNull<T : Any, U> internal constructor(
         return this
     }
 
-    override val primaryKey
-        get() = isPrimaryKey
-
-    override fun build() = DateTimeColumnNotNull(entityGetter, columnName, sqlType, isPK, defaultValue, fkClass)
+    override fun build() =
+            DateTimeColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
 }
 
 class DateTimeColumnBuilderNullable<T : Any, U> internal constructor(
@@ -154,7 +149,7 @@ class DateTimeColumnBuilderNullable<T : Any, U> internal constructor(
 ) : ColumnNullableBuilder<DateTimeColumnBuilderNullable<T, U>, T>() {
     override val sqlType = SqlType.DATE_TIME
 
-    override fun build() = DateTimeColumnNullable(entityGetter, columnName, sqlType, fkClass)
+    override fun build() = DateTimeColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
 }
 
 class TimeColumnBuilderNotNull<T : Any, U> internal constructor(
@@ -169,10 +164,8 @@ class TimeColumnBuilderNotNull<T : Any, U> internal constructor(
         return this
     }
 
-    override val primaryKey
-        get() = isPrimaryKey
-
-    override fun build() = TimeColumnNotNull(entityGetter, columnName, sqlType, isPK, defaultValue, fkClass)
+    override fun build() =
+            TimeColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
 }
 
 class TimeColumnBuilderNullable<T : Any, U> internal constructor(
@@ -180,7 +173,7 @@ class TimeColumnBuilderNullable<T : Any, U> internal constructor(
 ) : ColumnNullableBuilder<TimeColumnBuilderNullable<T, U>, T>() {
     override val sqlType = SqlType.TIME
 
-    override fun build() = TimeColumnNullable(entityGetter, columnName, sqlType, fkClass)
+    override fun build() = TimeColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
 }
 
 class BooleanColumnBuilderNotNull<T : Any, U> internal constructor(
@@ -195,7 +188,8 @@ class BooleanColumnBuilderNotNull<T : Any, U> internal constructor(
         return this
     }
 
-    override fun build() = BooleanColumnNotNull(entityGetter, columnName, sqlType, defaultValue, false, fkClass)
+    override fun build() =
+            BooleanColumnNotNull(entityGetter, columnName, sqlType, defaultValue, fkClass, fkName)
 }
 
 class UuidColumnBuilderNotNull<T : Any, U> internal constructor(
@@ -210,10 +204,8 @@ class UuidColumnBuilderNotNull<T : Any, U> internal constructor(
         return this
     }
 
-    override val primaryKey
-        get() = isPrimaryKey
-
-    override fun build() = UuidColumnNotNull(entityGetter, columnName, sqlType, isPK, defaultValue, fkClass)
+    override fun build() =
+            UuidColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
 }
 
 class UuidColumnBuilderNullable<T : Any, U> internal constructor(
@@ -221,5 +213,5 @@ class UuidColumnBuilderNullable<T : Any, U> internal constructor(
 ) : ColumnNullableBuilder<UuidColumnBuilderNullable<T, U>, T>() {
     override val sqlType = SqlType.UUID
 
-    override fun build() = UuidColumnNullable(entityGetter, columnName, sqlType, fkClass)
+    override fun build() = UuidColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
 }

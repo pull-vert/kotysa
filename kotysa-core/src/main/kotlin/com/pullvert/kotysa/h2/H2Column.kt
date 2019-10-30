@@ -20,8 +20,10 @@ internal class TimestampWithTimeZoneColumnNotNull<T : Any, U> internal construct
         override val name: String,
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
+        override val pkName: String?,
         override val defaultValue: U?,
-        override var fkClass: KClass<*>?
+        override val fkClass: KClass<*>?,
+        override val fkName: String?
 ) : AbstractColumn<T, U>(), TimestampWithTimeZoneColumn<T, U>, ColumnNotNull<T, U>
 
 /**
@@ -31,7 +33,8 @@ internal class TimestampWithTimeZoneColumnNullable<T : Any, U> internal construc
         override val entityGetter: (T) -> U,
         override val name: String,
         override val sqlType: SqlType,
-        override var fkClass: KClass<*>?
+        override val fkClass: KClass<*>?,
+        override val fkName: String?
 ) : AbstractColumn<T, U>(), TimestampWithTimeZoneColumn<T, U>, ColumnNullable<T, U>
 
 /**
@@ -47,8 +50,10 @@ internal class Time9ColumnNotNull<T : Any, U> internal constructor(
         override val name: String,
         override val sqlType: SqlType,
         override val isPrimaryKey: Boolean,
+        override val pkName: String?,
         override val defaultValue: U?,
-        override var fkClass: KClass<*>?
+        override val fkClass: KClass<*>?,
+        override val fkName: String?
 ) : AbstractColumn<T, U>(), Time9Column<T, U>, ColumnNotNull<T, U>
 
 /**
@@ -58,5 +63,6 @@ internal class Time9ColumnNullable<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U,
         override val name: String,
         override val sqlType: SqlType,
-        override var fkClass: KClass<*>?
+        override val fkClass: KClass<*>?,
+        override val fkName: String?
 ) : AbstractColumn<T, U>(), Time9Column<T, U>, ColumnNullable<T, U>

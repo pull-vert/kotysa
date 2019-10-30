@@ -17,7 +17,7 @@ abstract class TableDsl<T : Any, U : TableDsl<T, U>>(
 
     lateinit var name: String
     private val columns = mutableMapOf<(T) -> Any?, Column<T, *>>()
-    lateinit var primaryKey: PrimaryKey
+    private lateinit var singleColumnPrimaryKey: Column<*, *>
 
     protected fun addColumn(column: Column<T, *>) {
         require(!columns.containsKey(column.entityGetter)) {
@@ -27,10 +27,10 @@ abstract class TableDsl<T : Any, U : TableDsl<T, U>>(
             "Trying to map property \"${column.entityGetter}\", which is not a property of entity class \"${tableClass.qualifiedName}\""
         }
         if (column.isPrimaryKey) {
-            check(!::primaryKey.isInitialized) {
+            check(!::singleColumnPrimaryKey.isInitialized) {
                 "Table must not declare more than one Primary Key"
             }
-            primaryKey = SinglePrimaryKey(column)
+            singleColumnPrimaryKey = column
         }
         columns[column.entityGetter] = column
     }
@@ -41,8 +41,13 @@ abstract class TableDsl<T : Any, U : TableDsl<T, U>>(
         if(!::name.isInitialized) {
             name = tableClass.simpleName!!
         }
-        require(::primaryKey.isInitialized) { "Table primary key is mandatory" }
+        require(::singleColumnPrimaryKey.isInitialized) { "Table primary key is mandatory" }
         require(columns.isNotEmpty()) { "Table must declare at least one column" }
+
+        // only single column PK is supported
+        val pkName = singleColumnPrimaryKey.pkName ?: "PK_$name"
+        val primaryKey = SinglePrimaryKey(pkName, singleColumnPrimaryKey)
+
         val table = TableImpl(tableClass, name, columns, primaryKey)
         // associate table to all its columns
         columns.forEach { (_, c) -> c.table = table }

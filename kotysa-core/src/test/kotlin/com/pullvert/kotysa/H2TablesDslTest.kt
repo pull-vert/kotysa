@@ -19,7 +19,7 @@ class H2TablesDslTest {
         val tables = tables().h2 {
             table<H2AllTypesNotNull> {
                 name = "all_types"
-                column { it[H2AllTypesNotNull::id].uuid().primaryKey }
+                column { it[H2AllTypesNotNull::id].uuid().primaryKey() }
                 column { it[H2AllTypesNotNull::string].varchar() }
                 column { it[H2AllTypesNotNull::boolean].boolean() }
                 column { it[H2AllTypesNotNull::localDate].date() }
@@ -49,7 +49,7 @@ class H2TablesDslTest {
         val tables = tables().h2 {
             table<H2AllTypesNullable> {
                 name = "all_types_nullable"
-                column { it[H2AllTypesNullable::id].uuid().primaryKey }
+                column { it[H2AllTypesNullable::id].uuid().primaryKey() }
                 column { it[H2AllTypesNullable::string].varchar() }
                 column { it[H2AllTypesNullable::localDate].date() }
                 column { it[H2AllTypesNullable::offsetDateTime].timestampWithTimeZone() }

@@ -34,12 +34,12 @@ class UserRepositoryR2dbc(dbClient: DatabaseClient) {
             tables().h2 {
                 table<Role> {
                     name = "roles"
-                    column { it[Role::id].uuid().primaryKey }
+                    column { it[Role::id].uuid().primaryKey() }
                     column { it[Role::label].varchar() }
                 }
                 table<User> {
                     name = "users"
-                    column { it[User::id].uuid().primaryKey }
+                    column { it[User::id].uuid().primaryKey() }
                     column { it[User::firstname].varchar().name("fname") }
                     column { it[User::lastname].varchar().name("lname") }
                     column { it[User::isAdmin].boolean() }

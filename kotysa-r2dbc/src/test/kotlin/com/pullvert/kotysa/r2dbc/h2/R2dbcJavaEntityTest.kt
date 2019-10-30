@@ -108,7 +108,7 @@ private val tables =
         tables().h2 {
             table<JavaUser> {
                 name = "java_users"
-                column { it[JavaUser::getLogin].varchar().primaryKey }
+                column { it[JavaUser::getLogin].varchar().primaryKey() }
                 column { it[JavaUser::getFirstname].varchar().name("fname") }
                 column { it[JavaUser::getLastname].varchar().name("lname") }
                 column { it[JavaUser::isAdmin].boolean() }

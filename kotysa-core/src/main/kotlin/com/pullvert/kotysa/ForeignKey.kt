@@ -7,13 +7,15 @@ package com.pullvert.kotysa
 /**
  * @author Fred Montariol
  */
-interface ForeignKey
+interface ForeignKey {
+	val name: String
+}
 
 /**
  * @author Fred Montariol
  */
-internal data class SingleForeignKey<T : Any, U : Any, V> internal constructor(
-		internal val name: String,
-		internal val column: Column<T, V>,
-		internal var referencedColumn: Column<U, V>
+internal data class SingleForeignKey<T : Any, U> internal constructor(
+		override val name: String,
+		internal val column: Column<T, U>,
+		internal var referencedColumn: Column<*, *>
 ) : ForeignKey

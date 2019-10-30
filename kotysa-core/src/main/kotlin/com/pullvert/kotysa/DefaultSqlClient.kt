@@ -44,17 +44,6 @@ interface DefaultSqlClient {
                 primaryKey = "CONSTRAINT PK_${table.name} PRIMARY KEY (${column.name})"
             }
             column.fkColumn?.also { fkColumn ->
-                // build foreign key
-                var fk = ForeignKey("FK_${fkColumn.table.name}")
-                if (table.foreignKeys.contains(fk)) {
-                    // must concat with index to avoid duplicate foreign key name
-                    var index = 2
-                    fk = ForeignKey("FK_${fkColumn.table.name}_$index")
-                    while(table.foreignKeys.contains(fk)) {
-                        fk = ForeignKey("FK_${fkColumn.table.name}_${++index}")
-                    }
-                }
-
                 foreignKeys.append(", ")
                 foreignKeys.append("CONSTRAINT FK_${fkColumn.table.name} FOREIGN KEY (${column.name}) " +
                         "REFERENCES ${fkColumn.table.name}(${fkColumn.name})")
