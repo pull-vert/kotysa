@@ -29,17 +29,17 @@ abstract class AbstractUserRepository(dbClient: DatabaseClient) : Repository {
 				.block()
 	}
 
-	fun createTables() =
+	private fun createTables() =
 			sqlClient.createTable<H2Role>()
 					.then(sqlClient.createTable<H2User>())
 
-	fun insertRoles() = sqlClient.insert(h2User, h2Admin)
+	private fun insertRoles() = sqlClient.insert(h2User, h2Admin)
 
 	fun insertUsers() = sqlClient.insert(h2Jdoe, h2Bboss)
 
 	fun insertJDoe() = sqlClient.insert(h2Jdoe)
 
-	fun deleteAllFromRole() = sqlClient.deleteAllFromTable<H2Role>()
+	private fun deleteAllFromRole() = sqlClient.deleteAllFromTable<H2Role>()
 
 	fun deleteAllFromUsers() = sqlClient.deleteAllFromTable<H2User>()
 

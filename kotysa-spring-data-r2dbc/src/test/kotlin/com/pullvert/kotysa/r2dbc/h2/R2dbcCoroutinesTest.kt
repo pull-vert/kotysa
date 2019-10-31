@@ -122,16 +122,16 @@ class CoroutinesUserRepository(dbClient: DatabaseClient) : Repository {
 		deleteAllFromRole()
 	}
 
-	suspend fun createTables() {
+	private suspend fun createTables() {
 		sqlClient.createTable<H2Role>()
 		sqlClient.createTable<H2User>()
 	}
 
-	suspend fun insertRoles() = sqlClient.insert(h2User, h2Admin)
+	private suspend fun insertRoles() = sqlClient.insert(h2User, h2Admin)
 
 	suspend fun insertUsers() = sqlClient.insert(h2Jdoe, h2Bboss)
 
-	suspend fun deleteAllFromRole() = sqlClient.deleteAllFromTable<H2Role>()
+	private suspend fun deleteAllFromRole() = sqlClient.deleteAllFromTable<H2Role>()
 
 	suspend fun deleteAllFromUsers() = sqlClient.deleteAllFromTable<H2User>()
 

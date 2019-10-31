@@ -12,7 +12,9 @@ import android.util.Log
 /**
  * see [Android SQLite database unit testing](https://medium.com/@elye.project/android-sqlite-database-unit-testing-is-easy-a09994701162#.s44tity8x)
  */
-internal class DbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DbHelper internal constructor(
+        context: Context
+) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private val TAG = DbHelper::class.java.simpleName

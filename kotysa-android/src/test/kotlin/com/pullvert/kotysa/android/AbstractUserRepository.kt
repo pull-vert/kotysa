@@ -29,18 +29,18 @@ abstract class AbstractUserRepository(
         deleteAllFromRoles()
     }
 
-    fun createTable() {
+    private fun createTable() {
         sqlClient.createTable<SqLiteRole>()
         sqlClient.createTable<SqLiteUser>()
     }
 
-    fun insertRoles() = sqlClient.insert(sqLiteUser, sqLiteAdmin)
+    private fun insertRoles() = sqlClient.insert(sqLiteUser, sqLiteAdmin)
 
     fun insertUsers() = sqlClient.insert(sqLiteJdoe, sqLiteBboss)
 
     fun deleteAllFromUsers() = sqlClient.deleteAllFromTable<SqLiteUser>()
 
-    fun deleteAllFromRoles() = sqlClient.deleteAllFromTable<SqLiteRole>()
+    private fun deleteAllFromRoles() = sqlClient.deleteAllFromTable<SqLiteRole>()
 
     fun insertJDoe() = sqlClient.insert(sqLiteJdoe)
 

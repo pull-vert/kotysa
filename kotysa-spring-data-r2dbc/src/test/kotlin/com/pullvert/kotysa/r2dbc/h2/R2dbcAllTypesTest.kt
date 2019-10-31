@@ -77,15 +77,15 @@ class AllTypesRepository(dbClient: DatabaseClient) : Repository {
 				.block()
 	}
 
-	fun createTables() =
+	private fun createTables() =
 			sqlClient.createTable<H2AllTypesNotNull>()
 					.then(sqlClient.createTable<H2AllTypesNullable>())
 
-	fun insertAllTypes() = sqlClient.insert(h2AllTypesNotNull, h2AllTypesNullable)
+	private fun insertAllTypes() = sqlClient.insert(h2AllTypesNotNull, h2AllTypesNullable)
 
-	fun deleteAllFromAllTypesNotNull() = sqlClient.deleteAllFromTable<H2AllTypesNotNull>()
+	private fun deleteAllFromAllTypesNotNull() = sqlClient.deleteAllFromTable<H2AllTypesNotNull>()
 
-	fun deleteAllFromAllTypesNullable() = sqlClient.deleteAllFromTable<H2AllTypesNullable>()
+	private fun deleteAllFromAllTypesNullable() = sqlClient.deleteAllFromTable<H2AllTypesNullable>()
 
 	fun selectAllAllTypesNotNull() = sqlClient.selectAll<H2AllTypesNotNull>()
 

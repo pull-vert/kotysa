@@ -80,11 +80,11 @@ class InheritanceRepository(dbClient: DatabaseClient) : Repository {
 				.block()
 	}
 
-	fun createTable() = sqlClient.createTable<Inherited>()
+	private fun createTable() = sqlClient.createTable<Inherited>()
 
 	fun insert() = sqlClient.insert(inherited)
 
-	fun deleteAll() = sqlClient.deleteAllFromTable<Inherited>()
+	private fun deleteAll() = sqlClient.deleteAllFromTable<Inherited>()
 
 	fun selectAll() = sqlClient.selectAll<Inherited>()
 

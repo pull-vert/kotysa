@@ -136,7 +136,7 @@ class JavaUserRepository(dbClient: DatabaseClient) : Repository {
 				.block()
 	}
 
-	fun createTable() = sqlClient.createTable<JavaUser>()
+	private fun createTable() = sqlClient.createTable<JavaUser>()
 
 	fun insert() = sqlClient.insert(javaJdoe, javaBboss)
 

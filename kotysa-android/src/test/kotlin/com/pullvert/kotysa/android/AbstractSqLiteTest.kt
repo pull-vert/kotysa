@@ -38,5 +38,5 @@ abstract class AbstractSqLiteTest<T : Repository> {
         repository.delete()
     }
 
-    internal abstract fun getRepository(dbHelper: DbHelper, sqLiteTables: Tables): T
+    protected abstract fun getRepository(dbHelper: DbHelper, sqLiteTables: Tables): T
 }

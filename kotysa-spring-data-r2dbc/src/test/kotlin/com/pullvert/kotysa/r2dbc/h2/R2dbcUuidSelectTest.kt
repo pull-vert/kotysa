@@ -48,17 +48,17 @@ class UuidRepositorySelect(dbClient: DatabaseClient) : Repository {
 				.block()
 	}
 
-	fun createTables() =
+	private fun createTables() =
 			sqlClient.createTable<H2Role>()
 					.then(sqlClient.createTable<H2Uuid>())
 
-	fun insertRoles() = sqlClient.insert(h2User, h2Admin)
+	private fun insertRoles() = sqlClient.insert(h2User, h2Admin)
 
-	fun insertUuids() = sqlClient.insert(h2UuidWithNullable, h2UuidWithoutNullable)
+	private fun insertUuids() = sqlClient.insert(h2UuidWithNullable, h2UuidWithoutNullable)
 
-	fun deleteAllFromRole() = sqlClient.deleteAllFromTable<H2Role>()
+	private fun deleteAllFromRole() = sqlClient.deleteAllFromTable<H2Role>()
 
-	fun deleteAllFromUuid() = sqlClient.deleteAllFromTable<H2Uuid>()
+	private fun deleteAllFromUuid() = sqlClient.deleteAllFromTable<H2Uuid>()
 
 	fun selectAllByRoleIdNotNull(roleId: UUID) = sqlClient.select<H2Uuid>()
 			.where { it[H2Uuid::roleIdNotNull] eq roleId }
