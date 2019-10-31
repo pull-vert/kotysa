@@ -5,4 +5,4 @@ include 'kotysa-core'
 include 'kotysa-test-common'
 
 include 'kotysa-android'
-include 'kotysa-r2dbc'
+include 'kotysa-spring-data-r2dbc'
