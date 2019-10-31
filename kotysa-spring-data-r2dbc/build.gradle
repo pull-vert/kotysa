@@ -13,7 +13,7 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     compile "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
     compile "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
-    
+
     compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-reactive'
 
     testCompile project(':kotysa-test-common')

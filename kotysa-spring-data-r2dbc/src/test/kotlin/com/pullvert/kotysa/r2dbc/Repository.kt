@@ -8,7 +8,7 @@ package com.pullvert.kotysa.r2dbc
  * @author Fred Montariol
  */
 interface Repository {
-	fun init()
+    fun init()
 
-	fun delete()
+    fun delete()
 }

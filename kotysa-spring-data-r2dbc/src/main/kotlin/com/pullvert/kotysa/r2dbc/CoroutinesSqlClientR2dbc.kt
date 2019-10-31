@@ -14,31 +14,31 @@ import kotlin.reflect.KClass
  * @author Fred Montariol
  */
 private class CoroutinesSqlClientR2Dbc internal constructor(
-		override val client: DatabaseClient,
-		override val tables: Tables
+        override val client: DatabaseClient,
+        override val tables: Tables
 ) : CoroutinesSqlClient(), AbstractSqlClientR2dbc {
 
-	@ExperimentalStdlibApi
-	override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): CoroutinesSqlClientSelect.Select<T> =
-			CoroutinesSqlClientSelectR2dbc.Select(client, tables, resultClass, dsl)
+    @ExperimentalStdlibApi
+    override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): CoroutinesSqlClientSelect.Select<T> =
+            CoroutinesSqlClientSelectR2dbc.Select(client, tables, resultClass, dsl)
 
-	override suspend fun <T : Any> createTable(tableClass: KClass<T>) =
-			executeCreateTable(tableClass).await()
+    override suspend fun <T : Any> createTable(tableClass: KClass<T>) =
+            executeCreateTable(tableClass).await()
 
-	override suspend fun <T : Any> insert(row: T) =
-			executeInsert(row).await()
+    override suspend fun <T : Any> insert(row: T) =
+            executeInsert(row).await()
 
-	override suspend fun insert(vararg rows: Any) {
-		checkRowsAreMapped(*rows)
+    override suspend fun insert(vararg rows: Any) {
+        checkRowsAreMapped(*rows)
 
-		rows.forEach { row -> insert(row) }
-	}
+        rows.forEach { row -> insert(row) }
+    }
 
-	override fun <T : Any> deleteFromTable(tableClass: KClass<T>): CoroutinesSqlClientDeleteOrUpdate.DeleteOrUpdate<T> =
-			CoroutinesSqlClientDeleteR2dbc.Delete(client, tables, tableClass)
+    override fun <T : Any> deleteFromTable(tableClass: KClass<T>): CoroutinesSqlClientDeleteOrUpdate.DeleteOrUpdate<T> =
+            CoroutinesSqlClientDeleteR2dbc.Delete(client, tables, tableClass)
 
-	override fun <T : Any> updateTable(tableClass: KClass<T>): CoroutinesSqlClientDeleteOrUpdate.Update<T> =
-			CoroutinesSqlClientUpdateR2dbc.Update(client, tables, tableClass)
+    override fun <T : Any> updateTable(tableClass: KClass<T>): CoroutinesSqlClientDeleteOrUpdate.Update<T> =
+            CoroutinesSqlClientUpdateR2dbc.Update(client, tables, tableClass)
 }
 
 /**

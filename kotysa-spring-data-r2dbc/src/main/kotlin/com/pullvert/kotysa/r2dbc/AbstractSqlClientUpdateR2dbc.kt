@@ -4,10 +4,9 @@
 
 package com.pullvert.kotysa.r2dbc
 
-import com.pullvert.kotysa.*
+import com.pullvert.kotysa.DefaultSqlClientDeleteOrUpdate
+import com.pullvert.kotysa.toCallable
 import org.springframework.data.r2dbc.core.DatabaseClient
-import org.springframework.data.r2dbc.core.bind
-import reactor.core.publisher.Mono
 import kotlin.reflect.KClass
 
 /**

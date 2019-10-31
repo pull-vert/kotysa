@@ -4,7 +4,9 @@
 
 package com.pullvert.kotysa.r2dbc
 
-import com.pullvert.kotysa.*
+import com.pullvert.kotysa.AbstractRow
+import com.pullvert.kotysa.DefaultSqlClientSelect
+import com.pullvert.kotysa.Field
 import io.r2dbc.spi.Row
 import org.springframework.data.r2dbc.core.DatabaseClient
 
