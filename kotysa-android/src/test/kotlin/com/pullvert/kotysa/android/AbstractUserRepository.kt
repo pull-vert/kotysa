@@ -20,10 +20,13 @@ abstract class AbstractUserRepository(
 
     override fun init() {
         createTable()
-        deleteAll()
-        deleteAllFromRoles()
         insertRoles()
-        insert()
+        insertUsers()
+    }
+
+    override fun delete() {
+        deleteAllFromUsers()
+        deleteAllFromRoles()
     }
 
     fun createTable() {
@@ -33,9 +36,9 @@ abstract class AbstractUserRepository(
 
     fun insertRoles() = sqlClient.insert(sqLiteUser, sqLiteAdmin)
 
-    fun insert() = sqlClient.insert(sqLiteJdoe, sqLiteBboss)
+    fun insertUsers() = sqlClient.insert(sqLiteJdoe, sqLiteBboss)
 
-    fun deleteAll() = sqlClient.deleteAllFromTable<SqLiteUser>()
+    fun deleteAllFromUsers() = sqlClient.deleteAllFromTable<SqLiteUser>()
 
     fun deleteAllFromRoles() = sqlClient.deleteAllFromTable<SqLiteRole>()
 

@@ -6,6 +6,7 @@ package com.pullvert.kotysa.android
 
 import com.pullvert.kotysa.Tables
 import com.pullvert.kotysa.test.common.sqLiteTables
+import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -30,6 +31,11 @@ abstract class AbstractSqLiteTest<T : Repository> {
         dbHelper = DbHelper(RuntimeEnvironment.application)
         repository = getRepository(dbHelper, sqLiteTables)
         repository.init()
+    }
+
+    @After
+    fun afterAll() {
+        repository.delete()
     }
 
     internal abstract fun getRepository(dbHelper: DbHelper, sqLiteTables: Tables): T

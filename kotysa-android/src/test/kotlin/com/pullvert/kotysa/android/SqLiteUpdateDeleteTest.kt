@@ -20,12 +20,12 @@ class SqLiteUpdateDeleteTest : AbstractSqLiteTest<UserRepositoryUpdateDelete>() 
 
     @Test
     fun `Verify deleteAllFromUser works correctly`() {
-        assertThat(repository.deleteAll())
+        assertThat(repository.deleteAllFromUsers())
                 .isEqualTo(2)
         assertThat(repository.selectAll().toList())
                 .isEmpty()
         // re-insert users
-        repository.insert()
+        repository.insertUsers()
     }
 
     @Test
