@@ -26,17 +26,28 @@ internal class CoroutinesSqlClientUpdateR2dbc private constructor() : AbstractSq
 			return this
 		}
 
-		override fun <U : Any> joinOn(joinClass: KClass<U>, alias: String?, type: JoinType,
-									  dsl: (FieldProvider) -> ColumnField<*, *>): CoroutinesSqlClientDeleteOrUpdate.Join {
-			val join = Join(client, properties)
-			join.addJoinClause(dsl, joinClass, alias, type)
-			return join
-		}
+		override fun <U : Any> join(joinClass: KClass<U>, alias: String?, type: JoinType): CoroutinesSqlClientDeleteOrUpdate.Joinable =
+				Joinable(client, properties, joinClass, alias, type)
 
 		override fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): CoroutinesSqlClientDeleteOrUpdate.TypedWhere<T> {
 			val where = TypedWhere(client, properties)
 			where.addWhereClause(dsl)
 			return where
+		}
+	}
+
+	private class Joinable<T : Any, U : Any> internal constructor(
+			private val client: DatabaseClient,
+			private val properties: Properties<T>,
+			private val joinClass: KClass<U>,
+			private val alias: String?,
+			private val type: JoinType
+	) : CoroutinesSqlClientDeleteOrUpdate.Joinable {
+
+		override fun on(dsl: (FieldProvider) -> ColumnField<*, *>): CoroutinesSqlClientDeleteOrUpdate.Join {
+			val join = Join(client, properties)
+			join.addJoinClause(dsl, joinClass, alias, type)
+			return join
 		}
 	}
 

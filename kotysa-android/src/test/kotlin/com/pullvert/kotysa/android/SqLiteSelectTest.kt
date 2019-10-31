@@ -69,6 +69,6 @@ class UserRepositorySelect(sqLiteOpenHelper: SQLiteOpenHelper, tables: Tables) :
 
     fun selectWithJoin() =
             sqlClient.select { UserWithRoleDto(it[SqLiteUser::lastname], it[SqLiteRole::label]) }
-                    .innerJoinOn<SqLiteRole> { it[SqLiteUser::roleId] }
+                    .innerJoin<SqLiteRole>().on { it[SqLiteUser::roleId] }
                     .fetchAll()
 }

@@ -63,23 +63,26 @@ abstract class BlockingSqlClient {
  */
 class BlockingSqlClientSelect private constructor() {
     abstract class Select<T : Any> : Whereable<T>, Return<T> {
-        inline fun <reified T : Any> innerJoinOn(alias: String? = null, noinline dsl: (FieldProvider) -> ColumnField<*, *>) =
-                joinOnInternal(T::class, alias, JoinType.INNER, dsl)
+
+        inline fun <reified T : Any> innerJoin(alias: String? = null) =
+                joinInternal(T::class, alias, JoinType.INNER)
 
         @PublishedApi
-        internal fun <U : Any> joinOnInternal(joinClass: KClass<U>, alias: String?, type: JoinType,
-                                              dsl: (FieldProvider) -> ColumnField<*, *>) =
-                joinOn(joinClass, alias, type, dsl)
+        internal fun <U : Any> joinInternal(joinClass: KClass<U>, alias: String?, type: JoinType) =
+                join(joinClass, alias, type)
 
-        protected abstract fun <U : Any> joinOn(
-                joinClass: KClass<U>, alias: String?, type: JoinType, dsl: (FieldProvider) -> ColumnField<*, *>): Join<T>
+        protected abstract fun <U : Any> join(joinClass: KClass<U>, alias: String?, type: JoinType): Joinable<T>
     }
+
+    interface Joinable<T : Any> {
+        fun on(dsl: (FieldProvider) -> ColumnField<*, *>): Join<T>
+    }
+
+    interface Join<T : Any> : Whereable<T>, Return<T>
 
     interface Whereable<T : Any> {
         fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
     }
-
-    interface Join<T : Any> : Whereable<T>, Return<T>
 
     interface Where<T : Any> : Return<T>
 
@@ -123,22 +126,25 @@ class BlockingSqlClientSelect private constructor() {
  */
 class BlockingSqlClientDeleteOrUpdate private constructor() {
     abstract class DeleteOrUpdate<T : Any> : Return {
-        inline fun <reified T : Any> innerJoinOn(alias: String? = null, noinline dsl: (FieldProvider) -> ColumnField<*, *>) =
-                joinOnInternal(T::class, alias, JoinType.INNER, dsl)
+
+        inline fun <reified T : Any> innerJoin(alias: String? = null) =
+                joinInternal(T::class, alias, JoinType.INNER)
 
         @PublishedApi
-        internal fun <U : Any> joinOnInternal(joinClass: KClass<U>, alias: String?, type: JoinType,
-                                              dsl: (FieldProvider) -> ColumnField<*, *>) =
-                joinOn(joinClass, alias, type, dsl)
+        internal fun <U : Any> joinInternal(joinClass: KClass<U>, alias: String?, type: JoinType) =
+                join(joinClass, alias, type)
 
-        protected abstract fun <U : Any> joinOn(
-                joinClass: KClass<U>, alias: String?, type: JoinType, dsl: (FieldProvider) -> ColumnField<*, *>): Join
+        protected abstract fun <U : Any> join(joinClass: KClass<U>, alias: String?, type: JoinType): Joinable
 
         abstract fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): TypedWhere<T>
     }
 
     abstract class Update<T : Any> : DeleteOrUpdate<T>() {
         abstract fun set(dsl: (FieldSetter<T>) -> Unit): Update<T>
+    }
+
+    interface Joinable {
+        fun on(dsl: (FieldProvider) -> ColumnField<*, *>): Join
     }
 
     interface Join : Return {

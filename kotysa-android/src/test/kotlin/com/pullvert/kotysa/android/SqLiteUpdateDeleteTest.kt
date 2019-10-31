@@ -80,7 +80,7 @@ class UserRepositoryUpdateDelete(sqLiteOpenHelper: SQLiteOpenHelper, tables: Tab
             .execute()
 
     fun deleteUserWithJoin(roleLabel: String) = sqlClient.deleteFromTable<SqLiteUser>()
-            .innerJoinOn<SqLiteRole> { it[SqLiteUser::roleId] }
+            .innerJoin<SqLiteRole>().on { it[SqLiteUser::roleId] }
             .where { it[SqLiteRole::label] eq roleLabel }
             .execute()
 
@@ -91,7 +91,7 @@ class UserRepositoryUpdateDelete(sqLiteOpenHelper: SQLiteOpenHelper, tables: Tab
 
     fun updateWithJoin(newLastname: String, roleLabel: String) = sqlClient.updateTable<SqLiteUser>()
             .set { it[SqLiteUser::lastname] = newLastname }
-            .innerJoinOn<SqLiteRole> { it[SqLiteUser::roleId] }
+            .innerJoin<SqLiteRole>().on { it[SqLiteUser::roleId] }
             .where { it[SqLiteRole::label] eq roleLabel }
             .execute()
 }

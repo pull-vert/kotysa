@@ -85,6 +85,6 @@ class UserRepositorySelect(dbClient: DatabaseClient) : AbstractUserRepository(db
 
 	fun selectWithJoin() =
 			sqlClient.select { UserWithRoleDto(it[H2User::lastname], it[H2Role::label]) }
-					.innerJoinOn<H2Role> { it[H2User::roleId] }
+					.innerJoin<H2Role>().on { it[H2User::roleId] }
 					.fetchAll()
 }

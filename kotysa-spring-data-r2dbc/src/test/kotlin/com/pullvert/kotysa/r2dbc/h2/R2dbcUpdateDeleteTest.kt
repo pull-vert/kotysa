@@ -96,7 +96,7 @@ class UserRepositoryUpdateDelete(dbClient: DatabaseClient) : AbstractUserReposit
 			.execute()
 
 	fun deleteUserWithJoin(roleLabel: String) = sqlClient.deleteFromTable<H2User>()
-			.innerJoinOn<H2Role> { it[H2User::roleId] }
+			.innerJoin<H2Role>().on { it[H2User::roleId] }
 			.where { it[H2Role::label] eq roleLabel }
 			.execute()
 
@@ -112,7 +112,7 @@ class UserRepositoryUpdateDelete(dbClient: DatabaseClient) : AbstractUserReposit
 
 	fun updateWithJoin(newLastname: String, roleLabel: String) = sqlClient.updateTable<H2User>()
 			.set { it[H2User::lastname] = newLastname }
-			.innerJoinOn<H2Role> { it[H2User::roleId] }
+			.innerJoin<H2Role>().on { it[H2User::roleId] }
 			.where { it[H2Role::label] eq roleLabel }
 			.execute()
 }

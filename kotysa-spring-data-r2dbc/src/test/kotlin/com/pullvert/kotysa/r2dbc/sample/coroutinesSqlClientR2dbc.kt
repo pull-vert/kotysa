@@ -70,20 +70,20 @@ class UserRepositoryR2dbcCoroutines(dbClient: DatabaseClient) {
         val all = selectAll<User>()
 
         val johny = select { UserWithRoleDto(it[User::lastname], it[Role::label]) }
-                .innerJoinOn<Role> { it[User::roleId] }
+                .innerJoin<Role>().on { it[User::roleId] }
                 .where { it[User::alias] eq "Johny" }
                 // null String accepted        ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
                 .fetchFirst()
 
         val nbUpdated = updateTable<User>()
                 .set { it[User::lastname] = "NewLastName" }
-                .innerJoinOn<Role> { it[User::roleId] }
+                .innerJoin<Role>().on { it[User::roleId] }
                 .where { it[Role::label] eq roleUser.label }
                 // null String forbidden      ^^^^^^^^^^^^
                 .execute()
 
         val nbDeleted = deleteFromTable<User>()
-                .innerJoinOn<Role> { it[User::roleId] }
+                .innerJoin<Role>().on { it[User::roleId] }
                 .where { it[Role::label] eq roleUser.label }
                 .execute()
     }
