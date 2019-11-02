@@ -21,10 +21,43 @@ class R2dbcUuidSelectTest : AbstractR2dbcTest<UuidRepositorySelect>() {
     override val repository = getContextRepository<UuidRepositorySelect>()
 
     @Test
-    fun `Verify selectAllByRoleIdNotNull finds BigBoss`() {
+    fun `Verify selectAllByRoleIdNotNull finds both results`() {
         assertThat(repository.selectAllByRoleIdNotNull(h2User.id).toIterable())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(h2UuidWithNullable, h2UuidWithoutNullable)
+    }
+
+    @Test
+    fun `Verify selectAllByRoleIdNotNullNotEq finds nothing`() {
+        assertThat(repository.selectAllByRoleIdNotNullNotEq(h2User.id).toIterable())
+                .isEmpty()
+    }
+
+    @Test
+    fun `Verify selectAllByRoleIdNullable finds h2UuidWithNullable`() {
+        assertThat(repository.selectAllByRoleIdNullable(h2Admin.id).toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(h2UuidWithNullable)
+    }
+
+    @Test
+    fun `Verify selectAllByRoleIdNullable finds h2UuidWithoutNullable`() {
+        assertThat(repository.selectAllByRoleIdNullable(null).toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(h2UuidWithoutNullable)
+    }
+
+    @Test
+    fun `Verify selectAllByRoleIdNullableNotEq finds h2UuidWithoutNullable`() {
+        assertThat(repository.selectAllByRoleIdNullableNotEq(h2Admin.id).toIterable())
+                .isEmpty()
+    }
+
+    @Test
+    fun `Verify selectAllByRoleIdNullableNotEq finds h2UuidWithNullable`() {
+        assertThat(repository.selectAllByRoleIdNullableNotEq(null).toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(h2UuidWithNullable)
     }
 }
 
@@ -62,5 +95,17 @@ class UuidRepositorySelect(dbClient: DatabaseClient) : Repository {
 
     fun selectAllByRoleIdNotNull(roleId: UUID) = sqlClient.select<H2Uuid>()
             .where { it[H2Uuid::roleIdNotNull] eq roleId }
+            .fetchAll()
+
+    fun selectAllByRoleIdNotNullNotEq(roleId: UUID) = sqlClient.select<H2Uuid>()
+            .where { it[H2Uuid::roleIdNotNull] notEq roleId }
+            .fetchAll()
+
+    fun selectAllByRoleIdNullable(roleId: UUID?) = sqlClient.select<H2Uuid>()
+            .where { it[H2Uuid::roleIdNullable] eq roleId }
+            .fetchAll()
+
+    fun selectAllByRoleIdNullableNotEq(roleId: UUID?) = sqlClient.select<H2Uuid>()
+            .where { it[H2Uuid::roleIdNullable] notEq roleId }
             .fetchAll()
 }
