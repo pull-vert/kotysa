@@ -16,7 +16,9 @@ dependencies {
 
 ## Reactive support
 
-**SqlClient** has one reactive implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient```, it can be obtained via an Extension function directly on ```DatabaseClient```. It provides an API using Reactor ```Mono``` and ```Flux```.
+**SqlClient** has one reactive implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient```, it can be obtained via an Extension function directly on ```DatabaseClient```.
+
+It provides an API using Reactor ```Mono``` and ```Flux```.
 
 ```kotlin
 class UserRepository(dbClient: DatabaseClient, tables: Tables) {
@@ -29,7 +31,9 @@ class UserRepository(dbClient: DatabaseClient, tables: Tables) {
 
 ## Coroutines first class support
 
-**SqlClient** has one Coroutines implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient```, it can be obtained via an Extension function directly on ```DatabaseClient```. It provides an API using ```suspend``` functions and kotlinx-coroutines ```Flow```.
+**SqlClient** has one Coroutines implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient```, it can be obtained via an Extension function directly on ```DatabaseClient```.
+
+It provides an API using ```suspend``` functions and kotlinx-coroutines ```Flow```.
 
 ```kotlin
 class UserRepository(dbClient: DatabaseClient, tables: Tables) {

@@ -3,7 +3,7 @@
 
 # Kotysa
 
-The idiomatic way of writing **Ko**tlin **ty**pe-**sa**fe SQL.
+The idiomatic way to write **Ko**tlin **ty**pe-**sa**fe SQL.
 
 ## Easy to use : 3 steps only
 ### step 1 -> Create Kotlin entities
