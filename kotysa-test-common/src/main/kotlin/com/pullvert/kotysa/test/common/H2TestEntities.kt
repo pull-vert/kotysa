@@ -20,11 +20,11 @@ val h2Tables =
             }
             table<H2User> {
                 name = "users"
-                column { it[H2User::id].uuid().primaryKey() }
+                column { it[H2User::id].uuid().primaryKey("PK_users") }
                 column { it[H2User::firstname].varchar().name("fname") }
                 column { it[H2User::lastname].varchar().name("lname") }
                 column { it[H2User::isAdmin].boolean() }
-                column { it[H2User::roleId].uuid().foreignKey<H2Role>() }
+                column { it[H2User::roleId].uuid().foreignKey<H2Role>("FK_users_roles") }
                 column { it[H2User::alias].varchar() }
             }
             table<H2AllTypesNotNull> {
