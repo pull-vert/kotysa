@@ -11,6 +11,8 @@ println("Using Gradle version: $gradle.gradleVersion")
 subprojects {
     apply plugin: 'org.jetbrains.kotlin.jvm'
     apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'jacoco'
+
     if (name != "kotysa-test-common") {
         apply plugin: 'maven-publish'
         apply plugin: 'com.jfrog.bintray'
@@ -25,6 +27,19 @@ subprojects {
         imports {
             mavenBom "org.junit:junit-bom:$junit_bom_version"
             mavenBom "org.jetbrains.kotlinx:kotlinx-coroutines-bom:$kotlinx_coroutines_bom_version"
+        }
+    }
+
+    jacoco {
+        toolVersion = "0.8.5"
+    }
+
+    jacocoTestReport {
+        dependsOn(test)
+
+        reports {
+            html.enabled = true
+            xml.enabled = true
         }
     }
 }
