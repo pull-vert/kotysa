@@ -56,10 +56,12 @@ dokka {
     outputFormat = 'html'
     outputDirectory = "$buildDir/javadoc"
 
-    jdkVersion = 8
+    configuration {
+        jdkVersion = 8
 
-    externalDocumentationLink {
-        url = new URL("https://developer.android.com/reference/")
+        externalDocumentationLink {
+            url = new URL("https://developer.android.com/reference/")
+        }
     }
 }
 
@@ -78,7 +80,7 @@ publishing {
             artifact javadocJar
             pom {
                 name = project.name
-                description = 'Kotysa Sql client is a Kotlin type-safe functional object mapping and SQL generator'
+                description = 'Kotysa is the idiomatic way to write Kotlin type-safe SQL'
                 url = 'https://github.com/pull-vert/kotysa'
                 licenses {
                     license {

@@ -53,8 +53,10 @@ dokka {
     outputFormat = 'html'
     outputDirectory = "$buildDir/javadoc"
 
-    jdkVersion = 8
-    includes = ['../README.md']
+    configuration {
+        jdkVersion = 8
+        includes = ['../README.md']
+    }
 }
 
 // generate xxx-javadoc.jar
@@ -72,7 +74,7 @@ publishing {
             artifact javadocJar
             pom {
                 name = project.name
-                description = 'Kotysa Sql client is a Kotlin type-safe functional object mapping and SQL generator'
+                description = 'Kotysa is the idiomatic way to write Kotlin type-safe SQL'
                 url = 'https://github.com/pull-vert/kotysa'
                 licenses {
                     license {
