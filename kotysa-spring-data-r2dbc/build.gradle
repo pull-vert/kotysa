@@ -8,6 +8,10 @@ repositories {
 }
 
 dependencies {
+    // import BOM
+    implementation platform("io.r2dbc:r2dbc-bom:$r2dbc_bom_version")
+    // "org.testcontainers:testcontainers-bom:1.12.0"
+
     compile project(':kotysa-core')
 
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
@@ -27,13 +31,6 @@ dependencies {
     testImplementation "org.assertj:assertj-core:$assertj_version"
 
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "io.r2dbc:r2dbc-bom:$r2dbc_bom_version"
-//        mavenBom "org.testcontainers:testcontainers-bom:1.12.0"
-    }
 }
 
 compileKotlin {
