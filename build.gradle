@@ -11,11 +11,9 @@ subprojects {
     apply plugin: 'jacoco'
     apply plugin: 'org.jetbrains.dokka'
 
-    if (name != "kotysa-test-common") {
-        apply plugin: 'maven-publish'
-        // Regular java modules need 'java-library' plugin for proper publication
-        apply plugin: 'java-library'
-    }
+    // Regular java modules need 'java-library' plugin for proper publication
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
 
     repositories {
         jcenter()

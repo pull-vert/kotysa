@@ -35,7 +35,3 @@ dokka {
         includes = ['../README.md']
     }
 }
-
-//publish.doLast {
-//    println("Uploaded $project.name version $project.version")
-//}

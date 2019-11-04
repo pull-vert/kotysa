@@ -28,7 +28,3 @@ dependencies {
 //        }
 //    }
 //}
-
-//publish.doLast {
-//    println("Uploaded $project.name version $project.version")
-//}
