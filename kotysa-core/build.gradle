@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
 
 plugins {
-    id 'org.jetbrains.dokka'
     id 'java-test-fixtures'
 }
 
@@ -24,20 +23,6 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
-compileKotlin {
-    kotlinOptions {
-        freeCompilerArgs = ['-Xjvm-default=enable']
-        jvmTarget = '1.8'
-    }
-}
-
-compileTestKotlin {
-    kotlinOptions {
-        freeCompilerArgs = ['-Xjvm-default=enable']
-        jvmTarget = '1.8'
-    }
-}
-
 compileTestFixturesKotlin {
     kotlinOptions {
         freeCompilerArgs = ['-Xjvm-default=enable']
@@ -45,81 +30,12 @@ compileTestFixturesKotlin {
     }
 }
 
-test {
-    useJUnitPlatform()
-    testLogging {
-        events 'passed', 'failed', 'skipped'
-        showStandardStreams = true
-    }
-}
-
-// --------------- Source & Javadoc artefacts + PUBLISHING ---------------
-
-// generate xxx-sources.jar
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allSource
-    archiveClassifier = 'sources'
-}
-
 dokka {
-    outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
-
     configuration {
-        jdkVersion = 8
         includes = ['../README.md']
     }
 }
 
-// generate xxx-javadoc.jar
-task javadocJar(type: Jar, dependsOn: dokka) {
-    from "$buildDir/javadoc"
-    archiveClassifier = 'javadoc'
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            artifactId = project.name
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-            pom {
-                name = project.name
-                description = 'Kotysa is the idiomatic way to write Kotlin type-safe SQL'
-                url = 'https://github.com/pull-vert/kotysa'
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:git://github.com/pull-vert/kotysa.git'
-                    url = 'https://github.com/pull-vert/kotysa.git'
-                }
-            }
-        }
-    }
-}
-
-bintray {
-    user = bintray_user //this usually comes from gradle.properties file in ~/.gradle
-    key = bintray_api_key //this usually comes from gradle.properties file in ~/.gradle
-    publications = ['maven']
-    pkg {
-        repo = 'kotysa'
-        name = 'kotysa'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/pull-vert/kotysa.git'
-        version {
-            name = project.version
-            vcsTag = project.version
-            released = new Date()
-        }
-    }
-}
-
-bintrayUpload.doLast {
-    println("Uploaded $project.name version $project.version")
-}
+//publish.doLast {
+//    println("Uploaded $project.name version $project.version")
+//}
