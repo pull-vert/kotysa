@@ -5,7 +5,7 @@
 package com.pullvert.kotysa.android
 
 import com.pullvert.kotysa.Tables
-import com.pullvert.kotysa.test.common.sqLiteTables
+import com.pullvert.kotysa.test.sqLiteTables
 import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith

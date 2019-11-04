@@ -6,7 +6,7 @@ package com.pullvert.kotysa.r2dbc.h2
 
 import com.pullvert.kotysa.NonUniqueResultException
 import com.pullvert.kotysa.count
-import com.pullvert.kotysa.test.common.*
+import com.pullvert.kotysa.test.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test

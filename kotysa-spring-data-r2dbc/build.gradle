@@ -16,7 +16,7 @@ dependencies {
 
     compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-reactive'
 
-    testCompile project(':kotysa-test-common')
+    testImplementation testFixtures(project(':kotysa-core'))
 
     testImplementation "org.springframework.fu:spring-fu-kofu:$spring_fu_version"
     testImplementation 'io.r2dbc:r2dbc-h2'

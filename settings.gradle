@@ -2,7 +2,7 @@ rootProject.name = 'kotysa'
 
 include 'kotysa-core'
 
-include 'kotysa-test-common'
-
 include 'kotysa-android'
 include 'kotysa-spring-data-r2dbc'
+
+enableFeaturePreview("GRADLE_METADATA")

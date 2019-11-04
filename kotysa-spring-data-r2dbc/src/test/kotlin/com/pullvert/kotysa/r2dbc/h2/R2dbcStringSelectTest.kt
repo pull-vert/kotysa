@@ -4,9 +4,9 @@
 
 package com.pullvert.kotysa.r2dbc.h2
 
-import com.pullvert.kotysa.test.common.H2User
-import com.pullvert.kotysa.test.common.h2Bboss
-import com.pullvert.kotysa.test.common.h2Jdoe
+import com.pullvert.kotysa.test.H2User
+import com.pullvert.kotysa.test.h2Bboss
+import com.pullvert.kotysa.test.h2Jdoe
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.data.r2dbc.core.DatabaseClient

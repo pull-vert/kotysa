@@ -4,7 +4,7 @@
 
 package com.pullvert.kotysa.r2dbc.h2
 
-import com.pullvert.kotysa.test.common.*
+import com.pullvert.kotysa.test.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.data.r2dbc.core.DatabaseClient

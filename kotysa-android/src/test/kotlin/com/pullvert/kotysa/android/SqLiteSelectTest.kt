@@ -7,7 +7,7 @@ package com.pullvert.kotysa.android
 import android.database.sqlite.SQLiteOpenHelper
 import com.pullvert.kotysa.NonUniqueResultException
 import com.pullvert.kotysa.Tables
-import com.pullvert.kotysa.test.common.*
+import com.pullvert.kotysa.test.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test

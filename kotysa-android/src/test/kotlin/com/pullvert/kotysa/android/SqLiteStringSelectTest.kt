@@ -7,9 +7,9 @@ package com.pullvert.kotysa.android
 import android.database.sqlite.SQLiteOpenHelper
 import com.pullvert.kotysa.NoResultException
 import com.pullvert.kotysa.Tables
-import com.pullvert.kotysa.test.common.SqLiteUser
-import com.pullvert.kotysa.test.common.sqLiteBboss
-import com.pullvert.kotysa.test.common.sqLiteJdoe
+import com.pullvert.kotysa.test.SqLiteUser
+import com.pullvert.kotysa.test.sqLiteBboss
+import com.pullvert.kotysa.test.sqLiteJdoe
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test

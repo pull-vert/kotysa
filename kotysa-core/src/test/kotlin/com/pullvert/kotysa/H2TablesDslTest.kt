@@ -4,12 +4,14 @@
 
 package com.pullvert.kotysa
 
+import com.pullvert.kotysa.test.H2AllTypesNotNull
+import com.pullvert.kotysa.test.H2AllTypesNullable
+import com.pullvert.kotysa.test.H2Role
+import com.pullvert.kotysa.test.H2User
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
-import java.time.*
-import java.util.*
 
 /**
  * @author Fred Montariol
@@ -149,50 +151,3 @@ class H2TablesDslTest {
         assertThat(userTableFk.name).isEqualTo("users_fk")
     }
 }
-
-/**
- * @author Fred Montariol
- */
-private data class H2AllTypesNotNull(
-        val id: UUID,
-        val string: String,
-        val boolean: Boolean,
-        val localDate: LocalDate,
-        val offsetDateTime: OffsetDateTime,
-        val localTim: LocalTime,
-        val localDateTime1: LocalDateTime,
-        val localDateTime2: LocalDateTime,
-        val uuid: UUID
-)
-
-/**
- * @author Fred Montariol
- */
-private data class H2AllTypesNullable(
-        val id: UUID,
-        val string: String?,
-        val localDate: LocalDate?,
-        val offsetDateTime: OffsetDateTime?,
-        val localTim: LocalTime?,
-        val localDateTime1: LocalDateTime?,
-        val localDateTime2: LocalDateTime?,
-        val uuid: UUID?
-)
-
-/**
- * @author Fred Montariol
- */
-private data class H2Role(
-        val label: String,
-        val id: UUID = UUID.randomUUID()
-)
-
-/**
- * @author Fred Montariol
- */
-private data class H2User(
-        val firstname: String,
-        val roleId: UUID,
-        val alias: String? = null,
-        val id: UUID = UUID.randomUUID()
-)

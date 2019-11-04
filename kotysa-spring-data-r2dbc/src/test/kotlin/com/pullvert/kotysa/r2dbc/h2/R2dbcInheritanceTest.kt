@@ -7,10 +7,10 @@ package com.pullvert.kotysa.r2dbc.h2
 import com.pullvert.kotysa.r2dbc.Repository
 import com.pullvert.kotysa.r2dbc.sqlClient
 import com.pullvert.kotysa.tables
-import com.pullvert.kotysa.test.common.Entity
-import com.pullvert.kotysa.test.common.Inherited
-import com.pullvert.kotysa.test.common.Nameable
-import com.pullvert.kotysa.test.common.inherited
+import com.pullvert.kotysa.test.Entity
+import com.pullvert.kotysa.test.Inherited
+import com.pullvert.kotysa.test.Nameable
+import com.pullvert.kotysa.test.inherited
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.data.r2dbc.core.DatabaseClient

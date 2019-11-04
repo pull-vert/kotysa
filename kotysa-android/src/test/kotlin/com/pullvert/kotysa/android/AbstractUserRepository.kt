@@ -6,7 +6,7 @@ package com.pullvert.kotysa.android
 
 import android.database.sqlite.SQLiteOpenHelper
 import com.pullvert.kotysa.Tables
-import com.pullvert.kotysa.test.common.*
+import com.pullvert.kotysa.test.*
 
 /**
  * @author Fred Montariol

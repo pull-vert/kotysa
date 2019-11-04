@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.config.KotlinCompilerVersion
 
 plugins {
     id 'org.jetbrains.dokka'
+    id 'java-test-fixtures'
 }
 
 println("Using Kotlin compiler version: $KotlinCompilerVersion.VERSION")
@@ -12,8 +13,12 @@ dependencies {
 
     compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-core'
 
-    testImplementation "ch.qos.logback:logback-classic:$logback_version"
+    testFixturesImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    testFixturesImplementation "com.google.code.findbugs:jsr305:$jsr305_version"
+    testFixturesImplementation "org.springframework:spring-core:$spring_core_version"
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation "ch.qos.logback:logback-classic:$logback_version"
     testImplementation "org.assertj:assertj-core:$assertj_version"
 
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
@@ -27,6 +32,13 @@ compileKotlin {
 }
 
 compileTestKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ['-Xjvm-default=enable']
+        jvmTarget = '1.8'
+    }
+}
+
+compileTestFixturesKotlin {
     kotlinOptions {
         freeCompilerArgs = ['-Xjvm-default=enable']
         jvmTarget = '1.8'

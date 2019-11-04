@@ -8,7 +8,7 @@ import com.pullvert.kotysa.NoResultException
 import com.pullvert.kotysa.NonUniqueResultException
 import com.pullvert.kotysa.r2dbc.Repository
 import com.pullvert.kotysa.r2dbc.coSqlClient
-import com.pullvert.kotysa.test.common.*
+import com.pullvert.kotysa.test.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking

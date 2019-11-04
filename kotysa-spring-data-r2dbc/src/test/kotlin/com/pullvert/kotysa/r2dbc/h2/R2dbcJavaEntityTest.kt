@@ -7,10 +7,10 @@ package com.pullvert.kotysa.r2dbc.h2
 import com.pullvert.kotysa.r2dbc.Repository
 import com.pullvert.kotysa.r2dbc.sqlClient
 import com.pullvert.kotysa.tables
-import com.pullvert.kotysa.test.common.JavaUser
-import com.pullvert.kotysa.test.common.UserDto
-import com.pullvert.kotysa.test.common.javaBboss
-import com.pullvert.kotysa.test.common.javaJdoe
+import com.pullvert.kotysa.test.JavaUser
+import com.pullvert.kotysa.test.UserDto
+import com.pullvert.kotysa.test.javaBboss
+import com.pullvert.kotysa.test.javaJdoe
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.data.r2dbc.core.DatabaseClient
