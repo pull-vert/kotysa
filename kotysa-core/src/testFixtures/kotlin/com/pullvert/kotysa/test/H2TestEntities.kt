@@ -126,3 +126,15 @@ data class H2Uuid(
 
 val h2UuidWithNullable = H2Uuid(h2User.id, h2Admin.id)
 val h2UuidWithoutNullable = H2Uuid(h2User.id)
+
+/**
+ * @author Fred Montariol
+ */
+data class H2LocalDate(
+        val localDateNotNull: LocalDate,
+        val localDateNullable: LocalDate? = null,
+        val id: UUID = UUID.randomUUID()
+)
+
+val h2LocalDateWithNullable = H2LocalDate(LocalDate.of(2019, 11, 4), LocalDate.of(2018, 11, 4))
+val h2LocalDateWithoutNullable = H2LocalDate(LocalDate.of(2019, 11, 4))

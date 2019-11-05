@@ -4,6 +4,7 @@
 
 package com.pullvert.kotysa
 
+import java.time.LocalDate
 import java.util.*
 
 /**
@@ -14,49 +15,87 @@ interface CommonWhereDsl {
 
     // operations on String
 
-    infix fun <U : Any> NotNullStringColumnField<U>.eq(value: String) =
+    infix fun <T : Any> NotNullStringColumnField<T>.eq(value: String) =
             WhereClause(this, Operation.EQ, value)
 
-    infix fun <U : Any> NotNullStringColumnField<U>.notEq(value: String) =
+    infix fun <T : Any> NotNullStringColumnField<T>.notEq(value: String) =
             WhereClause(this, Operation.NOT_EQ, value)
 
-    infix fun <U : Any> NotNullStringColumnField<U>.contains(value: String) =
+    infix fun <T : Any> NotNullStringColumnField<T>.contains(value: String) =
             WhereClause(this, Operation.CONTAINS, "%$value%")
 
-    infix fun <U : Any> NotNullStringColumnField<U>.startsWith(value: String) =
+    infix fun <T : Any> NotNullStringColumnField<T>.startsWith(value: String) =
             WhereClause(this, Operation.STARTS_WITH, "$value%")
 
-    infix fun <U : Any> NotNullStringColumnField<U>.endsWith(value: String) =
+    infix fun <T : Any> NotNullStringColumnField<T>.endsWith(value: String) =
             WhereClause(this, Operation.ENDS_WITH, "%$value")
 
-    infix fun <U : Any> NullableStringColumnField<U>.eq(value: String?) =
+    infix fun <T : Any> NullableStringColumnField<T>.eq(value: String?) =
             WhereClause(this, Operation.EQ, value)
 
-    infix fun <U : Any> NullableStringColumnField<U>.notEq(value: String?) =
+    infix fun <T : Any> NullableStringColumnField<T>.notEq(value: String?) =
             WhereClause(this, Operation.NOT_EQ, value)
 
-    infix fun <U : Any> NullableStringColumnField<U>.contains(value: String) =
+    infix fun <T : Any> NullableStringColumnField<T>.contains(value: String) =
             WhereClause(this, Operation.CONTAINS, "%$value%")
 
-    infix fun <U : Any> NullableStringColumnField<U>.startsWith(value: String) =
+    infix fun <T : Any> NullableStringColumnField<T>.startsWith(value: String) =
             WhereClause(this, Operation.STARTS_WITH, "$value%")
 
-    infix fun <U : Any> NullableStringColumnField<U>.endsWith(value: String) =
+    infix fun <T : Any> NullableStringColumnField<T>.endsWith(value: String) =
             WhereClause(this, Operation.ENDS_WITH, "%$value")
 
-    // operations on UUID
+    // operations on java.util.UUID
 
-    infix fun <U : Any> NotNullUuidColumnField<U>.eq(value: UUID) =
+    infix fun <T : Any> NotNullUuidColumnField<T>.eq(value: UUID) =
             WhereClause(this, Operation.EQ, value)
 
-    infix fun <U : Any> NotNullUuidColumnField<U>.notEq(value: UUID) =
+    infix fun <T : Any> NotNullUuidColumnField<T>.notEq(value: UUID) =
             WhereClause(this, Operation.NOT_EQ, value)
 
-    infix fun <U : Any> NullableUuidColumnField<U>.eq(value: UUID?) =
+    infix fun <T : Any> NullableUuidColumnField<T>.eq(value: UUID?) =
             WhereClause(this, Operation.EQ, value)
 
-    infix fun <U : Any> NullableUuidColumnField<U>.notEq(value: UUID?) =
+    infix fun <T : Any> NullableUuidColumnField<T>.notEq(value: UUID?) =
             WhereClause(this, Operation.NOT_EQ, value)
+    
+    // operations on java.time.LocalDate
+
+    infix fun <T : Any> NotNullLocalDateColumnField<T>.eq(value: LocalDate) =
+            WhereClause(this, Operation.EQ, value)
+
+    infix fun <T : Any> NotNullLocalDateColumnField<T>.notEq(value: LocalDate) =
+            WhereClause(this, Operation.NOT_EQ, value)
+
+    infix fun <T : Any> NotNullLocalDateColumnField<T>.before(value: LocalDate) =
+            WhereClause(this, Operation.INF, value)
+
+    infix fun <T : Any> NotNullLocalDateColumnField<T>.after(value: LocalDate) =
+            WhereClause(this, Operation.SUP, value)
+
+    infix fun <T : Any> NotNullLocalDateColumnField<T>.beforeOrEq(value: LocalDate) =
+            WhereClause(this, Operation.INF_OR_EQ, value)
+
+    infix fun <T : Any> NotNullLocalDateColumnField<T>.afterOrEq(value: LocalDate) =
+            WhereClause(this, Operation.SUP_OR_EQ, value)
+
+    infix fun <T : Any> NullableLocalDateColumnField<T>.eq(value: LocalDate?) =
+            WhereClause(this, Operation.EQ, value)
+
+    infix fun <T : Any> NullableLocalDateColumnField<T>.notEq(value: LocalDate?) =
+            WhereClause(this, Operation.NOT_EQ, value)
+
+    infix fun <T : Any> NullableLocalDateColumnField<T>.before(value: LocalDate) =
+            WhereClause(this, Operation.INF, value)
+
+    infix fun <T : Any> NullableLocalDateColumnField<T>.after(value: LocalDate) =
+            WhereClause(this, Operation.SUP, value)
+
+    infix fun <T : Any> NullableLocalDateColumnField<T>.beforeOrEq(value: LocalDate) =
+            WhereClause(this, Operation.INF_OR_EQ, value)
+
+    infix fun <T : Any> NullableLocalDateColumnField<T>.afterOrEq(value: LocalDate) =
+            WhereClause(this, Operation.SUP_OR_EQ, value)
 }
 
 /**
