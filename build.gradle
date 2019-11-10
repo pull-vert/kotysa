@@ -22,8 +22,8 @@ subprojects {
 
     dependencies {
         // import BOM
-        implementation platform("org.junit:junit-bom:$junit_bom_version")
         implementation platform("org.jetbrains.kotlinx:kotlinx-coroutines-bom:$kotlinx_coroutines_bom_version")
+        testImplementation platform("org.junit:junit-bom:$junit_bom_version")
     }
 
     compileKotlin {
