@@ -55,6 +55,11 @@ val h2Tables =
                 column { it[H2Uuid::roleIdNotNull].uuid().foreignKey<H2Role>() }
                 column { it[H2Uuid::roleIdNullable].uuid().foreignKey<H2Role>() }
             }
+            table<H2LocalDate> {
+                column { it[H2LocalDate::id].uuid().primaryKey() }
+                column { it[H2LocalDate::localDateNotNull].date() }
+                column { it[H2LocalDate::localDateNullable].date() }
+            }
         }
 
 /**
@@ -137,4 +142,4 @@ data class H2LocalDate(
 )
 
 val h2LocalDateWithNullable = H2LocalDate(LocalDate.of(2019, 11, 4), LocalDate.of(2018, 11, 4))
-val h2LocalDateWithoutNullable = H2LocalDate(LocalDate.of(2019, 11, 4))
+val h2LocalDateWithoutNullable = H2LocalDate(LocalDate.of(2019, 11, 6))

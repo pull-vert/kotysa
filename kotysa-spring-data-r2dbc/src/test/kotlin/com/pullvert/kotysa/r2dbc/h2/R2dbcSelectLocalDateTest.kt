@@ -10,6 +10,8 @@ import com.pullvert.kotysa.test.H2LocalDate
 import com.pullvert.kotysa.test.h2LocalDateWithNullable
 import com.pullvert.kotysa.test.h2LocalDateWithoutNullable
 import com.pullvert.kotysa.test.h2Tables
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import org.springframework.data.r2dbc.core.DatabaseClient
 import java.time.LocalDate
 
@@ -21,7 +23,12 @@ class R2dbcSelectLocalDateTest: AbstractR2dbcTest<LocalDateRepositorySelect>() {
 
     override val repository = getContextRepository<LocalDateRepositorySelect>()
 
-
+    @Test
+    fun `Verify selectAllByLocalDateNotNull finds both results`() {
+        assertThat(repository.selectAllByLocalDateNotNull(LocalDate.of(2019, 11, 4)).toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(h2LocalDateWithNullable)
+    }
 }
 
 /**
