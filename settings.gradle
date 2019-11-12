@@ -12,5 +12,3 @@ include 'kotysa-core'
 
 include 'kotysa-android'
 include 'kotysa-spring-data-r2dbc'
-
-enableFeaturePreview("GRADLE_METADATA")

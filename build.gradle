@@ -68,10 +68,13 @@ subprojects {
     // --------------- Source & Javadoc artefacts + publishing ---------------
 
     // generate xxx-sources.jar
-    task sourcesJar(type: Jar) {
-        from sourceSets.main.allSource
-        archiveClassifier = 'sources'
+    java {
+        withSourcesJar()
     }
+//    task sourcesJar(type: Jar) {
+//        from sourceSets.main.allSource
+//        archiveClassifier = 'sources'
+//    }
 
     dokka {
         outputFormat = 'html'
@@ -107,7 +110,7 @@ subprojects {
             maven(MavenPublication) {
                 artifactId = project.name
                 from components.java
-                artifact sourcesJar
+//                artifact sourcesJar todo check if still required
                 artifact javadocJar
                 pom {
                     name = project.name
@@ -136,6 +139,6 @@ task build {
 
 // execute ./gradlew wrapper then remove .gradle directory when version change
 wrapper {
-    gradleVersion = '5.6.4'
+    gradleVersion = '6.0'
     distributionType = Wrapper.DistributionType.ALL
 }
