@@ -4,5 +4,8 @@
 
 package com.pullvert.kotysa
 
+/**
+ * @author Fred Montariol
+ */
 @DslMarker
 internal annotation class KotysaMarker
