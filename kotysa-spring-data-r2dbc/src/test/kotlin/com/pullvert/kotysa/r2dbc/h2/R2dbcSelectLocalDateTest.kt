@@ -24,8 +24,42 @@ class R2dbcSelectLocalDateTest: AbstractR2dbcTest<LocalDateRepositorySelect>() {
     override val repository = getContextRepository<LocalDateRepositorySelect>()
 
     @Test
-    fun `Verify selectAllByLocalDateNotNull finds both results`() {
+    fun `Verify selectAllByLocalDateNotNull finds h2LocalDateWithNullable`() {
         assertThat(repository.selectAllByLocalDateNotNull(LocalDate.of(2019, 11, 4)).toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(h2LocalDateWithNullable)
+    }
+
+    @Test
+    fun `Verify selectAllByLocalDateNotNullNotEq finds h2LocalDateWithoutNullable`() {
+        assertThat(repository.selectAllByLocalDateNotNullNotEq(LocalDate.of(2019, 11, 4)).toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(h2LocalDateWithoutNullable)
+    }
+
+    @Test
+    fun `Verify selectAllByRoleIdNullable finds h2UuidWithNullable`() {
+        assertThat(repository.selectAllByLocalDateNullable(LocalDate.of(2018, 11, 4)).toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(h2LocalDateWithNullable)
+    }
+
+    @Test
+    fun `Verify selectAllByRoleIdNullable finds h2UuidWithoutNullable`() {
+        assertThat(repository.selectAllByLocalDateNullable(null).toIterable())
+                .hasSize(1)
+                .containsExactlyInAnyOrder(h2LocalDateWithoutNullable)
+    }
+
+    @Test
+    fun `Verify selectAllByRoleIdNullableNotEq finds h2UuidWithoutNullable`() {
+        assertThat(repository.selectAllByLocalDateNullableNotEq(LocalDate.of(2018, 11, 4)).toIterable())
+                .isEmpty()
+    }
+
+    @Test
+    fun `Verify selectAllByRoleIdNullableNotEq finds no results`() {
+        assertThat(repository.selectAllByLocalDateNullableNotEq(null).toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(h2LocalDateWithNullable)
     }

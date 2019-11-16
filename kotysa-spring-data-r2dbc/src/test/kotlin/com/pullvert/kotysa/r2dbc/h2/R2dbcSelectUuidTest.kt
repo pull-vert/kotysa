@@ -28,7 +28,7 @@ class R2dbcSelectUuidTest : AbstractR2dbcTest<UuidRepositorySelect>() {
     }
 
     @Test
-    fun `Verify selectAllByRoleIdNotNullNotEq finds nothing`() {
+    fun `Verify selectAllByRoleIdNotNullNotEq finds no results`() {
         assertThat(repository.selectAllByRoleIdNotNullNotEq(h2User.id).toIterable())
                 .isEmpty()
     }
@@ -54,7 +54,7 @@ class R2dbcSelectUuidTest : AbstractR2dbcTest<UuidRepositorySelect>() {
     }
 
     @Test
-    fun `Verify selectAllByRoleIdNullableNotEq finds h2UuidWithNullable`() {
+    fun `Verify selectAllByRoleIdNullableNotEq finds no results`() {
         assertThat(repository.selectAllByRoleIdNullableNotEq(null).toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(h2UuidWithNullable)
