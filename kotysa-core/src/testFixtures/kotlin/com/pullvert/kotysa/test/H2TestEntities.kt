@@ -60,6 +60,13 @@ val h2Tables =
                 column { it[H2LocalDate::localDateNotNull].date() }
                 column { it[H2LocalDate::localDateNullable].date() }
             }
+            table<H2LocalDateTime> {
+                column { it[H2LocalDateTime::id].uuid().primaryKey() }
+                column { it[H2LocalDateTime::localDateTimeNotNull].dateTime() }
+                column { it[H2LocalDateTime::localDateTimeNullable].dateTime() }
+                column { it[H2LocalDateTime::localDateTimeAsTimestampNotNull].timestamp() }
+                column { it[H2LocalDateTime::localDateTimeAsTimestampNullable].timestamp() }
+            }
         }
 
 /**
@@ -143,3 +150,19 @@ data class H2LocalDate(
 
 val h2LocalDateWithNullable = H2LocalDate(LocalDate.of(2019, 11, 4), LocalDate.of(2018, 11, 4))
 val h2LocalDateWithoutNullable = H2LocalDate(LocalDate.of(2019, 11, 6))
+
+/**
+ * @author Fred Montariol
+ */
+data class H2LocalDateTime(
+        val localDateTimeNotNull: LocalDateTime,
+        val localDateTimeNullable: LocalDateTime?,
+        val localDateTimeAsTimestampNotNull: LocalDateTime,
+        val localDateTimeAsTimestampNullable: LocalDateTime? = null,
+        val id: UUID = UUID.randomUUID()
+)
+
+val h2LocalDateTimeWithNullable = H2LocalDateTime(LocalDateTime.of(2019, 11, 4, 0, 0), LocalDateTime.of(2018, 11, 4, 0, 0),
+        LocalDateTime.of(2019, 11, 4, 0, 0), LocalDateTime.of(2018, 11, 4, 0, 0))
+val h2LocalDateTimeWithoutNullable = H2LocalDateTime(LocalDateTime.of(2019, 11, 6, 0, 0), null,
+        LocalDateTime.of(2019, 11, 6, 0, 0))
