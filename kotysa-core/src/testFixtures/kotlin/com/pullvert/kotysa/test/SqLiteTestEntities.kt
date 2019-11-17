@@ -39,6 +39,16 @@ val sqLiteTables =
                 column { it[SqLiteAllTypesNullable::localDate].date() }
                 column { it[SqLiteAllTypesNullable::localDateTime].dateTime() }
             }
+            table<SqLiteLocalDate> {
+                column { it[SqLiteLocalDate::id].varchar().primaryKey() }
+                column { it[SqLiteLocalDate::localDateNotNull].date() }
+                column { it[SqLiteLocalDate::localDateNullable].date() }
+            }
+            table<SqLiteLocalDateTime> {
+                column { it[SqLiteLocalDateTime::id].varchar().primaryKey() }
+                column { it[SqLiteLocalDateTime::localDateTimeNotNull].dateTime() }
+                column { it[SqLiteLocalDateTime::localDateTimeNullable].dateTime() }
+            }
         }
 
 /**
@@ -90,3 +100,28 @@ data class SqLiteAllTypesNullable(
 
 val allTypesNotNullSqLite = SqLiteAllTypesNotNull("abc", "", true, LocalDate.now(), LocalDateTime.now())
 val allTypesNullableSqLite = SqLiteAllTypesNullable("def", null, null, null)
+
+/**
+ * @author Fred Montariol
+ */
+data class SqLiteLocalDate(
+        val id: String,
+        val localDateNotNull: LocalDate,
+        val localDateNullable: LocalDate? = null
+)
+
+val sqLiteLocalDateWithNullable = SqLiteLocalDate("abc", LocalDate.of(2019, 11, 4), LocalDate.of(2018, 11, 4))
+val sqLiteLocalDateWithoutNullable = SqLiteLocalDate("def", LocalDate.of(2019, 11, 6))
+
+/**
+ * @author Fred Montariol
+ */
+data class SqLiteLocalDateTime(
+        val id: String,
+        val localDateTimeNotNull: LocalDateTime,
+        val localDateTimeNullable: LocalDateTime? = null
+)
+
+val sqLiteLocalDateTimeWithNullable = SqLiteLocalDateTime("abc", LocalDateTime.of(2019, 11, 4, 0, 0), LocalDateTime.of(2018, 11, 4, 0, 0))
+val sqLiteLocalDateTimeWithoutNullable = SqLiteLocalDateTime("def", LocalDateTime.of(2019, 11, 6, 0, 0))
+

@@ -8,6 +8,8 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.pullvert.kotysa.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.reflect.KClass
 
 /**
@@ -66,6 +68,8 @@ internal fun ContentValues.put(name: String, value: Any?) {
             is String -> put(name, value)
             is Boolean -> put(name, value)
             is ByteArray -> put(name, value)
+            // stored as String
+            is LocalDate -> put(name, value.format(DateTimeFormatter.ISO_LOCAL_DATE))
             else -> throw UnsupportedOperationException(
                     "${value.javaClass.canonicalName} is not supported by Android SqLite")
         }
