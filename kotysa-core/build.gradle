@@ -12,7 +12,6 @@ dependencies {
 
     compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-core'
 
-    testFixturesImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     testFixturesImplementation "com.google.code.findbugs:jsr305:$jsr305_version"
     testFixturesImplementation "org.springframework:spring-core:$spring_core_version"
 

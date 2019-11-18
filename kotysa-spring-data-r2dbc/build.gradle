@@ -8,11 +8,11 @@ dependencies {
     implementation platform("io.r2dbc:r2dbc-bom:$r2dbc_bom_version")
     // "org.testcontainers:testcontainers-bom:1.12.0"
 
-    compile project(':kotysa-core')
+    api "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
 
-    implementation 'org.jetbrains.kotlin:kotlin-reflect'
-    compile "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
-    compile "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
+    implementation project(':kotysa-core')
+
+    implementation "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
 
     compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-reactive'
 
