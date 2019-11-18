@@ -5,10 +5,7 @@
 package com.pullvert.kotysa.test
 
 import com.pullvert.kotysa.tables
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.OffsetDateTime
+import java.time.*
 import java.util.*
 
 val h2Tables =
@@ -66,6 +63,11 @@ val h2Tables =
                 column { it[H2LocalDateTime::localDateTimeNullable].dateTime() }
                 column { it[H2LocalDateTime::localDateTimeAsTimestampNotNull].timestamp() }
                 column { it[H2LocalDateTime::localDateTimeAsTimestampNullable].timestamp() }
+            }
+            table<H2OffsetDateTime> {
+                column { it[H2OffsetDateTime::id].uuid().primaryKey() }
+                column { it[H2OffsetDateTime::offsetDateTimeNotNull].timestampWithTimeZone() }
+                column { it[H2OffsetDateTime::offsetDateTimeNullable].timestampWithTimeZone() }
             }
         }
 
@@ -166,3 +168,18 @@ val h2LocalDateTimeWithNullable = H2LocalDateTime(LocalDateTime.of(2019, 11, 4, 
         LocalDateTime.of(2019, 11, 4, 0, 0), LocalDateTime.of(2018, 11, 4, 0, 0))
 val h2LocalDateTimeWithoutNullable = H2LocalDateTime(LocalDateTime.of(2019, 11, 6, 0, 0), null,
         LocalDateTime.of(2019, 11, 6, 0, 0))
+
+/**
+ * @author Fred Montariol
+ */
+data class H2OffsetDateTime(
+        val offsetDateTimeNotNull: OffsetDateTime,
+        val offsetDateTimeNullable: OffsetDateTime? = null,
+        val id: UUID = UUID.randomUUID()
+)
+
+val h2OffsetDateTimeWithNullable = H2OffsetDateTime(
+        OffsetDateTime.of(2019, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC),
+        OffsetDateTime.of(2018, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC))
+val h2OffsetDateTimeWithoutNullable = H2OffsetDateTime(
+        OffsetDateTime.of(2019, 11, 6, 0, 0, 0, 0, ZoneOffset.UTC))
