@@ -80,6 +80,30 @@ class VarcharColumnBuilderNullable<T : Any, U> internal constructor(
     override fun build() = VarcharColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
 }
 
+class TextColumnBuilderNotNull<T : Any, U> internal constructor(
+        override val entityGetter: (T) -> U
+) : ColumnNotNullBuilder<TextColumnBuilderNotNull<T, U>, T, U>() {
+    override val sqlType = SqlType.TEXT
+
+    private var defaultValue: U? = null
+
+    override fun setDefaultValue(defaultValue: U): TextColumnBuilderNotNull<T, U> {
+        this.defaultValue = defaultValue
+        return this
+    }
+
+    override fun build() =
+            TextColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
+}
+
+class TextColumnBuilderNullable<T : Any, U> internal constructor(
+        override val entityGetter: (T) -> U
+) : ColumnNullableBuilder<TextColumnBuilderNullable<T, U>, T>() {
+    override val sqlType = SqlType.TEXT
+
+    override fun build() = TextColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
+}
+
 class TimestampColumnBuilderNotNull<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U
 ) : ColumnNotNullBuilder<TimestampColumnBuilderNotNull<T, U>, T, U>() {
@@ -214,4 +238,28 @@ class UuidColumnBuilderNullable<T : Any, U> internal constructor(
     override val sqlType = SqlType.UUID
 
     override fun build() = UuidColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
+}
+
+class IntegerColumnBuilderNotNull<T : Any, U> internal constructor(
+        override val entityGetter: (T) -> U
+) : ColumnNotNullBuilder<IntegerColumnBuilderNotNull<T, U>, T, U>() {
+    override val sqlType = SqlType.INTEGER
+
+    private var defaultValue: U? = null
+
+    override fun setDefaultValue(defaultValue: U): IntegerColumnBuilderNotNull<T, U> {
+        this.defaultValue = defaultValue
+        return this
+    }
+
+    override fun build() =
+            IntegerColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
+}
+
+class IntegerColumnBuilderNullable<T : Any, U> internal constructor(
+        override val entityGetter: (T) -> U
+) : ColumnNullableBuilder<IntegerColumnBuilderNullable<T, U>, T>() {
+    override val sqlType = SqlType.INTEGER
+
+    override fun build() = IntegerColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
 }

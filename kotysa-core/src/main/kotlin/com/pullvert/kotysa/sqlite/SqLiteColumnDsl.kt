@@ -14,17 +14,17 @@ class SqLiteColumnDsl<T : Any> internal constructor(
         init: SqLiteColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T>
 ) : ColumnDsl<T, SqLiteColumnDsl<T>>(init) {
 
-    fun NotNullStringColumnProperty<T>.varchar() = VarcharColumnBuilderNotNull(getter)
+    fun NotNullStringColumnProperty<T>.text() = TextColumnBuilderNotNull(getter)
 
-    fun NullableStringColumnProperty<T>.varchar() = VarcharColumnBuilderNullable(getter)
+    fun NullableStringColumnProperty<T>.text() = TextColumnBuilderNullable(getter)
 
-    fun NotNullLocalDateTimeColumnProperty<T>.dateTime() = DateTimeColumnBuilderNotNull(getter)
+    fun NotNullLocalDateTimeColumnProperty<T>.text() = TextColumnBuilderNotNull(getter)
 
-    fun NullableLocalDateTimeColumnProperty<T>.dateTime() = DateTimeColumnBuilderNullable(getter)
+    fun NullableLocalDateTimeColumnProperty<T>.text() = TextColumnBuilderNullable(getter)
 
-    fun NotNullLocalDateColumnProperty<T>.date() = DateColumnBuilderNotNull(getter)
+    fun NotNullLocalDateColumnProperty<T>.text() = TextColumnBuilderNotNull(getter)
 
-    fun NullableLocalDateColumnProperty<T>.date() = DateColumnBuilderNullable(getter)
+    fun NullableLocalDateColumnProperty<T>.text() = TextColumnBuilderNullable(getter)
 
-    fun NotNullBooleanColumnProperty<T>.boolean() = BooleanColumnBuilderNotNull(getter)
+    fun NotNullBooleanColumnProperty<T>.integer() = IntegerColumnBuilderNotNull(getter)
 }

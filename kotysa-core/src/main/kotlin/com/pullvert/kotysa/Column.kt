@@ -93,6 +93,36 @@ internal class VarcharColumnNullable<T : Any, U> internal constructor(
 /**
  * @author Fred Montariol
  */
+internal interface TextColumn<T : Any, U> : Column<T, U>
+
+/**
+ * @author Fred Montariol
+ */
+internal class TextColumnNotNull<T : Any, U> internal constructor(
+        override val entityGetter: (T) -> U,
+        override val name: String,
+        override val sqlType: SqlType,
+        override val isPrimaryKey: Boolean,
+        override val pkName: String?,
+        override val defaultValue: U,
+        override val fkClass: KClass<*>?,
+        override val fkName: String?
+) : AbstractColumn<T, U>(), TextColumn<T, U>, ColumnNotNull<T, U>
+
+/**
+ * @author Fred Montariol
+ */
+internal class TextColumnNullable<T : Any, U> internal constructor(
+        override val entityGetter: (T) -> U,
+        override val name: String,
+        override val sqlType: SqlType,
+        override val fkClass: KClass<*>?,
+        override val fkName: String?
+) : AbstractColumn<T, U>(), TextColumn<T, U>, ColumnNullable<T, U>
+
+/**
+ * @author Fred Montariol
+ */
 internal interface TimestampColumn<T : Any, U> : Column<T, U>
 
 /**
@@ -256,3 +286,33 @@ internal class UuidColumnNullable<T : Any, U> internal constructor(
         override val fkClass: KClass<*>?,
         override val fkName: String?
 ) : AbstractColumn<T, U>(), UuidColumn<T, U>, ColumnNullable<T, U>
+
+/**
+ * @author Fred Montariol
+ */
+internal interface IntegerColumn<T : Any, U> : Column<T, U>
+
+/**
+ * @author Fred Montariol
+ */
+internal class IntegerColumnNotNull<T : Any, U> internal constructor(
+        override val entityGetter: (T) -> U,
+        override val name: String,
+        override val sqlType: SqlType,
+        override val isPrimaryKey: Boolean,
+        override val pkName: String?,
+        override val defaultValue: U?,
+        override val fkClass: KClass<*>?,
+        override val fkName: String?
+) : AbstractColumn<T, U>(), IntegerColumn<T, U>, ColumnNotNull<T, U>
+
+/**
+ * @author Fred Montariol
+ */
+internal class IntegerColumnNullable<T : Any, U> internal constructor(
+        override val entityGetter: (T) -> U,
+        override val name: String,
+        override val sqlType: SqlType,
+        override val fkClass: KClass<*>?,
+        override val fkName: String?
+) : AbstractColumn<T, U>(), IntegerColumn<T, U>, ColumnNullable<T, U>
