@@ -6,6 +6,7 @@ package com.pullvert.kotysa
 
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.util.*
 
@@ -173,6 +174,44 @@ interface CommonWhereDsl {
             WhereClause(this, Operation.INF_OR_EQ, value)
 
     infix fun <T : Any> NullableOffsetDateTimeColumnField<T>.afterOrEq(value: OffsetDateTime) =
+            WhereClause(this, Operation.SUP_OR_EQ, value)
+
+    // operations on java.time.LocalTime
+
+    infix fun <T : Any> NotNullLocalTimeColumnField<T>.eq(value: LocalTime) =
+            WhereClause(this, Operation.EQ, value)
+
+    infix fun <T : Any> NotNullLocalTimeColumnField<T>.notEq(value: LocalTime) =
+            WhereClause(this, Operation.NOT_EQ, value)
+
+    infix fun <T : Any> NotNullLocalTimeColumnField<T>.before(value: LocalTime) =
+            WhereClause(this, Operation.INF, value)
+
+    infix fun <T : Any> NotNullLocalTimeColumnField<T>.after(value: LocalTime) =
+            WhereClause(this, Operation.SUP, value)
+
+    infix fun <T : Any> NotNullLocalTimeColumnField<T>.beforeOrEq(value: LocalTime) =
+            WhereClause(this, Operation.INF_OR_EQ, value)
+
+    infix fun <T : Any> NotNullLocalTimeColumnField<T>.afterOrEq(value: LocalTime) =
+            WhereClause(this, Operation.SUP_OR_EQ, value)
+
+    infix fun <T : Any> NullableLocalTimeColumnField<T>.eq(value: LocalTime?) =
+            WhereClause(this, Operation.EQ, value)
+
+    infix fun <T : Any> NullableLocalTimeColumnField<T>.notEq(value: LocalTime?) =
+            WhereClause(this, Operation.NOT_EQ, value)
+
+    infix fun <T : Any> NullableLocalTimeColumnField<T>.before(value: LocalTime) =
+            WhereClause(this, Operation.INF, value)
+
+    infix fun <T : Any> NullableLocalTimeColumnField<T>.after(value: LocalTime) =
+            WhereClause(this, Operation.SUP, value)
+
+    infix fun <T : Any> NullableLocalTimeColumnField<T>.beforeOrEq(value: LocalTime) =
+            WhereClause(this, Operation.INF_OR_EQ, value)
+
+    infix fun <T : Any> NullableLocalTimeColumnField<T>.afterOrEq(value: LocalTime) =
             WhereClause(this, Operation.SUP_OR_EQ, value)
 }
 

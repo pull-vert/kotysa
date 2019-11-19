@@ -69,6 +69,11 @@ val h2Tables =
                 column { it[H2OffsetDateTime::offsetDateTimeNotNull].timestampWithTimeZone() }
                 column { it[H2OffsetDateTime::offsetDateTimeNullable].timestampWithTimeZone() }
             }
+            table<H2LocalTime> {
+                column { it[H2LocalTime::id].uuid().primaryKey() }
+                column { it[H2LocalTime::localTimeNotNull].time9() }
+                column { it[H2LocalTime::localTimeNullable].time9() }
+            }
         }
 
 /**
@@ -183,3 +188,15 @@ val h2OffsetDateTimeWithNullable = H2OffsetDateTime(
         OffsetDateTime.of(2018, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC))
 val h2OffsetDateTimeWithoutNullable = H2OffsetDateTime(
         OffsetDateTime.of(2019, 11, 6, 0, 0, 0, 0, ZoneOffset.UTC))
+
+/**
+ * @author Fred Montariol
+ */
+data class H2LocalTime(
+        val localTimeNotNull: LocalTime,
+        val localTimeNullable: LocalTime? = null,
+        val id: UUID = UUID.randomUUID()
+)
+
+val h2LocalTimeWithNullable = H2LocalTime(LocalTime.of(12, 4), LocalTime.of(11, 0))
+val h2LocalTimeWithoutNullable = H2LocalTime(LocalTime.of(12, 6))
