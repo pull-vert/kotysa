@@ -2,7 +2,8 @@
 
 ## Dependency
 
-Kotysa is a single dependency to add to your java 8+ project.
+Kotysa is an additional dependency you can add to your Spring project.
+It is an extension to Spring Data R2DBC, and does not replace it.
 
 ```groovy
 repositories {
@@ -10,7 +11,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.pullvert:kotysa-r2dbc:0.0.11'
+    implementation 'com.pullvert:kotysa-spring-data-r2dbc:0.0.12'
+    
+    implementation "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
 }
 ```
 
@@ -18,7 +21,7 @@ dependencies {
 
 **SqlClient** has one reactive implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient```, it can be obtained via an Extension function directly on ```DatabaseClient```.
 
-It provides an API using Reactor ```Mono``` and ```Flux```.
+It provides a SQL client API using Reactor ```Mono``` and ```Flux```.
 
 ```kotlin
 class UserRepository(dbClient: DatabaseClient, tables: Tables) {
@@ -33,7 +36,7 @@ class UserRepository(dbClient: DatabaseClient, tables: Tables) {
 
 **SqlClient** has one Coroutines implementation on top of R2DBC using spring-data-r2dbc's ```DatabaseClient```, it can be obtained via an Extension function directly on ```DatabaseClient```.
 
-It provides an API using ```suspend``` functions and kotlinx-coroutines ```Flow```.
+It provides a SQL client API using ```suspend``` functions and kotlinx-coroutines ```Flow```.
 
 ```kotlin
 class UserRepository(dbClient: DatabaseClient, tables: Tables) {
@@ -43,3 +46,7 @@ class UserRepository(dbClient: DatabaseClient, tables: Tables) {
 	// enjoy sqlClient use with coroutines :)
 }
 ```
+
+## Supported databases
+
+* [H2](../docs/table-modelling.md#H2)
