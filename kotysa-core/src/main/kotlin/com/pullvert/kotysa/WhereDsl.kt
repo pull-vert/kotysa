@@ -6,6 +6,7 @@ package com.pullvert.kotysa
 
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import java.util.*
 
 /**
@@ -134,6 +135,44 @@ interface CommonWhereDsl {
             WhereClause(this, Operation.INF_OR_EQ, value)
 
     infix fun <T : Any> NullableLocalDateTimeColumnField<T>.afterOrEq(value: LocalDateTime) =
+            WhereClause(this, Operation.SUP_OR_EQ, value)
+
+    // operations on java.time.OffsetDateTime
+
+    infix fun <T : Any> NotNullOffsetDateTimeColumnField<T>.eq(value: OffsetDateTime) =
+            WhereClause(this, Operation.EQ, value)
+
+    infix fun <T : Any> NotNullOffsetDateTimeColumnField<T>.notEq(value: OffsetDateTime) =
+            WhereClause(this, Operation.NOT_EQ, value)
+
+    infix fun <T : Any> NotNullOffsetDateTimeColumnField<T>.before(value: OffsetDateTime) =
+            WhereClause(this, Operation.INF, value)
+
+    infix fun <T : Any> NotNullOffsetDateTimeColumnField<T>.after(value: OffsetDateTime) =
+            WhereClause(this, Operation.SUP, value)
+
+    infix fun <T : Any> NotNullOffsetDateTimeColumnField<T>.beforeOrEq(value: OffsetDateTime) =
+            WhereClause(this, Operation.INF_OR_EQ, value)
+
+    infix fun <T : Any> NotNullOffsetDateTimeColumnField<T>.afterOrEq(value: OffsetDateTime) =
+            WhereClause(this, Operation.SUP_OR_EQ, value)
+
+    infix fun <T : Any> NullableOffsetDateTimeColumnField<T>.eq(value: OffsetDateTime?) =
+            WhereClause(this, Operation.EQ, value)
+
+    infix fun <T : Any> NullableOffsetDateTimeColumnField<T>.notEq(value: OffsetDateTime?) =
+            WhereClause(this, Operation.NOT_EQ, value)
+
+    infix fun <T : Any> NullableOffsetDateTimeColumnField<T>.before(value: OffsetDateTime) =
+            WhereClause(this, Operation.INF, value)
+
+    infix fun <T : Any> NullableOffsetDateTimeColumnField<T>.after(value: OffsetDateTime) =
+            WhereClause(this, Operation.SUP, value)
+
+    infix fun <T : Any> NullableOffsetDateTimeColumnField<T>.beforeOrEq(value: OffsetDateTime) =
+            WhereClause(this, Operation.INF_OR_EQ, value)
+
+    infix fun <T : Any> NullableOffsetDateTimeColumnField<T>.afterOrEq(value: OffsetDateTime) =
             WhereClause(this, Operation.SUP_OR_EQ, value)
 }
 
