@@ -198,5 +198,5 @@ data class H2LocalTime(
         val id: UUID = UUID.randomUUID()
 )
 
-val h2LocalTimeWithNullable = H2LocalTime(LocalTime.of(12, 4), LocalTime.of(11, 0))
+val h2LocalTimeWithNullable = H2LocalTime(LocalTime.of(12, 4), LocalTime.of(11, 4))
 val h2LocalTimeWithoutNullable = H2LocalTime(LocalTime.of(12, 6))
