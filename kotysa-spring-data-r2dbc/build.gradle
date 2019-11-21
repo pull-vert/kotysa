@@ -9,8 +9,7 @@ dependencies {
     // "org.testcontainers:testcontainers-bom:1.12.0"
 
     api "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
-
-    implementation project(':kotysa-core')
+    api project(':kotysa-core')
 
     implementation "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
 
