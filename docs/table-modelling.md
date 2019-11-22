@@ -78,7 +78,7 @@ Supported data types will be updated as new types are added. Java 8+ ```java.tim
     </tr>
     <tr>
         <td>Boolean</td>
-        <td>nullable Boolean is not allowed ! Represents a boolean state</td>
+        <td>Represents a boolean state. Nullable Boolean is not allowed !</td>
         <td>BOOLEAN</td>
     </tr>
     <tr>

@@ -5,8 +5,7 @@
 package com.pullvert.kotysa.test
 
 import com.pullvert.kotysa.tables
-import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.*
 
 val sqLiteTables =
         tables().sqlite {
@@ -48,6 +47,16 @@ val sqLiteTables =
                 column { it[SqLiteLocalDateTime::id].text().primaryKey() }
                 column { it[SqLiteLocalDateTime::localDateTimeNotNull].text() }
                 column { it[SqLiteLocalDateTime::localDateTimeNullable].text() }
+            }
+            table<SqLiteOffsetDateTime> {
+                column { it[SqLiteOffsetDateTime::id].text().primaryKey() }
+                column { it[SqLiteOffsetDateTime::offsetDateTimeNotNull].text() }
+                column { it[SqLiteOffsetDateTime::offsetDateTimeNullable].text() }
+            }
+            table<SqLiteLocalTime> {
+                column { it[SqLiteLocalTime::id].text().primaryKey() }
+                column { it[SqLiteLocalTime::localTimeNotNull].text() }
+                column { it[SqLiteLocalTime::localTimeNullable].text() }
             }
         }
 
@@ -125,3 +134,29 @@ data class SqLiteLocalDateTime(
 val sqLiteLocalDateTimeWithNullable = SqLiteLocalDateTime("abc", LocalDateTime.of(2019, 11, 4, 0, 0), LocalDateTime.of(2018, 11, 4, 0, 0))
 val sqLiteLocalDateTimeWithoutNullable = SqLiteLocalDateTime("def", LocalDateTime.of(2019, 11, 6, 0, 0))
 
+/**
+ * @author Fred Montariol
+ */
+data class SqLiteOffsetDateTime(
+        val id: String,
+        val offsetDateTimeNotNull: OffsetDateTime,
+        val offsetDateTimeNullable: OffsetDateTime? = null
+)
+
+val sqLiteOffsetDateTimeWithNullable = SqLiteOffsetDateTime("abc",
+        OffsetDateTime.of(2019, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC),
+        OffsetDateTime.of(2018, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC))
+val sqLiteOffsetDateTimeWithoutNullable = SqLiteOffsetDateTime("def",
+        OffsetDateTime.of(2019, 11, 6, 0, 0, 0, 0, ZoneOffset.UTC))
+
+/**
+ * @author Fred Montariol
+ */
+data class SqLiteLocalTime(
+        val id: String,
+        val localTimeNotNull: LocalTime,
+        val localTimeNullable: LocalTime? = null
+)
+
+val sqLiteLocalTimeWithNullable = SqLiteLocalTime("abc", LocalTime.of(12, 4), LocalTime.of(11, 4))
+val sqLiteLocalTimeWithoutNullable = SqLiteLocalTime("def", LocalTime.of(12, 6))
