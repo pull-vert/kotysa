@@ -53,7 +53,7 @@ open class DefaultSqlClientDeleteOrUpdate protected constructor() : DefaultSqlCl
     protected interface Update<T : Any> : DeleteOrUpdate<T>, WithProperties<T> {
         fun addSetValue(dsl: (FieldSetter<T>) -> Unit) {
             properties.apply {
-                val setValue = UpdateSetDsl(dsl, availableColumns).initialize()
+                val setValue = UpdateSetDsl(dsl, availableColumns, tables.dbType).initialize()
                 setValues[setValue.first.column] = setValue.second
             }
         }

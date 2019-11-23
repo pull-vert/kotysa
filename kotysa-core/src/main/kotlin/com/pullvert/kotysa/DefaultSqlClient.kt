@@ -112,6 +112,7 @@ private fun Any?.dbValue(): String = when (this) {
     is String -> "$this"
     is Boolean -> "$this"
     is UUID -> "$this"
+    is Int -> "$this"
     is LocalDate -> this.format(DateTimeFormatter.ISO_LOCAL_DATE)
     is LocalDateTime -> this.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
     is LocalTime -> this.format(DateTimeFormatter.ISO_LOCAL_TIME)
@@ -174,7 +175,7 @@ open class DefaultSqlClientCommon protected constructor() {
             properties.apply {
                 tables.checkTable(joinClass)
                 val aliasedTable = AliasedTable(tables.getTable(joinClass), alias)
-                joinClauses.add(JoinDsl(dsl, aliasedTable, type, availableColumns).initialize())
+                joinClauses.add(JoinDsl(dsl, aliasedTable, type, availableColumns, tables.dbType).initialize())
                 addAvailableColumnsFromTable(this, aliasedTable)
             }
         }
@@ -183,7 +184,7 @@ open class DefaultSqlClientCommon protected constructor() {
     protected interface Where : WithProperties {
         fun addWhereClause(dsl: WhereDsl.(FieldProvider) -> WhereClause) {
             properties.apply {
-                whereClauses.add(WhereDsl(dsl, availableColumns).initialize())
+                whereClauses.add(WhereDsl(dsl, availableColumns, tables.dbType).initialize())
             }
         }
     }
@@ -191,7 +192,7 @@ open class DefaultSqlClientCommon protected constructor() {
     protected interface TypedWhere<T : Any> : WithProperties {
         fun addWhereClause(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause) {
             properties.apply {
-                whereClauses.add(TypedWhereDsl(dsl, availableColumns).initialize())
+                whereClauses.add(TypedWhereDsl(dsl, availableColumns, tables.dbType).initialize())
             }
         }
     }
@@ -239,13 +240,7 @@ open class DefaultSqlClientCommon protected constructor() {
                             Operation.INF_OR_EQ -> "${whereClause.field.fieldName} <= ? AND "
                             Operation.SUP -> "${whereClause.field.fieldName} > ? AND "
                             Operation.SUP_OR_EQ -> "${whereClause.field.fieldName} >= ? AND "
-                            Operation.IS ->
-                                // SqLite does not support Boolean literal
-                                if (properties.tables.dbType == DbType.SQLITE) {
-                                    "${whereClause.field.fieldName} = ? AND "
-                                } else {
-                                    "${whereClause.field.fieldName} IS ? AND "
-                                }
+                            Operation.IS -> "${whereClause.field.fieldName} IS ? AND "
                             else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
                         }
                 )

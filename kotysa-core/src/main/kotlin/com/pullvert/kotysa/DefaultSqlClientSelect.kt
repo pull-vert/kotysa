@@ -65,7 +65,7 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
             val fieldIndexMap = mutableMapOf<Field, Int>()
 
             // build selectedFields List & fill columnPropertyIndexMap
-            val selectedFields = selectedFieldsFromTable(table.columns, fieldIndexMap, tables.allColumns)
+            val selectedFields = selectedFieldsFromTable(table.columns, fieldIndexMap)
 
             // Build select Function : (ValueProvider) -> T
             val select: SelectDslApi.(ValueProvider) -> T = { it ->
@@ -172,9 +172,10 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
 
         private fun selectedFieldsFromTable(
                 columns: Map<(T) -> Any?, Column<T, *>>,
-                fieldIndexMap: MutableMap<Field, Int>,
-                allColumns: Map<out (Any) -> Any?, Column<*, *>>
+                fieldIndexMap: MutableMap<Field, Int>
         ): List<Field> {
+            val allColumns = tables.allColumns
+            val dbType = tables.dbType
             var fieldIndex = 0
             val selectedFields = mutableListOf<Field>()
             columns.forEach { (getter, _) ->
@@ -182,43 +183,43 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
                 val field = when (getterType.withNullability(false)) {
                     typeOf<String>() ->
                         if (getterType.isMarkedNullable) {
-                            NullableStringColumnField(allColumns, getter as (Any) -> String?)
+                            NullableStringColumnField(allColumns, getter as (Any) -> String?, dbType)
                         } else {
-                            NotNullStringColumnField(allColumns, getter as (Any) -> String)
+                            NotNullStringColumnField(allColumns, getter as (Any) -> String, dbType)
                         }
                     typeOf<LocalDateTime>() ->
                         if (getterType.isMarkedNullable) {
-                            NullableLocalDateTimeColumnField(allColumns, getter as (Any) -> LocalDateTime?)
+                            NullableLocalDateTimeColumnField(allColumns, getter as (Any) -> LocalDateTime?, dbType)
                         } else {
-                            NotNullLocalDateTimeColumnField(allColumns, getter as (Any) -> LocalDateTime)
+                            NotNullLocalDateTimeColumnField(allColumns, getter as (Any) -> LocalDateTime, dbType)
                         }
                     typeOf<LocalDate>() ->
                         if (getterType.isMarkedNullable) {
-                            NullableLocalDateColumnField(allColumns, getter as (Any) -> LocalDate?)
+                            NullableLocalDateColumnField(allColumns, getter as (Any) -> LocalDate?, dbType)
                         } else {
-                            NotNullLocalDateColumnField(allColumns, getter as (Any) -> LocalDate)
+                            NotNullLocalDateColumnField(allColumns, getter as (Any) -> LocalDate, dbType)
                         }
                     typeOf<OffsetDateTime>() ->
                         if (getterType.isMarkedNullable) {
-                            NullableOffsetDateTimeColumnField(allColumns, getter as (Any) -> OffsetDateTime?)
+                            NullableOffsetDateTimeColumnField(allColumns, getter as (Any) -> OffsetDateTime?, dbType)
                         } else {
-                            NotNullOffsetDateTimeColumnField(allColumns, getter as (Any) -> OffsetDateTime)
+                            NotNullOffsetDateTimeColumnField(allColumns, getter as (Any) -> OffsetDateTime, dbType)
                         }
                     typeOf<LocalTime>() ->
                         if (getterType.isMarkedNullable) {
-                            NullableLocalTimeColumnField(allColumns, getter as (Any) -> LocalTime?)
+                            NullableLocalTimeColumnField(allColumns, getter as (Any) -> LocalTime?, dbType)
                         } else {
-                            NotNullLocalTimeColumnField(allColumns, getter as (Any) -> LocalTime)
+                            NotNullLocalTimeColumnField(allColumns, getter as (Any) -> LocalTime, dbType)
                         }
                     typeOf<Boolean>() -> {
                         require(!getterType.isMarkedNullable) { "$getter is nullable, Boolean must not be nullable" }
-                        NotNullBooleanColumnField(allColumns, getter as (Any) -> Boolean)
+                        NotNullBooleanColumnField(allColumns, getter as (Any) -> Boolean, dbType)
                     }
                     typeOf<UUID>() ->
                         if (getterType.isMarkedNullable) {
-                            NullableUuidColumnField(allColumns, getter as (Any) -> UUID?)
+                            NullableUuidColumnField(allColumns, getter as (Any) -> UUID?, dbType)
                         } else {
-                            NotNullUuidColumnField(allColumns, getter as (Any) -> UUID)
+                            NotNullUuidColumnField(allColumns, getter as (Any) -> UUID, dbType)
                         }
                     else -> throw RuntimeException("should never happen")
                 }

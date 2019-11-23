@@ -20,9 +20,7 @@ class SelectDsl<T> internal constructor(
         private val tables: Tables
 ) : SelectDslApi(), ValueProvider {
 
-    private val availableColumns: Map<out (Any) -> Any?, Column<*, *>> = tables.allColumns
-
-    private val fieldAccess = FieldAccess(availableColumns)
+    private val fieldAccess = FieldAccess(tables.allColumns, tables.dbType)
     private var fieldIndex = 0
     private val fieldIndexMap = mutableMapOf<Field, Int>()
     private val selectedGetters = mutableListOf<(Any) -> Any?>()
@@ -33,7 +31,7 @@ class SelectDsl<T> internal constructor(
         if (dsl == null) {
             tables.checkTable(resultClass)
         }
-        val columnField = dsl?.invoke(SimpleFieldProvider(availableColumns))
+        val columnField = dsl?.invoke(SimpleFieldProvider(tables.allColumns, tables.dbType))
         val aliasedTable = AliasedTable(tables.getTable(resultClass), alias)
         if (!selectedTables.contains(aliasedTable)) {
             selectedTables.add(aliasedTable)

@@ -16,10 +16,11 @@ import java.util.*
 @KotysaMarker
 class UpdateSetDsl<T : Any> internal constructor(
         private val init: (FieldSetter<T>) -> Unit,
-        availableColumns: Map<out (Any) -> Any?, Column<*, *>>
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        dbType: DbType
 ) : FieldSetter<T> {
 
-    private val fieldAccess = FieldAccess(availableColumns)
+    private val fieldAccess = FieldAccess(availableColumns, dbType)
     private lateinit var columnField: ColumnField<T, *>
     private var value: Any? = null
 

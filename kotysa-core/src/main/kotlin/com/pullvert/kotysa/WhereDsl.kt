@@ -61,7 +61,7 @@ interface CommonWhereDsl {
 
     infix fun <T : Any> NullableUuidColumnField<T>.notEq(value: UUID?) =
             WhereClause(this, Operation.NOT_EQ, value)
-    
+
     // operations on java.time.LocalDate
 
     infix fun <T : Any> NotNullLocalDateColumnField<T>.eq(value: LocalDate) =
@@ -217,7 +217,13 @@ interface CommonWhereDsl {
     // operations on Boolean
 
     infix fun <T : Any> NotNullBooleanColumnField<T>.eq(value: Boolean) =
-            WhereClause(this, Operation.IS, value)
+            // SqLite does not support Boolean literal
+            if (dbType == DbType.SQLITE) {
+                val intValue = if (value) 1 else 0
+                WhereClause(this, Operation.EQ, intValue)
+            } else {
+                WhereClause(this, Operation.IS, value)
+            }
 }
 
 /**
@@ -225,8 +231,9 @@ interface CommonWhereDsl {
  */
 class WhereDsl internal constructor(
         private val init: WhereDsl.(FieldProvider) -> WhereClause,
-        availableColumns: Map<out (Any) -> Any?, Column<*, *>>
-) : SimpleFieldProvider(availableColumns), CommonWhereDsl {
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        dbType: DbType
+) : SimpleFieldProvider(availableColumns, dbType), CommonWhereDsl {
 
     internal fun initialize(): WhereClause {
         return init(this)
@@ -238,8 +245,9 @@ class WhereDsl internal constructor(
  */
 class TypedWhereDsl<T : Any> internal constructor(
         private val init: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause,
-        availableColumns: Map<out (Any) -> Any?, Column<*, *>>
-) : SimpleTypedFieldProvider<T>(availableColumns), CommonWhereDsl {
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        dbType: DbType
+) : SimpleTypedFieldProvider<T>(availableColumns, dbType), CommonWhereDsl {
 
     @Suppress("UNCHECKED_CAST")
     internal fun initialize(): WhereClause {

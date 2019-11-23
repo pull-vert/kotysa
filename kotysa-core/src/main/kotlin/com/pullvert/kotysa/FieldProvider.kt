@@ -73,10 +73,11 @@ interface TypedFieldProvider<T : Any> {
 }
 
 open class SimpleFieldProvider internal constructor(
-        availableColumns: Map<out (Any) -> Any?, Column<*, *>>
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        dbType: DbType
 ) : FieldProvider {
 
-    private val fieldAccess = FieldAccess(availableColumns)
+    private val fieldAccess = FieldAccess(availableColumns, dbType)
 
     override fun <T : Any> get(getter: (T) -> String, alias: String?) = fieldAccess.getField(getter, alias)
 
@@ -106,10 +107,11 @@ open class SimpleFieldProvider internal constructor(
 }
 
 open class SimpleTypedFieldProvider<T : Any> internal constructor(
-        availableColumns: Map<out (Any) -> Any?, Column<*, *>>
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        dbType: DbType
 ) : TypedFieldProvider<T> {
 
-    private val fieldAccess = FieldAccess(availableColumns)
+    private val fieldAccess = FieldAccess(availableColumns, dbType)
 
     override fun get(getter: (T) -> String, alias: String?) = fieldAccess.getField(getter, alias)
 
