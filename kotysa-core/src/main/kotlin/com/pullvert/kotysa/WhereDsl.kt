@@ -213,6 +213,11 @@ interface CommonWhereDsl {
 
     infix fun <T : Any> NullableLocalTimeColumnField<T>.afterOrEq(value: LocalTime) =
             WhereClause(this, Operation.SUP_OR_EQ, value)
+
+    // operations on Boolean
+
+    infix fun <T : Any> NotNullBooleanColumnField<T>.eq(value: Boolean) =
+            WhereClause(this, Operation.IS, value)
 }
 
 /**

@@ -239,6 +239,13 @@ open class DefaultSqlClientCommon protected constructor() {
                             Operation.INF_OR_EQ -> "${whereClause.field.fieldName} <= ? AND "
                             Operation.SUP -> "${whereClause.field.fieldName} > ? AND "
                             Operation.SUP_OR_EQ -> "${whereClause.field.fieldName} >= ? AND "
+                            Operation.IS ->
+                                // SqLite does not support Boolean literal
+                                if (properties.tables.dbType == DbType.SQLITE) {
+                                    "${whereClause.field.fieldName} = ? AND "
+                                } else {
+                                    "${whereClause.field.fieldName} IS ? AND "
+                                }
                             else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
                         }
                 )

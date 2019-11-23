@@ -121,7 +121,14 @@ internal class SqlClientSelectSqLite private constructor() : DefaultSqlClientSel
             if (whereClauses.isNotEmpty()) {
                 whereParams = whereClauses
                         .mapNotNull { whereClause -> whereClause.value }
-                        .map { whereValue -> stringValue(whereValue) }
+                        .map { whereValue ->
+                            // SqLite does not support Boolean literal
+                            if (whereValue is Boolean) {
+                                if (whereValue) "1" else "0"
+                            } else {
+                                stringValue(whereValue)
+                            }
+                        }
                         .toTypedArray()
             }
 
