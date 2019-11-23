@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper
 import com.pullvert.kotysa.*
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.reflect.KClass
 
@@ -72,6 +74,8 @@ internal fun ContentValues.put(name: String, value: Any?) {
             // Date are stored as String
             is LocalDate -> put(name, value.format(DateTimeFormatter.ISO_LOCAL_DATE))
             is LocalDateTime -> put(name, value.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+            is OffsetDateTime -> put(name, value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+            is LocalTime -> put(name, value.format(DateTimeFormatter.ISO_LOCAL_TIME))
             else -> throw UnsupportedOperationException(
                     "${value.javaClass.canonicalName} is not supported by Android SqLite")
         }

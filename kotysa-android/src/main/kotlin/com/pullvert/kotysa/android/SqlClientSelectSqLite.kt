@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteDatabase
 import com.pullvert.kotysa.*
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.OffsetDateTime
 import kotlin.reflect.KClass
 
 /**
@@ -148,6 +150,8 @@ internal class SqlClientSelectSqLite private constructor() : DefaultSqlClientSel
                             // Date are stored as String
                             LocalDate::class.java.isAssignableFrom(type) -> LocalDate.parse(sqLiteCursor.getString(index))
                             LocalDateTime::class.java.isAssignableFrom(type) -> LocalDateTime.parse(sqLiteCursor.getString(index))
+                            OffsetDateTime::class.java.isAssignableFrom(type) -> OffsetDateTime.parse(sqLiteCursor.getString(index))
+                            LocalTime::class.java.isAssignableFrom(type) -> LocalTime.parse(sqLiteCursor.getString(index))
                             else -> throw UnsupportedOperationException(
                                     "${type.canonicalName} is not supported by Android SqLite")
                         } as T?
