@@ -35,6 +35,7 @@ val h2Tables =
                 column { it[H2AllTypesNotNull::localDateTime1].dateTime() }
                 column { it[H2AllTypesNotNull::localDateTime2].timestamp() }
                 column { it[H2AllTypesNotNull::uuid].uuid() }
+                column { it[H2AllTypesNotNull::int].int() }
             }
             table<H2AllTypesNullable> {
                 name = "all_types_nullable"
@@ -46,6 +47,7 @@ val h2Tables =
                 column { it[H2AllTypesNullable::localDateTime1].dateTime() }
                 column { it[H2AllTypesNullable::localDateTime2].timestamp() }
                 column { it[H2AllTypesNullable::uuid].uuid() }
+                column { it[H2AllTypesNullable::int].int() }
             }
             table<H2Uuid> {
                 column { it[H2Uuid::id].uuid().primaryKey() }
