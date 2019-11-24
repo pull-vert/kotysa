@@ -151,6 +151,7 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
                     typeOf<LocalTime>() -> valueProvider[getter as (T) -> LocalTime?]
                     typeOf<Boolean>() -> valueProvider[getter as (T) -> Boolean]
                     typeOf<UUID>() -> valueProvider[getter as (T) -> UUID?]
+                    typeOf<Int>() -> valueProvider[getter as (T) -> Int?]
                     else -> throw RuntimeException("should never happen")
                 }
 
@@ -220,6 +221,12 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
                             NullableUuidColumnField(allColumns, getter as (Any) -> UUID?, dbType)
                         } else {
                             NotNullUuidColumnField(allColumns, getter as (Any) -> UUID, dbType)
+                        }
+                    typeOf<Int>() ->
+                        if (getterType.isMarkedNullable) {
+                            NullableIntColumnField(allColumns, getter as (Any) -> Int?, dbType)
+                        } else {
+                            NotNullIntColumnField(allColumns, getter as (Any) -> Int, dbType)
                         }
                     else -> throw RuntimeException("should never happen")
                 }

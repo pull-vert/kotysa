@@ -62,6 +62,12 @@ abstract class AbstractRow(private val fieldIndexMap: Map<Field, Int>) : SelectD
     override operator fun <T : Any> get(getter: (T) -> UUID?, alias: String?, `_`: Nullable): UUID? =
             this[getIndexdByGetterAndAlias(getter, alias)]
 
+    override operator fun <T : Any> get(getter: (T) -> Int, alias: String?): Int =
+            this[getIndexdByGetterAndAlias(getter, alias)]!!
+
+    override operator fun <T : Any> get(getter: (T) -> Int?, alias: String?, `_`: Nullable): Int? =
+            this[getIndexdByGetterAndAlias(getter, alias)]
+
     /**
      * Returns the element at the specified index in the list of returned fields of row
      */

@@ -40,4 +40,8 @@ interface FieldSetter<T : Any> {
     operator fun set(getter: (T) -> UUID, value: UUID)
 
     operator fun set(getter: (T) -> UUID?, value: UUID?): Nullable
+
+    operator fun set(getter: (T) -> Int, value: Int)
+
+    operator fun set(getter: (T) -> Int?, value: Int?): Nullable
 }

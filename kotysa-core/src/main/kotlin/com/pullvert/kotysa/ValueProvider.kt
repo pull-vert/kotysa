@@ -40,4 +40,8 @@ interface ValueProvider {
     operator fun <T : Any> get(getter: (T) -> UUID, alias: String? = null): UUID
 
     operator fun <T : Any> get(getter: (T) -> UUID?, alias: String? = null, `_`: Nullable = Nullable.TRUE): UUID?
+
+    operator fun <T : Any> get(getter: (T) -> Int, alias: String? = null): Int
+
+    operator fun <T : Any> get(getter: (T) -> Int?, alias: String? = null, `_`: Nullable = Nullable.TRUE): Int?
 }

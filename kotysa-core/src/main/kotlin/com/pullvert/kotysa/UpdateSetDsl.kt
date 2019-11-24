@@ -82,6 +82,15 @@ class UpdateSetDsl<T : Any> internal constructor(
         return Nullable.TRUE
     }
 
+    override fun set(getter: (T) -> Int, value: Int) {
+        addValue(fieldAccess.getField(getter, null), value)
+    }
+
+    override fun set(getter: (T) -> Int?, value: Int?): Nullable {
+        addValue(fieldAccess.getField(getter, null), value)
+        return Nullable.TRUE
+    }
+
     private fun addValue(columnField: ColumnField<T, *>, value: Any?) {
         require(!this::columnField.isInitialized) { "Only one value assignment is required" }
         this.columnField = columnField

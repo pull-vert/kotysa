@@ -57,4 +57,10 @@ internal class FieldAccess internal constructor(
 
     internal fun <T : Any> getField(getter: (T) -> UUID?, alias: String?) =
             NullableUuidColumnField(availableColumns, getter, dbType, alias)
+
+    internal fun <T : Any> getField(getter: (T) -> Int, alias: String?) =
+            NotNullIntColumnField(availableColumns, getter, dbType, alias)
+
+    internal fun <T : Any> getField(getter: (T) -> Int?, alias: String?) =
+            NullableIntColumnField(availableColumns, getter, dbType, alias)
 }

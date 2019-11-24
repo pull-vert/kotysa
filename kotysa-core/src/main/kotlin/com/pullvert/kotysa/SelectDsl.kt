@@ -118,6 +118,18 @@ class SelectDsl<T> internal constructor(
         return null
     }
 
+    override fun <T : Any> get(getter: (T) -> Int, alias: String?): Int {
+        val field = fieldAccess.getField(getter, alias)
+        addColumnField(getter, field, alias)
+        return 1
+    }
+
+    override fun <T : Any> get(getter: (T) -> Int?, alias: String?, `_`: Nullable): Int? {
+        val field = fieldAccess.getField(getter, alias)
+        addColumnField(getter, field, alias)
+        return null
+    }
+
     private fun <T : Any> addColumnField(getter: (T) -> Any?, columnField: ColumnField<*, *>, alias: String?) {
         addFieldAndGetter(columnField, getter)
         val aliasedTable = AliasedTable(columnField.column.table, alias)

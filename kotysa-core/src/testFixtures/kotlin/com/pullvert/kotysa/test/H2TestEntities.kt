@@ -74,6 +74,11 @@ val h2Tables =
                 column { it[H2LocalTime::localTimeNotNull].time9() }
                 column { it[H2LocalTime::localTimeNullable].time9() }
             }
+            table<H2Int> {
+                column { it[H2Int::id].uuid().primaryKey() }
+                column { it[H2Int::intNotNull].int() }
+                column { it[H2Int::intNullable].int() }
+            }
         }
 
 /**
@@ -114,7 +119,8 @@ data class H2AllTypesNotNull(
         val localTim: LocalTime,
         val localDateTime1: LocalDateTime,
         val localDateTime2: LocalDateTime,
-        val uuid: UUID
+        val uuid: UUID,
+        val int: Int
 )
 
 /**
@@ -128,11 +134,12 @@ data class H2AllTypesNullable(
         val localTim: LocalTime?,
         val localDateTime1: LocalDateTime?,
         val localDateTime2: LocalDateTime?,
-        val uuid: UUID?
+        val uuid: UUID?,
+        val int: Int?
 )
 
-val h2AllTypesNotNull = H2AllTypesNotNull(UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f"), "", true, LocalDate.now(), OffsetDateTime.now(), LocalTime.now(), LocalDateTime.now(), LocalDateTime.now(), UUID.randomUUID())
-val h2AllTypesNullable = H2AllTypesNullable(UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"), null, null, null, null, null, null, null)
+val h2AllTypesNotNull = H2AllTypesNotNull(UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f"), "", true, LocalDate.now(), OffsetDateTime.now(), LocalTime.now(), LocalDateTime.now(), LocalDateTime.now(), UUID.randomUUID(), 1)
+val h2AllTypesNullable = H2AllTypesNullable(UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"), null, null, null, null, null, null, null, null)
 
 /**
  * @author Fred Montariol
@@ -200,3 +207,15 @@ data class H2LocalTime(
 
 val h2LocalTimeWithNullable = H2LocalTime(LocalTime.of(12, 4), LocalTime.of(11, 4))
 val h2LocalTimeWithoutNullable = H2LocalTime(LocalTime.of(12, 6))
+
+/**
+ * @author Fred Montariol
+ */
+data class H2Int(
+        val intNotNull: Int,
+        val intNullable: Int? = null,
+        val id: UUID = UUID.randomUUID()
+)
+
+val h2IntWithNullable = H2Int(10, 6)
+val h2IntWithoutNullable = H2Int(12)

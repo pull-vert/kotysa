@@ -40,4 +40,8 @@ interface TableColumnPropertyProvider<T : Any> {
     operator fun get(getter: (T) -> UUID): NotNullUuidColumnProperty<T>
 
     operator fun get(getter: (T) -> UUID?): NullableUuidColumnProperty<T>
+
+    operator fun get(getter: (T) -> Int): NotNullIntColumnProperty<T>
+
+    operator fun get(getter: (T) -> Int?): NullableIntColumnProperty<T>
 }

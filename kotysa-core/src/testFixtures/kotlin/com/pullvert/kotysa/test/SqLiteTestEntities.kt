@@ -58,6 +58,11 @@ val sqLiteTables =
                 column { it[SqLiteLocalTime::localTimeNotNull].text() }
                 column { it[SqLiteLocalTime::localTimeNullable].text() }
             }
+            table<SqLiteInteger> {
+                column { it[SqLiteInteger::id].text().primaryKey() }
+                column { it[SqLiteInteger::integerNotNull].integer() }
+                column { it[SqLiteInteger::integerNullable].integer() }
+            }
         }
 
 /**
@@ -160,3 +165,15 @@ data class SqLiteLocalTime(
 
 val sqLiteLocalTimeWithNullable = SqLiteLocalTime("abc", LocalTime.of(12, 4), LocalTime.of(11, 4))
 val sqLiteLocalTimeWithoutNullable = SqLiteLocalTime("def", LocalTime.of(12, 6))
+
+/**
+ * @author Fred Montariol
+ */
+data class SqLiteInteger(
+        val id: String,
+        val integerNotNull: Int,
+        val integerNullable: Int? = null
+)
+
+val sqLiteIntegerWithNullable = SqLiteInteger("abc", 10, 6)
+val sqLiteIntegerWithoutNullable = SqLiteInteger("def", 12)

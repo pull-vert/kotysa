@@ -39,6 +39,10 @@ interface FieldProvider {
     operator fun <T : Any> get(getter: (T) -> UUID, alias: String? = null): NotNullUuidColumnField<T>
 
     operator fun <T : Any> get(getter: (T) -> UUID?, alias: String? = null): NullableUuidColumnField<T>
+
+    operator fun <T : Any> get(getter: (T) -> Int, alias: String? = null): NotNullIntColumnField<T>
+
+    operator fun <T : Any> get(getter: (T) -> Int?, alias: String? = null): NullableIntColumnField<T>
 }
 
 /**
@@ -70,6 +74,10 @@ interface TypedFieldProvider<T : Any> {
     operator fun get(getter: (T) -> UUID, alias: String? = null): NotNullUuidColumnField<T>
 
     operator fun get(getter: (T) -> UUID?, alias: String? = null): NullableUuidColumnField<T>
+
+    operator fun get(getter: (T) -> Int, alias: String? = null): NotNullIntColumnField<T>
+
+    operator fun get(getter: (T) -> Int?, alias: String? = null): NullableIntColumnField<T>
 }
 
 open class SimpleFieldProvider internal constructor(
@@ -104,6 +112,10 @@ open class SimpleFieldProvider internal constructor(
     override fun <T : Any> get(getter: (T) -> UUID, alias: String?) = fieldAccess.getField(getter, alias)
 
     override fun <T : Any> get(getter: (T) -> UUID?, alias: String?) = fieldAccess.getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> Int, alias: String?) = fieldAccess.getField(getter, alias)
+
+    override fun <T : Any> get(getter: (T) -> Int?, alias: String?) = fieldAccess.getField(getter, alias)
 }
 
 open class SimpleTypedFieldProvider<T : Any> internal constructor(
@@ -138,4 +150,8 @@ open class SimpleTypedFieldProvider<T : Any> internal constructor(
     override fun get(getter: (T) -> UUID, alias: String?) = fieldAccess.getField(getter, alias)
 
     override fun get(getter: (T) -> UUID?, alias: String?) = fieldAccess.getField(getter, alias)
+
+    override fun get(getter: (T) -> Int, alias: String?) = fieldAccess.getField(getter, alias)
+
+    override fun get(getter: (T) -> Int?, alias: String?) = fieldAccess.getField(getter, alias)
 }

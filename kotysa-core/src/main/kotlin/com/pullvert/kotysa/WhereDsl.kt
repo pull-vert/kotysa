@@ -224,6 +224,44 @@ interface CommonWhereDsl {
             } else {
                 WhereClause(this, Operation.IS, value)
             }
+
+    // operations on Int
+
+    infix fun <T : Any> NotNullIntColumnField<T>.eq(value: Int) =
+            WhereClause(this, Operation.EQ, value)
+
+    infix fun <T : Any> NotNullIntColumnField<T>.notEq(value: Int) =
+            WhereClause(this, Operation.NOT_EQ, value)
+
+    infix fun <T : Any> NotNullIntColumnField<T>.inf(value: Int) =
+            WhereClause(this, Operation.INF, value)
+
+    infix fun <T : Any> NotNullIntColumnField<T>.sup(value: Int) =
+            WhereClause(this, Operation.SUP, value)
+
+    infix fun <T : Any> NotNullIntColumnField<T>.infOrEq(value: Int) =
+            WhereClause(this, Operation.INF_OR_EQ, value)
+
+    infix fun <T : Any> NotNullIntColumnField<T>.supOrEq(value: Int) =
+            WhereClause(this, Operation.SUP_OR_EQ, value)
+
+    infix fun <T : Any> NullableIntColumnField<T>.eq(value: Int?) =
+            WhereClause(this, Operation.EQ, value)
+
+    infix fun <T : Any> NullableIntColumnField<T>.notEq(value: Int?) =
+            WhereClause(this, Operation.NOT_EQ, value)
+
+    infix fun <T : Any> NullableIntColumnField<T>.inf(value: Int) =
+            WhereClause(this, Operation.INF, value)
+
+    infix fun <T : Any> NullableIntColumnField<T>.sup(value: Int) =
+            WhereClause(this, Operation.SUP, value)
+
+    infix fun <T : Any> NullableIntColumnField<T>.infOrEq(value: Int) =
+            WhereClause(this, Operation.INF_OR_EQ, value)
+
+    infix fun <T : Any> NullableIntColumnField<T>.supOrEq(value: Int) =
+            WhereClause(this, Operation.SUP_OR_EQ, value)
 }
 
 /**

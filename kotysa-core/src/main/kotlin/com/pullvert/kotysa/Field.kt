@@ -108,7 +108,7 @@ class NullableLocalDateTimeColumnField<T : Any> internal constructor(
         getter: (T) -> LocalDateTime?,
         dbType: DbType,
         alias: String? = null
-) : ColumnField<T, LocalDateTime?>(availableColumns, getter, alias, dbType), NotNullField
+) : ColumnField<T, LocalDateTime?>(availableColumns, getter, alias, dbType), NullableField
 
 /**
  * @author Fred Montariol
@@ -128,7 +128,7 @@ class NullableLocalDateColumnField<T : Any> internal constructor(
         getter: (T) -> LocalDate?,
         dbType: DbType,
         alias: String? = null
-) : ColumnField<T, LocalDate?>(availableColumns, getter, alias, dbType), NotNullField
+) : ColumnField<T, LocalDate?>(availableColumns, getter, alias, dbType), NullableField
 
 /**
  * @author Fred Montariol
@@ -148,7 +148,7 @@ class NullableOffsetDateTimeColumnField<T : Any> internal constructor(
         getter: (T) -> OffsetDateTime?,
         dbType: DbType,
         alias: String? = null
-) : ColumnField<T, OffsetDateTime?>(availableColumns, getter, alias, dbType), NotNullField
+) : ColumnField<T, OffsetDateTime?>(availableColumns, getter, alias, dbType), NullableField
 
 /**
  * @author Fred Montariol
@@ -168,7 +168,7 @@ class NullableLocalTimeColumnField<T : Any> internal constructor(
         getter: (T) -> LocalTime?,
         dbType: DbType,
         alias: String? = null
-) : ColumnField<T, LocalTime?>(availableColumns, getter, alias, dbType), NotNullField
+) : ColumnField<T, LocalTime?>(availableColumns, getter, alias, dbType), NullableField
 
 /**
  * @author Fred Montariol
@@ -198,4 +198,24 @@ class NullableUuidColumnField<T : Any> internal constructor(
         getter: (T) -> UUID?,
         dbType: DbType,
         alias: String? = null
-) : ColumnField<T, UUID?>(availableColumns, getter, alias, dbType), NotNullField
+) : ColumnField<T, UUID?>(availableColumns, getter, alias, dbType), NullableField
+
+/**
+ * @author Fred Montariol
+ */
+class NotNullIntColumnField<T : Any> internal constructor(
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> Int,
+        dbType: DbType,
+        alias: String? = null
+) : ColumnField<T, Int>(availableColumns, getter, alias, dbType), NotNullField
+
+/**
+ * @author Fred Montariol
+ */
+class NullableIntColumnField<T : Any> internal constructor(
+        availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
+        getter: (T) -> Int?,
+        dbType: DbType,
+        alias: String? = null
+) : ColumnField<T, Int?>(availableColumns, getter, alias, dbType), NullableField

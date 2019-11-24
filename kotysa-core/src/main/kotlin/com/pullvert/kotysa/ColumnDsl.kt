@@ -63,6 +63,13 @@ abstract class ColumnDsl<T : Any, U : ColumnDsl<T, U>> internal constructor(
         return NullableUuidColumnProperty(getter)
     }
 
+    override fun get(getter: (T) -> Int) = NotNullIntColumnProperty(getter)
+
+    override fun get(getter: (T) -> Int?): NullableIntColumnProperty<T> {
+        checkNullableGetter(getter)
+        return NullableIntColumnProperty(getter)
+    }
+
     private fun checkNullableGetter(getter: (T) -> Any?) {
         if (getter !is KFunction<*>) {
             require(getter.toCallable().returnType.isMarkedNullable) { "\"$getter\" doesn't have a nullable return type" }

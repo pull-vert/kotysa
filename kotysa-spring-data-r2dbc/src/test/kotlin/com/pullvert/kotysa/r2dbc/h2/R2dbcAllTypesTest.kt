@@ -45,16 +45,17 @@ class R2dbcAllTypesTest : AbstractR2dbcTest<AllTypesRepository>() {
         val newLocalTime = LocalTime.now()
         val newLocalDateTime = LocalDateTime.now()
         val newUuid = UUID.randomUUID()
+        val newInt = 2
         repository.updateAllTypesNotNull("new", false, newLocalDate, newOffsetDateTime, newLocalTime,
-                newLocalDateTime, newLocalDateTime, newUuid).block()
+                newLocalDateTime, newLocalDateTime, newUuid, newInt).block()
         assertThat(repository.selectAllAllTypesNotNull().toIterable())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(
                         H2AllTypesNotNull(h2AllTypesNotNull.id, "new", false, newLocalDate, newOffsetDateTime,
-                                newLocalTime, newLocalDateTime, newLocalDateTime, newUuid))
+                                newLocalTime, newLocalDateTime, newLocalDateTime, newUuid, newInt))
         repository.updateAllTypesNotNull(h2AllTypesNotNull.string, h2AllTypesNotNull.boolean, h2AllTypesNotNull.localDate,
                 h2AllTypesNotNull.offsetDateTime, h2AllTypesNotNull.localTim, h2AllTypesNotNull.localDateTime1,
-                h2AllTypesNotNull.localDateTime2, h2AllTypesNotNull.uuid).block()
+                h2AllTypesNotNull.localDateTime2, h2AllTypesNotNull.uuid, h2AllTypesNotNull.int).block()
     }
 }
 
@@ -93,7 +94,7 @@ class AllTypesRepository(dbClient: DatabaseClient) : Repository {
 
     fun updateAllTypesNotNull(newString: String, newBoolean: Boolean, newLocalDate: LocalDate,
                               newOffsetDateTime: OffsetDateTime, newLocalTim: LocalTime, newLocalDateTime1: LocalDateTime,
-                              newLocalDateTime2: LocalDateTime, newUuid: UUID) =
+                              newLocalDateTime2: LocalDateTime, newUuid: UUID, newInt: Int) =
             sqlClient.updateTable<H2AllTypesNotNull>()
                     .set { it[H2AllTypesNotNull::string] = newString }
                     .set { it[H2AllTypesNotNull::boolean] = newBoolean }
@@ -103,6 +104,7 @@ class AllTypesRepository(dbClient: DatabaseClient) : Repository {
                     .set { it[H2AllTypesNotNull::localDateTime1] = newLocalDateTime1 }
                     .set { it[H2AllTypesNotNull::localDateTime2] = newLocalDateTime2 }
                     .set { it[H2AllTypesNotNull::uuid] = newUuid }
+                    .set { it[H2AllTypesNotNull::int] = newInt }
                     .where { it[H2AllTypesNotNull::id] eq h2AllTypesNotNull.id }
                     .execute()
 }

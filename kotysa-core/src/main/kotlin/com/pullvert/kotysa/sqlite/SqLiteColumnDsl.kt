@@ -35,4 +35,8 @@ class SqLiteColumnDsl<T : Any> internal constructor(
     fun NullableLocalTimeColumnProperty<T>.text() = TextColumnBuilderNullable(getter)
 
     fun NotNullBooleanColumnProperty<T>.integer() = IntegerColumnBuilderNotNull(getter)
+
+    fun NotNullIntColumnProperty<T>.integer() = IntegerColumnBuilderNotNull(getter)
+
+    fun NullableIntColumnProperty<T>.integer() = IntegerColumnBuilderNullable(getter)
 }

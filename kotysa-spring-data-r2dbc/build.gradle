@@ -12,6 +12,7 @@ dependencies {
     api project(':kotysa-core')
 
     implementation "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
     compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-reactive'
 

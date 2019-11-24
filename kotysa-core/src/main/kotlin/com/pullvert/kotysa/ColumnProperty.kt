@@ -159,3 +159,23 @@ class NotNullUuidColumnProperty<T : Any> internal constructor(
 class NullableUuidColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> UUID?
 ) : UuidColumnProperty<T>(), NullableColumnProperty
+
+// Int
+/**
+ * @author Fred Montariol
+ */
+abstract class IntColumnProperty<T : Any> : AbstractColumnProperty<T>()
+
+/**
+ * @author Fred Montariol
+ */
+class NotNullIntColumnProperty<T : Any> internal constructor(
+        override val getter: (T) -> Int
+) : IntColumnProperty<T>(), NotNullColumnProperty
+
+/**
+ * @author Fred Montariol
+ */
+class NullableIntColumnProperty<T : Any> internal constructor(
+        override val getter: (T) -> Int?
+) : IntColumnProperty<T>(), NullableColumnProperty
