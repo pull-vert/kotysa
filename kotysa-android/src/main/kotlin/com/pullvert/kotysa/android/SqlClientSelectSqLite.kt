@@ -138,11 +138,11 @@ internal class SqlClientSelectSqLite private constructor() : DefaultSqlClientSel
                         null
                     } else {
                         when {
-                            Int::class.java.isAssignableFrom(type) -> sqLiteCursor.getInt(index)
-                            Long::class.java.isAssignableFrom(type) -> sqLiteCursor.getLong(index)
-                            Float::class.java.isAssignableFrom(type) -> sqLiteCursor.getFloat(index)
-                            Short::class.java.isAssignableFrom(type) -> sqLiteCursor.getShort(index)
-                            Double::class.java.isAssignableFrom(type) -> sqLiteCursor.getDouble(index)
+                            Integer::class.java.isAssignableFrom(type) -> sqLiteCursor.getInt(index)
+                            java.lang.Long::class.java.isAssignableFrom(type) -> sqLiteCursor.getLong(index)
+                            java.lang.Float::class.java.isAssignableFrom(type) -> sqLiteCursor.getFloat(index)
+                            java.lang.Short::class.java.isAssignableFrom(type) -> sqLiteCursor.getShort(index)
+                            java.lang.Double::class.java.isAssignableFrom(type) -> sqLiteCursor.getDouble(index)
                             String::class.java.isAssignableFrom(type) -> sqLiteCursor.getString(index)
                             // boolean is stored as Int
                             java.lang.Boolean::class.java.isAssignableFrom(type) -> sqLiteCursor.getInt(index) != 0
