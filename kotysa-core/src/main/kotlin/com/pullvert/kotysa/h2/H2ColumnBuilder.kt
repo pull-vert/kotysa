@@ -13,13 +13,6 @@ class TimestampWithTimeZoneColumnBuilderNotNull<T : Any, U> internal constructor
 ) : ColumnNotNullBuilder<TimestampWithTimeZoneColumnBuilderNotNull<T, U>, T, U>() {
     override val sqlType = SqlType.TIMESTAMP_WITH_TIME_ZONE
 
-    private var defaultValue: U? = null
-
-    override fun setDefaultValue(defaultValue: U): TimestampWithTimeZoneColumnBuilderNotNull<T, U> {
-        this.defaultValue = defaultValue
-        return this
-    }
-
     override fun build() =
             TimestampWithTimeZoneColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass,
                     fkName)
@@ -37,13 +30,6 @@ class Time9ColumnBuilderNotNull<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U
 ) : ColumnNotNullBuilder<Time9ColumnBuilderNotNull<T, U>, T, U>() {
     override val sqlType = SqlType.TIME9
-
-    private var defaultValue: U? = null
-
-    override fun setDefaultValue(defaultValue: U): Time9ColumnBuilderNotNull<T, U> {
-        this.defaultValue = defaultValue
-        return this
-    }
 
     override fun build() = Time9ColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass,
             fkName)

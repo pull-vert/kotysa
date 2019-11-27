@@ -38,14 +38,24 @@ abstract class ColumnBuilder<T : ColumnBuilder<T, U>, U : Any> {
 }
 
 abstract class ColumnNotNullNoPkBuilder<T : ColumnNotNullNoPkBuilder<T, U, V>, U : Any, V> : ColumnBuilder<T, U>() {
-    abstract fun setDefaultValue(defaultValue: V): T
-}
-
-abstract class ColumnNotNullBuilder<T : ColumnNotNullBuilder<T, U, V>, U : Any, V> : ColumnNotNullNoPkBuilder<T, U, V>() {
-
-    abstract override fun setDefaultValue(defaultValue: V): T
+    protected var defaultValue: V? = null
 
     @Suppress("UNCHECKED_CAST")
+    fun setDefaultValue(defaultValue: V): T {
+        this.defaultValue = defaultValue
+        return this as T
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+abstract class ColumnNotNullBuilder<T : ColumnNotNullBuilder<T, U, V>, U : Any, V> : ColumnBuilder<T, U>() {
+    protected var defaultValue: V? = null
+
+    fun setDefaultValue(defaultValue: V): T {
+        this.defaultValue = defaultValue
+        return this as T
+    }
+
     fun primaryKey(pkName: String? = null): T {
         isPK = true
         this.pkName = pkName
@@ -60,13 +70,6 @@ class VarcharColumnBuilderNotNull<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U
 ) : ColumnNotNullBuilder<VarcharColumnBuilderNotNull<T, U>, T, U>() {
     override val sqlType = SqlType.VARCHAR
-
-    private var defaultValue: U? = null
-
-    override fun setDefaultValue(defaultValue: U): VarcharColumnBuilderNotNull<T, U> {
-        this.defaultValue = defaultValue
-        return this
-    }
 
     override fun build() =
             VarcharColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
@@ -85,13 +88,6 @@ class TextColumnBuilderNotNull<T : Any, U> internal constructor(
 ) : ColumnNotNullBuilder<TextColumnBuilderNotNull<T, U>, T, U>() {
     override val sqlType = SqlType.TEXT
 
-    private var defaultValue: U? = null
-
-    override fun setDefaultValue(defaultValue: U): TextColumnBuilderNotNull<T, U> {
-        this.defaultValue = defaultValue
-        return this
-    }
-
     override fun build() =
             TextColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
 }
@@ -108,13 +104,6 @@ class TimestampColumnBuilderNotNull<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U
 ) : ColumnNotNullBuilder<TimestampColumnBuilderNotNull<T, U>, T, U>() {
     override val sqlType = SqlType.TIMESTAMP
-
-    private var defaultValue: U? = null
-
-    override fun setDefaultValue(defaultValue: U): TimestampColumnBuilderNotNull<T, U> {
-        this.defaultValue = defaultValue
-        return this
-    }
 
     override fun build() =
             TimestampColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
@@ -133,13 +122,6 @@ class DateColumnBuilderNotNull<T : Any, U> internal constructor(
 ) : ColumnNotNullBuilder<DateColumnBuilderNotNull<T, U>, T, U>() {
     override val sqlType = SqlType.DATE
 
-    private var defaultValue: U? = null
-
-    override fun setDefaultValue(defaultValue: U): DateColumnBuilderNotNull<T, U> {
-        this.defaultValue = defaultValue
-        return this
-    }
-
     override fun build() =
             DateColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
 }
@@ -156,13 +138,6 @@ class DateTimeColumnBuilderNotNull<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U
 ) : ColumnNotNullBuilder<DateTimeColumnBuilderNotNull<T, U>, T, U>() {
     override val sqlType = SqlType.DATE_TIME
-
-    private var defaultValue: U? = null
-
-    override fun setDefaultValue(defaultValue: U): DateTimeColumnBuilderNotNull<T, U> {
-        this.defaultValue = defaultValue
-        return this
-    }
 
     override fun build() =
             DateTimeColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
@@ -181,13 +156,6 @@ class TimeColumnBuilderNotNull<T : Any, U> internal constructor(
 ) : ColumnNotNullBuilder<TimeColumnBuilderNotNull<T, U>, T, U>() {
     override val sqlType = SqlType.TIME
 
-    private var defaultValue: U? = null
-
-    override fun setDefaultValue(defaultValue: U): TimeColumnBuilderNotNull<T, U> {
-        this.defaultValue = defaultValue
-        return this
-    }
-
     override fun build() =
             TimeColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
 }
@@ -205,13 +173,6 @@ class BooleanColumnBuilderNotNull<T : Any, U> internal constructor(
 ) : ColumnNotNullNoPkBuilder<BooleanColumnBuilderNotNull<T, U>, T, U>() {
     override val sqlType = SqlType.BOOLEAN
 
-    private var defaultValue: U? = null
-
-    override fun setDefaultValue(defaultValue: U): BooleanColumnBuilderNotNull<T, U> {
-        this.defaultValue = defaultValue
-        return this
-    }
-
     override fun build() =
             BooleanColumnNotNull(entityGetter, columnName, sqlType, defaultValue, fkClass, fkName)
 }
@@ -220,13 +181,6 @@ class UuidColumnBuilderNotNull<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U
 ) : ColumnNotNullBuilder<UuidColumnBuilderNotNull<T, U>, T, U>() {
     override val sqlType = SqlType.UUID
-
-    private var defaultValue: U? = null
-
-    override fun setDefaultValue(defaultValue: U): UuidColumnBuilderNotNull<T, U> {
-        this.defaultValue = defaultValue
-        return this
-    }
 
     override fun build() =
             UuidColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
@@ -244,13 +198,6 @@ class IntegerColumnBuilderNotNull<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U
 ) : ColumnNotNullBuilder<IntegerColumnBuilderNotNull<T, U>, T, U>() {
     override val sqlType = SqlType.INTEGER
-
-    private var defaultValue: U? = null
-
-    override fun setDefaultValue(defaultValue: U): IntegerColumnBuilderNotNull<T, U> {
-        this.defaultValue = defaultValue
-        return this
-    }
 
     override fun build() =
             IntegerColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
