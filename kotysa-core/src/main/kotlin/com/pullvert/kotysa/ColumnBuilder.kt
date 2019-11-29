@@ -199,8 +199,15 @@ class IntegerColumnBuilderNotNull<T : Any, U> internal constructor(
 ) : ColumnNotNullBuilder<IntegerColumnBuilderNotNull<T, U>, T, U>() {
     override val sqlType = SqlType.INTEGER
 
+    private var isAutoIncrement: Boolean = false
+
+    fun autoIncrement(): IntegerColumnBuilderNotNull<T, U> {
+        isAutoIncrement = true
+        return this
+    }
+
     override fun build() =
-            IntegerColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
+            IntegerColumnNotNull(entityGetter, columnName, sqlType, isPK, isAutoIncrement, pkName, defaultValue, fkClass, fkName)
 }
 
 class IntegerColumnBuilderNullable<T : Any, U> internal constructor(
@@ -208,5 +215,12 @@ class IntegerColumnBuilderNullable<T : Any, U> internal constructor(
 ) : ColumnNullableBuilder<IntegerColumnBuilderNullable<T, U>, T>() {
     override val sqlType = SqlType.INTEGER
 
-    override fun build() = IntegerColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
+    private var isAutoIncrement: Boolean = false
+
+    fun autoIncrement(): IntegerColumnBuilderNullable<T, U> {
+        isAutoIncrement = true
+        return this
+    }
+
+    override fun build() = IntegerColumnNullable(entityGetter, columnName, sqlType, isAutoIncrement, fkClass, fkName)
 }
