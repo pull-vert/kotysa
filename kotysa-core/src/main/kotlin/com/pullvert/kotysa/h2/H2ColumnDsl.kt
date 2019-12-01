@@ -11,7 +11,7 @@ import com.pullvert.kotysa.*
  * @author Fred Montariol
  */
 class H2ColumnDsl<T : Any> internal constructor(
-        init: H2ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T>
+        init: H2ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T, *>
 ) : ColumnDsl<T, H2ColumnDsl<T>>(init) {
 
     fun NotNullStringColumnProperty<T>.varchar() = VarcharColumnBuilderNotNull(getter)

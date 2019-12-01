@@ -77,7 +77,7 @@ val h2Tables =
                 column { it[H2LocalTime::localTimeNullable].time9() }
             }
             table<H2Int> {
-                column { it[H2Int::id].uuid().primaryKey() }
+                column { it[H2Int::id].int().autoIncrement().primaryKey() }
                 column { it[H2Int::intNotNull].int() }
                 column { it[H2Int::intNullable].int() }
             }
@@ -216,7 +216,7 @@ val h2LocalTimeWithoutNullable = H2LocalTime(LocalTime.of(12, 6))
 data class H2Int(
         val intNotNull: Int,
         val intNullable: Int? = null,
-        val id: UUID = UUID.randomUUID()
+        val id: Int? = null
 )
 
 val h2IntWithNullable = H2Int(10, 6)

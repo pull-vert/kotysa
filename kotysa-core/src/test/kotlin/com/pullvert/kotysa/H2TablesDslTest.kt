@@ -17,6 +17,7 @@ import org.junit.jupiter.api.fail
  * @author Fred Montariol
  */
 class H2TablesDslTest {
+
     @Test
     fun `Test all supported column types for not null properties`() {
         val tables = tables().h2 {
@@ -31,20 +32,22 @@ class H2TablesDslTest {
                 column { it[H2AllTypesNotNull::localDateTime1].dateTime() }
                 column { it[H2AllTypesNotNull::localDateTime2].timestamp() }
                 column { it[H2AllTypesNotNull::uuid].uuid() }
+                column { it[H2AllTypesNotNull::int].int().autoIncrement() }
             }
         }
         assertThat(tables.allColumns.values)
-                .extracting("name", "sqlType", "isNullable")
+                .extracting("name", "sqlType", "isNullable", "isAutoIncrement")
                 .containsExactly(
-                        tuple("id", SqlType.UUID, false),
-                        tuple("string", SqlType.VARCHAR, false),
-                        tuple("boolean", SqlType.BOOLEAN, false),
-                        tuple("localDate", SqlType.DATE, false),
-                        tuple("offsetDateTime", SqlType.TIMESTAMP_WITH_TIME_ZONE, false),
-                        tuple("localTim", SqlType.TIME9, false),
-                        tuple("localDateTime1", SqlType.DATE_TIME, false),
-                        tuple("localDateTime2", SqlType.TIMESTAMP, false),
-                        tuple("uuid", SqlType.UUID, false))
+                        tuple("id", SqlType.UUID, false, false),
+                        tuple("string", SqlType.VARCHAR, false, false),
+                        tuple("boolean", SqlType.BOOLEAN, false, false),
+                        tuple("localDate", SqlType.DATE, false, false),
+                        tuple("offsetDateTime", SqlType.TIMESTAMP_WITH_TIME_ZONE, false, false),
+                        tuple("localTim", SqlType.TIME9, false, false),
+                        tuple("localDateTime1", SqlType.DATE_TIME, false, false),
+                        tuple("localDateTime2", SqlType.TIMESTAMP, false, false),
+                        tuple("uuid", SqlType.UUID, false, false),
+                        tuple("int", SqlType.INTEGER, false, true))
     }
 
     @Test
@@ -60,6 +63,7 @@ class H2TablesDslTest {
                 column { it[H2AllTypesNullable::localDateTime1].dateTime() }
                 column { it[H2AllTypesNullable::localDateTime2].timestamp() }
                 column { it[H2AllTypesNullable::uuid].uuid() }
+                column { it[H2AllTypesNullable::int].int() }
             }
         }
         assertThat(tables.allColumns.values)
@@ -72,7 +76,8 @@ class H2TablesDslTest {
                         tuple("localTim", SqlType.TIME9, true),
                         tuple("localDateTime1", SqlType.DATE_TIME, true),
                         tuple("localDateTime2", SqlType.TIMESTAMP, true),
-                        tuple("uuid", SqlType.UUID, true))
+                        tuple("uuid", SqlType.UUID, true),
+                        tuple("int", SqlType.INTEGER, true))
     }
 
     @Test

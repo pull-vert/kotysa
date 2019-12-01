@@ -16,7 +16,7 @@ import kotlin.reflect.KFunction
  */
 @KotysaMarker
 abstract class ColumnDsl<T : Any, U : ColumnDsl<T, U>> internal constructor(
-        private val init: U.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T>
+        private val init: U.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T, *>
 ) : TableColumnPropertyProvider<T> {
 
     override fun get(getter: (T) -> String) = NotNullStringColumnProperty(getter)
@@ -79,8 +79,8 @@ abstract class ColumnDsl<T : Any, U : ColumnDsl<T, U>> internal constructor(
     @Suppress("UNCHECKED_CAST")
     internal fun initialize(initialize: U): Column<T, *> {
         val columnBuilder = init(initialize, initialize)
-        if (!columnBuilder.columnNameInitialized) {
-            columnBuilder.columnName = columnBuilder.entityGetter.toCallable().name
+        if (!columnBuilder.isColumnNameInitialized) {
+            columnBuilder.props.columnName = columnBuilder.props.entityGetter.toCallable().name
         }
         return columnBuilder.build()
     }

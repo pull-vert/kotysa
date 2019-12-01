@@ -59,7 +59,7 @@ val sqLiteTables =
                 column { it[SqLiteLocalTime::localTimeNullable].text() }
             }
             table<SqLiteInteger> {
-                column { it[SqLiteInteger::id].text().primaryKey() }
+                column { it[SqLiteInteger::id].integer().autoIncrement().primaryKey() }
                 column { it[SqLiteInteger::integerNotNull].integer() }
                 column { it[SqLiteInteger::integerNullable].integer() }
             }
@@ -170,10 +170,10 @@ val sqLiteLocalTimeWithoutNullable = SqLiteLocalTime("def", LocalTime.of(12, 6))
  * @author Fred Montariol
  */
 data class SqLiteInteger(
-        val id: String,
         val integerNotNull: Int,
-        val integerNullable: Int? = null
+        val integerNullable: Int? = null,
+        val id: Int? = null
 )
 
-val sqLiteIntegerWithNullable = SqLiteInteger("abc", 10, 6)
-val sqLiteIntegerWithoutNullable = SqLiteInteger("def", 12)
+val sqLiteIntegerWithNullable = SqLiteInteger(10, 6)
+val sqLiteIntegerWithoutNullable = SqLiteInteger(12)

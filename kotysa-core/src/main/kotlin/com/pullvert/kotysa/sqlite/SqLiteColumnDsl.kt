@@ -11,7 +11,7 @@ import com.pullvert.kotysa.*
  * @author Fred Montariol
  */
 class SqLiteColumnDsl<T : Any> internal constructor(
-        init: SqLiteColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T>
+        init: SqLiteColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T, *>
 ) : ColumnDsl<T, SqLiteColumnDsl<T>>(init) {
 
     fun NotNullStringColumnProperty<T>.text() = TextColumnBuilderNotNull(getter)

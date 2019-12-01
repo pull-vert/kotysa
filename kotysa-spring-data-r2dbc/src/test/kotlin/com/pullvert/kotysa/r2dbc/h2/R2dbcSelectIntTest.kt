@@ -22,6 +22,16 @@ class R2dbcSelectIntTest : AbstractR2dbcTest<IntRepositorySelect>() {
 
     override val repository = getContextRepository<IntRepositorySelect>()
 
+    private val h2IntWithNullable = H2Int(
+            com.pullvert.kotysa.test.h2IntWithNullable.intNotNull,
+            com.pullvert.kotysa.test.h2IntWithNullable.intNullable,
+            1)
+
+    private val h2IntWithoutNullable = H2Int(
+            com.pullvert.kotysa.test.h2IntWithoutNullable.intNotNull,
+            com.pullvert.kotysa.test.h2IntWithoutNullable.intNullable,
+            2)
+
     @Test
     fun `Verify selectAllByIntNotNull finds h2IntWithNullable`() {
         assertThat(repository.selectAllByIntNotNull(10).toIterable())

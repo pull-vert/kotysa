@@ -40,7 +40,15 @@ interface DefaultSqlClient {
 
         val columns = table.columns.values.joinToString { column ->
             val nullability = if (column.isNullable) "NULL" else "NOT NULL"
-            "${column.name} ${column.sqlType.fullType} $nullability"
+            val autoIncrement = if (column.isAutoIncrement && DbType.SQLITE != tables.dbType) {
+                // SQLITE : The AUTOINCREMENT keyword imposes extra CPU, memory, disk space, and disk I/O overhead and should be avoided if not strictly needed.
+                // It is usually not needed -> https://sqlite.org/autoinc.html
+                // if this needs to be added later, sqlite syntax MUST be "column INTEGER PRIMARY KEY AUTOINCREMENT"
+                " AUTO_INCREMENT"
+            } else {
+                ""
+            }
+            "${column.name} ${column.sqlType.fullType} $nullability$autoIncrement"
         }
 
         val primaryKey = when (val primaryKey = table.primaryKey) {

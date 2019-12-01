@@ -17,6 +17,16 @@ import org.junit.Test
  */
 class SqLiteSelectIntegerTest : AbstractSqLiteTest<IntegerRepositorySelect>() {
 
+    private val sqLiteIntegerWithNullable = SqLiteInteger(
+            com.pullvert.kotysa.test.sqLiteIntegerWithNullable.integerNotNull,
+            com.pullvert.kotysa.test.sqLiteIntegerWithNullable.integerNullable,
+            1)
+
+    private val sqLiteIntegerWithoutNullable = SqLiteInteger(
+            com.pullvert.kotysa.test.sqLiteIntegerWithoutNullable.integerNotNull,
+            com.pullvert.kotysa.test.sqLiteIntegerWithoutNullable.integerNullable,
+            2)
+
     override fun getRepository(dbHelper: DbHelper, sqLiteTables: Tables) =
             IntegerRepositorySelect(dbHelper, sqLiteTables)
 
