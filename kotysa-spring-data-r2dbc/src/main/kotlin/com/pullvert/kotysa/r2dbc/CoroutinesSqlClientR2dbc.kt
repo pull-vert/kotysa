@@ -18,7 +18,6 @@ private class CoroutinesSqlClientR2Dbc internal constructor(
         override val tables: Tables
 ) : CoroutinesSqlClient(), AbstractSqlClientR2dbc {
 
-    @ExperimentalStdlibApi
     override fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): CoroutinesSqlClientSelect.Select<T> =
             CoroutinesSqlClientSelectR2dbc.Select(client, tables, resultClass, dsl)
 

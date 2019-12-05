@@ -24,7 +24,6 @@ internal class SqlClientSqLite(
         override val tables: Tables
 ) : BlockingSqlClient(), DefaultSqlClient {
 
-    @ExperimentalStdlibApi
     override fun <T : Any> select(resultClass: KClass<T>,
                                   dsl: (SelectDslApi.(ValueProvider) -> T)?): BlockingSqlClientSelect.Select<T> =
             SqlClientSelectSqLite.Select(client.readableDatabase, tables, resultClass, dsl)

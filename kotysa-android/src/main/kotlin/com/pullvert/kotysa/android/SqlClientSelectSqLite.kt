@@ -18,7 +18,6 @@ import kotlin.reflect.KClass
  */
 internal class SqlClientSelectSqLite private constructor() : DefaultSqlClientSelect() {
 
-    @ExperimentalStdlibApi
     internal class Select<T : Any> internal constructor(
             override val client: SQLiteDatabase,
             override val tables: Tables,
