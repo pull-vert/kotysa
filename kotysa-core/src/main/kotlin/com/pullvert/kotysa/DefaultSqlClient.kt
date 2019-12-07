@@ -48,7 +48,12 @@ interface DefaultSqlClient {
             } else {
                 ""
             }
-            "${column.name} ${column.sqlType.fullType} $nullability$autoIncrement"
+            val default = if (column.defaultValue != null) {
+                " DEFAULT ${column.defaultValue.defaultValue()}"
+            } else {
+                ""
+            }
+            "${column.name} ${column.sqlType.fullType} $nullability$autoIncrement$default"
         }
 
         val primaryKey = when (val primaryKey = table.primaryKey) {
@@ -93,10 +98,13 @@ interface DefaultSqlClient {
     fun <T : Any> insertSql(row: T): String {
         val table = tables.getTable(row::class)
         val columnNames = mutableSetOf<String>()
-        val values = table.columns.values.joinToString { column ->
-            columnNames.add(column.name)
-            "?"
-        }
+        val values = table.columns.values
+                // filter out null values with default
+                .filterNot { column -> column.entityGetter(row) == null && column.defaultValue != null }
+                .joinToString { column ->
+                    columnNames.add(column.name)
+                    "?"
+                }
 
         logger.debug { "Exec SQL : INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($values)" }
         return "INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($values)"
@@ -106,10 +114,13 @@ interface DefaultSqlClient {
         logger.debug {
             val table = tables.getTable(row::class)
             val columnNames = mutableSetOf<String>()
-            val valuesDebug = table.columns.values.joinToString { column ->
-                columnNames.add(column.name)
-                "?"
-            }
+            val valuesDebug = table.columns.values
+                    // filter out null values with default
+                    .filterNot { column -> column.entityGetter(row) == null && column.defaultValue != null }
+                    .joinToString { column ->
+                        columnNames.add(column.name)
+                        "?"
+                    }
             "Exec SQL : INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($valuesDebug)"
         }
     }
@@ -126,6 +137,11 @@ private fun Any?.dbValue(): String = when (this) {
     is LocalTime -> this.format(DateTimeFormatter.ISO_LOCAL_TIME)
     is OffsetDateTime -> this.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
     else -> throw RuntimeException("${this.javaClass.canonicalName} is not supported yet")
+}
+
+private fun Any?.defaultValue(): String = when (this) {
+    is Int -> "$this"
+    else -> "'${this.dbValue()}'"
 }
 
 /**

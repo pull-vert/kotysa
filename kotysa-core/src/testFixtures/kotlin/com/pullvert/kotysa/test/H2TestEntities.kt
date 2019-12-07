@@ -8,6 +8,8 @@ import com.pullvert.kotysa.tables
 import java.time.*
 import java.util.*
 
+const val defaultUuid = "67d4306e-d99d-4e54-8b1d-5b1e92691a4e"
+
 val h2Tables =
         tables().h2 {
             table<H2Role> {
@@ -48,6 +50,17 @@ val h2Tables =
                 column { it[H2AllTypesNullable::localDateTime2].timestamp() }
                 column { it[H2AllTypesNullable::uuid].uuid() }
                 column { it[H2AllTypesNullable::int].int() }
+            }
+            table<H2AllTypesNullableDefaultValue> {
+                column { it[H2AllTypesNullableDefaultValue::id].uuid().primaryKey() }
+                column { it[H2AllTypesNullableDefaultValue::string].varchar().defaultValue("default") }
+                column { it[H2AllTypesNullableDefaultValue::localDate].date().defaultValue(LocalDate.MAX) }
+                column { it[H2AllTypesNullableDefaultValue::offsetDateTime].timestampWithTimeZone().defaultValue(OffsetDateTime.of(2019, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC)) }
+                column { it[H2AllTypesNullableDefaultValue::localTim].time9().defaultValue(LocalTime.MAX) }
+                column { it[H2AllTypesNullableDefaultValue::localDateTime1].dateTime().defaultValue(LocalDateTime.of(2018, 11, 4, 0, 0)) }
+                column { it[H2AllTypesNullableDefaultValue::localDateTime2].timestamp().defaultValue(LocalDateTime.of(2019, 11, 4, 0, 0)) }
+                column { it[H2AllTypesNullableDefaultValue::uuid].uuid().defaultValue(UUID.fromString(defaultUuid)) }
+                column { it[H2AllTypesNullableDefaultValue::int].int().defaultValue(42) }
             }
             table<H2Uuid> {
                 column { it[H2Uuid::id].uuid().primaryKey() }
@@ -142,6 +155,23 @@ data class H2AllTypesNullable(
 
 val h2AllTypesNotNull = H2AllTypesNotNull(UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f"), "", true, LocalDate.now(), OffsetDateTime.now(), LocalTime.now(), LocalDateTime.now(), LocalDateTime.now(), UUID.randomUUID(), 1)
 val h2AllTypesNullable = H2AllTypesNullable(UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"), null, null, null, null, null, null, null, null)
+
+/**
+ * @author Fred Montariol
+ */
+data class H2AllTypesNullableDefaultValue(
+        val string: String? = null,
+        val localDate: LocalDate? = null,
+        val offsetDateTime: OffsetDateTime? = null,
+        val localTim: LocalTime? = null,
+        val localDateTime1: LocalDateTime? = null,
+        val localDateTime2: LocalDateTime? = null,
+        val uuid: UUID? = null,
+        val int: Int? = null,
+        val id: UUID = UUID.randomUUID()
+)
+
+val h2AllTypesNullableDefaultValue = H2AllTypesNullableDefaultValue()
 
 /**
  * @author Fred Montariol

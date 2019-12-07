@@ -27,7 +27,11 @@ internal interface AbstractSqlClientR2dbc : DefaultSqlClient {
         table.columns.values.forEachIndexed { index, column ->
             val value = column.entityGetter(row)
             executeSpec = if (value == null) {
-                executeSpec.bindNull(index, (column.entityGetter.toCallable().returnType.classifier as KClass<*>).java)
+                if (column.defaultValue == null) {
+                    executeSpec.bindNull(index, (column.entityGetter.toCallable().returnType.classifier as KClass<*>).java)
+                } else {
+                    executeSpec
+                }
             } else {
                 executeSpec.bind(index, value)
             }

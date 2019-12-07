@@ -10,10 +10,7 @@ import com.pullvert.kotysa.test.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.data.r2dbc.core.DatabaseClient
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.OffsetDateTime
+import java.time.*
 import java.util.*
 
 /**
@@ -29,6 +26,23 @@ class R2dbcAllTypesTest : AbstractR2dbcTest<AllTypesRepository>() {
         assertThat(repository.selectAllAllTypesNotNull().toIterable())
                 .hasSize(1)
                 .containsExactly(h2AllTypesNotNull)
+    }
+
+    @Test
+    fun `Verify selectAllAllTypesNullableDefaultValue returns all AllTypesNullableDefaultValue`() {
+        assertThat(repository.selectAllAllTypesNullableDefaultValue().toIterable())
+                .hasSize(1)
+                .containsExactly(H2AllTypesNullableDefaultValue(
+                        "default",
+                        LocalDate.MAX,
+                        OffsetDateTime.of(2019, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC),
+                        LocalTime.MAX,
+                        LocalDateTime.of(2018, 11, 4, 0, 0),
+                        LocalDateTime.of(2019, 11, 4, 0, 0),
+                        UUID.fromString(defaultUuid),
+                        42,
+                        h2AllTypesNullableDefaultValue.id
+                ))
     }
 
     @Test
@@ -81,8 +95,9 @@ class AllTypesRepository(dbClient: DatabaseClient) : Repository {
     private fun createTables() =
             sqlClient.createTable<H2AllTypesNotNull>()
                     .then(sqlClient.createTable<H2AllTypesNullable>())
+                    .then(sqlClient.createTable<H2AllTypesNullableDefaultValue>())
 
-    private fun insertAllTypes() = sqlClient.insert(h2AllTypesNotNull, h2AllTypesNullable)
+    private fun insertAllTypes() = sqlClient.insert(h2AllTypesNotNull, h2AllTypesNullable, h2AllTypesNullableDefaultValue)
 
     private fun deleteAllFromAllTypesNotNull() = sqlClient.deleteAllFromTable<H2AllTypesNotNull>()
 
@@ -91,6 +106,8 @@ class AllTypesRepository(dbClient: DatabaseClient) : Repository {
     fun selectAllAllTypesNotNull() = sqlClient.selectAll<H2AllTypesNotNull>()
 
     fun selectAllAllTypesNullable() = sqlClient.selectAll<H2AllTypesNullable>()
+
+    fun selectAllAllTypesNullableDefaultValue() = sqlClient.selectAll<H2AllTypesNullableDefaultValue>()
 
     fun updateAllTypesNotNull(newString: String, newBoolean: Boolean, newLocalDate: LocalDate,
                               newOffsetDateTime: OffsetDateTime, newLocalTim: LocalTime, newLocalDateTime1: LocalDateTime,
