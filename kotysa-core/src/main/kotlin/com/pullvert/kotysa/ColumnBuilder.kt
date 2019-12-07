@@ -6,11 +6,11 @@ package com.pullvert.kotysa
 
 import kotlin.reflect.KClass
 
-interface ColumnBuilderProps<T : Any, U> {
+interface ColumnBuilderProps<T : Any, U : Any> {
     var isPK: Boolean
     var pkName: String?
     val sqlType: SqlType
-    val entityGetter: (T) -> Any?
+    val entityGetter: (T) -> U?
     var columnName: String
     val isColumnNameInitialized: Boolean
     var fkClass: KClass<*>?
@@ -19,9 +19,9 @@ interface ColumnBuilderProps<T : Any, U> {
     var isAutoIncrement: Boolean
 }
 
-private class ColumnBuilderPropsImpl<T : Any, U> internal constructor(
+private class ColumnBuilderPropsImpl<T : Any, U : Any> internal constructor(
         override val sqlType: SqlType,
-        override val entityGetter: (T) -> Any?
+        override val entityGetter: (T) -> U?
 ) : ColumnBuilderProps<T, U> {
     override lateinit var columnName: String
     override val isColumnNameInitialized get() = ::columnName.isInitialized
@@ -34,9 +34,9 @@ private class ColumnBuilderPropsImpl<T : Any, U> internal constructor(
 }
 
 @Suppress("UNCHECKED_CAST")
-abstract class ColumnBuilder<T : ColumnBuilder<T, U, V>, U : Any, V> internal constructor(
+abstract class ColumnBuilder<T : ColumnBuilder<T, U, V>, U : Any, V : Any> internal constructor(
         sqlType: SqlType,
-        val entityGetter: (U) -> V
+        val entityGetter: (U) -> V?
 ) {
 
     internal var props: ColumnBuilderProps<U, V> = ColumnBuilderPropsImpl(sqlType, entityGetter)
@@ -60,15 +60,15 @@ abstract class ColumnBuilder<T : ColumnBuilder<T, U, V>, U : Any, V> internal co
     internal abstract fun build(): Column<U, *>
 }
 
-abstract class ColumnNotNullNoPkBuilder<T : ColumnNotNullNoPkBuilder<T, U, V>, U : Any, V> internal constructor(
+abstract class ColumnNotNullNoPkBuilder<T : ColumnNotNullNoPkBuilder<T, U, V>, U : Any, V : Any> internal constructor(
         sqlType: SqlType,
-        entityGetter: (U) -> V
+        entityGetter: (U) -> V?
 ) : ColumnBuilder<T, U, V>(sqlType, entityGetter)
 
 @Suppress("UNCHECKED_CAST")
-abstract class ColumnNotNullBuilder<T : ColumnNotNullBuilder<T, U, V>, U : Any, V> internal constructor(
+abstract class ColumnNotNullBuilder<T : ColumnNotNullBuilder<T, U, V>, U : Any, V : Any> internal constructor(
         sqlType: SqlType,
-        entityGetter: (U) -> V
+        entityGetter: (U) -> V?
 ) : ColumnBuilder<T, U, V>(sqlType, entityGetter) {
 
     fun primaryKey(pkName: String? = null): T {
@@ -78,19 +78,19 @@ abstract class ColumnNotNullBuilder<T : ColumnNotNullBuilder<T, U, V>, U : Any, 
     }
 }
 
-abstract class ColumnNullableBuilder<T : ColumnNullableBuilder<T, U, V>, U : Any, V> internal constructor(
+abstract class ColumnNullableBuilder<T : ColumnNullableBuilder<T, U, V>, U : Any, V : Any> internal constructor(
         sqlType: SqlType,
-        entityGetter: (U) -> V
+        entityGetter: (U) -> V?
 ) : ColumnBuilder<T, U, V>(sqlType, entityGetter) {
 
-    abstract fun setDefaultValue(defaultValue: V): ColumnNotNullBuilder<*, U, V>
+    abstract fun defaultValue(defaultValue: V): ColumnNotNullBuilder<*, U, V>
 }
 
-class VarcharColumnBuilderNotNull<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class VarcharColumnBuilderNotNull<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNotNullBuilder<VarcharColumnBuilderNotNull<T, U>, T, U>(SqlType.VARCHAR, entityGetter) {
 
-    internal constructor(entityGetter: (T) -> U, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
+    internal constructor(entityGetter: (T) -> U?, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
         this.props = props
     }
 
@@ -99,24 +99,24 @@ class VarcharColumnBuilderNotNull<T : Any, U> internal constructor(
     }
 }
 
-class VarcharColumnBuilderNullable<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class VarcharColumnBuilderNullable<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNullableBuilder<VarcharColumnBuilderNullable<T, U>, T, U>(SqlType.VARCHAR, entityGetter) {
     override fun build() = with(props) {
         VarcharColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
     }
 
-    override fun setDefaultValue(defaultValue: U): VarcharColumnBuilderNotNull<T, U> {
+    override fun defaultValue(defaultValue: U): VarcharColumnBuilderNotNull<T, U> {
         props.defaultValue = defaultValue
         return VarcharColumnBuilderNotNull(entityGetter, props)
     }
 }
 
-class TextColumnBuilderNotNull<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class TextColumnBuilderNotNull<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNotNullBuilder<TextColumnBuilderNotNull<T, U>, T, U>(SqlType.TEXT, entityGetter) {
 
-    internal constructor(entityGetter: (T) -> U, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
+    internal constructor(entityGetter: (T) -> U?, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
         this.props = props
     }
 
@@ -125,24 +125,24 @@ class TextColumnBuilderNotNull<T : Any, U> internal constructor(
     }
 }
 
-class TextColumnBuilderNullable<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class TextColumnBuilderNullable<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNullableBuilder<TextColumnBuilderNullable<T, U>, T, U>(SqlType.TEXT, entityGetter) {
     override fun build() = with(props) {
         TextColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
     }
 
-    override fun setDefaultValue(defaultValue: U): TextColumnBuilderNotNull<T, U> {
+    override fun defaultValue(defaultValue: U): TextColumnBuilderNotNull<T, U> {
         props.defaultValue = defaultValue
         return TextColumnBuilderNotNull(entityGetter, props)
     }
 }
 
-class TimestampColumnBuilderNotNull<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class TimestampColumnBuilderNotNull<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNotNullBuilder<TimestampColumnBuilderNotNull<T, U>, T, U>(SqlType.TIMESTAMP, entityGetter) {
 
-    internal constructor(entityGetter: (T) -> U, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
+    internal constructor(entityGetter: (T) -> U?, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
         this.props = props
     }
 
@@ -151,24 +151,24 @@ class TimestampColumnBuilderNotNull<T : Any, U> internal constructor(
     }
 }
 
-class TimestampColumnBuilderNullable<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class TimestampColumnBuilderNullable<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNullableBuilder<TimestampColumnBuilderNullable<T, U>, T, U>(SqlType.TIMESTAMP, entityGetter) {
     override fun build() = with(props) {
         TimestampColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
     }
 
-    override fun setDefaultValue(defaultValue: U): TimestampColumnBuilderNotNull<T, U> {
+    override fun defaultValue(defaultValue: U): TimestampColumnBuilderNotNull<T, U> {
         props.defaultValue = defaultValue
         return TimestampColumnBuilderNotNull(entityGetter, props)
     }
 }
 
-class DateColumnBuilderNotNull<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class DateColumnBuilderNotNull<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNotNullBuilder<DateColumnBuilderNotNull<T, U>, T, U>(SqlType.DATE, entityGetter) {
 
-    internal constructor(entityGetter: (T) -> U, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
+    internal constructor(entityGetter: (T) -> U?, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
         this.props = props
     }
 
@@ -177,24 +177,24 @@ class DateColumnBuilderNotNull<T : Any, U> internal constructor(
     }
 }
 
-class DateColumnBuilderNullable<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class DateColumnBuilderNullable<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNullableBuilder<DateColumnBuilderNullable<T, U>, T, U>(SqlType.DATE, entityGetter) {
     override fun build() = with(props) {
         DateColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
     }
 
-    override fun setDefaultValue(defaultValue: U): DateColumnBuilderNotNull<T, U> {
+    override fun defaultValue(defaultValue: U): DateColumnBuilderNotNull<T, U> {
         props.defaultValue = defaultValue
         return DateColumnBuilderNotNull(entityGetter, props)
     }
 }
 
-class DateTimeColumnBuilderNotNull<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class DateTimeColumnBuilderNotNull<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNotNullBuilder<DateTimeColumnBuilderNotNull<T, U>, T, U>(SqlType.DATE_TIME, entityGetter) {
 
-    internal constructor(entityGetter: (T) -> U, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
+    internal constructor(entityGetter: (T) -> U?, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
         this.props = props
     }
 
@@ -203,24 +203,24 @@ class DateTimeColumnBuilderNotNull<T : Any, U> internal constructor(
     }
 }
 
-class DateTimeColumnBuilderNullable<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class DateTimeColumnBuilderNullable<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNullableBuilder<DateTimeColumnBuilderNullable<T, U>, T, U>(SqlType.DATE_TIME, entityGetter) {
     override fun build() = with(props) {
         DateTimeColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
     }
 
-    override fun setDefaultValue(defaultValue: U): DateTimeColumnBuilderNotNull<T, U> {
+    override fun defaultValue(defaultValue: U): DateTimeColumnBuilderNotNull<T, U> {
         props.defaultValue = defaultValue
         return DateTimeColumnBuilderNotNull(entityGetter, props)
     }
 }
 
-class TimeColumnBuilderNotNull<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class TimeColumnBuilderNotNull<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNotNullBuilder<TimeColumnBuilderNotNull<T, U>, T, U>(SqlType.TIME, entityGetter) {
 
-    internal constructor(entityGetter: (T) -> U, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
+    internal constructor(entityGetter: (T) -> U?, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
         this.props = props
     }
 
@@ -229,20 +229,20 @@ class TimeColumnBuilderNotNull<T : Any, U> internal constructor(
     }
 }
 
-class TimeColumnBuilderNullable<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class TimeColumnBuilderNullable<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNullableBuilder<TimeColumnBuilderNullable<T, U>, T, U>(SqlType.TIME, entityGetter) {
     override fun build() = with(props) {
         TimeColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
     }
 
-    override fun setDefaultValue(defaultValue: U): TimeColumnBuilderNotNull<T, U> {
+    override fun defaultValue(defaultValue: U): TimeColumnBuilderNotNull<T, U> {
         props.defaultValue = defaultValue
         return TimeColumnBuilderNotNull(entityGetter, props)
     }
 }
 
-class BooleanColumnBuilderNotNull<T : Any, U> internal constructor(
+class BooleanColumnBuilderNotNull<T : Any, U : Any> internal constructor(
         entityGetter: (T) -> U
 ) : ColumnNotNullNoPkBuilder<BooleanColumnBuilderNotNull<T, U>, T, U>(SqlType.BOOLEAN, entityGetter) {
     override fun build() = with(props) {
@@ -250,11 +250,11 @@ class BooleanColumnBuilderNotNull<T : Any, U> internal constructor(
     }
 }
 
-class UuidColumnBuilderNotNull<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class UuidColumnBuilderNotNull<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNotNullBuilder<UuidColumnBuilderNotNull<T, U>, T, U>(SqlType.UUID, entityGetter) {
 
-    internal constructor(entityGetter: (T) -> U, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
+    internal constructor(entityGetter: (T) -> U?, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
         this.props = props
     }
 
@@ -263,24 +263,24 @@ class UuidColumnBuilderNotNull<T : Any, U> internal constructor(
     }
 }
 
-class UuidColumnBuilderNullable<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class UuidColumnBuilderNullable<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNullableBuilder<UuidColumnBuilderNullable<T, U>, T, U>(SqlType.UUID, entityGetter) {
     override fun build() = with(props) {
         UuidColumnNullable(entityGetter, columnName, sqlType, fkClass, fkName)
     }
 
-    override fun setDefaultValue(defaultValue: U): UuidColumnBuilderNotNull<T, U> {
+    override fun defaultValue(defaultValue: U): UuidColumnBuilderNotNull<T, U> {
         props.defaultValue = defaultValue
         return UuidColumnBuilderNotNull(entityGetter, props)
     }
 }
 
-class IntegerColumnBuilderNotNull<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class IntegerColumnBuilderNotNull<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNotNullBuilder<IntegerColumnBuilderNotNull<T, U>, T, U>(SqlType.INTEGER, entityGetter) {
 
-    internal constructor(entityGetter: (T) -> U, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
+    internal constructor(entityGetter: (T) -> U?, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
         this.props = props
     }
 
@@ -294,8 +294,8 @@ class IntegerColumnBuilderNotNull<T : Any, U> internal constructor(
     }
 }
 
-class IntegerColumnBuilderNullable<T : Any, U> internal constructor(
-        entityGetter: (T) -> U
+class IntegerColumnBuilderNullable<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
 ) : ColumnNullableBuilder<IntegerColumnBuilderNullable<T, U>, T, U>(SqlType.INTEGER, entityGetter) {
     fun autoIncrement(): IntegerColumnBuilderNotNull<T, U> {
         props.isAutoIncrement = true
@@ -306,7 +306,7 @@ class IntegerColumnBuilderNullable<T : Any, U> internal constructor(
         IntegerColumnNullable(entityGetter, columnName, sqlType, isAutoIncrement, fkClass, fkName)
     }
 
-    override fun setDefaultValue(defaultValue: U): IntegerColumnBuilderNotNull<T, U> {
+    override fun defaultValue(defaultValue: U): IntegerColumnBuilderNotNull<T, U> {
         props.defaultValue = defaultValue
         return IntegerColumnBuilderNotNull(entityGetter, props)
     }

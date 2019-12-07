@@ -12,6 +12,11 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.OffsetDateTime
+import java.util.*
 
 /**
  * @author Fred Montariol
@@ -81,6 +86,37 @@ class H2TablesDslTest {
     }
 
     @Test
+    fun `Test all supported column types for nullable properties with default values`() {
+        val defaultUuid = UUID.randomUUID()
+        val tables = tables().h2 {
+            table<H2AllTypesNullable> {
+                name = "all_types_nullable"
+                column { it[H2AllTypesNullable::id].uuid().primaryKey() }
+                column { it[H2AllTypesNullable::string].varchar().defaultValue("default") }
+                column { it[H2AllTypesNullable::localDate].date().defaultValue(LocalDate.MAX) }
+                column { it[H2AllTypesNullable::offsetDateTime].timestampWithTimeZone().defaultValue(OffsetDateTime.MAX) }
+                column { it[H2AllTypesNullable::localTim].time9().defaultValue(LocalTime.MAX) }
+                column { it[H2AllTypesNullable::localDateTime1].dateTime().defaultValue(LocalDateTime.MAX) }
+                column { it[H2AllTypesNullable::localDateTime2].timestamp().defaultValue(LocalDateTime.MAX) }
+                column { it[H2AllTypesNullable::uuid].uuid().defaultValue(defaultUuid) }
+                column { it[H2AllTypesNullable::int].int().defaultValue(42) }
+            }
+        }
+        assertThat(tables.allColumns.values)
+                .extracting("name", "sqlType", "isNullable", "defaultValue")
+                .containsExactly(
+                        tuple("id", SqlType.UUID, false, null),
+                        tuple("string", SqlType.VARCHAR, false, "default"),
+                        tuple("localDate", SqlType.DATE, false, LocalDate.MAX),
+                        tuple("offsetDateTime", SqlType.TIMESTAMP_WITH_TIME_ZONE, false, OffsetDateTime.MAX),
+                        tuple("localTim", SqlType.TIME9, false, LocalTime.MAX),
+                        tuple("localDateTime1", SqlType.DATE_TIME, false, LocalDateTime.MAX),
+                        tuple("localDateTime2", SqlType.TIMESTAMP, false, LocalDateTime.MAX),
+                        tuple("uuid", SqlType.UUID, false, defaultUuid),
+                        tuple("int", SqlType.INTEGER, false, 42))
+    }
+
+    @Test
     fun `Test unnamed primary and foreign key`() {
         val tables = tables().h2 {
             table<H2Role> {
@@ -96,7 +132,8 @@ class H2TablesDslTest {
                 column { it[H2User::roleId].uuid().foreignKey<H2Role>() }
             }
         }
-        assertThat(tables.allTables[H2Role::class]!!.columns.values)
+        val roleTable = tables.allTables[H2Role::class] ?: fail { "require mapped H2Role" }
+        assertThat(roleTable.columns.values)
                 .extracting("name", "sqlType", "isNullable")
                 .containsExactly(
                         tuple("id", SqlType.UUID, false),
@@ -134,7 +171,8 @@ class H2TablesDslTest {
                 column { it[H2User::roleId].uuid().foreignKey<H2Role>("users_fk") }
             }
         }
-        assertThat(tables.allTables[H2Role::class]!!.columns.values)
+        val roleTable = tables.allTables[H2Role::class] ?: fail { "require mapped H2Role" }
+        assertThat(roleTable.columns.values)
                 .extracting("name", "sqlType", "isNullable")
                 .containsExactly(
                         tuple("id", SqlType.UUID, false),
