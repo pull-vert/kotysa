@@ -222,7 +222,7 @@ interface CommonWhereDsl {
                 val intValue = if (value) 1 else 0
                 WhereClause(this, Operation.EQ, intValue)
             } else {
-                WhereClause(this, Operation.IS, value)
+                WhereClause(this, Operation.EQ, value)
             }
 
     // operations on Int
