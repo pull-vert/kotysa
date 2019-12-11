@@ -138,6 +138,10 @@ data class H2AllTypesNotNull(
         val int: Int
 )
 
+val h2AllTypesNotNull = H2AllTypesNotNull(UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f"), "",
+        true, LocalDate.now(), OffsetDateTime.now(), LocalTime.now(), LocalDateTime.now(), LocalDateTime.now(),
+        UUID.randomUUID(), 1)
+
 /**
  * @author Fred Montariol
  */
@@ -153,8 +157,8 @@ data class H2AllTypesNullable(
         val int: Int?
 )
 
-val h2AllTypesNotNull = H2AllTypesNotNull(UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f"), "", true, LocalDate.now(), OffsetDateTime.now(), LocalTime.now(), LocalDateTime.now(), LocalDateTime.now(), UUID.randomUUID(), 1)
-val h2AllTypesNullable = H2AllTypesNullable(UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"), null, null, null, null, null, null, null, null)
+val h2AllTypesNullable = H2AllTypesNullable(UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"), null,
+        null, null, null, null, null, null, null)
 
 /**
  * @author Fred Montariol
