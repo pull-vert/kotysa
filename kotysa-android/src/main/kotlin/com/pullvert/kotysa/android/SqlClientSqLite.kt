@@ -37,6 +37,7 @@ internal class SqlClientSqLite(
         val table = tables.getTable(row::class)
         val contentValues = ContentValues(table.columns.size)
         table.columns.values
+                .filterNot { column -> column.entityGetter(row) == null && column.defaultValue != null }
                 .forEach { column -> contentValues.put(column.name, column.entityGetter(row)) }
 
         // debug query

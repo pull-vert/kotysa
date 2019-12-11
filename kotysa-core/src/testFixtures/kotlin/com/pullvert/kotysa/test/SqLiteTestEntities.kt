@@ -29,14 +29,29 @@ val sqLiteTables =
                 column { it[SqLiteAllTypesNotNull::string].text() }
                 column { it[SqLiteAllTypesNotNull::boolean].integer() }
                 column { it[SqLiteAllTypesNotNull::localDate].text() }
+                column { it[SqLiteAllTypesNotNull::offsetDateTime].text() }
                 column { it[SqLiteAllTypesNotNull::localDateTime].text() }
+                column { it[SqLiteAllTypesNotNull::localTime].text() }
+                column { it[SqLiteAllTypesNotNull::int].integer() }
             }
             table<SqLiteAllTypesNullable> {
                 name = "all_types_nullable"
                 column { it[SqLiteAllTypesNullable::id].text().primaryKey() }
                 column { it[SqLiteAllTypesNullable::string].text() }
                 column { it[SqLiteAllTypesNullable::localDate].text() }
+                column { it[SqLiteAllTypesNullable::offsetDateTime].text() }
                 column { it[SqLiteAllTypesNullable::localDateTime].text() }
+                column { it[SqLiteAllTypesNullable::localTime].text() }
+                column { it[SqLiteAllTypesNullable::int].integer() }
+            }
+            table<SqLiteAllTypesNullableDefaultValue> {
+                column { it[SqLiteAllTypesNullableDefaultValue::id].text().primaryKey() }
+                column { it[SqLiteAllTypesNullableDefaultValue::string].text().defaultValue("default") }
+                column { it[SqLiteAllTypesNullableDefaultValue::localDate].text().defaultValue(LocalDate.MAX) }
+                column { it[SqLiteAllTypesNullableDefaultValue::offsetDateTime].text().defaultValue(OffsetDateTime.MAX) }
+                column { it[SqLiteAllTypesNullableDefaultValue::localDateTime].text().defaultValue(LocalDateTime.MAX) }
+                column { it[SqLiteAllTypesNullableDefaultValue::localTime].text().defaultValue(LocalTime.MAX) }
+                column { it[SqLiteAllTypesNullableDefaultValue::int].integer().defaultValue(42) }
             }
             table<SqLiteLocalDate> {
                 column { it[SqLiteLocalDate::id].text().primaryKey() }
@@ -99,8 +114,14 @@ data class SqLiteAllTypesNotNull(
         val string: String,
         val boolean: Boolean,
         val localDate: LocalDate,
-        val localDateTime: LocalDateTime
+        val offsetDateTime: OffsetDateTime,
+        val localDateTime: LocalDateTime,
+        val localTime: LocalTime,
+        val int: Int
 )
+
+val sqLiteAllTypesNotNull = SqLiteAllTypesNotNull("abc", "", true, LocalDate.now(),
+        OffsetDateTime.now(), LocalDateTime.now(), LocalTime.now(), 1)
 
 /**
  * @author Fred Montariol
@@ -109,11 +130,29 @@ data class SqLiteAllTypesNullable(
         val id: String,
         val string: String?,
         val localDate: LocalDate?,
-        val localDateTime: LocalDateTime?
+        val offsetDateTime: OffsetDateTime?,
+        val localDateTime: LocalDateTime?,
+        val localTime: LocalTime?,
+        val int: Int?
 )
 
-val allTypesNotNullSqLite = SqLiteAllTypesNotNull("abc", "", true, LocalDate.now(), LocalDateTime.now())
-val allTypesNullableSqLite = SqLiteAllTypesNullable("def", null, null, null)
+val sqLiteAllTypesNullable = SqLiteAllTypesNullable("def", null, null, null,
+        null, null, null)
+
+/**
+ * @author Fred Montariol
+ */
+data class SqLiteAllTypesNullableDefaultValue(
+        val id: String,
+        val string: String? = null,
+        val localDate: LocalDate? = null,
+        val offsetDateTime: OffsetDateTime? = null,
+        val localDateTime: LocalDateTime? = null,
+        val localTime: LocalTime? = null,
+        val int: Int? = null
+)
+
+val sqLiteAllTypesNullableDefaultValue = SqLiteAllTypesNullableDefaultValue("abc")
 
 /**
  * @author Fred Montariol
