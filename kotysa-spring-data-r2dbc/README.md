@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.pullvert:kotysa-spring-data-r2dbc:0.0.12'
+    implementation 'com.pullvert:kotysa-spring-data-r2dbc:0.0.13'
     
     implementation "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
 }

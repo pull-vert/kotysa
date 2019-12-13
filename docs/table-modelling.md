@@ -86,4 +86,9 @@ Supported data types will be updated as new types are added. Java 8+ ```java.tim
         <td>Universally unique identifier (128 bit value)</td>
         <td>UUID</td>
     </tr>
+    <tr>
+        <td>Int</td>
+        <td>Represents an integer</td>
+        <td>INTEGER</td>
+    </tr>
 </table>
