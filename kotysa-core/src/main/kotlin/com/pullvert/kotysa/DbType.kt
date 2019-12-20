@@ -9,5 +9,5 @@ package com.pullvert.kotysa
  * @author Fred Montariol
  */
 enum class DbType {
-    H2, SQLITE
+    H2, SQLITE, POSTGRESQL
 }

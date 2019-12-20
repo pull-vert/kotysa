@@ -6,7 +6,7 @@ package com.pullvert.kotysa.sample
 
 import com.pullvert.kotysa.tables
 
-fun sqlitetables() =
+fun sqLiteTables() =
         tables().sqlite { // choose database type
             table<SqLiteUser> {
                 name = "users"

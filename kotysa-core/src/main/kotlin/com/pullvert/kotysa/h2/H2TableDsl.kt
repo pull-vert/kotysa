@@ -21,8 +21,8 @@ class H2TableDsl<T : Any>(
      * Declare a Column, supported types follow : [H2 Data types](http://h2database.com/html/datatypes.html)
      */
     fun column(dsl: H2ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T, *>) {
-        val h2ColumnDsl = H2ColumnDsl(dsl)
-        val column = h2ColumnDsl.initialize(h2ColumnDsl)
+        val columnDsl = H2ColumnDsl(dsl)
+        val column = columnDsl.initialize(columnDsl)
         addColumn(column)
     }
 }

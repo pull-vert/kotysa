@@ -7,7 +7,7 @@ package com.pullvert.kotysa.sample
 import com.pullvert.kotysa.tables
 import java.util.*
 
-fun h2tables() =
+fun h2Tables() =
         tables().h2 { // choose database type
             table<H2User> {
                 name = "users"

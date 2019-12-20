@@ -9,14 +9,14 @@ import com.pullvert.kotysa.TablesDsl
 import kotlin.reflect.KClass
 
 /**
- * @sample com.pullvert.kotysa.sample.h2tables
+ * @sample com.pullvert.kotysa.sample.h2Tables
  * @author Fred Montariol
  */
 class H2TablesDsl(init: H2TablesDsl.() -> Unit) : TablesDsl<H2TablesDsl, H2TableDsl<*>>(init) {
 
     override fun <T : Any> initializeTable(tableClass: KClass<T>, dsl: H2TableDsl<*>.() -> Unit): Table<*> {
-        val h2TableDsl = H2TableDsl(dsl, tableClass)
-        return h2TableDsl.initialize(h2TableDsl)
+        val tableDsl = H2TableDsl(dsl, tableClass)
+        return tableDsl.initialize(tableDsl)
     }
 
     @Suppress("UNCHECKED_CAST")

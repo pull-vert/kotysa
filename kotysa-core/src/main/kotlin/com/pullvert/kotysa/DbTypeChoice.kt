@@ -5,6 +5,7 @@
 package com.pullvert.kotysa
 
 import com.pullvert.kotysa.h2.H2TablesDsl
+import com.pullvert.kotysa.postgresql.PostgresqlTablesDsl
 import com.pullvert.kotysa.sqlite.SqLiteTablesDsl
 
 /**
@@ -15,22 +16,32 @@ object DbTypeChoice {
 
     /**
      * Configure Functional Table Mapping support for H2
-     * @sample com.pullvert.kotysa.sample.h2tables
+     * @sample com.pullvert.kotysa.sample.h2Tables
      * @see H2TablesDsl
      */
     fun h2(dsl: H2TablesDsl.() -> Unit): Tables {
-        val h2TablesDsl = H2TablesDsl(dsl)
-        return h2TablesDsl.initialize(h2TablesDsl, DbType.H2)
+        val tablesDsl = H2TablesDsl(dsl)
+        return tablesDsl.initialize(tablesDsl, DbType.H2)
     }
 
     /**
      * Configure Functional Table Mapping support for SqLite
-     * @sample com.pullvert.kotysa.sample.h2tables
+     * @sample com.pullvert.kotysa.sample.sqLiteTables
      * @see H2TablesDsl
      */
     fun sqlite(dsl: SqLiteTablesDsl.() -> Unit): Tables {
-        val sqLiteTablesDsl = SqLiteTablesDsl(dsl)
-        return sqLiteTablesDsl.initialize(sqLiteTablesDsl, DbType.SQLITE)
+        val tablesDsl = SqLiteTablesDsl(dsl)
+        return tablesDsl.initialize(tablesDsl, DbType.SQLITE)
+    }
+
+    /**
+     * Configure Functional Table Mapping support for PostgreSQL
+     * @sample com.pullvert.kotysa.sample.postgresqlTables
+     * @see H2TablesDsl
+     */
+    fun postgresql(dsl: PostgresqlTablesDsl.() -> Unit): Tables {
+        val tablesDsl = PostgresqlTablesDsl(dsl)
+        return tablesDsl.initialize(tablesDsl, DbType.POSTGRESQL)
     }
 }
 
