@@ -68,12 +68,12 @@ open class DefaultSqlClientDeleteOrUpdate protected constructor() : DefaultSqlCl
     interface Return<T : Any> : DefaultSqlClientCommon.Return, WithProperties<T> {
 
         fun deleteFromTableSql() = when (properties.tables.dbType) {
-            DbType.H2 -> h2DeleteFromTableSql(logger)
+            DbType.H2, DbType.POSTGRESQL -> h2DeleteFromTableSql(logger)
             DbType.SQLITE -> sqLiteDeleteFromTableSql(logger)
         }
 
         fun updateTableSql() = when (properties.tables.dbType) {
-            DbType.H2 -> h2UpdateTableSql(logger)
+            DbType.H2, DbType.POSTGRESQL -> h2UpdateTableSql(logger)
             DbType.SQLITE -> sqLiteUpdateTableSql(logger)
         }
 
