@@ -15,7 +15,7 @@ import java.util.*
 /**
  * @author Fred Montariol
  */
-class R2dbcSelectUuidTest : AbstractR2dbcTest<UuidRepositorySelect>() {
+class R2DbcSelectUuidH2Test : AbstractR2dbcH2Test<UuidRepositorySelect>() {
     override val context = startContext<UuidRepositorySelect>()
 
     override val repository = getContextRepository<UuidRepositorySelect>()

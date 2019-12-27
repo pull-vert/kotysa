@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 /**
  * @author Fred Montariol
  */
-class R2dbcSelectLocalDateTimeAsTimestampTest : AbstractR2dbcTest<LocalDateTimeAsTimestampRepositorySelect>() {
+class R2DbcSelectLocalDateTimeAsTimestampH2Test : AbstractR2dbcH2Test<LocalDateTimeAsTimestampRepositorySelect>() {
     override val context = startContext<LocalDateTimeAsTimestampRepositorySelect>()
 
     override val repository = getContextRepository<LocalDateTimeAsTimestampRepositorySelect>()

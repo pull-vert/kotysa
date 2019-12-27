@@ -10,14 +10,13 @@ import com.pullvert.kotysa.test.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.data.r2dbc.core.DatabaseClient
-import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 /**
  * @author Fred Montariol
  */
-class R2dbcSelectOffsetDateTimeTest : AbstractR2dbcTest<OffsetDateTimeRepositorySelect>() {
+class R2DbcSelectOffsetDateTimeH2Test : AbstractR2dbcH2Test<OffsetDateTimeRepositorySelect>() {
     override val context = startContext<OffsetDateTimeRepositorySelect>()
 
     override val repository = getContextRepository<OffsetDateTimeRepositorySelect>()

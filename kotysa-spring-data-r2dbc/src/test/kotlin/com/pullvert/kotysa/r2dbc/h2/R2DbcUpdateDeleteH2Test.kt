@@ -13,10 +13,10 @@ import java.util.*
 /**
  * @author Fred Montariol
  */
-class R2dbcUpdateDeleteTest : AbstractR2dbcTest<UserRepositoryUpdateDelete>() {
-    override val context = startContext<UserRepositoryUpdateDelete>()
+class R2DbcUpdateDeleteH2Test : AbstractR2dbcH2Test<UserRepositoryH2UpdateDelete>() {
+    override val context = startContext<UserRepositoryH2UpdateDelete>()
 
-    override val repository = getContextRepository<UserRepositoryUpdateDelete>()
+    override val repository = getContextRepository<UserRepositoryH2UpdateDelete>()
 
     @Test
     fun `Verify deleteAllFromUser works correctly`() {
@@ -89,7 +89,7 @@ class R2dbcUpdateDeleteTest : AbstractR2dbcTest<UserRepositoryUpdateDelete>() {
 /**
  * @author Fred Montariol
  */
-class UserRepositoryUpdateDelete(dbClient: DatabaseClient) : AbstractUserRepository(dbClient) {
+class UserRepositoryH2UpdateDelete(dbClient: DatabaseClient) : AbstractUserRepositoryH2(dbClient) {
 
     fun deleteUserById(id: UUID) = sqlClient.deleteFromTable<H2User>()
             .where { it[H2User::id] eq id }

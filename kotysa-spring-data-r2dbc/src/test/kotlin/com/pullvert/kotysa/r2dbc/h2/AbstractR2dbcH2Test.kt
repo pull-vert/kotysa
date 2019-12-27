@@ -16,7 +16,7 @@ import org.springframework.fu.kofu.r2dbc.r2dbcH2
 /**
  * @author Fred Montariol
  */
-abstract class AbstractR2dbcTest<T : Repository> {
+abstract class AbstractR2dbcH2Test<T : Repository> {
 
     protected abstract val repository: T
 

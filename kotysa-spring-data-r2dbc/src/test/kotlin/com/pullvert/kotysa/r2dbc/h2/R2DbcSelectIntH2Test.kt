@@ -17,7 +17,7 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 /**
  * @author Fred Montariol
  */
-class R2dbcSelectIntTest : AbstractR2dbcTest<IntRepositorySelect>() {
+class R2DbcSelectIntH2Test : AbstractR2dbcH2Test<IntRepositorySelect>() {
     override val context = startContext<IntRepositorySelect>()
 
     override val repository = getContextRepository<IntRepositorySelect>()

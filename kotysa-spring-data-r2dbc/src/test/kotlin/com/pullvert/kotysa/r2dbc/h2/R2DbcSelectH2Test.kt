@@ -15,10 +15,10 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 /**
  * @author Fred Montariol
  */
-class R2dbcSelectTest : AbstractR2dbcTest<UserRepositorySelect>() {
-    override val context = startContext<UserRepositorySelect>()
+class R2DbcSelectH2Test : AbstractR2dbcH2Test<UserRepositoryH2Select>() {
+    override val context = startContext<UserRepositoryH2Select>()
 
-    override val repository = getContextRepository<UserRepositorySelect>()
+    override val repository = getContextRepository<UserRepositoryH2Select>()
 
     @Test
     fun `Verify selectAll returns all users`() {
@@ -68,7 +68,7 @@ class R2dbcSelectTest : AbstractR2dbcTest<UserRepositorySelect>() {
 /**
  * @author Fred Montariol
  */
-class UserRepositorySelect(dbClient: DatabaseClient) : AbstractUserRepository(dbClient) {
+class UserRepositoryH2Select(dbClient: DatabaseClient) : AbstractUserRepositoryH2(dbClient) {
 
     fun countAllUsers() = sqlClient.countAll<H2User>()
 

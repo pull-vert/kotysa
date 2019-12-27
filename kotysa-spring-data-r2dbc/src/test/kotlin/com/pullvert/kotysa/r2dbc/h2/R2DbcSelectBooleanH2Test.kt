@@ -14,10 +14,10 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 /**
  * @author Fred Montariol
  */
-class R2dbcSelectBooleanTest : AbstractR2dbcTest<UserRepositorySelectBoolean>() {
-    override val context = startContext<UserRepositorySelectBoolean>()
+class R2DbcSelectBooleanH2Test : AbstractR2dbcH2Test<UserRepositoryH2SelectBoolean>() {
+    override val context = startContext<UserRepositoryH2SelectBoolean>()
 
-    override val repository = getContextRepository<UserRepositorySelectBoolean>()
+    override val repository = getContextRepository<UserRepositoryH2SelectBoolean>()
 
     @Test
     fun `Verify selectAllByIsAdminEq true finds Big Boss`() {
@@ -37,7 +37,7 @@ class R2dbcSelectBooleanTest : AbstractR2dbcTest<UserRepositorySelectBoolean>() 
 /**
  * @author Fred Montariol
  */
-class UserRepositorySelectBoolean(dbClient: DatabaseClient) : AbstractUserRepository(dbClient) {
+class UserRepositoryH2SelectBoolean(dbClient: DatabaseClient) : AbstractUserRepositoryH2(dbClient) {
 
     fun selectAllByIsAdminEq(value: Boolean) = sqlClient.select<H2User>()
             .where { it[H2User::isAdmin] eq value }

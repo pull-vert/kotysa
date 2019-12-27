@@ -18,7 +18,7 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 /**
  * @author Fred Montariol
  */
-class R2dbcJavaEntityTest : AbstractR2dbcTest<JavaUserRepository>() {
+class R2DbcJavaEntityH2Test : AbstractR2dbcH2Test<JavaUserRepository>() {
     override val context = startContext<JavaUserRepository>()
 
     override val repository = getContextRepository<JavaUserRepository>()

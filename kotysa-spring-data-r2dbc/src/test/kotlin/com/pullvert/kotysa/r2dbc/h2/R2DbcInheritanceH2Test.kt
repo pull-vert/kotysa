@@ -18,7 +18,7 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 /**
  * @author Fred Montariol
  */
-class R2dbcInheritanceTest : AbstractR2dbcTest<InheritanceRepository>() {
+class R2DbcInheritanceH2Test : AbstractR2dbcH2Test<InheritanceRepository>() {
     override val context = startContext<InheritanceRepository>()
 
     override val repository = getContextRepository<InheritanceRepository>()

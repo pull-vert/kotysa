@@ -22,7 +22,7 @@ import org.springframework.data.r2dbc.core.DatabaseClient
  * @author Fred Montariol
  */
 @ExperimentalCoroutinesApi
-class R2DbcCoroutinesTest : AbstractR2dbcTest<CoroutinesUserRepository>() {
+class R2DbcCoroutinesH2Test : AbstractR2dbcH2Test<CoroutinesUserRepository>() {
     override val context = startContext<CoroutinesUserRepository>()
 
     override val repository = getContextRepository<CoroutinesUserRepository>()

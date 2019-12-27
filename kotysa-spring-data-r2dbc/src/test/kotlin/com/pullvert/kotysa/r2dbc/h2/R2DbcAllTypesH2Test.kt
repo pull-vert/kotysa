@@ -16,7 +16,7 @@ import java.util.*
 /**
  * @author Fred Montariol
  */
-class R2dbcAllTypesTest : AbstractR2dbcTest<AllTypesRepository>() {
+class R2DbcAllTypesH2Test : AbstractR2dbcH2Test<AllTypesRepository>() {
     override val context = startContext<AllTypesRepository>()
 
     override val repository = getContextRepository<AllTypesRepository>()

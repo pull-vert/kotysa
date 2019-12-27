@@ -14,10 +14,10 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 /**
  * @author Fred Montariol
  */
-class R2dbcSelectStringTest : AbstractR2dbcTest<UserRepositorySelectString>() {
-    override val context = startContext<UserRepositorySelectString>()
+class R2DbcSelectStringH2Test : AbstractR2dbcH2Test<UserRepositoryH2SelectString>() {
+    override val context = startContext<UserRepositoryH2SelectString>()
 
-    override val repository = getContextRepository<UserRepositorySelectString>()
+    override val repository = getContextRepository<UserRepositoryH2SelectString>()
 
     @Test
     fun `Verify selectFirstByFirstame finds John`() {
@@ -154,7 +154,7 @@ class R2dbcSelectStringTest : AbstractR2dbcTest<UserRepositorySelectString>() {
 /**
  * @author Fred Montariol
  */
-class UserRepositorySelectString(dbClient: DatabaseClient) : AbstractUserRepository(dbClient) {
+class UserRepositoryH2SelectString(dbClient: DatabaseClient) : AbstractUserRepositoryH2(dbClient) {
 
     fun selectAllByFirstameNotEq(firstname: String) = sqlClient.select<H2User>()
             .where { it[H2User::firstname] notEq firstname }

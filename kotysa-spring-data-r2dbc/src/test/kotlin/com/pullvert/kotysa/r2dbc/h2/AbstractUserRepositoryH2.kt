@@ -12,7 +12,7 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 /**
  * @author Fred Montariol
  */
-abstract class AbstractUserRepository(dbClient: DatabaseClient) : Repository {
+abstract class AbstractUserRepositoryH2(dbClient: DatabaseClient) : Repository {
 
     protected val sqlClient = dbClient.sqlClient(h2Tables)
 
