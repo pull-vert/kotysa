@@ -30,8 +30,8 @@ abstract class AbstractUserRepositoryPostgresql(dbClient: DatabaseClient) : Repo
     }
 
     private fun createTables() =
-            sqlClient.createTable<H2Role>()
-                    .then(sqlClient.createTable<H2User>())
+            sqlClient.createTable<PostgresqlRole>()
+                    .then(sqlClient.createTable<PostgresqlUser>())
 
     private fun insertRoles() = sqlClient.insert(h2User, h2Admin)
 
@@ -39,13 +39,13 @@ abstract class AbstractUserRepositoryPostgresql(dbClient: DatabaseClient) : Repo
 
     fun insertJDoe() = sqlClient.insert(h2Jdoe)
 
-    private fun deleteAllFromRole() = sqlClient.deleteAllFromTable<H2Role>()
+    private fun deleteAllFromRole() = sqlClient.deleteAllFromTable<PostgresqlRole>()
 
-    fun deleteAllFromUsers() = sqlClient.deleteAllFromTable<H2User>()
+    fun deleteAllFromUsers() = sqlClient.deleteAllFromTable<PostgresqlUser>()
 
-    fun selectAllUsers() = sqlClient.selectAll<H2User>()
+    fun selectAllUsers() = sqlClient.selectAll<PostgresqlUser>()
 
-    fun selectFirstByFirstame(firstname: String) = sqlClient.select<H2User>()
-            .where { it[H2User::firstname] eq firstname }
+    fun selectFirstByFirstame(firstname: String) = sqlClient.select<PostgresqlUser>()
+            .where { it[PostgresqlUser::firstname] eq firstname }
             .fetchFirst()
 }
