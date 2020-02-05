@@ -33,11 +33,11 @@ abstract class AbstractUserRepositoryPostgresql(dbClient: DatabaseClient) : Repo
             sqlClient.createTable<PostgresqlRole>()
                     .then(sqlClient.createTable<PostgresqlUser>())
 
-    private fun insertRoles() = sqlClient.insert(h2User, h2Admin)
+    private fun insertRoles() = sqlClient.insert(postgresqlUser, postgresqlAdmin)
 
-    fun insertUsers() = sqlClient.insert(h2Jdoe, h2Bboss)
+    fun insertUsers() = sqlClient.insert(postgresqlJdoe, postgresqlBboss)
 
-    fun insertJDoe() = sqlClient.insert(h2Jdoe)
+    fun insertJDoe() = sqlClient.insert(postgresqlJdoe)
 
     private fun deleteAllFromRole() = sqlClient.deleteAllFromTable<PostgresqlRole>()
 

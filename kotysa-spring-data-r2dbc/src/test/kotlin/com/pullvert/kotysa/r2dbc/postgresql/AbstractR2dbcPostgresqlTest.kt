@@ -11,7 +11,6 @@ import org.springframework.boot.WebApplicationType
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.fu.kofu.application
-import org.springframework.fu.kofu.r2dbc.r2dbcH2
 import org.springframework.fu.kofu.r2dbc.r2dbcPostgresql
 
 /**
