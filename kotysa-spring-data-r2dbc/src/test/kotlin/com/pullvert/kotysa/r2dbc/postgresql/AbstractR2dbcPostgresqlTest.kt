@@ -12,6 +12,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.fu.kofu.application
 import org.springframework.fu.kofu.r2dbc.r2dbcPostgresql
+import org.testcontainers.containers.PostgreSQLContainer
+
+class KPostgreSQLContainer : PostgreSQLContainer<KPostgreSQLContainer>()
 
 /**
  * @author Fred Montariol
@@ -20,24 +23,36 @@ abstract class AbstractR2dbcPostgresqlTest<T : Repository> {
 
     protected abstract val repository: T
 
-    protected inline fun <reified U : Repository> startContext() =
-            application(WebApplicationType.NONE) {
-                beans {
-                    bean<U>()
-                }
-                listener<ApplicationReadyEvent> {
-                    ref<U>().init()
-                }
-                r2dbcPostgresql()
-            }.run()
+    protected inline fun <reified U : Repository> startContext(): ConfigurableApplicationContext {
+        // PostgreSQL testcontainers must be started before building context for getting Docker mapped port
+        val postgresqlContainer = KPostgreSQLContainer()
+                .withDatabaseName("postgres")
+                .withUsername("postgres")
+                .withPassword("")
+        postgresqlContainer.start()
+
+        return application(WebApplicationType.NONE) {
+            beans {
+                bean { postgresqlContainer }
+                bean<U>()
+            }
+            listener<ApplicationReadyEvent> {
+                ref<U>().init()
+            }
+            r2dbcPostgresql {
+                port = postgresqlContainer.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)
+            }
+        }.run()
+    }
 
     protected abstract val context: ConfigurableApplicationContext
 
     protected inline fun <reified U : Repository> getContextRepository() = context.getBean<U>()
 
     @AfterAll
-    fun afterAll() {
+    fun afterAll() = context.run {
         repository.delete()
-        context.close()
+        getBean<PostgreSQLContainer<*>>().stop()
+        close()
     }
 }

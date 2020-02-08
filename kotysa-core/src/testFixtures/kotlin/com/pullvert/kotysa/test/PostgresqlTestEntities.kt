@@ -117,8 +117,8 @@ data class PostgresqlUser(
         val id: UUID = UUID.randomUUID()
 )
 
-val postgresqlJdoe = H2User("John", "Doe", false, h2User.id)
-val postgresqlBboss = H2User("Big", "Boss", true, h2Admin.id, "TheBoss")
+val postgresqlJdoe = PostgresqlUser("John", "Doe", false, h2User.id)
+val postgresqlBboss = PostgresqlUser("Big", "Boss", true, h2Admin.id, "TheBoss")
 
 ///**
 // * @author Fred Montariol
