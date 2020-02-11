@@ -96,33 +96,31 @@ interface DefaultSqlClient {
     }
 
     fun <T : Any> insertSql(row: T): String {
+        val insertSqlQuery = insertSqlQuery(row)
+        logger.debug { "Exec SQL : $insertSqlQuery" }
+        return insertSqlQuery
+    }
+
+    fun <T : Any> insertSqlDebug(row: T) {
+        logger.debug { "Exec SQL : ${insertSqlQuery(row)}" }
+    }
+
+    fun <T : Any> insertSqlQuery(row: T): String {
         val table = tables.getTable(row::class)
         val columnNames = mutableSetOf<String>()
         val values = table.columns.values
                 // filter out null values with default
                 .filterNot { column -> column.entityGetter(row) == null && column.defaultValue != null }
-                .joinToString { column ->
+                .mapIndexed { index, column ->
                     columnNames.add(column.name)
-                    "?"
-                }
-
-        logger.debug { "Exec SQL : INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($values)" }
-        return "INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($values)"
-    }
-
-    fun <T : Any> insertSqlDebug(row: T) {
-        logger.debug {
-            val table = tables.getTable(row::class)
-            val columnNames = mutableSetOf<String>()
-            val valuesDebug = table.columns.values
-                    // filter out null values with default
-                    .filterNot { column -> column.entityGetter(row) == null && column.defaultValue != null }
-                    .joinToString { column ->
-                        columnNames.add(column.name)
+                    if (DbType.POSTGRESQL == tables.dbType) {
+                        "$${index + 1}"
+                    } else {
                         "?"
                     }
-            "Exec SQL : INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($valuesDebug)"
-        }
+                }
+
+        return "INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES (${values.joinToString()})"
     }
 }
 

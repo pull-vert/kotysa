@@ -24,73 +24,73 @@ val postgresqlTables =
                 column { it[PostgresqlUser::roleId].uuid().foreignKey<PostgresqlRole>("FK_users_roles") }
                 column { it[PostgresqlUser::alias].varchar() }
             }
-//            table<H2AllTypesNotNull> {
+//            table<PostgresqlAllTypesNotNull> {
 //                name = "all_types"
-//                column { it[H2AllTypesNotNull::id].uuid().primaryKey() }
-//                column { it[H2AllTypesNotNull::string].varchar() }
-//                column { it[H2AllTypesNotNull::boolean].boolean() }
-//                column { it[H2AllTypesNotNull::localDate].date() }
-//                column { it[H2AllTypesNotNull::offsetDateTime].timestampWithTimeZone() }
-//                column { it[H2AllTypesNotNull::localTim].time9() }
-//                column { it[H2AllTypesNotNull::localDateTime1].dateTime() }
-//                column { it[H2AllTypesNotNull::localDateTime2].timestamp() }
-//                column { it[H2AllTypesNotNull::uuid].uuid() }
-//                column { it[H2AllTypesNotNull::int].int() }
+//                column { it[PostgresqlAllTypesNotNull::id].uuid().primaryKey() }
+//                column { it[PostgresqlAllTypesNotNull::string].varchar() }
+//                column { it[PostgresqlAllTypesNotNull::boolean].boolean() }
+//                column { it[PostgresqlAllTypesNotNull::localDate].date() }
+//                column { it[PostgresqlAllTypesNotNull::offsetDateTime].timestampWithTimeZone() }
+//                column { it[PostgresqlAllTypesNotNull::localTim].time9() }
+//                column { it[PostgresqlAllTypesNotNull::localDateTime1].dateTime() }
+//                column { it[PostgresqlAllTypesNotNull::localDateTime2].timestamp() }
+//                column { it[PostgresqlAllTypesNotNull::uuid].uuid() }
+//                column { it[PostgresqlAllTypesNotNull::int].int() }
 //            }
-//            table<H2AllTypesNullable> {
+//            table<PostgresqlAllTypesNullable> {
 //                name = "all_types_nullable"
-//                column { it[H2AllTypesNullable::id].uuid().primaryKey() }
-//                column { it[H2AllTypesNullable::string].varchar() }
-//                column { it[H2AllTypesNullable::localDate].date() }
-//                column { it[H2AllTypesNullable::offsetDateTime].timestampWithTimeZone() }
-//                column { it[H2AllTypesNullable::localTim].time9() }
-//                column { it[H2AllTypesNullable::localDateTime1].dateTime() }
-//                column { it[H2AllTypesNullable::localDateTime2].timestamp() }
-//                column { it[H2AllTypesNullable::uuid].uuid() }
-//                column { it[H2AllTypesNullable::int].int() }
+//                column { it[PostgresqlAllTypesNullable::id].uuid().primaryKey() }
+//                column { it[PostgresqlAllTypesNullable::string].varchar() }
+//                column { it[PostgresqlAllTypesNullable::localDate].date() }
+//                column { it[PostgresqlAllTypesNullable::offsetDateTime].timestampWithTimeZone() }
+//                column { it[PostgresqlAllTypesNullable::localTim].time9() }
+//                column { it[PostgresqlAllTypesNullable::localDateTime1].dateTime() }
+//                column { it[PostgresqlAllTypesNullable::localDateTime2].timestamp() }
+//                column { it[PostgresqlAllTypesNullable::uuid].uuid() }
+//                column { it[PostgresqlAllTypesNullable::int].int() }
 //            }
-//            table<H2AllTypesNullableDefaultValue> {
-//                column { it[H2AllTypesNullableDefaultValue::id].uuid().primaryKey() }
-//                column { it[H2AllTypesNullableDefaultValue::string].varchar().defaultValue("default") }
-//                column { it[H2AllTypesNullableDefaultValue::localDate].date().defaultValue(LocalDate.MAX) }
-//                column { it[H2AllTypesNullableDefaultValue::offsetDateTime].timestampWithTimeZone().defaultValue(OffsetDateTime.of(2019, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC)) }
-//                column { it[H2AllTypesNullableDefaultValue::localTim].time9().defaultValue(LocalTime.MAX) }
-//                column { it[H2AllTypesNullableDefaultValue::localDateTime1].dateTime().defaultValue(LocalDateTime.of(2018, 11, 4, 0, 0)) }
-//                column { it[H2AllTypesNullableDefaultValue::localDateTime2].timestamp().defaultValue(LocalDateTime.of(2019, 11, 4, 0, 0)) }
-//                column { it[H2AllTypesNullableDefaultValue::uuid].uuid().defaultValue(UUID.fromString(defaultUuid)) }
-//                column { it[H2AllTypesNullableDefaultValue::int].int().defaultValue(42) }
+//            table<PostgresqlAllTypesNullableDefaultValue> {
+//                column { it[PostgresqlAllTypesNullableDefaultValue::id].uuid().primaryKey() }
+//                column { it[PostgresqlAllTypesNullableDefaultValue::string].varchar().defaultValue("default") }
+//                column { it[PostgresqlAllTypesNullableDefaultValue::localDate].date().defaultValue(LocalDate.MAX) }
+//                column { it[PostgresqlAllTypesNullableDefaultValue::offsetDateTime].timestampWithTimeZone().defaultValue(OffsetDateTime.of(2019, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC)) }
+//                column { it[PostgresqlAllTypesNullableDefaultValue::localTim].time9().defaultValue(LocalTime.MAX) }
+//                column { it[PostgresqlAllTypesNullableDefaultValue::localDateTime1].dateTime().defaultValue(LocalDateTime.of(2018, 11, 4, 0, 0)) }
+//                column { it[PostgresqlAllTypesNullableDefaultValue::localDateTime2].timestamp().defaultValue(LocalDateTime.of(2019, 11, 4, 0, 0)) }
+//                column { it[PostgresqlAllTypesNullableDefaultValue::uuid].uuid().defaultValue(UUID.fromString(defaultUuid)) }
+//                column { it[PostgresqlAllTypesNullableDefaultValue::int].int().defaultValue(42) }
 //            }
-//            table<H2Uuid> {
-//                column { it[H2Uuid::id].uuid().primaryKey() }
-//                column { it[H2Uuid::roleIdNotNull].uuid().foreignKey<H2Role>() }
-//                column { it[H2Uuid::roleIdNullable].uuid().foreignKey<H2Role>() }
+//            table<PostgresqlUuid> {
+//                column { it[PostgresqlUuid::id].uuid().primaryKey() }
+//                column { it[PostgresqlUuid::roleIdNotNull].uuid().foreignKey<PostgresqlRole>() }
+//                column { it[PostgresqlUuid::roleIdNullable].uuid().foreignKey<PostgresqlRole>() }
 //            }
-//            table<H2LocalDate> {
-//                column { it[H2LocalDate::id].uuid().primaryKey() }
-//                column { it[H2LocalDate::localDateNotNull].date() }
-//                column { it[H2LocalDate::localDateNullable].date() }
+//            table<PostgresqlLocalDate> {
+//                column { it[PostgresqlLocalDate::id].uuid().primaryKey() }
+//                column { it[PostgresqlLocalDate::localDateNotNull].date() }
+//                column { it[PostgresqlLocalDate::localDateNullable].date() }
 //            }
-//            table<H2LocalDateTime> {
-//                column { it[H2LocalDateTime::id].uuid().primaryKey() }
-//                column { it[H2LocalDateTime::localDateTimeNotNull].dateTime() }
-//                column { it[H2LocalDateTime::localDateTimeNullable].dateTime() }
-//                column { it[H2LocalDateTime::localDateTimeAsTimestampNotNull].timestamp() }
-//                column { it[H2LocalDateTime::localDateTimeAsTimestampNullable].timestamp() }
+//            table<PostgresqlLocalDateTime> {
+//                column { it[PostgresqlLocalDateTime::id].uuid().primaryKey() }
+//                column { it[PostgresqlLocalDateTime::localDateTimeNotNull].dateTime() }
+//                column { it[PostgresqlLocalDateTime::localDateTimeNullable].dateTime() }
+//                column { it[PostgresqlLocalDateTime::localDateTimeAsTimestampNotNull].timestamp() }
+//                column { it[PostgresqlLocalDateTime::localDateTimeAsTimestampNullable].timestamp() }
 //            }
-//            table<H2OffsetDateTime> {
-//                column { it[H2OffsetDateTime::id].uuid().primaryKey() }
-//                column { it[H2OffsetDateTime::offsetDateTimeNotNull].timestampWithTimeZone() }
-//                column { it[H2OffsetDateTime::offsetDateTimeNullable].timestampWithTimeZone() }
+//            table<PostgresqlOffsetDateTime> {
+//                column { it[PostgresqlOffsetDateTime::id].uuid().primaryKey() }
+//                column { it[PostgresqlOffsetDateTime::offsetDateTimeNotNull].timestampWithTimeZone() }
+//                column { it[PostgresqlOffsetDateTime::offsetDateTimeNullable].timestampWithTimeZone() }
 //            }
-//            table<H2LocalTime> {
-//                column { it[H2LocalTime::id].uuid().primaryKey() }
-//                column { it[H2LocalTime::localTimeNotNull].time9() }
-//                column { it[H2LocalTime::localTimeNullable].time9() }
+//            table<PostgresqlLocalTime> {
+//                column { it[PostgresqlLocalTime::id].uuid().primaryKey() }
+//                column { it[PostgresqlLocalTime::localTimeNotNull].time9() }
+//                column { it[PostgresqlLocalTime::localTimeNullable].time9() }
 //            }
-//            table<H2Int> {
-//                column { it[H2Int::id].int().autoIncrement().primaryKey() }
-//                column { it[H2Int::intNotNull].int() }
-//                column { it[H2Int::intNullable].int() }
+//            table<PostgresqlInt> {
+//                column { it[PostgresqlInt::id].int().autoIncrement().primaryKey() }
+//                column { it[PostgresqlInt::intNotNull].int() }
+//                column { it[PostgresqlInt::intNullable].int() }
 //            }
         }
 
@@ -117,13 +117,13 @@ data class PostgresqlUser(
         val id: UUID = UUID.randomUUID()
 )
 
-val postgresqlJdoe = PostgresqlUser("John", "Doe", false, h2User.id)
-val postgresqlBboss = PostgresqlUser("Big", "Boss", true, h2Admin.id, "TheBoss")
+val postgresqlJdoe = PostgresqlUser("John", "Doe", false, postgresqlUser.id)
+val postgresqlBboss = PostgresqlUser("Big", "Boss", true, postgresqlAdmin.id, "TheBoss")
 
 ///**
 // * @author Fred Montariol
 // */
-//data class H2AllTypesNotNull(
+//data class PostgresqlAllTypesNotNull(
 //        val id: UUID,
 //        val string: String,
 //        val boolean: Boolean,
@@ -136,14 +136,14 @@ val postgresqlBboss = PostgresqlUser("Big", "Boss", true, h2Admin.id, "TheBoss")
 //        val int: Int
 //)
 //
-//val h2AllTypesNotNull = H2AllTypesNotNull(UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f"), "",
+//val postgresqlAllTypesNotNull = PostgresqlAllTypesNotNull(UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f"), "",
 //        true, LocalDate.now(), OffsetDateTime.now(), LocalTime.now(), LocalDateTime.now(), LocalDateTime.now(),
 //        UUID.randomUUID(), 1)
 //
 ///**
 // * @author Fred Montariol
 // */
-//data class H2AllTypesNullable(
+//data class PostgresqlAllTypesNullable(
 //        val id: UUID,
 //        val string: String?,
 //        val localDate: LocalDate?,
@@ -155,13 +155,13 @@ val postgresqlBboss = PostgresqlUser("Big", "Boss", true, h2Admin.id, "TheBoss")
 //        val int: Int?
 //)
 //
-//val h2AllTypesNullable = H2AllTypesNullable(UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"), null,
+//val postgresqlAllTypesNullable = PostgresqlAllTypesNullable(UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"), null,
 //        null, null, null, null, null, null, null)
 //
 ///**
 // * @author Fred Montariol
 // */
-//data class H2AllTypesNullableDefaultValue(
+//data class PostgresqlAllTypesNullableDefaultValue(
 //        val string: String? = null,
 //        val localDate: LocalDate? = null,
 //        val offsetDateTime: OffsetDateTime? = null,
@@ -173,36 +173,36 @@ val postgresqlBboss = PostgresqlUser("Big", "Boss", true, h2Admin.id, "TheBoss")
 //        val id: UUID = UUID.randomUUID()
 //)
 //
-//val h2AllTypesNullableDefaultValue = H2AllTypesNullableDefaultValue()
+//val postgresqlAllTypesNullableDefaultValue = PostgresqlAllTypesNullableDefaultValue()
 //
 ///**
 // * @author Fred Montariol
 // */
-//data class H2Uuid(
+//data class PostgresqlUuid(
 //        val roleIdNotNull: UUID,
 //        val roleIdNullable: UUID? = null,
 //        val id: UUID = UUID.randomUUID()
 //)
 //
-//val h2UuidWithNullable = H2Uuid(h2User.id, h2Admin.id)
-//val h2UuidWithoutNullable = H2Uuid(h2User.id)
+//val postgresqlUuidWithNullable = PostgresqlUuid(postgresqlUser.id, postgresqlAdmin.id)
+//val postgresqlUuidWithoutNullable = PostgresqlUuid(postgresqlUser.id)
 //
 ///**
 // * @author Fred Montariol
 // */
-//data class H2LocalDate(
+//data class PostgresqlLocalDate(
 //        val localDateNotNull: LocalDate,
 //        val localDateNullable: LocalDate? = null,
 //        val id: UUID = UUID.randomUUID()
 //)
 //
-//val h2LocalDateWithNullable = H2LocalDate(LocalDate.of(2019, 11, 4), LocalDate.of(2018, 11, 4))
-//val h2LocalDateWithoutNullable = H2LocalDate(LocalDate.of(2019, 11, 6))
+//val postgresqlLocalDateWithNullable = PostgresqlLocalDate(LocalDate.of(2019, 11, 4), LocalDate.of(2018, 11, 4))
+//val postgresqlLocalDateWithoutNullable = PostgresqlLocalDate(LocalDate.of(2019, 11, 6))
 //
 ///**
 // * @author Fred Montariol
 // */
-//data class H2LocalDateTime(
+//data class PostgresqlLocalDateTime(
 //        val localDateTimeNotNull: LocalDateTime,
 //        val localDateTimeNullable: LocalDateTime?,
 //        val localDateTimeAsTimestampNotNull: LocalDateTime,
@@ -210,46 +210,46 @@ val postgresqlBboss = PostgresqlUser("Big", "Boss", true, h2Admin.id, "TheBoss")
 //        val id: UUID = UUID.randomUUID()
 //)
 //
-//val h2LocalDateTimeWithNullable = H2LocalDateTime(LocalDateTime.of(2019, 11, 4, 0, 0), LocalDateTime.of(2018, 11, 4, 0, 0),
+//val postgresqlLocalDateTimeWithNullable = PostgresqlLocalDateTime(LocalDateTime.of(2019, 11, 4, 0, 0), LocalDateTime.of(2018, 11, 4, 0, 0),
 //        LocalDateTime.of(2019, 11, 4, 0, 0), LocalDateTime.of(2018, 11, 4, 0, 0))
-//val h2LocalDateTimeWithoutNullable = H2LocalDateTime(LocalDateTime.of(2019, 11, 6, 0, 0), null,
+//val postgresqlLocalDateTimeWithoutNullable = PostgresqlLocalDateTime(LocalDateTime.of(2019, 11, 6, 0, 0), null,
 //        LocalDateTime.of(2019, 11, 6, 0, 0))
 //
 ///**
 // * @author Fred Montariol
 // */
-//data class H2OffsetDateTime(
+//data class PostgresqlOffsetDateTime(
 //        val offsetDateTimeNotNull: OffsetDateTime,
 //        val offsetDateTimeNullable: OffsetDateTime? = null,
 //        val id: UUID = UUID.randomUUID()
 //)
 //
-//val h2OffsetDateTimeWithNullable = H2OffsetDateTime(
+//val postgresqlOffsetDateTimeWithNullable = PostgresqlOffsetDateTime(
 //        OffsetDateTime.of(2019, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC),
 //        OffsetDateTime.of(2018, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC))
-//val h2OffsetDateTimeWithoutNullable = H2OffsetDateTime(
+//val postgresqlOffsetDateTimeWithoutNullable = PostgresqlOffsetDateTime(
 //        OffsetDateTime.of(2019, 11, 6, 0, 0, 0, 0, ZoneOffset.UTC))
 //
 ///**
 // * @author Fred Montariol
 // */
-//data class H2LocalTime(
+//data class PostgresqlLocalTime(
 //        val localTimeNotNull: LocalTime,
 //        val localTimeNullable: LocalTime? = null,
 //        val id: UUID = UUID.randomUUID()
 //)
 //
-//val h2LocalTimeWithNullable = H2LocalTime(LocalTime.of(12, 4), LocalTime.of(11, 4))
-//val h2LocalTimeWithoutNullable = H2LocalTime(LocalTime.of(12, 6))
+//val postgresqlLocalTimeWithNullable = PostgresqlLocalTime(LocalTime.of(12, 4), LocalTime.of(11, 4))
+//val postgresqlLocalTimeWithoutNullable = PostgresqlLocalTime(LocalTime.of(12, 6))
 //
 ///**
 // * @author Fred Montariol
 // */
-//data class H2Int(
+//data class PostgresqlInt(
 //        val intNotNull: Int,
 //        val intNullable: Int? = null,
 //        val id: Int? = null
 //)
 //
-//val h2IntWithNullable = H2Int(10, 6)
-//val h2IntWithoutNullable = H2Int(12)
+//val postgresqlIntWithNullable = PostgresqlInt(10, 6)
+//val postgresqlIntWithoutNullable = PostgresqlInt(12)
