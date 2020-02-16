@@ -241,28 +241,65 @@ open class DefaultSqlClientCommon protected constructor() {
             if (withWhere) {
                 where.append("WHERE ")
             }
-            whereClauses.forEach { whereClause ->
+            whereClauses.forEachIndexed() { index, whereClause ->
                 where.append(
                         when (whereClause.operation) {
                             Operation.EQ ->
                                 if (whereClause.value == null) {
                                     "${whereClause.field.fieldName} IS NULL AND "
                                 } else {
-                                    "${whereClause.field.fieldName} = ? AND "
+                                    if (DbType.POSTGRESQL == tables.dbType) {
+                                        "${whereClause.field.fieldName} = $${index + 1} AND "
+                                    } else {
+                                        "${whereClause.field.fieldName} = ? AND "
+                                    }
                                 }
                             Operation.NOT_EQ ->
                                 if (whereClause.value == null) {
                                     "${whereClause.field.fieldName} IS NOT NULL AND "
                                 } else {
-                                    "${whereClause.field.fieldName} <> ? AND "
+                                    if (DbType.POSTGRESQL == tables.dbType) {
+                                        "${whereClause.field.fieldName} <> $${index + 1} AND "
+                                    } else {
+                                        "${whereClause.field.fieldName} <> ? AND "
+                                    }
                                 }
                             Operation.CONTAINS, Operation.STARTS_WITH, Operation.ENDS_WITH ->
-                                "${whereClause.field.fieldName} LIKE ? AND "
-                            Operation.INF -> "${whereClause.field.fieldName} < ? AND "
-                            Operation.INF_OR_EQ -> "${whereClause.field.fieldName} <= ? AND "
-                            Operation.SUP -> "${whereClause.field.fieldName} > ? AND "
-                            Operation.SUP_OR_EQ -> "${whereClause.field.fieldName} >= ? AND "
-                            Operation.IS -> "${whereClause.field.fieldName} IS ? AND "
+                                if (DbType.POSTGRESQL == tables.dbType) {
+                                    "${whereClause.field.fieldName} LIKE $${index + 1} AND "
+                                } else {
+                                    "${whereClause.field.fieldName} LIKE ? AND "
+                                }
+                            Operation.INF ->
+                                if (DbType.POSTGRESQL == tables.dbType) {
+                                    "${whereClause.field.fieldName} < $${index + 1} AND "
+                                } else {
+                                    "${whereClause.field.fieldName} < ? AND "
+                                }
+                            Operation.INF_OR_EQ ->
+                                if (DbType.POSTGRESQL == tables.dbType) {
+                                    "${whereClause.field.fieldName} <= $${index + 1} AND "
+                                } else {
+                                    "${whereClause.field.fieldName} <= ? AND "
+                                }
+                            Operation.SUP ->
+                                if (DbType.POSTGRESQL == tables.dbType) {
+                                    "${whereClause.field.fieldName} <= $${index + 1} AND "
+                                } else {
+                                    "${whereClause.field.fieldName} > ? AND "
+                                }
+                            Operation.SUP_OR_EQ ->
+                                if (DbType.POSTGRESQL == tables.dbType) {
+                                    "${whereClause.field.fieldName} >= $${index + 1} AND "
+                                } else {
+                                    "${whereClause.field.fieldName} >= ? AND "
+                                }
+                            Operation.IS ->
+                                if (DbType.POSTGRESQL == tables.dbType) {
+                                    "${whereClause.field.fieldName} IS $${index + 1} AND "
+                                } else {
+                                    "${whereClause.field.fieldName} IS ? AND "
+                                }
                             else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
                         }
                 )
