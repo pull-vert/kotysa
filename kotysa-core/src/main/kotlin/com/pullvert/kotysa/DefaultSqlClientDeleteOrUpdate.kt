@@ -7,6 +7,7 @@ package com.pullvert.kotysa
 import com.github.michaelbull.logging.InlineLogger
 import com.pullvert.kotysa.h2.h2DeleteFromTableSql
 import com.pullvert.kotysa.h2.h2UpdateTableSql
+import com.pullvert.kotysa.postgresql.postgresqlUpdateTableSql
 import com.pullvert.kotysa.sqlite.sqLiteDeleteFromTableSql
 import com.pullvert.kotysa.sqlite.sqLiteUpdateTableSql
 import kotlin.reflect.KClass
@@ -73,7 +74,8 @@ open class DefaultSqlClientDeleteOrUpdate protected constructor() : DefaultSqlCl
         }
 
         fun updateTableSql() = when (properties.tables.dbType) {
-            DbType.H2, DbType.POSTGRESQL -> h2UpdateTableSql(logger)
+            DbType.H2 -> h2UpdateTableSql(logger)
+            DbType.POSTGRESQL -> postgresqlUpdateTableSql(logger)
             DbType.SQLITE -> sqLiteUpdateTableSql(logger)
         }
 
@@ -81,10 +83,10 @@ open class DefaultSqlClientDeleteOrUpdate protected constructor() : DefaultSqlCl
          * Handle joins as EXISTS + nested SELECT
          * Then other WHERE clauses
          */
-        fun joinsWithExistsAndWheres(withWhere: Boolean = true) = with(properties) {
+        fun joinsWithExistsAndWheres(withWhere: Boolean = true, offset: Int = 1) = with(properties) {
             val joins = joinsWithExists()
 
-            var wheres = wheres(false)
+            var wheres = wheres(false, offset)
 
             if (joins.isEmpty() && wheres.isEmpty()) {
                 ""

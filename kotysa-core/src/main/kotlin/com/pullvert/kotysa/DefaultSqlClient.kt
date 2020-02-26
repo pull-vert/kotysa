@@ -108,19 +108,20 @@ interface DefaultSqlClient {
     fun <T : Any> insertSqlQuery(row: T): String {
         val table = tables.getTable(row::class)
         val columnNames = mutableSetOf<String>()
+        var index = 1
         val values = table.columns.values
                 // filter out null values with default
                 .filterNot { column -> column.entityGetter(row) == null && column.defaultValue != null }
-                .mapIndexed { index, column ->
+                .joinToString { column ->
                     columnNames.add(column.name)
                     if (DbType.POSTGRESQL == tables.dbType) {
-                        "$${index + 1}"
+                        "$${index++}"
                     } else {
                         "?"
                     }
                 }
 
-        return "INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES (${values.joinToString()})"
+        return "INSERT INTO ${table.name} (${columnNames.joinToString()}) VALUES ($values)"
     }
 }
 
@@ -233,7 +234,7 @@ open class DefaultSqlClientCommon protected constructor() {
                     "${joinClause.type.sql} ${joinClause.table.declaration} ON ${joinClause.field.fieldName} = $joinedTableFieldName"
                 }
 
-        fun wheres(withWhere: Boolean = true): String = with(properties) {
+        fun wheres(withWhere: Boolean = true, offset: Int = 1): String = with(properties) {
             if (whereClauses.isEmpty()) {
                 return ""
             }
@@ -241,7 +242,8 @@ open class DefaultSqlClientCommon protected constructor() {
             if (withWhere) {
                 where.append("WHERE ")
             }
-            whereClauses.forEachIndexed() { index, whereClause ->
+            var index = offset
+            whereClauses.forEach { whereClause ->
                 where.append(
                         when (whereClause.operation) {
                             Operation.EQ ->
@@ -249,7 +251,7 @@ open class DefaultSqlClientCommon protected constructor() {
                                     "${whereClause.field.fieldName} IS NULL AND "
                                 } else {
                                     if (DbType.POSTGRESQL == tables.dbType) {
-                                        "${whereClause.field.fieldName} = $${index + 1} AND "
+                                        "${whereClause.field.fieldName} = $${index++} AND "
                                     } else {
                                         "${whereClause.field.fieldName} = ? AND "
                                     }
@@ -259,44 +261,44 @@ open class DefaultSqlClientCommon protected constructor() {
                                     "${whereClause.field.fieldName} IS NOT NULL AND "
                                 } else {
                                     if (DbType.POSTGRESQL == tables.dbType) {
-                                        "${whereClause.field.fieldName} <> $${index + 1} AND "
+                                        "${whereClause.field.fieldName} <> $${index++} AND "
                                     } else {
                                         "${whereClause.field.fieldName} <> ? AND "
                                     }
                                 }
                             Operation.CONTAINS, Operation.STARTS_WITH, Operation.ENDS_WITH ->
                                 if (DbType.POSTGRESQL == tables.dbType) {
-                                    "${whereClause.field.fieldName} LIKE $${index + 1} AND "
+                                    "${whereClause.field.fieldName} LIKE $${index++} AND "
                                 } else {
                                     "${whereClause.field.fieldName} LIKE ? AND "
                                 }
                             Operation.INF ->
                                 if (DbType.POSTGRESQL == tables.dbType) {
-                                    "${whereClause.field.fieldName} < $${index + 1} AND "
+                                    "${whereClause.field.fieldName} < $${index++} AND "
                                 } else {
                                     "${whereClause.field.fieldName} < ? AND "
                                 }
                             Operation.INF_OR_EQ ->
                                 if (DbType.POSTGRESQL == tables.dbType) {
-                                    "${whereClause.field.fieldName} <= $${index + 1} AND "
+                                    "${whereClause.field.fieldName} <= $${index++} AND "
                                 } else {
                                     "${whereClause.field.fieldName} <= ? AND "
                                 }
                             Operation.SUP ->
                                 if (DbType.POSTGRESQL == tables.dbType) {
-                                    "${whereClause.field.fieldName} <= $${index + 1} AND "
+                                    "${whereClause.field.fieldName} <= $${index++} AND "
                                 } else {
                                     "${whereClause.field.fieldName} > ? AND "
                                 }
                             Operation.SUP_OR_EQ ->
                                 if (DbType.POSTGRESQL == tables.dbType) {
-                                    "${whereClause.field.fieldName} >= $${index + 1} AND "
+                                    "${whereClause.field.fieldName} >= $${index++} AND "
                                 } else {
                                     "${whereClause.field.fieldName} >= ? AND "
                                 }
                             Operation.IS ->
                                 if (DbType.POSTGRESQL == tables.dbType) {
-                                    "${whereClause.field.fieldName} IS $${index + 1} AND "
+                                    "${whereClause.field.fieldName} IS $${index++} AND "
                                 } else {
                                     "${whereClause.field.fieldName} IS ? AND "
                                 }
