@@ -12,7 +12,6 @@ import com.pullvert.kotysa.test.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -28,20 +27,20 @@ class R2DbcCoroutinesH2Test : AbstractR2dbcH2Test<CoroutinesUserH2Repository>() 
     override val repository = getContextRepository<CoroutinesUserH2Repository>()
 
     @Test
-    fun `Verify selectAll returns all users`() = runBlockingTest {
+    fun `Verify selectAll returns all users`() = runBlocking<Unit> {
         assertThat(repository.selectAllUsers().toList())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(h2Jdoe, h2Bboss)
     }
 
     @Test
-    fun `Verify selectFirstByFirstame finds John`() = runBlockingTest {
+    fun `Verify selectFirstByFirstame finds John`() = runBlocking<Unit> {
         assertThat(repository.selectFirstByFirstame("John"))
                 .isEqualTo(h2Jdoe)
     }
 
     @Test
-    fun `Verify selectFirstByFirstame finds no Unknown`() = runBlockingTest {
+    fun `Verify selectFirstByFirstame finds no Unknown`() = runBlocking<Unit> {
         assertThat(repository.selectFirstByFirstame("Unknown"))
                 .isNull()
     }
@@ -49,33 +48,33 @@ class R2DbcCoroutinesH2Test : AbstractR2dbcH2Test<CoroutinesUserH2Repository>() 
     @Test
     fun `Verify selectFirstByFirstameNotNullable finds no Unknown, throws NoResultException`() {
         assertThatThrownBy {
-            runBlockingTest { repository.selectFirstByFirstameNotNullable("Unknown") }
+            runBlocking<Unit> { repository.selectFirstByFirstameNotNullable("Unknown") }
         }.isInstanceOf(NoResultException::class.java)
     }
 
     @Test
     fun `Verify selectOneNonUnique throws NonUniqueResultException`() {
         assertThatThrownBy {
-            runBlockingTest { repository.selectOneNonUnique() }
+            runBlocking<Unit> { repository.selectOneNonUnique() }
         }.isInstanceOf(NonUniqueResultException::class.java)
     }
 
     @Test
-    fun `Verify selectByAlias finds TheBoss`() = runBlockingTest {
+    fun `Verify selectByAlias finds TheBoss`() = runBlocking<Unit> {
         assertThat(repository.selectByAlias("TheBoss").toList())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(h2Bboss)
     }
 
     @Test
-    fun `Verify selectByAlias with null alias finds John`() = runBlockingTest {
+    fun `Verify selectByAlias with null alias finds John`() = runBlocking<Unit> {
         assertThat(repository.selectByAlias(null).toList())
                 .hasSize(1)
                 .containsExactlyInAnyOrder(h2Jdoe)
     }
 
     @Test
-    fun `Verify selectAllMappedToDto does the mapping`() = runBlockingTest {
+    fun `Verify selectAllMappedToDto does the mapping`() = runBlocking<Unit> {
         assertThat(repository.selectAllMappedToDto().toList())
                 .hasSize(2)
                 .containsExactlyInAnyOrder(
@@ -84,7 +83,7 @@ class R2DbcCoroutinesH2Test : AbstractR2dbcH2Test<CoroutinesUserH2Repository>() 
     }
 
     @Test
-    fun `Verify deleteAllFromUser works correctly`() = runBlockingTest {
+    fun `Verify deleteAllFromUser works correctly`() = runBlocking<Unit> {
         assertThat(repository.deleteAllFromUsers())
                 .isEqualTo(2)
         assertThat(repository.selectAllUsers().toList())
@@ -94,7 +93,7 @@ class R2DbcCoroutinesH2Test : AbstractR2dbcH2Test<CoroutinesUserH2Repository>() 
     }
 
     @Test
-    fun `Verify updateLastname works`() = runBlockingTest {
+    fun `Verify updateLastname works`() = runBlocking<Unit> {
         assertThat(repository.updateLastname("Do"))
                 .isEqualTo(1)
         assertThat(repository.selectFirstByFirstame(h2Jdoe.firstname))
