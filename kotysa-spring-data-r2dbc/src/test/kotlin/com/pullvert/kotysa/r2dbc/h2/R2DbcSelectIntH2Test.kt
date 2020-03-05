@@ -17,10 +17,10 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 /**
  * @author Fred Montariol
  */
-class R2DbcSelectIntH2Test : AbstractR2dbcH2Test<IntRepositorySelect>() {
-    override val context = startContext<IntRepositorySelect>()
+class R2DbcSelectIntH2Test : AbstractR2dbcH2Test<IntRepositoryH2Select>() {
+    override val context = startContext<IntRepositoryH2Select>()
 
-    override val repository = getContextRepository<IntRepositorySelect>()
+    override val repository = getContextRepository<IntRepositoryH2Select>()
 
     private val h2IntWithNullable = H2Int(
             com.pullvert.kotysa.test.h2IntWithNullable.intNotNull,
@@ -185,7 +185,7 @@ class R2DbcSelectIntH2Test : AbstractR2dbcH2Test<IntRepositorySelect>() {
 /**
  * @author Fred Montariol
  */
-class IntRepositorySelect(dbClient: DatabaseClient) : Repository {
+class IntRepositoryH2Select(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.sqlClient(h2Tables)
 

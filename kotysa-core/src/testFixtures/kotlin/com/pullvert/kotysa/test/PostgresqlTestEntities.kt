@@ -87,11 +87,11 @@ val postgresqlTables =
 //                column { it[PostgresqlLocalTime::localTimeNotNull].time9() }
 //                column { it[PostgresqlLocalTime::localTimeNullable].time9() }
 //            }
-//            table<PostgresqlInt> {
-//                column { it[PostgresqlInt::id].int().autoIncrement().primaryKey() }
-//                column { it[PostgresqlInt::intNotNull].int() }
-//                column { it[PostgresqlInt::intNullable].int() }
-//            }
+            table<PostgresqlInt> {
+                column { it[PostgresqlInt::id].integer().autoIncrement().primaryKey() }
+                column { it[PostgresqlInt::intNotNull].integer() }
+                column { it[PostgresqlInt::intNullable].integer() }
+            }
         }
 
 /**
@@ -241,15 +241,15 @@ val postgresqlBboss = PostgresqlUser("Big", "Boss", true, postgresqlAdmin.id, "T
 //
 //val postgresqlLocalTimeWithNullable = PostgresqlLocalTime(LocalTime.of(12, 4), LocalTime.of(11, 4))
 //val postgresqlLocalTimeWithoutNullable = PostgresqlLocalTime(LocalTime.of(12, 6))
-//
-///**
-// * @author Fred Montariol
-// */
-//data class PostgresqlInt(
-//        val intNotNull: Int,
-//        val intNullable: Int? = null,
-//        val id: Int? = null
-//)
-//
-//val postgresqlIntWithNullable = PostgresqlInt(10, 6)
-//val postgresqlIntWithoutNullable = PostgresqlInt(12)
+
+/**
+ * @author Fred Montariol
+ */
+data class PostgresqlInt(
+        val intNotNull: Int,
+        val intNullable: Int? = null,
+        val id: Int? = null
+)
+
+val postgresqlIntWithNullable = PostgresqlInt(10, 6)
+val postgresqlIntWithoutNullable = PostgresqlInt(12)
