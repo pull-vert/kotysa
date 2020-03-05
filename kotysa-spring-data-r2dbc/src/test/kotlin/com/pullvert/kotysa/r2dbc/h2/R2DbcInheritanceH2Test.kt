@@ -18,10 +18,10 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 /**
  * @author Fred Montariol
  */
-class R2DbcInheritanceH2Test : AbstractR2dbcH2Test<InheritanceRepository>() {
-    override val context = startContext<InheritanceRepository>()
+class R2DbcInheritanceH2Test : AbstractR2dbcH2Test<InheritanceH2Repository>() {
+    override val context = startContext<InheritanceH2Repository>()
 
-    override val repository = getContextRepository<InheritanceRepository>()
+    override val repository = getContextRepository<InheritanceH2Repository>()
 
     @Test
     fun `Verify extension function selectById finds inherited`() {
@@ -65,7 +65,7 @@ private val tables =
 /**
  * @author Fred Montariol
  */
-class InheritanceRepository(dbClient: DatabaseClient) : Repository {
+class InheritanceH2Repository(dbClient: DatabaseClient) : Repository {
 
     val sqlClient = dbClient.sqlClient(tables)
 
@@ -92,11 +92,11 @@ class InheritanceRepository(dbClient: DatabaseClient) : Repository {
             sqlClient.select<Inherited>().where { it[Inherited::getId] eq id }.fetchOne()
 }
 
-inline fun <reified T : Entity<String>> InheritanceRepository.selectById(id: String) =
+inline fun <reified T : Entity<String>> InheritanceH2Repository.selectById(id: String) =
         sqlClient.select<T>().where { it[Entity<String>::getId] eq id }.fetchOne()
 
-inline fun <reified T : Nameable> InheritanceRepository.selectFirstByName(name: String) =
+inline fun <reified T : Nameable> InheritanceH2Repository.selectFirstByName(name: String) =
         sqlClient.select<T>().where { it[Nameable::name] eq name }.fetchFirst()
 
-inline fun <reified T : Entity<String>> InheritanceRepository.deleteById(id: String) =
+inline fun <reified T : Entity<String>> InheritanceH2Repository.deleteById(id: String) =
         sqlClient.deleteFromTable<T>().where { it[Entity<String>::getId] eq id }.execute()

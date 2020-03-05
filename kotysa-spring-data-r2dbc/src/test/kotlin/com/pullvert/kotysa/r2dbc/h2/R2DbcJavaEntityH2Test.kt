@@ -18,10 +18,10 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 /**
  * @author Fred Montariol
  */
-class R2DbcJavaEntityH2Test : AbstractR2dbcH2Test<JavaUserRepository>() {
-    override val context = startContext<JavaUserRepository>()
+class R2DbcJavaEntityH2Test : AbstractR2dbcH2Test<JavaUserH2Repository>() {
+    override val context = startContext<JavaUserH2Repository>()
 
-    override val repository = getContextRepository<JavaUserRepository>()
+    override val repository = getContextRepository<JavaUserH2Repository>()
 
     @Test
     fun `Verify selectAll returns all users`() {
@@ -121,7 +121,7 @@ private val tables =
 /**
  * @author Fred Montariol
  */
-class JavaUserRepository(dbClient: DatabaseClient) : Repository {
+class JavaUserH2Repository(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.sqlClient(tables)
 
