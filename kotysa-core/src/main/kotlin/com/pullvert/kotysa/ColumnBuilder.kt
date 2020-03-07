@@ -311,3 +311,11 @@ class IntegerColumnBuilderNullable<T : Any, U : Any> internal constructor(
         return IntegerColumnBuilderNotNull(entityGetter, props)
     }
 }
+
+class SerialColumnBuilder<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
+) : ColumnNotNullBuilder<SerialColumnBuilder<T, U>, T, U>(SqlType.SERIAL, entityGetter) {
+    override fun build() = with(props) {
+        SerialColumnNotNull(entityGetter, columnName, sqlType, isPK, pkName, defaultValue, fkClass, fkName)
+    }
+}

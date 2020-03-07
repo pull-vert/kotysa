@@ -5,8 +5,6 @@
 package com.pullvert.kotysa.postgresql
 
 import com.pullvert.kotysa.*
-import com.pullvert.kotysa.h2.Time9ColumnBuilderNotNull
-import com.pullvert.kotysa.h2.Time9ColumnBuilderNullable
 
 /**
  * see [Postgres Data types](https://www.postgresql.org/docs/11/datatype.html)
@@ -41,4 +39,6 @@ class PostgresqlColumnDsl<T : Any> internal constructor(
     fun NotNullIntColumnProperty<T>.integer() = IntegerColumnBuilderNotNull(getter)
 
     fun NullableIntColumnProperty<T>.integer() = IntegerColumnBuilderNullable(getter)
+
+    fun NullableIntColumnProperty<T>.serial() = SerialColumnBuilder(getter)
 }

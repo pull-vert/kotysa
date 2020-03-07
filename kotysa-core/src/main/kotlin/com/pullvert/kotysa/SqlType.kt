@@ -16,6 +16,7 @@ enum class SqlType(val fullType: String) {
 
     // numbers
     INTEGER("INTEGER"),
+    SERIAL("SERIAL"),
 
     // date
     TIMESTAMP("TIMESTAMP"),

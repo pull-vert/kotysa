@@ -110,8 +110,11 @@ interface DefaultSqlClient {
         val columnNames = mutableSetOf<String>()
         var index = 1
         val values = table.columns.values
-                // filter out null values with default
-                .filterNot { column -> column.entityGetter(row) == null && column.defaultValue != null }
+                // filter out null values with default value or Serial type
+                .filterNot { column ->
+                    column.entityGetter(row) == null
+                            && (column.defaultValue != null || SqlType.SERIAL == column.sqlType)
+                }
                 .joinToString { column ->
                     columnNames.add(column.name)
                     if (DbType.POSTGRESQL == tables.dbType) {
@@ -286,7 +289,7 @@ open class DefaultSqlClientCommon protected constructor() {
                                 }
                             Operation.SUP ->
                                 if (DbType.POSTGRESQL == tables.dbType) {
-                                    "${whereClause.field.fieldName} <= $${index++} AND "
+                                    "${whereClause.field.fieldName} > $${index++} AND "
                                 } else {
                                     "${whereClause.field.fieldName} > ? AND "
                                 }

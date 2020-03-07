@@ -5,6 +5,7 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.DefaultSqlClient
+import com.pullvert.kotysa.SqlType
 import com.pullvert.kotysa.getTable
 import com.pullvert.kotysa.toCallable
 import org.springframework.data.r2dbc.core.DatabaseClient
@@ -24,16 +25,18 @@ internal interface AbstractSqlClientR2dbc : DefaultSqlClient {
     fun <T : Any> executeInsert(row: T): DatabaseClient.GenericExecuteSpec {
         var executeSpec = client.execute(insertSql(row))
         val table = tables.getTable(row::class)
-        table.columns.values.forEachIndexed { index, column ->
+        var index = 0
+        table.columns.values.forEach { column ->
             val value = column.entityGetter(row)
             executeSpec = if (value == null) {
-                if (column.defaultValue == null) {
-                    executeSpec.bindNull(index, (column.entityGetter.toCallable().returnType.classifier as KClass<*>).java)
-                } else {
+                // do nothing for null values with default or Serial type
+                if (column.defaultValue != null || SqlType.SERIAL == column.sqlType) {
                     executeSpec
+                } else {
+                    executeSpec.bindNull(index++, (column.entityGetter.toCallable().returnType.classifier as KClass<*>).java)
                 }
             } else {
-                executeSpec.bind(index, value)
+                executeSpec.bind(index++, value)
             }
         }
         return executeSpec

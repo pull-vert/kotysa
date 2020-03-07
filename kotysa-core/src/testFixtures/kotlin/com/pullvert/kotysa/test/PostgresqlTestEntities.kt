@@ -88,7 +88,7 @@ val postgresqlTables =
 //                column { it[PostgresqlLocalTime::localTimeNullable].time9() }
 //            }
             table<PostgresqlInt> {
-                column { it[PostgresqlInt::id].integer().autoIncrement().primaryKey() }
+                column { it[PostgresqlInt::id].serial().primaryKey() }
                 column { it[PostgresqlInt::intNotNull].integer() }
                 column { it[PostgresqlInt::intNullable].integer() }
             }

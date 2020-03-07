@@ -9,7 +9,6 @@ import com.pullvert.kotysa.Tables
 import com.pullvert.kotysa.ValueProvider
 import org.springframework.data.r2dbc.core.DatabaseClient
 import reactor.core.publisher.Mono
-import reactor.kotlin.core.publisher.toFlux
 import kotlin.reflect.KClass
 
 /**
@@ -34,9 +33,7 @@ internal class SqlClientR2dbc(
     override fun insert(vararg rows: Any): Mono<Void> {
         checkRowsAreMapped(*rows)
 
-        return rows.toFlux()
-                .flatMap { row -> insert(row) }
-                .then()
+        return rows.fold(Mono.empty(), { mono, row -> mono.then(insert(row)) })
     }
 
     override fun <T : Any> deleteFromTable(tableClass: KClass<T>): ReactorSqlClientDeleteOrUpdate.DeleteOrUpdate<T> =
