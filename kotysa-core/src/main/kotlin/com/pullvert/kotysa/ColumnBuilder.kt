@@ -312,6 +312,33 @@ class IntegerColumnBuilderNullable<T : Any, U : Any> internal constructor(
     }
 }
 
+class IntegerNoAutoIncrementColumnBuilderNotNull<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
+) : ColumnNotNullBuilder<IntegerColumnBuilderNotNull<T, U>, T, U>(SqlType.INTEGER, entityGetter) {
+
+    internal constructor(entityGetter: (T) -> U?, props: ColumnBuilderProps<T, U>) : this(entityGetter) {
+        this.props = props
+    }
+
+    override fun build() = with(props) {
+        IntegerColumnNotNull(entityGetter, columnName, sqlType, isPK, isAutoIncrement, pkName, defaultValue, fkClass, fkName)
+    }
+}
+
+class IntegerNoAutoIncrementColumnBuilderNullable<T : Any, U : Any> internal constructor(
+        entityGetter: (T) -> U?
+) : ColumnNullableBuilder<IntegerColumnBuilderNullable<T, U>, T, U>(SqlType.INTEGER, entityGetter) {
+
+    override fun build() = with(props) {
+        IntegerColumnNullable(entityGetter, columnName, sqlType, isAutoIncrement, fkClass, fkName)
+    }
+
+    override fun defaultValue(defaultValue: U): IntegerNoAutoIncrementColumnBuilderNotNull<T, U> {
+        props.defaultValue = defaultValue
+        return IntegerNoAutoIncrementColumnBuilderNotNull(entityGetter, props)
+    }
+}
+
 class SerialColumnBuilder<T : Any, U : Any> internal constructor(
         entityGetter: (T) -> U?
 ) : ColumnNotNullBuilder<SerialColumnBuilder<T, U>, T, U>(SqlType.SERIAL, entityGetter) {

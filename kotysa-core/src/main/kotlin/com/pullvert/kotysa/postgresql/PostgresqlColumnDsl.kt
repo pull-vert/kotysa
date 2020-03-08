@@ -36,9 +36,11 @@ class PostgresqlColumnDsl<T : Any> internal constructor(
 
     fun NullableUuidColumnProperty<T>.uuid() = UuidColumnBuilderNullable(getter)
 
-    fun NotNullIntColumnProperty<T>.integer() = IntegerColumnBuilderNotNull(getter)
+    fun NotNullIntColumnProperty<T>.integer() = IntegerNoAutoIncrementColumnBuilderNotNull(getter)
 
-    fun NullableIntColumnProperty<T>.integer() = IntegerColumnBuilderNullable(getter)
+    fun NullableIntColumnProperty<T>.integer() = IntegerNoAutoIncrementColumnBuilderNullable(getter)
+
+    fun NotNullIntColumnProperty<T>.serial() = SerialColumnBuilder(getter)
 
     fun NullableIntColumnProperty<T>.serial() = SerialColumnBuilder(getter)
 }
