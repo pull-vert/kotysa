@@ -65,18 +65,16 @@ val postgresqlTables =
 //                column { it[PostgresqlUuid::roleIdNotNull].uuid().foreignKey<PostgresqlRole>() }
 //                column { it[PostgresqlUuid::roleIdNullable].uuid().foreignKey<PostgresqlRole>() }
 //            }
-//            table<PostgresqlLocalDate> {
-//                column { it[PostgresqlLocalDate::id].uuid().primaryKey() }
-//                column { it[PostgresqlLocalDate::localDateNotNull].date() }
-//                column { it[PostgresqlLocalDate::localDateNullable].date() }
-//            }
-//            table<PostgresqlLocalDateTime> {
-//                column { it[PostgresqlLocalDateTime::id].uuid().primaryKey() }
-//                column { it[PostgresqlLocalDateTime::localDateTimeNotNull].dateTime() }
-//                column { it[PostgresqlLocalDateTime::localDateTimeNullable].dateTime() }
-//                column { it[PostgresqlLocalDateTime::localDateTimeAsTimestampNotNull].timestamp() }
-//                column { it[PostgresqlLocalDateTime::localDateTimeAsTimestampNullable].timestamp() }
-//            }
+            table<PostgresqlLocalDate> {
+                column { it[PostgresqlLocalDate::id].uuid().primaryKey() }
+                column { it[PostgresqlLocalDate::localDateNotNull].date() }
+                column { it[PostgresqlLocalDate::localDateNullable].date() }
+            }
+            table<PostgresqlLocalDateTime> {
+                column { it[PostgresqlLocalDateTime::id].uuid().primaryKey() }
+                column { it[PostgresqlLocalDateTime::localDateTimeAsTimestampNotNull].timestamp() }
+                column { it[PostgresqlLocalDateTime::localDateTimeAsTimestampNullable].timestamp() }
+            }
 //            table<PostgresqlOffsetDateTime> {
 //                column { it[PostgresqlOffsetDateTime::id].uuid().primaryKey() }
 //                column { it[PostgresqlOffsetDateTime::offsetDateTimeNotNull].timestampWithTimeZone() }
@@ -186,35 +184,31 @@ val postgresqlBboss = PostgresqlUser("Big", "Boss", true, postgresqlAdmin.id, "T
 //
 //val postgresqlUuidWithNullable = PostgresqlUuid(postgresqlUser.id, postgresqlAdmin.id)
 //val postgresqlUuidWithoutNullable = PostgresqlUuid(postgresqlUser.id)
-//
-///**
-// * @author Fred Montariol
-// */
-//data class PostgresqlLocalDate(
-//        val localDateNotNull: LocalDate,
-//        val localDateNullable: LocalDate? = null,
-//        val id: UUID = UUID.randomUUID()
-//)
-//
-//val postgresqlLocalDateWithNullable = PostgresqlLocalDate(LocalDate.of(2019, 11, 4), LocalDate.of(2018, 11, 4))
-//val postgresqlLocalDateWithoutNullable = PostgresqlLocalDate(LocalDate.of(2019, 11, 6))
-//
-///**
-// * @author Fred Montariol
-// */
-//data class PostgresqlLocalDateTime(
-//        val localDateTimeNotNull: LocalDateTime,
-//        val localDateTimeNullable: LocalDateTime?,
-//        val localDateTimeAsTimestampNotNull: LocalDateTime,
-//        val localDateTimeAsTimestampNullable: LocalDateTime? = null,
-//        val id: UUID = UUID.randomUUID()
-//)
-//
-//val postgresqlLocalDateTimeWithNullable = PostgresqlLocalDateTime(LocalDateTime.of(2019, 11, 4, 0, 0), LocalDateTime.of(2018, 11, 4, 0, 0),
-//        LocalDateTime.of(2019, 11, 4, 0, 0), LocalDateTime.of(2018, 11, 4, 0, 0))
-//val postgresqlLocalDateTimeWithoutNullable = PostgresqlLocalDateTime(LocalDateTime.of(2019, 11, 6, 0, 0), null,
-//        LocalDateTime.of(2019, 11, 6, 0, 0))
-//
+
+/**
+ * @author Fred Montariol
+ */
+data class PostgresqlLocalDate(
+        val localDateNotNull: LocalDate,
+        val localDateNullable: LocalDate? = null,
+        val id: UUID = UUID.randomUUID()
+)
+
+val postgresqlLocalDateWithNullable = PostgresqlLocalDate(LocalDate.of(2019, 11, 4), LocalDate.of(2018, 11, 4))
+val postgresqlLocalDateWithoutNullable = PostgresqlLocalDate(LocalDate.of(2019, 11, 6))
+
+/**
+ * @author Fred Montariol
+ */
+data class PostgresqlLocalDateTime(
+        val localDateTimeAsTimestampNotNull: LocalDateTime,
+        val localDateTimeAsTimestampNullable: LocalDateTime? = null,
+        val id: UUID = UUID.randomUUID()
+)
+
+val postgresqlLocalDateTimeWithNullable = PostgresqlLocalDateTime(LocalDateTime.of(2019, 11, 4, 0, 0), LocalDateTime.of(2018, 11, 4, 0, 0))
+val postgresqlLocalDateTimeWithoutNullable = PostgresqlLocalDateTime(LocalDateTime.of(2019, 11, 6, 0, 0))
+
 ///**
 // * @author Fred Montariol
 // */
