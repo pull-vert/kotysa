@@ -80,11 +80,11 @@ val postgresqlTables =
 //                column { it[PostgresqlOffsetDateTime::offsetDateTimeNotNull].timestampWithTimeZone() }
 //                column { it[PostgresqlOffsetDateTime::offsetDateTimeNullable].timestampWithTimeZone() }
 //            }
-//            table<PostgresqlLocalTime> {
-//                column { it[PostgresqlLocalTime::id].uuid().primaryKey() }
-//                column { it[PostgresqlLocalTime::localTimeNotNull].time9() }
-//                column { it[PostgresqlLocalTime::localTimeNullable].time9() }
-//            }
+            table<PostgresqlLocalTime> {
+                column { it[PostgresqlLocalTime::id].uuid().primaryKey() }
+                column { it[PostgresqlLocalTime::localTimeNotNull].time() }
+                column { it[PostgresqlLocalTime::localTimeNullable].time() }
+            }
             table<PostgresqlInt> {
                 column { it[PostgresqlInt::id].serial().primaryKey() }
                 column { it[PostgresqlInt::intNotNull].integer() }
@@ -223,18 +223,18 @@ val postgresqlLocalDateTimeWithoutNullable = PostgresqlLocalDateTime(LocalDateTi
 //        OffsetDateTime.of(2018, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC))
 //val postgresqlOffsetDateTimeWithoutNullable = PostgresqlOffsetDateTime(
 //        OffsetDateTime.of(2019, 11, 6, 0, 0, 0, 0, ZoneOffset.UTC))
-//
-///**
-// * @author Fred Montariol
-// */
-//data class PostgresqlLocalTime(
-//        val localTimeNotNull: LocalTime,
-//        val localTimeNullable: LocalTime? = null,
-//        val id: UUID = UUID.randomUUID()
-//)
-//
-//val postgresqlLocalTimeWithNullable = PostgresqlLocalTime(LocalTime.of(12, 4), LocalTime.of(11, 4))
-//val postgresqlLocalTimeWithoutNullable = PostgresqlLocalTime(LocalTime.of(12, 6))
+
+/**
+ * @author Fred Montariol
+ */
+data class PostgresqlLocalTime(
+        val localTimeNotNull: LocalTime,
+        val localTimeNullable: LocalTime? = null,
+        val id: UUID = UUID.randomUUID()
+)
+
+val postgresqlLocalTimeWithNullable = PostgresqlLocalTime(LocalTime.of(12, 4), LocalTime.of(11, 4))
+val postgresqlLocalTimeWithoutNullable = PostgresqlLocalTime(LocalTime.of(12, 6))
 
 /**
  * @author Fred Montariol
