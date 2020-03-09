@@ -15,10 +15,10 @@ import java.time.LocalDateTime
 /**
  * @author Fred Montariol
  */
-class R2DbcSelectLocalDateTimeH2Test : AbstractR2dbcH2Test<LocalDateTimeRepositorySelect>() {
-    override val context = startContext<LocalDateTimeRepositorySelect>()
+class R2DbcSelectLocalDateTimeH2Test : AbstractR2dbcH2Test<LocalDateTimeRepositoryH2Select>() {
+    override val context = startContext<LocalDateTimeRepositoryH2Select>()
 
-    override val repository = getContextRepository<LocalDateTimeRepositorySelect>()
+    override val repository = getContextRepository<LocalDateTimeRepositoryH2Select>()
 
     @Test
     fun `Verify selectAllByLocalDateTimeNotNull finds h2LocalDateTimeWithNullable`() {
@@ -173,7 +173,7 @@ class R2DbcSelectLocalDateTimeH2Test : AbstractR2dbcH2Test<LocalDateTimeReposito
 /**
  * @author Fred Montariol
  */
-class LocalDateTimeRepositorySelect(dbClient: DatabaseClient) : Repository {
+class LocalDateTimeRepositoryH2Select(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.sqlClient(h2Tables)
 

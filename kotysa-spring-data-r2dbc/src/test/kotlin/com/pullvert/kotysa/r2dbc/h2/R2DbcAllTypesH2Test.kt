@@ -16,10 +16,10 @@ import java.util.*
 /**
  * @author Fred Montariol
  */
-class R2DbcAllTypesH2Test : AbstractR2dbcH2Test<AllTypesRepository>() {
-    override val context = startContext<AllTypesRepository>()
+class R2DbcAllTypesH2Test : AbstractR2dbcH2Test<AllTypesRepositoryH2>() {
+    override val context = startContext<AllTypesRepositoryH2>()
 
-    override val repository = getContextRepository<AllTypesRepository>()
+    override val repository = getContextRepository<AllTypesRepositoryH2>()
 
     @Test
     fun `Verify selectAllAllTypesNotNull returns all AllTypesNotNull`() {
@@ -76,7 +76,7 @@ class R2DbcAllTypesH2Test : AbstractR2dbcH2Test<AllTypesRepository>() {
 /**
  * @author Fred Montariol
  */
-class AllTypesRepository(dbClient: DatabaseClient) : Repository {
+class AllTypesRepositoryH2(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.sqlClient(h2Tables)
 

@@ -15,10 +15,10 @@ import java.util.*
 /**
  * @author Fred Montariol
  */
-class R2DbcSelectUuidH2Test : AbstractR2dbcH2Test<UuidRepositorySelect>() {
-    override val context = startContext<UuidRepositorySelect>()
+class R2DbcSelectUuidH2Test : AbstractR2dbcH2Test<UuidRepositoryH2Select>() {
+    override val context = startContext<UuidRepositoryH2Select>()
 
-    override val repository = getContextRepository<UuidRepositorySelect>()
+    override val repository = getContextRepository<UuidRepositoryH2Select>()
 
     @Test
     fun `Verify selectAllByRoleIdNotNull finds both results`() {
@@ -64,7 +64,7 @@ class R2DbcSelectUuidH2Test : AbstractR2dbcH2Test<UuidRepositorySelect>() {
 /**
  * @author Fred Montariol
  */
-class UuidRepositorySelect(dbClient: DatabaseClient) : Repository {
+class UuidRepositoryH2Select(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.sqlClient(h2Tables)
 

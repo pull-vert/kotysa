@@ -16,10 +16,10 @@ import java.time.ZoneOffset
 /**
  * @author Fred Montariol
  */
-class R2DbcSelectOffsetDateTimeH2Test : AbstractR2dbcH2Test<OffsetDateTimeRepositorySelect>() {
-    override val context = startContext<OffsetDateTimeRepositorySelect>()
+class R2DbcSelectOffsetDateTimeH2Test : AbstractR2dbcH2Test<OffsetDateTimeRepositoryH2Select>() {
+    override val context = startContext<OffsetDateTimeRepositoryH2Select>()
 
-    override val repository = getContextRepository<OffsetDateTimeRepositorySelect>()
+    override val repository = getContextRepository<OffsetDateTimeRepositoryH2Select>()
 
     @Test
     fun `Verify selectAllByLocalDateTimeNotNull finds h2OffsetDateTimeWithNullable`() {
@@ -194,7 +194,7 @@ class R2DbcSelectOffsetDateTimeH2Test : AbstractR2dbcH2Test<OffsetDateTimeReposi
 /**
  * @author Fred Montariol
  */
-class OffsetDateTimeRepositorySelect(dbClient: DatabaseClient) : Repository {
+class OffsetDateTimeRepositoryH2Select(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.sqlClient(h2Tables)
 
