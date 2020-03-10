@@ -44,7 +44,7 @@ class H2ColumnDsl<T : Any> internal constructor(
 
     fun NullableUuidColumnProperty<T>.uuid() = UuidColumnBuilderNullable(getter)
 
-    fun NotNullIntColumnProperty<T>.int() = IntegerColumnBuilderNotNull(getter)
+    fun NotNullIntColumnProperty<T>.integer() = IntegerColumnBuilderNotNull(getter)
 
-    fun NullableIntColumnProperty<T>.int() = IntegerColumnBuilderNullable(getter)
+    fun NullableIntColumnProperty<T>.integer() = IntegerColumnBuilderNullable(getter)
 }

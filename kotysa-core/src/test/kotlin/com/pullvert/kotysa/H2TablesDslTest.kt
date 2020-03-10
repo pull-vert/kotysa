@@ -37,7 +37,7 @@ class H2TablesDslTest {
                 column { it[H2AllTypesNotNull::localDateTime1].dateTime() }
                 column { it[H2AllTypesNotNull::localDateTime2].timestamp() }
                 column { it[H2AllTypesNotNull::uuid].uuid() }
-                column { it[H2AllTypesNotNull::int].int().autoIncrement() }
+                column { it[H2AllTypesNotNull::int].integer().autoIncrement() }
             }
         }
         assertThat(tables.allColumns.values)
@@ -68,7 +68,7 @@ class H2TablesDslTest {
                 column { it[H2AllTypesNullable::localDateTime1].dateTime() }
                 column { it[H2AllTypesNullable::localDateTime2].timestamp() }
                 column { it[H2AllTypesNullable::uuid].uuid() }
-                column { it[H2AllTypesNullable::int].int() }
+                column { it[H2AllTypesNullable::int].integer() }
             }
         }
         assertThat(tables.allColumns.values)
@@ -99,7 +99,7 @@ class H2TablesDslTest {
                 column { it[H2AllTypesNullable::localDateTime1].dateTime().defaultValue(LocalDateTime.MAX) }
                 column { it[H2AllTypesNullable::localDateTime2].timestamp().defaultValue(LocalDateTime.MAX) }
                 column { it[H2AllTypesNullable::uuid].uuid().defaultValue(defaultUuid) }
-                column { it[H2AllTypesNullable::int].int().defaultValue(42) }
+                column { it[H2AllTypesNullable::int].integer().defaultValue(42) }
             }
         }
         assertThat(tables.allColumns.values)

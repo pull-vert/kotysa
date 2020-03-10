@@ -37,7 +37,7 @@ val h2Tables =
                 column { it[H2AllTypesNotNull::localDateTime1].dateTime() }
                 column { it[H2AllTypesNotNull::localDateTime2].timestamp() }
                 column { it[H2AllTypesNotNull::uuid].uuid() }
-                column { it[H2AllTypesNotNull::int].int() }
+                column { it[H2AllTypesNotNull::int].integer() }
             }
             table<H2AllTypesNullable> {
                 name = "all_types_nullable"
@@ -49,7 +49,7 @@ val h2Tables =
                 column { it[H2AllTypesNullable::localDateTime1].dateTime() }
                 column { it[H2AllTypesNullable::localDateTime2].timestamp() }
                 column { it[H2AllTypesNullable::uuid].uuid() }
-                column { it[H2AllTypesNullable::int].int() }
+                column { it[H2AllTypesNullable::int].integer() }
             }
             table<H2AllTypesNullableDefaultValue> {
                 column { it[H2AllTypesNullableDefaultValue::id].uuid().primaryKey() }
@@ -60,7 +60,7 @@ val h2Tables =
                 column { it[H2AllTypesNullableDefaultValue::localDateTime1].dateTime().defaultValue(LocalDateTime.of(2018, 11, 4, 0, 0)) }
                 column { it[H2AllTypesNullableDefaultValue::localDateTime2].timestamp().defaultValue(LocalDateTime.of(2019, 11, 4, 0, 0)) }
                 column { it[H2AllTypesNullableDefaultValue::uuid].uuid().defaultValue(UUID.fromString(defaultUuid)) }
-                column { it[H2AllTypesNullableDefaultValue::int].int().defaultValue(42) }
+                column { it[H2AllTypesNullableDefaultValue::int].integer().defaultValue(42) }
             }
             table<H2Uuid> {
                 column { it[H2Uuid::id].uuid().primaryKey() }
@@ -90,9 +90,9 @@ val h2Tables =
                 column { it[H2LocalTime::localTimeNullable].time9() }
             }
             table<H2Int> {
-                column { it[H2Int::id].int().autoIncrement().primaryKey() }
-                column { it[H2Int::intNotNull].int() }
-                column { it[H2Int::intNullable].int() }
+                column { it[H2Int::id].integer().autoIncrement().primaryKey() }
+                column { it[H2Int::intNotNull].integer() }
+                column { it[H2Int::intNullable].integer() }
             }
         }
 
