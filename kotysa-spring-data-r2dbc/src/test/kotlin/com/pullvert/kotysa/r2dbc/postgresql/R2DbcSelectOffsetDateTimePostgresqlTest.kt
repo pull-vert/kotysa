@@ -6,12 +6,16 @@ package com.pullvert.kotysa.r2dbc.postgresql
 
 import com.pullvert.kotysa.r2dbc.Repository
 import com.pullvert.kotysa.r2dbc.sqlClient
-import com.pullvert.kotysa.test.*
+import com.pullvert.kotysa.test.PostgresqlOffsetDateTime
+import com.pullvert.kotysa.test.postgresqlOffsetDateTimeWithNullable
+import com.pullvert.kotysa.test.postgresqlOffsetDateTimeWithoutNullable
+import com.pullvert.kotysa.test.postgresqlTables
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.data.r2dbc.core.DatabaseClient
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+
 
 /**
  * @author Fred Montariol

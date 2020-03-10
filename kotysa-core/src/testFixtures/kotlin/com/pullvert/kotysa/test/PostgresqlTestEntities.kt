@@ -216,7 +216,35 @@ data class PostgresqlOffsetDateTime(
         val offsetDateTimeNotNull: OffsetDateTime,
         val offsetDateTimeNullable: OffsetDateTime? = null,
         val id: UUID = UUID.randomUUID()
-)
+) {
+    /**
+     * This override is required because Postgresql stores **timestamp with time zone** sing server's local offset,
+     * so we need to use [OffsetDateTime.isEqual] to test equality on [OffsetDateTime] fields that is based on instant
+     */
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PostgresqlOffsetDateTime
+
+        if (!offsetDateTimeNotNull.isEqual(other.offsetDateTimeNotNull)) return false
+        if (offsetDateTimeNullable != null) {
+            if (!offsetDateTimeNullable.isEqual(other.offsetDateTimeNullable)) return false
+        } else if (other.offsetDateTimeNullable != null) {
+            return false
+        }
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = offsetDateTimeNotNull.hashCode()
+        result = 31 * result + (offsetDateTimeNullable?.hashCode() ?: 0)
+        result = 31 * result + id.hashCode()
+        return result
+    }
+}
 
 val postgresqlOffsetDateTimeWithNullable = PostgresqlOffsetDateTime(
         OffsetDateTime.of(2019, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC),
