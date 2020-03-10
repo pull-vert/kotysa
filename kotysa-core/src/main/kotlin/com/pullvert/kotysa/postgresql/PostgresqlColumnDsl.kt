@@ -5,6 +5,8 @@
 package com.pullvert.kotysa.postgresql
 
 import com.pullvert.kotysa.*
+import com.pullvert.kotysa.h2.TimestampWithTimeZoneColumnBuilderNotNull
+import com.pullvert.kotysa.h2.TimestampWithTimeZoneColumnBuilderNullable
 
 /**
  * see [Postgres Data types](https://www.postgresql.org/docs/11/datatype.html)
@@ -25,6 +27,10 @@ class PostgresqlColumnDsl<T : Any> internal constructor(
     fun NotNullLocalDateColumnProperty<T>.date() = DateColumnBuilderNotNull(getter)
 
     fun NullableLocalDateColumnProperty<T>.date() = DateColumnBuilderNullable(getter)
+
+    fun NotNullOffsetDateTimeColumnProperty<T>.timestampWithTimeZone() = TimestampWithTimeZoneColumnBuilderNotNull(getter)
+
+    fun NullableOffsetDateTimeColumnProperty<T>.timestampWithTimeZone() = TimestampWithTimeZoneColumnBuilderNullable(getter)
 
     fun NotNullLocalTimeColumnProperty<T>.time() = TimeColumnBuilderNotNull(getter)
 

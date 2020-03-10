@@ -75,11 +75,11 @@ val postgresqlTables =
                 column { it[PostgresqlLocalDateTime::localDateTimeAsTimestampNotNull].timestamp() }
                 column { it[PostgresqlLocalDateTime::localDateTimeAsTimestampNullable].timestamp() }
             }
-//            table<PostgresqlOffsetDateTime> {
-//                column { it[PostgresqlOffsetDateTime::id].uuid().primaryKey() }
-//                column { it[PostgresqlOffsetDateTime::offsetDateTimeNotNull].timestampWithTimeZone() }
-//                column { it[PostgresqlOffsetDateTime::offsetDateTimeNullable].timestampWithTimeZone() }
-//            }
+            table<PostgresqlOffsetDateTime> {
+                column { it[PostgresqlOffsetDateTime::id].uuid().primaryKey() }
+                column { it[PostgresqlOffsetDateTime::offsetDateTimeNotNull].timestampWithTimeZone() }
+                column { it[PostgresqlOffsetDateTime::offsetDateTimeNullable].timestampWithTimeZone() }
+            }
             table<PostgresqlLocalTime> {
                 column { it[PostgresqlLocalTime::id].uuid().primaryKey() }
                 column { it[PostgresqlLocalTime::localTimeNotNull].time() }
@@ -209,20 +209,20 @@ data class PostgresqlLocalDateTime(
 val postgresqlLocalDateTimeWithNullable = PostgresqlLocalDateTime(LocalDateTime.of(2019, 11, 4, 0, 0), LocalDateTime.of(2018, 11, 4, 0, 0))
 val postgresqlLocalDateTimeWithoutNullable = PostgresqlLocalDateTime(LocalDateTime.of(2019, 11, 6, 0, 0))
 
-///**
-// * @author Fred Montariol
-// */
-//data class PostgresqlOffsetDateTime(
-//        val offsetDateTimeNotNull: OffsetDateTime,
-//        val offsetDateTimeNullable: OffsetDateTime? = null,
-//        val id: UUID = UUID.randomUUID()
-//)
-//
-//val postgresqlOffsetDateTimeWithNullable = PostgresqlOffsetDateTime(
-//        OffsetDateTime.of(2019, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC),
-//        OffsetDateTime.of(2018, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC))
-//val postgresqlOffsetDateTimeWithoutNullable = PostgresqlOffsetDateTime(
-//        OffsetDateTime.of(2019, 11, 6, 0, 0, 0, 0, ZoneOffset.UTC))
+/**
+ * @author Fred Montariol
+ */
+data class PostgresqlOffsetDateTime(
+        val offsetDateTimeNotNull: OffsetDateTime,
+        val offsetDateTimeNullable: OffsetDateTime? = null,
+        val id: UUID = UUID.randomUUID()
+)
+
+val postgresqlOffsetDateTimeWithNullable = PostgresqlOffsetDateTime(
+        OffsetDateTime.of(2019, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC),
+        OffsetDateTime.of(2018, 11, 4, 0, 0, 0, 0, ZoneOffset.UTC))
+val postgresqlOffsetDateTimeWithoutNullable = PostgresqlOffsetDateTime(
+        OffsetDateTime.of(2019, 11, 6, 0, 0, 0, 0, ZoneOffset.UTC))
 
 /**
  * @author Fred Montariol
