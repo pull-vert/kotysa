@@ -60,11 +60,11 @@ val postgresqlTables =
 //                column { it[PostgresqlAllTypesNullableDefaultValue::uuid].uuid().defaultValue(UUID.fromString(defaultUuid)) }
 //                column { it[PostgresqlAllTypesNullableDefaultValue::int].int().defaultValue(42) }
 //            }
-//            table<PostgresqlUuid> {
-//                column { it[PostgresqlUuid::id].uuid().primaryKey() }
-//                column { it[PostgresqlUuid::roleIdNotNull].uuid().foreignKey<PostgresqlRole>() }
-//                column { it[PostgresqlUuid::roleIdNullable].uuid().foreignKey<PostgresqlRole>() }
-//            }
+            table<PostgresqlUuid> {
+                column { it[PostgresqlUuid::id].uuid().primaryKey() }
+                column { it[PostgresqlUuid::roleIdNotNull].uuid().foreignKey<PostgresqlRole>() }
+                column { it[PostgresqlUuid::roleIdNullable].uuid().foreignKey<PostgresqlRole>() }
+            }
             table<PostgresqlLocalDate> {
                 column { it[PostgresqlLocalDate::id].uuid().primaryKey() }
                 column { it[PostgresqlLocalDate::localDateNotNull].date() }
@@ -172,18 +172,18 @@ val postgresqlBboss = PostgresqlUser("Big", "Boss", true, postgresqlAdmin.id, "T
 //)
 //
 //val postgresqlAllTypesNullableDefaultValue = PostgresqlAllTypesNullableDefaultValue()
-//
-///**
-// * @author Fred Montariol
-// */
-//data class PostgresqlUuid(
-//        val roleIdNotNull: UUID,
-//        val roleIdNullable: UUID? = null,
-//        val id: UUID = UUID.randomUUID()
-//)
-//
-//val postgresqlUuidWithNullable = PostgresqlUuid(postgresqlUser.id, postgresqlAdmin.id)
-//val postgresqlUuidWithoutNullable = PostgresqlUuid(postgresqlUser.id)
+
+/**
+ * @author Fred Montariol
+ */
+data class PostgresqlUuid(
+        val roleIdNotNull: UUID,
+        val roleIdNullable: UUID? = null,
+        val id: UUID = UUID.randomUUID()
+)
+
+val postgresqlUuidWithNullable = PostgresqlUuid(postgresqlUser.id, postgresqlAdmin.id)
+val postgresqlUuidWithoutNullable = PostgresqlUuid(postgresqlUser.id)
 
 /**
  * @author Fred Montariol
