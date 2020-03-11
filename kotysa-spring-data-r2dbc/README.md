@@ -50,3 +50,4 @@ class UserRepository(dbClient: DatabaseClient, tables: Tables) {
 ## Supported databases
 
 * [H2](../docs/table-modelling.md#H2)
+* [PostgreSQL](../docs/table-modelling.md#PostgreSQL)
