@@ -13,3 +13,5 @@ dependencies {
     implementation 'com.pullvert:kotysa-android:0.0.13'
 }
 ```
+
+See [SqLite supported types](../docs/table-modelling.md#SqLite)

@@ -146,3 +146,48 @@ Supported data types will be updated as new types are added. Java 8+ ```java.tim
         <td>SERIAL</td>
     </tr>
 </table>
+
+### SqLite
+
+<table>
+    <tr>
+        <th>Kotlin type</th>
+        <th>Description
+        <th>SqLite SQL type</th>
+    </tr>
+    <tr>
+        <td>String</td>
+        <td>Represents a variable-length character string, maximum length fixed</td>
+        <td>TEXT</td>
+    </tr>
+    <tr>
+        <td>java.time.LocalDate</td>
+        <td>Represents a date without time part and without timezone</td>
+        <td>TEXT</td>
+    </tr>
+    <tr>
+        <td>java.time.LocalDateTime</td>
+        <td>Represents a date+time without timezone</td>
+        <td>TEXT</td>
+    </tr>
+    <tr>
+        <td>java.time.OffsetDateTime</td>
+        <td>Represents a date+time with timezone</td>
+        <td>TEXT</td>
+    </tr>
+    <tr>
+        <td>java.time.LocalTime</td>
+        <td>Represents a time without a date part and without timezone</td>
+        <td>TEXT</td>
+    </tr>
+    <tr>
+        <td>Boolean</td>
+        <td>Represents a boolean state. Nullable Boolean is not allowed !</td>
+        <td>INTEGER</td>
+    </tr>
+    <tr>
+        <td>Int</td>
+        <td>Represents an integer</td>
+        <td>INTEGER</td>
+    </tr>
+</table>
