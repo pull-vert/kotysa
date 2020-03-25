@@ -25,7 +25,7 @@ data class User(
 ### step 2 -> Describe database model with [type-safe DSL](docs/table-modelling.md), based on these entities
 ```kotlin
 val tables =
-        tables().h2 { // choose database type
+        tables().postgresql { // choose database type
             table<Role> {
                 name = "roles"
                 column { it[Role::id].uuid().primaryKey }
@@ -42,7 +42,7 @@ val tables =
 ```
 
 ### step 3 -> Write SQL queries with [type-safe SqlClient DSL](docs/sql-queries.md)
-Kotysa generates SQL for you !
+Kotysa will generate SQL for you !
 ```kotlin
 // return all admin users
 sqlClient.select<User>()
@@ -62,4 +62,4 @@ Kotysa is **not production ready yet**, some key features are still missing. Ear
 
 Type safety relies on type and nullability of the Entity property (or getter).
 
-Kotysa provides [Coroutines first class support with R2DBC](kotysa-spring-data-r2dbc/README.md#coroutines-first-class-support)
+Kotysa provides [Kotlin Coroutines first class support with R2DBC](kotysa-spring-data-r2dbc/README.md#coroutines-first-class-support)
