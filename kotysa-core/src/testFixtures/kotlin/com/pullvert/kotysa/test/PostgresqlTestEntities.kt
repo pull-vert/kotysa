@@ -99,6 +99,7 @@ data class PostgresqlRole(
 
 val postgresqlUser = PostgresqlRole("user")
 val postgresqlAdmin = PostgresqlRole("admin")
+val postgresqlGod = PostgresqlRole("god")
 
 /**
  * @author Fred Montariol

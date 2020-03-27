@@ -64,7 +64,13 @@ internal class SqlClientSelectSqLite private constructor() : DefaultSqlClientSel
     private class Where<T : Any> internal constructor(
             override val client: SQLiteDatabase,
             override val properties: Properties<T>
-    ) : DefaultSqlClientSelect.Where<T>, BlockingSqlClientSelect.Where<T>, Return<T>
+    ) : DefaultSqlClientSelect.Where<T>, BlockingSqlClientSelect.Where<T>, Return<T> {
+
+        override fun or(dsl: WhereDsl.(FieldProvider) -> WhereClause): BlockingSqlClientSelect.Where<T> {
+            addOrClause(dsl)
+            return this
+        }
+    }
 
     private interface Return<T : Any> : DefaultSqlClientSelect.Return<T>, BlockingSqlClientSelect.Return<T> {
         val client: SQLiteDatabase
@@ -119,7 +125,7 @@ internal class SqlClientSelectSqLite private constructor() : DefaultSqlClientSel
             var whereParams: Array<String>? = null
             if (whereClauses.isNotEmpty()) {
                 whereParams = whereClauses
-                        .mapNotNull { whereClause -> whereClause.value }
+                        .mapNotNull { typedWhereClause -> typedWhereClause.whereClause.value }
                         .map { whereValue -> stringValue(whereValue) }
                         .toTypedArray()
             }

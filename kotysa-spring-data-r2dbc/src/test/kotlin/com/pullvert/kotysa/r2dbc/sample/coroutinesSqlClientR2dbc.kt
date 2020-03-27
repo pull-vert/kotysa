@@ -60,7 +60,7 @@ class UserRepositoryR2dbcCoroutines(dbClient: DatabaseClient) {
 
     private val sqlClient = dbClient.coSqlClient(tables)
 
-    suspend fun simplifiedExample() = sqlClient.run {
+    suspend fun simplifiedExample() = sqlClient.apply {
         createTable<User>()
         deleteAllFromTable<User>()
         insert(userJdoe, userBboss)
@@ -73,6 +73,7 @@ class UserRepositoryR2dbcCoroutines(dbClient: DatabaseClient) {
                 .innerJoin<Role>().on { it[User::roleId] }
                 .where { it[User::alias] eq "Johny" }
                 // null String accepted        ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
+                .or { it[User::alias] eq "Johnny" }
                 .fetchFirst()
 
         val nbUpdated = updateTable<User>()

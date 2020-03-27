@@ -265,6 +265,8 @@ interface CommonWhereDsl {
 }
 
 /**
+ * Where can be used for AND, OR operators
+ *
  * @author Fred Montariol
  */
 class WhereDsl internal constructor(

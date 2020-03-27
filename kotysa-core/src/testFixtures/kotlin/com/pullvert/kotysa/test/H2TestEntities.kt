@@ -106,6 +106,7 @@ data class H2Role(
 
 val h2User = H2Role("user")
 val h2Admin = H2Role("admin")
+val h2God = H2Role("god")
 
 /**
  * @author Fred Montariol

@@ -9,6 +9,7 @@ import com.pullvert.kotysa.DefaultSqlClientSelect
 import com.pullvert.kotysa.Field
 import io.r2dbc.spi.Row
 import org.springframework.data.r2dbc.core.DatabaseClient
+import org.springframework.data.r2dbc.core.RowsFetchSpec
 
 /**
  * @author Fred Montariol
@@ -19,11 +20,11 @@ internal abstract class AbstractSqlClientSelectR2dbc protected constructor() : D
 
         val client: DatabaseClient
 
-        fun fetch() = with(properties) {
+        fun fetch(): RowsFetchSpec<T> = with(properties) {
             var executeSpec = client.execute(selectSql())
 
             whereClauses
-                    .mapNotNull { whereClause -> whereClause.value }
+                    .mapNotNull { typedWhereClause -> typedWhereClause.whereClause.value }
                     .forEachIndexed { index, value ->
                         executeSpec = executeSpec.bind(index, value)
                     }

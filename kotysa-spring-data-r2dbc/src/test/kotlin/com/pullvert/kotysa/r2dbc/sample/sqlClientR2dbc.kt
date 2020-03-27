@@ -61,7 +61,7 @@ class UserRepositoryR2dbc(dbClient: DatabaseClient) {
 
     private val sqlClient = dbClient.sqlClient(tables)
 
-    fun simplifiedExample() = sqlClient.run {
+    fun simplifiedExample() = sqlClient.apply {
         createTable<User>() // CREATE TABLE IF NOT EXISTS
                 .then(deleteAllFromTable<User>())
                 .then(insert(userJdoe, userBboss))
@@ -74,6 +74,7 @@ class UserRepositoryR2dbc(dbClient: DatabaseClient) {
                 .innerJoin<Role>().on { it[User::roleId] }
                 .where { it[User::alias] eq "Johny" }
                 // null String accepted        ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
+                .or { it[User::alias] eq "Johnny" }
                 .fetchFirst()
 
         val nbUpdated = updateTable<User>()

@@ -72,6 +72,7 @@ class UserRepositorySqLite(sqLiteOpenHelper: SQLiteOpenHelper) {
                 .innerJoin<Role>().on { it[User::roleId] }
                 .where { it[User::alias] eq "Johny" }
                 // null String accepted        ^^^^^ , if alias=null, gives "WHERE user.alias IS NULL"
+                .or { it[User::alias] eq "Johnny" }
                 .fetchFirst()
 
         val nbUpdated = updateTable<User>()

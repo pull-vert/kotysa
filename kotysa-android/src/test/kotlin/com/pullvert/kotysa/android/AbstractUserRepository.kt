@@ -34,7 +34,7 @@ abstract class AbstractUserRepository(
         sqlClient.createTable<SqLiteUser>()
     }
 
-    private fun insertRoles() = sqlClient.insert(sqLiteUser, sqLiteAdmin)
+    private fun insertRoles() = sqlClient.insert(sqLiteUser, sqLiteAdmin, sqLiteGod)
 
     fun insertUsers() = sqlClient.insert(sqLiteJdoe, sqLiteBboss)
 

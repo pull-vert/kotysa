@@ -74,7 +74,9 @@ class ReactorSqlClientSelect private constructor() {
         fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
     }
 
-    interface Where<T : Any> : Return<T>
+    interface Where<T : Any> : Return<T> {
+        fun or(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
+    }
 
     interface Return<T : Any> {
         /**

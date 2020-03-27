@@ -73,7 +73,7 @@ internal class SqlClientDeleteSqLite private constructor() : DefaultSqlClientDel
             var whereParams: Array<String>? = null
             if (whereClauses.isNotEmpty()) {
                 whereParams = whereClauses
-                        .mapNotNull { whereClause -> whereClause.value }
+                        .mapNotNull { typedWhereClause -> typedWhereClause.whereClause.value }
                         .map { whereValue -> stringValue(whereValue) }
                         .toTypedArray()
             }

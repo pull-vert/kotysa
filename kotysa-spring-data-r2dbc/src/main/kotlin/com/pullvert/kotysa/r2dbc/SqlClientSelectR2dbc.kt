@@ -61,7 +61,13 @@ internal class SqlClientSelectR2dbc private constructor() : AbstractSqlClientSel
     private class Where<T : Any> internal constructor(
             override val client: DatabaseClient,
             override val properties: Properties<T>
-    ) : DefaultSqlClientSelect.Where<T>, ReactorSqlClientSelect.Where<T>, Return<T>
+    ) : DefaultSqlClientSelect.Where<T>, ReactorSqlClientSelect.Where<T>, Return<T> {
+
+        override fun or(dsl: WhereDsl.(FieldProvider) -> WhereClause): ReactorSqlClientSelect.Where<T> {
+            addOrClause(dsl)
+            return this
+        }
+    }
 
     private interface Return<T : Any> : AbstractSqlClientSelectR2dbc.Return<T>, ReactorSqlClientSelect.Return<T> {
 

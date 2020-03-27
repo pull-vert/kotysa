@@ -6,6 +6,7 @@ package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.DefaultSqlClientDeleteOrUpdate
 import org.springframework.data.r2dbc.core.DatabaseClient
+import org.springframework.data.r2dbc.core.FetchSpec
 
 /**
  * @author Fred Montariol
@@ -15,11 +16,11 @@ internal abstract class AbstractSqlClientDeleteR2dbc protected constructor() : D
     protected interface Return<T : Any> : DefaultSqlClientDeleteOrUpdate.Return<T> {
         val client: DatabaseClient
 
-        fun fetch() = with(properties) {
+        fun fetch(): FetchSpec<Map<String, Any>> = with(properties) {
             var executeSpec = client.execute(deleteFromTableSql())
 
             whereClauses
-                    .mapNotNull { whereClause -> whereClause.value }
+                    .mapNotNull { typedWhereClause -> typedWhereClause.whereClause.value }
                     .forEachIndexed { index, value ->
                         executeSpec = executeSpec.bind(index, value)
                     }

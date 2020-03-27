@@ -35,9 +35,10 @@ fun selectFirstByFirstname(firstname: String) = sqlClient.select<User>()
         // null String forbidden        ^^^^^^^^^
         .fetchFirst()
 
-fun selectAllByAlias(alias: String?) = sqlClient.select<User>()
-        .where { it[User::alias] eq alias }
-        // null String accepted     ^^^^^ , if alias==null, gives "WHERE user.alias IS NULL"
+fun selectAllByAlias(alias1: String?, alias2: String?) = sqlClient.select<User>()
+        .where { it[User::alias] eq alias1 }
+        // null String accepted     ^^^^^ , if alias1==null, gives "WHERE user.alias IS NULL"
+        .or { it[User::alias] eq alias2 }
         .fetchAll()
         
 fun updateFirstname(newFirstname: String) = sqlClient.updateTable<User>()

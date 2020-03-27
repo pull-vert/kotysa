@@ -27,7 +27,7 @@ open class DefaultSqlClientDeleteOrUpdate protected constructor() : DefaultSqlCl
             val table: Table<T>,
             override val availableColumns: MutableMap<(Any) -> Any?, Column<*, *>>
     ) : DefaultSqlClientCommon.Properties {
-        override val whereClauses: MutableList<WhereClause> = mutableListOf()
+        override val whereClauses: MutableList<TypedWhereClause> = mutableListOf()
         override val joinClauses: MutableList<JoinClause> = mutableListOf()
         val setValues: MutableMap<Column<T, *>, Any?> = mutableMapOf()
     }

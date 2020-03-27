@@ -26,7 +26,7 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
             val selectInformation: SelectInformation<T>,
             override val availableColumns: MutableMap<(Any) -> Any?, Column<*, *>>
     ) : DefaultSqlClientCommon.Properties {
-        override val whereClauses: MutableList<WhereClause> = mutableListOf()
+        override val whereClauses: MutableList<TypedWhereClause> = mutableListOf()
         override val joinClauses: MutableList<JoinClause> = mutableListOf()
     }
 

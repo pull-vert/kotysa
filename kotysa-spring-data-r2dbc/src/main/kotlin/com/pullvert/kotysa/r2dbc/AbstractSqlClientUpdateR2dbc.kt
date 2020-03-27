@@ -7,6 +7,7 @@ package com.pullvert.kotysa.r2dbc
 import com.pullvert.kotysa.DefaultSqlClientDeleteOrUpdate
 import com.pullvert.kotysa.toCallable
 import org.springframework.data.r2dbc.core.DatabaseClient
+import org.springframework.data.r2dbc.core.FetchSpec
 import kotlin.reflect.KClass
 
 /**
@@ -17,7 +18,7 @@ internal abstract class AbstractSqlClientUpdateR2dbc protected constructor() : D
     protected interface Return<T : Any> : DefaultSqlClientDeleteOrUpdate.Return<T> {
         val client: DatabaseClient
 
-        fun fetch() = with(properties) {
+        fun fetch(): FetchSpec<Map<String, Any>> = with(properties) {
             require(setValues.isNotEmpty()) { "At least one value must be set in Update" }
 
             var executeSpec = client.execute(updateTableSql())
@@ -33,7 +34,7 @@ internal abstract class AbstractSqlClientUpdateR2dbc protected constructor() : D
             }
 
             whereClauses
-                    .mapNotNull { whereClause -> whereClause.value }
+                    .mapNotNull { typedWhereClause -> typedWhereClause.whereClause.value }
                     .forEach { value ->
                         executeSpec = executeSpec.bind(index, value)
                         index++

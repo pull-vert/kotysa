@@ -33,7 +33,7 @@ abstract class AbstractUserRepositoryPostgresql(dbClient: DatabaseClient) : Repo
             sqlClient.createTable<PostgresqlRole>()
                     .then(sqlClient.createTable<PostgresqlUser>())
 
-    private fun insertRoles() = sqlClient.insert(postgresqlUser, postgresqlAdmin)
+    private fun insertRoles() = sqlClient.insert(postgresqlUser, postgresqlAdmin, postgresqlGod)
 
     fun insertUsers() = sqlClient.insert(postgresqlJdoe, postgresqlBboss)
 

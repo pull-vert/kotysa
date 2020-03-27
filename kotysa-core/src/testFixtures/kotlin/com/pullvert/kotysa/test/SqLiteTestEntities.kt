@@ -90,6 +90,7 @@ data class SqLiteRole(
 
 val sqLiteUser = SqLiteRole("user", "ghi")
 val sqLiteAdmin = SqLiteRole("admin", "jkl")
+val sqLiteGod = SqLiteRole("god", "mno")
 
 /**
  * @author Fred Montariol

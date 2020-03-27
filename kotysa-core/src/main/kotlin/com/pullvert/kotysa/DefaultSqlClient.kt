@@ -153,7 +153,7 @@ open class DefaultSqlClientCommon protected constructor() {
 
     interface Properties {
         val tables: Tables
-        val whereClauses: MutableList<WhereClause>
+        val whereClauses: MutableList<TypedWhereClause>
         val joinClauses: MutableList<JoinClause>
         val availableColumns: MutableMap<(Any) -> Any?, Column<*, *>>
     }
@@ -210,7 +210,13 @@ open class DefaultSqlClientCommon protected constructor() {
     protected interface Where : WithProperties {
         fun addWhereClause(dsl: WhereDsl.(FieldProvider) -> WhereClause) {
             properties.apply {
-                whereClauses.add(WhereDsl(dsl, availableColumns, tables.dbType).initialize())
+                whereClauses.add(TypedWhereClause(WhereDsl(dsl, availableColumns, tables.dbType).initialize(), WhereClauseType.WHERE))
+            }
+        }
+
+        fun addOrClause(dsl: WhereDsl.(FieldProvider) -> WhereClause) {
+            properties.apply {
+                whereClauses.add(TypedWhereClause(WhereDsl(dsl, availableColumns, tables.dbType).initialize(), WhereClauseType.OR))
             }
         }
     }
@@ -218,7 +224,7 @@ open class DefaultSqlClientCommon protected constructor() {
     protected interface TypedWhere<T : Any> : WithProperties {
         fun addWhereClause(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause) {
             properties.apply {
-                whereClauses.add(TypedWhereDsl(dsl, availableColumns, tables.dbType).initialize())
+                whereClauses.add(TypedWhereClause(TypedWhereDsl(dsl, availableColumns, tables.dbType).initialize(), WhereClauseType.WHERE))
             }
         }
     }
@@ -246,70 +252,81 @@ open class DefaultSqlClientCommon protected constructor() {
                 where.append("WHERE ")
             }
             var index = offset
-            whereClauses.forEach { whereClause ->
+            whereClauses.forEach { typedWhereClause ->
                 where.append(
-                        when (whereClause.operation) {
-                            Operation.EQ ->
-                                if (whereClause.value == null) {
-                                    "${whereClause.field.fieldName} IS NULL AND "
-                                } else {
-                                    if (DbType.POSTGRESQL == tables.dbType) {
-                                        "${whereClause.field.fieldName} = $${index++} AND "
-                                    } else {
-                                        "${whereClause.field.fieldName} = ? AND "
-                                    }
-                                }
-                            Operation.NOT_EQ ->
-                                if (whereClause.value == null) {
-                                    "${whereClause.field.fieldName} IS NOT NULL AND "
-                                } else {
-                                    if (DbType.POSTGRESQL == tables.dbType) {
-                                        "${whereClause.field.fieldName} <> $${index++} AND "
-                                    } else {
-                                        "${whereClause.field.fieldName} <> ? AND "
-                                    }
-                                }
-                            Operation.CONTAINS, Operation.STARTS_WITH, Operation.ENDS_WITH ->
-                                if (DbType.POSTGRESQL == tables.dbType) {
-                                    "${whereClause.field.fieldName} LIKE $${index++} AND "
-                                } else {
-                                    "${whereClause.field.fieldName} LIKE ? AND "
-                                }
-                            Operation.INF ->
-                                if (DbType.POSTGRESQL == tables.dbType) {
-                                    "${whereClause.field.fieldName} < $${index++} AND "
-                                } else {
-                                    "${whereClause.field.fieldName} < ? AND "
-                                }
-                            Operation.INF_OR_EQ ->
-                                if (DbType.POSTGRESQL == tables.dbType) {
-                                    "${whereClause.field.fieldName} <= $${index++} AND "
-                                } else {
-                                    "${whereClause.field.fieldName} <= ? AND "
-                                }
-                            Operation.SUP ->
-                                if (DbType.POSTGRESQL == tables.dbType) {
-                                    "${whereClause.field.fieldName} > $${index++} AND "
-                                } else {
-                                    "${whereClause.field.fieldName} > ? AND "
-                                }
-                            Operation.SUP_OR_EQ ->
-                                if (DbType.POSTGRESQL == tables.dbType) {
-                                    "${whereClause.field.fieldName} >= $${index++} AND "
-                                } else {
-                                    "${whereClause.field.fieldName} >= ? AND "
-                                }
-                            Operation.IS ->
-                                if (DbType.POSTGRESQL == tables.dbType) {
-                                    "${whereClause.field.fieldName} IS $${index++} AND "
-                                } else {
-                                    "${whereClause.field.fieldName} IS ? AND "
-                                }
-                            else -> throw UnsupportedOperationException("${whereClause.operation} is not supported yet")
+                        when (typedWhereClause.type) {
+                            WhereClauseType.AND -> " AND "
+                            WhereClauseType.OR -> " OR "
+                            else -> ""
                         }
                 )
+                where.append("(")
+                typedWhereClause.whereClause.apply {
+                    where.append(
+                            when (operation) {
+                                Operation.EQ ->
+                                    if (value == null) {
+                                        "${field.fieldName} IS NULL"
+                                    } else {
+                                        if (DbType.POSTGRESQL == tables.dbType) {
+                                            "${field.fieldName} = $${index++}"
+                                        } else {
+                                            "${field.fieldName} = ?"
+                                        }
+                                    }
+                                Operation.NOT_EQ ->
+                                    if (value == null) {
+                                        "${field.fieldName} IS NOT NULL"
+                                    } else {
+                                        if (DbType.POSTGRESQL == tables.dbType) {
+                                            "${field.fieldName} <> $${index++}"
+                                        } else {
+                                            "${field.fieldName} <> ?"
+                                        }
+                                    }
+                                Operation.CONTAINS, Operation.STARTS_WITH, Operation.ENDS_WITH ->
+                                    if (DbType.POSTGRESQL == tables.dbType) {
+                                        "${field.fieldName} LIKE $${index++}"
+                                    } else {
+                                        "${field.fieldName} LIKE ?"
+                                    }
+                                Operation.INF ->
+                                    if (DbType.POSTGRESQL == tables.dbType) {
+                                        "${field.fieldName} < $${index++}"
+                                    } else {
+                                        "${field.fieldName} < ?"
+                                    }
+                                Operation.INF_OR_EQ ->
+                                    if (DbType.POSTGRESQL == tables.dbType) {
+                                        "${field.fieldName} <= $${index++}"
+                                    } else {
+                                        "${field.fieldName} <= ?"
+                                    }
+                                Operation.SUP ->
+                                    if (DbType.POSTGRESQL == tables.dbType) {
+                                        "${field.fieldName} > $${index++}"
+                                    } else {
+                                        "${field.fieldName} > ?"
+                                    }
+                                Operation.SUP_OR_EQ ->
+                                    if (DbType.POSTGRESQL == tables.dbType) {
+                                        "${field.fieldName} >= $${index++}"
+                                    } else {
+                                        "${field.fieldName} >= ?"
+                                    }
+                                Operation.IS ->
+                                    if (DbType.POSTGRESQL == tables.dbType) {
+                                        "${field.fieldName} IS $${index++}"
+                                    } else {
+                                        "${field.fieldName} IS ?"
+                                    }
+                                else -> throw UnsupportedOperationException("$operation is not supported yet")
+                            }
+                    )
+                }
+                where.append(")")
             }
-            return where.dropLast(5).toString()
+            return where.toString()
         }
     }
 }
