@@ -17,6 +17,12 @@ class UserRepository(private val client: ReactorSqlClient) {
                     .where { it[User::id] eq id }
                     .fetchOne()
 
+    fun selectWithJoin() =
+            client.select {
+                UserDto("${it[User::firstname]} ${it[User::lastname]}", it[User::alias], it[Role::label]) }
+                    .innerJoin<Role>().on { it[User::roleId] }
+                    .fetchAll()
+
     fun deleteAll() = client.deleteAllFromTable<User>()
 
     fun save(user: User) = client.insert(user)

@@ -1,7 +1,7 @@
 package com.sample
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.getBean
@@ -26,7 +26,14 @@ class UserRepositoryTests {
 
     @Test
     fun count() {
-        assertEquals(2, repository.count().block())
+        assertThat(repository.count().block())
+                .isEqualTo(2)
+    }
+
+    @Test
+    fun selectWithJoin() {
+        assertThat(repository.selectWithJoin().log().toIterable())
+                .hasSize(2)
     }
 
     @AfterAll

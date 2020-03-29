@@ -17,3 +17,13 @@ data class User(
         val creationTime: LocalDateTime = LocalDateTime.now(),
         val id: Int? = null
 )
+
+/**
+ * Not an entity
+ * name = first_name and last_name
+ */
+data class UserDto(
+        val name: String,
+        val alias: String?,
+        val role: String
+)
