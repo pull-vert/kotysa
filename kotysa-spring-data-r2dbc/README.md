@@ -7,13 +7,13 @@ It is an extension to Spring Data R2DBC, and does not replace it.
 
 ```groovy
 repositories {
-    maven { url 'https://dl.bintray.com/pull-vert/kotysa' }
+    jcenter()
 }
 
 dependencies {
-    implementation 'com.pullvert:kotysa-spring-data-r2dbc:0.0.13'
+    implementation 'com.pullvert:kotysa-spring-data-r2dbc:0.1.0'
     
-    implementation "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
+    implementation "org.springframework.data:spring-data-r2dbc"
 }
 ```
 

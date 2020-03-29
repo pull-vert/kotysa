@@ -6,11 +6,11 @@ Kotysa is a single dependency to add to your Android project.
 
 ```groovy
 repositories {
-    maven { url 'https://dl.bintray.com/pull-vert/kotysa' }
+    jcenter()
 }
 
 dependencies {
-    implementation 'com.pullvert:kotysa-android:0.0.13'
+    implementation 'com.pullvert:kotysa-android:0.1.0'
 }
 ```
 

@@ -24,7 +24,7 @@ abstract class AbstractR2dbcPostgresqlTest<T : Repository> {
     protected abstract val repository: T
 
     protected inline fun <reified U : Repository> startContext(): ConfigurableApplicationContext {
-        // PostgreSQL testcontainers must be started before building context for getting Docker mapped port
+        // PostgreSQL testcontainers must be started first to get random Docker mapped port
         val postgresqlContainer = KPostgreSQLContainer()
                 .withDatabaseName("postgres")
                 .withUsername("postgres")
