@@ -249,7 +249,7 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
                     .joinToString(prefix = "FROM ") { aliasedTable -> aliasedTable.declaration }
             val joins = joins()
             val wheres = wheres()
-            logger.debug { "Exec SQL : $selects $froms $joins $wheres" }
+            logger.debug { "Exec SQL (${tables.dbType.name}) : $selects $froms $joins $wheres" }
 
             "$selects $froms $joins $wheres"
         }

@@ -18,7 +18,7 @@ internal fun DefaultSqlClientDeleteOrUpdate.Return<*>.sqLiteDeleteFromTableSql(l
         } else {
             ""
         }
-        "Exec SQL (SqLite) : DELETE FROM ${table.name} $joinsAndWheresDebug"
+        "Exec SQL (${tables.dbType.name}) : DELETE FROM ${table.name} $joinsAndWheresDebug"
     }
     joinsAndWheres
 }
@@ -35,7 +35,7 @@ internal fun DefaultSqlClientDeleteOrUpdate.Return<*>.sqLiteUpdateTableSql(logge
         } else {
             ""
         }
-        "Exec SQL (SqLite) : UPDATE ${table.name} $setSqlDebug $joinsAndWheresDebug"
+        "Exec SQL (${tables.dbType.name}) : UPDATE ${table.name} $setSqlDebug $joinsAndWheresDebug"
     }
     joinsAndWheres
 }

@@ -86,7 +86,7 @@ interface DefaultSqlClient {
                 }
 
         val createTableSql = "CREATE TABLE IF NOT EXISTS ${table.name} ($columns, $primaryKey$foreignKeys)"
-        logger.debug { "Exec SQL : $createTableSql" }
+        logger.debug { "Exec SQL (${tables.dbType.name}) : $createTableSql" }
         return createTableSql
     }
 
@@ -97,12 +97,12 @@ interface DefaultSqlClient {
 
     fun <T : Any> insertSql(row: T): String {
         val insertSqlQuery = insertSqlQuery(row)
-        logger.debug { "Exec SQL : $insertSqlQuery" }
+        logger.debug { "Exec SQL (${tables.dbType.name}) : $insertSqlQuery" }
         return insertSqlQuery
     }
 
     fun <T : Any> insertSqlDebug(row: T) {
-        logger.debug { "Exec SQL : ${insertSqlQuery(row)}" }
+        logger.debug { "Exec SQL (${tables.dbType.name}) : ${insertSqlQuery(row)}" }
     }
 
     fun <T : Any> insertSqlQuery(row: T): String {

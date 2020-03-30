@@ -15,7 +15,7 @@ internal fun DefaultSqlClientDeleteOrUpdate.Return<*>.postgresqlUpdateTableSql(l
     var index = 1
     val setSql = setValues.keys.joinToString(prefix = "SET ") { column -> "${column.name} = $${index++}" }
     val joinsAndWheres = joinsWithExistsAndWheres(offset = index)
-    logger.debug { "Exec SQL (H2) : $updateSql $setSql $joinsAndWheres" }
+    logger.debug { "Exec SQL (${tables.dbType.name}) : $updateSql $setSql $joinsAndWheres" }
 
     "$updateSql $setSql $joinsAndWheres"
 }
