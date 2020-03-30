@@ -58,7 +58,7 @@ Kotysa is agnostic from Sql Engine (SqLite on Android, R2DBC, JDBC in the future
 * use Kotysa with [Spring data R2DBC](kotysa-spring-data-r2dbc/README.md)
 * use Kotysa with [SqLite on Android](kotysa-android/README.md)
 
-See sample projects [here](samples/README.md).
+See sample projects [here](samples).
 
 Kotysa is **not production ready yet**, some key features are still missing. Early releases will provide new features (see [next milestones](https://github.com/pull-vert/kotysa/milestones)).
 
