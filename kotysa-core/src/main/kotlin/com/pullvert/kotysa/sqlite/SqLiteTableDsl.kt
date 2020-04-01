@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 /**
  * @author Fred Montariol
  */
-class SqLiteTableDsl<T : Any>(
+public class SqLiteTableDsl<T : Any>(
         init: SqLiteTableDsl<T>.() -> Unit,
         tableClass: KClass<T>
 ) : TableDsl<T, SqLiteTableDsl<T>>(init, tableClass) {
@@ -20,7 +20,7 @@ class SqLiteTableDsl<T : Any>(
     /**
      * Declare a Column, supported types follow : [SqLite Data types](https://www.sqlite.org/datatype3.html)
      */
-    fun column(dsl: SqLiteColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T, *>) {
+    public fun column(dsl: SqLiteColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T, *>) {
         val columnDsl = SqLiteColumnDsl(dsl)
         val column = columnDsl.initialize(columnDsl)
         addColumn(column)

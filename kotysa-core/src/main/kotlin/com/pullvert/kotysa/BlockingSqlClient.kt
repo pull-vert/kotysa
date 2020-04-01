@@ -11,19 +11,19 @@ import kotlin.reflect.KClass
  *
  * @author Fred Montariol
  */
-abstract class BlockingSqlClient {
+public abstract class BlockingSqlClient {
 
-    abstract fun <T : Any> insert(row: T)
+    public abstract fun <T : Any> insert(row: T)
 
-    abstract fun insert(vararg rows: Any)
+    public abstract fun insert(vararg rows: Any)
 
-    inline fun <reified T : Any> select(noinline dsl: SelectDslApi.(ValueProvider) -> T) = selectInternal(T::class, dsl)
+    public inline fun <reified T : Any> select(noinline dsl: SelectDslApi.(ValueProvider) -> T): BlockingSqlClientSelect.Select<T> = selectInternal(T::class, dsl)
 
-    inline fun <reified T : Any> select() = selectInternal(T::class, null)
+    public inline fun <reified T : Any> select(): BlockingSqlClientSelect.Select<T> = selectInternal(T::class, null)
 
-    inline fun <reified T : Any> selectAll() = selectInternal(T::class, null).fetchAll()
+    public inline fun <reified T : Any> selectAll(): List<T> = selectInternal(T::class, null).fetchAll()
 
-    inline fun <reified T : Any> countAll() = selectInternal(Long::class) { count<T>() }.fetchOne()
+    public inline fun <reified T : Any> countAll(): Long = selectInternal(Long::class) { count<T>() }.fetchOne()
 
     @PublishedApi
     internal fun <T : Any> selectInternal(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?) =
@@ -32,16 +32,16 @@ abstract class BlockingSqlClient {
     protected abstract fun <T : Any> select(
             resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): BlockingSqlClientSelect.Select<T>
 
-    inline fun <reified T : Any> createTable() = createTableInternal(T::class)
+    public inline fun <reified T : Any> createTable(): Unit = createTableInternal(T::class)
 
     @PublishedApi
     internal fun <T : Any> createTableInternal(tableClass: KClass<T>) = createTable(tableClass)
 
     protected abstract fun <T : Any> createTable(tableClass: KClass<T>)
 
-    inline fun <reified T : Any> deleteFromTable() = deleteFromTableInternal(T::class)
+    public inline fun <reified T : Any> deleteFromTable(): BlockingSqlClientDeleteOrUpdate.DeleteOrUpdate<T> = deleteFromTableInternal(T::class)
 
-    inline fun <reified T : Any> deleteAllFromTable() = deleteFromTableInternal(T::class).execute()
+    public inline fun <reified T : Any> deleteAllFromTable(): Int = deleteFromTableInternal(T::class).execute()
 
     @PublishedApi
     internal fun <T : Any> deleteFromTableInternal(tableClass: KClass<T>) =
@@ -49,7 +49,7 @@ abstract class BlockingSqlClient {
 
     protected abstract fun <T : Any> deleteFromTable(tableClass: KClass<T>): BlockingSqlClientDeleteOrUpdate.DeleteOrUpdate<T>
 
-    inline fun <reified T : Any> updateTable() = updateTableInternal(T::class)
+    public inline fun <reified T : Any> updateTable(): BlockingSqlClientDeleteOrUpdate.Update<T> = updateTableInternal(T::class)
 
     @PublishedApi
     internal fun <T : Any> updateTableInternal(tableClass: KClass<T>) =
@@ -61,11 +61,11 @@ abstract class BlockingSqlClient {
 /**
  * @author Fred Montariol
  */
-class BlockingSqlClientSelect private constructor() {
-    abstract class Select<T : Any> : Whereable<T>, Return<T> {
+public class BlockingSqlClientSelect private constructor() {
+    public abstract class Select<T : Any> : Whereable<T>, Return<T> {
 
-        inline fun <reified T : Any> innerJoin(alias: String? = null) =
-                joinInternal(T::class, alias, JoinType.INNER)
+        public inline fun <reified U : Any> innerJoin(alias: String? = null): Joinable<T> =
+                joinInternal(U::class, alias, JoinType.INNER)
 
         @PublishedApi
         internal fun <U : Any> joinInternal(joinClass: KClass<U>, alias: String?, type: JoinType) =
@@ -74,63 +74,63 @@ class BlockingSqlClientSelect private constructor() {
         protected abstract fun <U : Any> join(joinClass: KClass<U>, alias: String?, type: JoinType): Joinable<T>
     }
 
-    interface Joinable<T : Any> {
-        fun on(dsl: (FieldProvider) -> ColumnField<*, *>): Join<T>
+    public interface Joinable<T : Any> {
+        public fun on(dsl: (FieldProvider) -> ColumnField<*, *>): Join<T>
     }
 
-    interface Join<T : Any> : Whereable<T>, Return<T>
+    public interface Join<T : Any> : Whereable<T>, Return<T>
 
-    interface Whereable<T : Any> {
-        fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
+    public interface Whereable<T : Any> {
+        public fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
     }
 
-    interface Where<T : Any> : Return<T> {
-        fun or(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
+    public interface Where<T : Any> : Return<T> {
+        public fun or(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
     }
 
-    interface Return<T : Any> {
+    public interface Return<T : Any> {
         /**
          * This Query return one result
          *
          * @throws NoResultException if no results
          * @throws NonUniqueResultException if more than one result
          */
-        fun fetchOne(): T
+        public fun fetchOne(): T
 
         /**
          * This Query return one result, or null if no results
          *
          * @throws NonUniqueResultException if more than one result
          */
-        fun fetchOneOrNull(): T?
+        public fun fetchOneOrNull(): T?
 
         /**
          * This Query return the first result
          *
          * @throws NoResultException if no results
          */
-        fun fetchFirst(): T
+        public fun fetchFirst(): T
 
         /**
          * This Query return the first result, or null if no results
          */
-        fun fetchFirstOrNull(): T?
+        public fun fetchFirstOrNull(): T?
 
         /**
          * This Query can return several results as [List], can be empty if no results
          */
-        fun fetchAll(): List<T>
+        public fun fetchAll(): List<T>
     }
 }
 
 /**
  * @author Fred Montariol
  */
-class BlockingSqlClientDeleteOrUpdate private constructor() {
-    abstract class DeleteOrUpdate<T : Any> : Return {
+public class BlockingSqlClientDeleteOrUpdate private constructor() {
+    public abstract class DeleteOrUpdate<T : Any> : Return {
 
-        inline fun <reified T : Any> innerJoin(alias: String? = null) =
-                joinInternal(T::class, alias, JoinType.INNER)
+        public inline fun <reified U : Any> innerJoin(alias: String? = null): Joinable =
+                joinInternal(U::class, alias, JoinType.INNER)
 
         @PublishedApi
         internal fun <U : Any> joinInternal(joinClass: KClass<U>, alias: String?, type: JoinType) =
@@ -138,29 +138,29 @@ class BlockingSqlClientDeleteOrUpdate private constructor() {
 
         protected abstract fun <U : Any> join(joinClass: KClass<U>, alias: String?, type: JoinType): Joinable
 
-        abstract fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): TypedWhere<T>
+        public abstract fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): TypedWhere<T>
     }
 
-    abstract class Update<T : Any> : DeleteOrUpdate<T>() {
-        abstract fun set(dsl: (FieldSetter<T>) -> Unit): Update<T>
+    public abstract class Update<T : Any> : DeleteOrUpdate<T>() {
+        public abstract fun set(dsl: (FieldSetter<T>) -> Unit): Update<T>
     }
 
-    interface Joinable {
-        fun on(dsl: (FieldProvider) -> ColumnField<*, *>): Join
+    public interface Joinable {
+        public fun on(dsl: (FieldProvider) -> ColumnField<*, *>): Join
     }
 
-    interface Join : Return {
-        fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where
+    public interface Join : Return {
+        public fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where
     }
 
-    interface Where : Return // and function will not be typed
+    public interface Where : Return // and function will not be typed
 
-    interface TypedWhere<T : Any> : Return // and function will be typed
+    public interface TypedWhere<T : Any> : Return // and function will be typed
 
-    interface Return {
+    public interface Return {
         /**
          * Execute delete or update and return the number of updated or deleted rows
          */
-        fun execute(): Int
+        public fun execute(): Int
     }
 }

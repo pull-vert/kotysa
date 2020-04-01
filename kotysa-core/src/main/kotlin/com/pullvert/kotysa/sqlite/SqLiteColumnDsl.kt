@@ -5,38 +5,55 @@
 package com.pullvert.kotysa.sqlite
 
 import com.pullvert.kotysa.*
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.OffsetDateTime
 
 /**
  * see [SqLite Data types](https://www.sqlite.org/datatype3.html)
  * @author Fred Montariol
  */
-class SqLiteColumnDsl<T : Any> internal constructor(
+public class SqLiteColumnDsl<T : Any> internal constructor(
         init: SqLiteColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T, *>
 ) : ColumnDsl<T, SqLiteColumnDsl<T>>(init) {
 
-    fun NotNullStringColumnProperty<T>.text() = TextColumnBuilderNotNull(getter)
+    public fun NotNullStringColumnProperty<T>.text(): TextColumnBuilderNotNull<T, String> =
+            TextColumnBuilderNotNull(getter)
 
-    fun NullableStringColumnProperty<T>.text() = TextColumnBuilderNullable(getter)
+    public fun NullableStringColumnProperty<T>.text(): TextColumnBuilderNullable<T, String> =
+            TextColumnBuilderNullable(getter)
 
-    fun NotNullLocalDateTimeColumnProperty<T>.text() = TextColumnBuilderNotNull(getter)
+    public fun NotNullLocalDateTimeColumnProperty<T>.text(): TextColumnBuilderNotNull<T, LocalDateTime> =
+            TextColumnBuilderNotNull(getter)
 
-    fun NullableLocalDateTimeColumnProperty<T>.text() = TextColumnBuilderNullable(getter)
+    public fun NullableLocalDateTimeColumnProperty<T>.text(): TextColumnBuilderNullable<T, LocalDateTime> =
+            TextColumnBuilderNullable(getter)
 
-    fun NotNullLocalDateColumnProperty<T>.text() = TextColumnBuilderNotNull(getter)
+    public fun NotNullLocalDateColumnProperty<T>.text(): TextColumnBuilderNotNull<T, LocalDate> =
+            TextColumnBuilderNotNull(getter)
 
-    fun NullableLocalDateColumnProperty<T>.text() = TextColumnBuilderNullable(getter)
+    public fun NullableLocalDateColumnProperty<T>.text(): TextColumnBuilderNullable<T, LocalDate> =
+            TextColumnBuilderNullable(getter)
 
-    fun NotNullOffsetDateTimeColumnProperty<T>.text() = TextColumnBuilderNotNull(getter)
+    public fun NotNullOffsetDateTimeColumnProperty<T>.text(): TextColumnBuilderNotNull<T, OffsetDateTime> =
+            TextColumnBuilderNotNull(getter)
 
-    fun NullableOffsetDateTimeColumnProperty<T>.text() = TextColumnBuilderNullable(getter)
+    public fun NullableOffsetDateTimeColumnProperty<T>.text(): TextColumnBuilderNullable<T, OffsetDateTime> =
+            TextColumnBuilderNullable(getter)
 
-    fun NotNullLocalTimeColumnProperty<T>.text() = TextColumnBuilderNotNull(getter)
+    public fun NotNullLocalTimeColumnProperty<T>.text(): TextColumnBuilderNotNull<T, LocalTime> =
+            TextColumnBuilderNotNull(getter)
 
-    fun NullableLocalTimeColumnProperty<T>.text() = TextColumnBuilderNullable(getter)
+    public fun NullableLocalTimeColumnProperty<T>.text(): TextColumnBuilderNullable<T, LocalTime> =
+            TextColumnBuilderNullable(getter)
 
-    fun NotNullBooleanColumnProperty<T>.integer() = IntegerColumnBuilderNotNull(getter)
+    public fun NotNullBooleanColumnProperty<T>.integer(): IntegerColumnBuilderNotNull<T, Boolean> =
+            IntegerColumnBuilderNotNull(getter)
 
-    fun NotNullIntColumnProperty<T>.integer() = IntegerColumnBuilderNotNull(getter)
+    public fun NotNullIntColumnProperty<T>.integer(): IntegerColumnBuilderNotNull<T, Int> =
+            IntegerColumnBuilderNotNull(getter)
 
-    fun NullableIntColumnProperty<T>.integer() = IntegerColumnBuilderNullable(getter)
+    public fun NullableIntColumnProperty<T>.integer(): IntegerColumnBuilderNullable<T, Int> =
+            IntegerColumnBuilderNullable(getter)
 }

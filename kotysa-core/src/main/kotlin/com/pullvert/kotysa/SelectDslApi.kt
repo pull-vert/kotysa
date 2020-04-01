@@ -9,12 +9,15 @@ import kotlin.reflect.KClass
 /**
  * @author Fred Montariol
  */
-abstract class SelectDslApi protected constructor(){
+public abstract class SelectDslApi protected constructor(){
     @PublishedApi
-    internal abstract fun <T : Any> count(resultClass: KClass<T>, dsl: ((FieldProvider) -> ColumnField<T, *>)? = null, alias: String? = null): Long
+    internal abstract fun <T : Any> count(resultClass: KClass<T>, dsl: ((FieldProvider) -> ColumnField<T, *>)? = null,
+                                          alias: String? = null): Long
 }
 
 /**
  * @author Fred Montariol
  */
-inline fun <reified T : Any> SelectDslApi.count(noinline dsl: ((FieldProvider) -> ColumnField<T, *>)? = null) = count(T::class, dsl)
+public inline fun <reified T : Any> SelectDslApi.count(
+        noinline dsl: ((FieldProvider) -> ColumnField<T, *>
+        )? = null): Long = count(T::class, dsl)

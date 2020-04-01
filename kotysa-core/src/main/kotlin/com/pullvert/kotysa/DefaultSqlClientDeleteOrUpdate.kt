@@ -17,31 +17,31 @@ private val logger = InlineLogger("com.pullvert.kotysa.DefaultSqlClientDeleteOrU
 /**
  * @author Fred Montariol
  */
-open class DefaultSqlClientDeleteOrUpdate protected constructor() : DefaultSqlClientCommon() {
+public open class DefaultSqlClientDeleteOrUpdate protected constructor() : DefaultSqlClientCommon() {
 
-    class Properties<T : Any> internal constructor(
+    public class Properties<T : Any> internal constructor(
             override val tables: Tables,
             /**
              * targeted table to update
              */
-            val table: Table<T>,
+            public val table: Table<T>,
             override val availableColumns: MutableMap<(Any) -> Any?, Column<*, *>>
     ) : DefaultSqlClientCommon.Properties {
         override val whereClauses: MutableList<TypedWhereClause> = mutableListOf()
         override val joinClauses: MutableList<JoinClause> = mutableListOf()
-        val setValues: MutableMap<Column<T, *>, Any?> = mutableMapOf()
+        public val setValues: MutableMap<Column<T, *>, Any?> = mutableMapOf()
     }
 
-    interface WithProperties<T : Any> {
-        val properties: Properties<T>
+    public interface WithProperties<T : Any> {
+        public val properties: Properties<T>
     }
 
     protected interface DeleteOrUpdate<T : Any> : Instruction {
 
-        val tables: Tables
-        val tableClass: KClass<T>
+        public val tables: Tables
+        public val tableClass: KClass<T>
 
-        fun initProperties(): Properties<T> {
+        public fun initProperties(): Properties<T> {
             tables.checkTable(tableClass)
             val table = tables.getTable(tableClass)
             val properties = Properties(tables, table, mutableMapOf())
@@ -52,7 +52,7 @@ open class DefaultSqlClientDeleteOrUpdate protected constructor() : DefaultSqlCl
     }
 
     protected interface Update<T : Any> : DeleteOrUpdate<T>, WithProperties<T> {
-        fun addSetValue(dsl: (FieldSetter<T>) -> Unit) {
+        public fun addSetValue(dsl: (FieldSetter<T>) -> Unit) {
             properties.apply {
                 val setValue = UpdateSetDsl(dsl, availableColumns, tables.dbType).initialize()
                 setValues[setValue.first.column] = setValue.second
@@ -66,14 +66,14 @@ open class DefaultSqlClientDeleteOrUpdate protected constructor() : DefaultSqlCl
 
     protected interface TypedWhere<T : Any> : DefaultSqlClientCommon.TypedWhere<T>, WithProperties<T>
 
-    interface Return<T : Any> : DefaultSqlClientCommon.Return, WithProperties<T> {
+    public interface Return<T : Any> : DefaultSqlClientCommon.Return, WithProperties<T> {
 
-        fun deleteFromTableSql() = when (properties.tables.dbType) {
+        public fun deleteFromTableSql(): String = when (properties.tables.dbType) {
             DbType.H2, DbType.POSTGRESQL -> h2DeleteFromTableSql(logger)
             DbType.SQLITE -> sqLiteDeleteFromTableSql(logger)
         }
 
-        fun updateTableSql() = when (properties.tables.dbType) {
+        public fun updateTableSql(): String = when (properties.tables.dbType) {
             DbType.H2 -> h2UpdateTableSql(logger)
             DbType.POSTGRESQL -> postgresqlUpdateTableSql(logger)
             DbType.SQLITE -> sqLiteUpdateTableSql(logger)
@@ -83,7 +83,7 @@ open class DefaultSqlClientDeleteOrUpdate protected constructor() : DefaultSqlCl
          * Handle joins as EXISTS + nested SELECT
          * Then other WHERE clauses
          */
-        fun joinsWithExistsAndWheres(withWhere: Boolean = true, offset: Int = 1) = with(properties) {
+        public fun joinsWithExistsAndWheres(withWhere: Boolean = true, offset: Int = 1): String = with(properties) {
             val joins = joinsWithExists()
 
             var wheres = wheres(false, offset)

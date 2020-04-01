@@ -13,35 +13,35 @@ import java.util.*
 /**
  * @author Fred Montariol
  */
-interface FieldSetter<T : Any> {
+public interface FieldSetter<T : Any> {
 
-    operator fun set(getter: (T) -> String, value: String)
+    public operator fun set(getter: (T) -> String, value: String)
 
-    operator fun set(getter: (T) -> String?, value: String?): Nullable
+    public operator fun set(getter: (T) -> String?, value: String?): Nullable
 
-    operator fun set(getter: (T) -> LocalDateTime, value: LocalDateTime)
+    public operator fun set(getter: (T) -> LocalDateTime, value: LocalDateTime)
 
-    operator fun set(getter: (T) -> LocalDateTime?, value: LocalDateTime?): Nullable
+    public operator fun set(getter: (T) -> LocalDateTime?, value: LocalDateTime?): Nullable
 
-    operator fun set(getter: (T) -> LocalDate, value: LocalDate)
+    public operator fun set(getter: (T) -> LocalDate, value: LocalDate)
 
-    operator fun set(getter: (T) -> LocalDate?, value: LocalDate?): Nullable
+    public operator fun set(getter: (T) -> LocalDate?, value: LocalDate?): Nullable
 
-    operator fun set(getter: (T) -> OffsetDateTime, value: OffsetDateTime)
+    public operator fun set(getter: (T) -> OffsetDateTime, value: OffsetDateTime)
 
-    operator fun set(getter: (T) -> OffsetDateTime?, value: OffsetDateTime?): Nullable
+    public operator fun set(getter: (T) -> OffsetDateTime?, value: OffsetDateTime?): Nullable
 
-    operator fun set(getter: (T) -> LocalTime, value: LocalTime)
+    public operator fun set(getter: (T) -> LocalTime, value: LocalTime)
 
-    operator fun set(getter: (T) -> LocalTime?, value: LocalTime?): Nullable
+    public operator fun set(getter: (T) -> LocalTime?, value: LocalTime?): Nullable
 
-    operator fun set(getter: (T) -> Boolean, value: Boolean)
+    public operator fun set(getter: (T) -> Boolean, value: Boolean)
 
-    operator fun set(getter: (T) -> UUID, value: UUID)
+    public operator fun set(getter: (T) -> UUID, value: UUID)
 
-    operator fun set(getter: (T) -> UUID?, value: UUID?): Nullable
+    public operator fun set(getter: (T) -> UUID?, value: UUID?): Nullable
 
-    operator fun set(getter: (T) -> Int, value: Int)
+    public operator fun set(getter: (T) -> Int, value: Int)
 
-    operator fun set(getter: (T) -> Int?, value: Int?): Nullable
+    public operator fun set(getter: (T) -> Int?, value: Int?): Nullable
 }

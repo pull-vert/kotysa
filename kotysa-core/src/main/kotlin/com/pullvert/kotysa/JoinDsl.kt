@@ -8,7 +8,7 @@ package com.pullvert.kotysa
  * @author Fred Montariol
  */
 @KotysaMarker
-class JoinDsl internal constructor(
+public class JoinDsl internal constructor(
         private val init: (FieldProvider) -> ColumnField<*, *>,
         private val table: AliasedTable<*>,
         private val type: JoinType,

@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
  * All methods return an unused value
  * @author Fred Montariol
  */
-class SelectDsl<T> internal constructor(
+public class SelectDsl<T> internal constructor(
         private val init: SelectDslApi.(ValueProvider) -> T,
         private val tables: Tables
 ) : SelectDslApi(), ValueProvider {

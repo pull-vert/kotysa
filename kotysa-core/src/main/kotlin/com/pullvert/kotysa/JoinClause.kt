@@ -7,13 +7,16 @@ package com.pullvert.kotysa
 /**
  * @author Fred Montariol
  */
-class JoinClause internal constructor(
+public class JoinClause internal constructor(
         internal val table: AliasedTable<*>,
         internal val field: ColumnField<*, *>,
         internal val type: JoinType
 )
 
-enum class JoinType(val sql: String) {
+/**
+ * @author Fred Montariol
+ */
+public enum class JoinType(internal val sql: String) {
     INNER("INNER JOIN"),
     LEFT_OUTER("LEFT OUTER JOIN"),
     RIGHT_OUTER("RIGHT OUTER JOIN"),

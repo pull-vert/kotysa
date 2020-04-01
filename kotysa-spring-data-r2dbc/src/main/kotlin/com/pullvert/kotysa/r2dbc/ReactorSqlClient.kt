@@ -15,36 +15,38 @@ import kotlin.reflect.KClass
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
  * @author Fred Montariol
  */
-abstract class ReactorSqlClient {
+public abstract class ReactorSqlClient {
 
-    abstract fun <T : Any> insert(row: T): Mono<Void>
+    public abstract fun <T : Any> insert(row: T): Mono<Void>
 
-    abstract fun insert(vararg rows: Any): Mono<Void>
+    public abstract fun insert(vararg rows: Any): Mono<Void>
 
-    inline fun <reified T : Any> select(noinline dsl: SelectDslApi.(ValueProvider) -> T) = select(T::class, dsl)
+    public inline fun <reified T : Any> select(noinline dsl: SelectDslApi.(ValueProvider) -> T)
+            : ReactorSqlClientSelect.Select<T> = select(T::class, dsl)
 
-    inline fun <reified T : Any> select() = select(T::class, null)
+    public inline fun <reified T : Any> select(): ReactorSqlClientSelect.Select<T> = select(T::class, null)
 
-    inline fun <reified T : Any> selectAll() = select(T::class, null).fetchAll()
+    public inline fun <reified T : Any> selectAll(): Flux<T> = select(T::class, null).fetchAll()
 
-    inline fun <reified T : Any> countAll() = select(Long::class) { count<T>() }.fetchOne()
+    public inline fun <reified T : Any> countAll(): Mono<Long> = select(Long::class) { count<T>() }.fetchOne()
 
     @PublishedApi
     internal abstract fun <T : Any> select(resultClass: KClass<T>, dsl: (SelectDslApi.(ValueProvider) -> T)?): ReactorSqlClientSelect.Select<T>
 
-    inline fun <reified T : Any> createTable() = createTable(T::class)
+    public inline fun <reified T : Any> createTable(): Mono<Void> = createTable(T::class)
 
     @PublishedApi
     internal abstract fun <T : Any> createTable(tableClass: KClass<T>): Mono<Void>
 
-    inline fun <reified T : Any> deleteFromTable() = deleteFromTable(T::class)
+    public inline fun <reified T : Any> deleteFromTable(): ReactorSqlClientDeleteOrUpdate.DeleteOrUpdate<T> =
+            deleteFromTable(T::class)
 
-    inline fun <reified T : Any> deleteAllFromTable() = deleteFromTable(T::class).execute()
+    public inline fun <reified T : Any> deleteAllFromTable(): Mono<Int> = deleteFromTable(T::class).execute()
 
     @PublishedApi
     internal abstract fun <T : Any> deleteFromTable(tableClass: KClass<T>): ReactorSqlClientDeleteOrUpdate.DeleteOrUpdate<T>
 
-    inline fun <reified T : Any> updateTable() = updateTable(T::class)
+    public inline fun <reified T : Any> updateTable(): ReactorSqlClientDeleteOrUpdate.Update<T> = updateTable(T::class)
 
     @PublishedApi
     internal abstract fun <T : Any> updateTable(tableClass: KClass<T>): ReactorSqlClientDeleteOrUpdate.Update<T>
@@ -54,85 +56,85 @@ abstract class ReactorSqlClient {
 /**
  * @author Fred Montariol
  */
-class ReactorSqlClientSelect private constructor() {
+public class ReactorSqlClientSelect private constructor() {
 
-    abstract class Select<T : Any> : Whereable<T>, Return<T> {
-        inline fun <reified T : Any> innerJoin(alias: String? = null) =
-                join(T::class, alias, JoinType.INNER)
+    public abstract class Select<T : Any> : Whereable<T>, Return<T> {
+        public inline fun <reified U : Any> innerJoin(alias: String? = null): Joinable<T> =
+                join(U::class, alias, JoinType.INNER)
 
         @PublishedApi
         internal abstract fun <U : Any> join(joinClass: KClass<U>, alias: String?, type: JoinType): Joinable<T>
     }
 
-    interface Joinable<T : Any> {
-        fun on(dsl: (FieldProvider) -> ColumnField<*, *>): Join<T>
+    public interface Joinable<T : Any> {
+        public fun on(dsl: (FieldProvider) -> ColumnField<*, *>): Join<T>
     }
 
-    interface Join<T : Any> : Whereable<T>, Return<T>
+    public interface Join<T : Any> : Whereable<T>, Return<T>
 
-    interface Whereable<T : Any> {
-        fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
+    public interface Whereable<T : Any> {
+        public fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
     }
 
-    interface Where<T : Any> : Return<T> {
-        fun or(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
+    public interface Where<T : Any> : Return<T> {
+        public fun or(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
     }
 
-    interface Return<T : Any> {
+    public interface Return<T : Any> {
         /**
          * This Query return one result as [Mono], or an empty [Mono] if no result
          *
          * @throws NonUniqueResultException if more than one result
          */
-        fun fetchOne(): Mono<T>
+        public fun fetchOne(): Mono<T>
 
         /**
          * This Query return one result as [Mono], or an empty [Mono] if no result
          */
-        fun fetchFirst(): Mono<T>
+        public fun fetchFirst(): Mono<T>
 
         /**
          * This Query can return several results as [Flux], or an empty [Flux] if no result
          */
-        fun fetchAll(): Flux<T>
+        public fun fetchAll(): Flux<T>
     }
 }
 
 /**
  * @author Fred Montariol
  */
-class ReactorSqlClientDeleteOrUpdate private constructor() {
+public class ReactorSqlClientDeleteOrUpdate private constructor() {
 
-    abstract class DeleteOrUpdate<T : Any> : Return {
-        inline fun <reified T : Any> innerJoin(alias: String? = null) =
-                join(T::class, alias, JoinType.INNER)
+    public abstract class DeleteOrUpdate<T : Any> : Return {
+        public inline fun <reified U : Any> innerJoin(alias: String? = null): Joinable =
+                join(U::class, alias, JoinType.INNER)
 
         @PublishedApi
         internal abstract fun <U : Any> join(joinClass: KClass<U>, alias: String?, type: JoinType): Joinable
 
-        abstract fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): TypedWhere<T>
+        public abstract fun where(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): TypedWhere<T>
     }
 
-    abstract class Update<T : Any> : DeleteOrUpdate<T>() {
-        abstract fun set(dsl: (FieldSetter<T>) -> Unit): Update<T>
+    public abstract class Update<T : Any> : DeleteOrUpdate<T>() {
+        public abstract fun set(dsl: (FieldSetter<T>) -> Unit): Update<T>
     }
 
-    interface Joinable {
-        fun on(dsl: (FieldProvider) -> ColumnField<*, *>): Join
+    public interface Joinable {
+        public fun on(dsl: (FieldProvider) -> ColumnField<*, *>): Join
     }
 
-    interface Join : Return {
-        fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where
+    public interface Join : Return {
+        public fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where
     }
 
-    interface Where : Return // and function will not be typed
+    public interface Where : Return // and function will not be typed
 
-    interface TypedWhere<T : Any> : Return // and function will be typed
+    public interface TypedWhere<T : Any> : Return // and function will be typed
 
-    interface Return {
+    public interface Return {
         /**
          * Execute delete or update and return the number of updated or deleted rows
          */
-        fun execute(): Mono<Int>
+        public fun execute(): Mono<Int>
     }
 }

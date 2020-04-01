@@ -7,8 +7,8 @@ package com.pullvert.kotysa
 /**
  * @author Fred Montariol
  */
-interface ForeignKey {
-	val name: String?
+public interface ForeignKey {
+	public val name: String?
 }
 
 /**

@@ -16,7 +16,7 @@ import kotlin.reflect.KClass
  * @author Fred Montariol
  */
 @Suppress("UNCHECKED_CAST")
-abstract class AbstractRow(private val fieldIndexMap: Map<Field, Int>) : SelectDslApi(), ValueProvider {
+public abstract class AbstractRow(private val fieldIndexMap: Map<Field, Int>) : SelectDslApi(), ValueProvider {
 
     override fun <T : Any> count(resultClass: KClass<T>, dsl: ((FieldProvider) -> ColumnField<T, *>)?, alias: String?): Long =
             this[fieldIndexMap.filterKeys { field ->

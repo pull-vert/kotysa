@@ -90,4 +90,4 @@ internal fun ContentValues.put(name: String, value: Any?) {
  * @sample com.pullvert.kotysa.android.sample.UserRepositorySqLite
  * @author Fred Montariol
  */
-fun SQLiteOpenHelper.sqlClient(tables: Tables): BlockingSqlClient = SqlClientSqLite(this, tables)
+public fun SQLiteOpenHelper.sqlClient(tables: Tables): BlockingSqlClient = SqlClientSqLite(this, tables)

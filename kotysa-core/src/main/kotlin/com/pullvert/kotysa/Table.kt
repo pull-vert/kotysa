@@ -11,15 +11,15 @@ import kotlin.reflect.KClass
  *
  * @author Fred Montariol
  */
-interface Table<T : Any> {
-    val tableClass: KClass<T>
+public interface Table<T : Any> {
+    public val tableClass: KClass<T>
     /**
      * Real name of this table in the database
      */
-    val name: String
-    val columns: Map<(T) -> Any?, Column<T, *>>
-    val primaryKey: PrimaryKey
-    var foreignKeys: Set<ForeignKey>
+    public val name: String
+    public val columns: Map<(T) -> Any?, Column<T, *>>
+    public val primaryKey: PrimaryKey
+    public var foreignKeys: Set<ForeignKey>
 }
 
 /**
@@ -54,8 +54,8 @@ internal class TableImpl<T : Any> internal constructor(
  * All Mapped Tables
  * @author Fred Montariol
  */
-class Tables internal constructor(
-        val allTables: Map<KClass<*>, Table<*>>,
+public class Tables internal constructor(
+        public val allTables: Map<KClass<*>, Table<*>>,
         internal val allColumns: Map<out (Any) -> Any?, Column<*, *>>,
         internal val dbType: DbType
 )

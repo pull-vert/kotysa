@@ -10,22 +10,22 @@ import kotlin.reflect.KClass
  * One database Table's Column model mapped by entity's [entityGetter]
  * @author Fred Montariol
  */
-interface Column<T : Any, U> {
+public interface Column<T : Any, U> {
     /**
      * Table this column is in
      */
-    var table: Table<T>
-    val entityGetter: (T) -> U
-    val name: String
-    val sqlType: SqlType
-    val isPrimaryKey: Boolean
-    val isAutoIncrement: Boolean
-    val pkName: String?
-    val isNullable: Boolean
-    val defaultValue: U?
-    val fkClass: KClass<*>?
-    var fkColumn: Column<*, *>?
-    val fkName: String?
+    public var table: Table<T>
+    public val entityGetter: (T) -> U
+    public val name: String
+    public val sqlType: SqlType
+    public val isPrimaryKey: Boolean
+    public val isAutoIncrement: Boolean
+    public val pkName: String?
+    public val isNullable: Boolean
+    public val defaultValue: U?
+    public val fkClass: KClass<*>?
+    public var fkColumn: Column<*, *>?
+    public val fkName: String?
 }
 
 /**

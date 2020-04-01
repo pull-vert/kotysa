@@ -11,7 +11,7 @@ import kotlin.reflect.KProperty1
 /**
  * @author Fred Montariol
  */
-fun <T : Any> ((T) -> Any?).toCallable(): KCallable<Any?> =
+public fun <T : Any> ((T) -> Any?).toCallable(): KCallable<Any?> =
         when (this) {
             is KProperty1<T, *> -> this
             is KFunction<*> -> this

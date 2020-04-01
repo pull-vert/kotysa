@@ -8,6 +8,6 @@ package com.pullvert.kotysa
  * Supported Databases
  * @author Fred Montariol
  */
-enum class DbType {
+public enum class DbType {
     H2, SQLITE, POSTGRESQL
 }

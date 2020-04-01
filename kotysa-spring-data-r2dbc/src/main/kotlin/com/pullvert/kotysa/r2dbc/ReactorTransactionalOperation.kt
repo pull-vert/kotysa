@@ -11,11 +11,11 @@ import reactor.core.publisher.Mono
  * @see org.springframework.transaction.reactive.TransactionalOperator
  * @author Fred Montariol
  */
-interface ReactorTransactionalOperation {
+public interface ReactorTransactionalOperation {
 
-    fun <T> transactional(flux: Flux<T>) = execute { _ -> flux }
+    public fun <T> transactional(flux: Flux<T>): Flux<T> = execute { flux }
 
-    fun <T> transactional(mono: Mono<T>): Mono<T>
+    public fun <T> transactional(mono: Mono<T>): Mono<T>
 
-    fun <T> execute(block: (TransactionStatus) -> Flux<T>): Flux<T>
+    public fun <T> execute(block: (TransactionStatus) -> Flux<T>): Flux<T>
 }

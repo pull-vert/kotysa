@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  * @sample com.pullvert.kotysa.sample.postgresqlTables
  * @author Fred Montariol
  */
-class PostgresqlTablesDsl(init: PostgresqlTablesDsl.() -> Unit) : TablesDsl<PostgresqlTablesDsl, PostgresqlTableDsl<*>>(init) {
+public class PostgresqlTablesDsl(init: PostgresqlTablesDsl.() -> Unit) : TablesDsl<PostgresqlTablesDsl, PostgresqlTableDsl<*>>(init) {
 
     override fun <T : Any> initializeTable(tableClass: KClass<T>, dsl: PostgresqlTableDsl<*>.() -> Unit): Table<*> {
         val tableDsl = PostgresqlTableDsl(dsl, tableClass)
@@ -20,7 +20,7 @@ class PostgresqlTablesDsl(init: PostgresqlTablesDsl.() -> Unit) : TablesDsl<Post
     }
 
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified T : Any> table(noinline dsl: PostgresqlTableDsl<T>.() -> Unit) {
+    public inline fun <reified T : Any> table(noinline dsl: PostgresqlTableDsl<T>.() -> Unit) {
         table(T::class, dsl as PostgresqlTableDsl<*>.() -> Unit)
     }
 }

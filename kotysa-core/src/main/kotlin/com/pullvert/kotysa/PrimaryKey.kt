@@ -7,8 +7,8 @@ package com.pullvert.kotysa
 /**
  * @author Fred Montariol
  */
-interface PrimaryKey {
-    val name: String?
+public interface PrimaryKey {
+    public val name: String?
 }
 
 /**

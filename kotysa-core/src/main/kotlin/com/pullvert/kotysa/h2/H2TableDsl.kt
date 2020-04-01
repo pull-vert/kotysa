@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 /**
  * @author Fred Montariol
  */
-class H2TableDsl<T : Any>(
+public class H2TableDsl<T : Any>(
         init: H2TableDsl<T>.() -> Unit,
         tableClass: KClass<T>
 ) : TableDsl<T, H2TableDsl<T>>(init, tableClass) {
@@ -20,7 +20,7 @@ class H2TableDsl<T : Any>(
     /**
      * Declare a Column, supported types follow : [H2 Data types](http://h2database.com/html/datatypes.html)
      */
-    fun column(dsl: H2ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T, *>) {
+    public fun column(dsl: H2ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T, *>) {
         val columnDsl = H2ColumnDsl(dsl)
         val column = columnDsl.initialize(columnDsl)
         addColumn(column)

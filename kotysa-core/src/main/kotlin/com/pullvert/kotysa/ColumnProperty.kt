@@ -13,22 +13,22 @@ import java.util.*
 /**
  * @author Fred Montariol
  */
-interface ColumnProperty
+public interface ColumnProperty
 
 /**
  * @author Fred Montariol
  */
-interface NotNullColumnProperty : ColumnProperty
+public interface NotNullColumnProperty : ColumnProperty
 
 /**
  * @author Fred Montariol
  */
-interface NullableColumnProperty : ColumnProperty
+public interface NullableColumnProperty : ColumnProperty
 
 /**
  * @author Fred Montariol
  */
-abstract class AbstractColumnProperty<T : Any> : ColumnProperty {
+public abstract class AbstractColumnProperty<T : Any> : ColumnProperty {
     internal abstract val getter: (T) -> Any?
 }
 
@@ -36,19 +36,19 @@ abstract class AbstractColumnProperty<T : Any> : ColumnProperty {
 /**
  * @author Fred Montariol
  */
-abstract class StringColumnProperty<T : Any> : AbstractColumnProperty<T>()
+public abstract class StringColumnProperty<T : Any> : AbstractColumnProperty<T>()
 
 /**
  * @author Fred Montariol
  */
-class NotNullStringColumnProperty<T : Any> internal constructor(
+public class NotNullStringColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> String
 ) : StringColumnProperty<T>(), NotNullColumnProperty
 
 /**
  * @author Fred Montariol
  */
-class NullableStringColumnProperty<T : Any> internal constructor(
+public class NullableStringColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> String?
 ) : StringColumnProperty<T>(), NullableColumnProperty
 
@@ -56,19 +56,19 @@ class NullableStringColumnProperty<T : Any> internal constructor(
 /**
  * @author Fred Montariol
  */
-abstract class LocalDateTimeColumnProperty<T : Any> : AbstractColumnProperty<T>()
+public abstract class LocalDateTimeColumnProperty<T : Any> : AbstractColumnProperty<T>()
 
 /**
  * @author Fred Montariol
  */
-class NotNullLocalDateTimeColumnProperty<T : Any> internal constructor(
+public class NotNullLocalDateTimeColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> LocalDateTime
 ) : LocalDateTimeColumnProperty<T>(), NotNullColumnProperty
 
 /**
  * @author Fred Montariol
  */
-class NullableLocalDateTimeColumnProperty<T : Any> internal constructor(
+public class NullableLocalDateTimeColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> LocalDateTime?
 ) : LocalDateTimeColumnProperty<T>(), NullableColumnProperty
 
@@ -76,19 +76,19 @@ class NullableLocalDateTimeColumnProperty<T : Any> internal constructor(
 /**
  * @author Fred Montariol
  */
-abstract class LocalDateColumnProperty<T : Any> : AbstractColumnProperty<T>()
+public abstract class LocalDateColumnProperty<T : Any> : AbstractColumnProperty<T>()
 
 /**
  * @author Fred Montariol
  */
-class NotNullLocalDateColumnProperty<T : Any> internal constructor(
+public class NotNullLocalDateColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> LocalDate
 ) : LocalDateColumnProperty<T>(), NotNullColumnProperty
 
 /**
  * @author Fred Montariol
  */
-class NullableLocalDateColumnProperty<T : Any> internal constructor(
+public class NullableLocalDateColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> LocalDate?
 ) : LocalDateColumnProperty<T>(), NullableColumnProperty
 
@@ -96,19 +96,19 @@ class NullableLocalDateColumnProperty<T : Any> internal constructor(
 /**
  * @author Fred Montariol
  */
-abstract class OffsetDateTimeColumnProperty<T : Any> : AbstractColumnProperty<T>()
+public abstract class OffsetDateTimeColumnProperty<T : Any> : AbstractColumnProperty<T>()
 
 /**
  * @author Fred Montariol
  */
-class NotNullOffsetDateTimeColumnProperty<T : Any> internal constructor(
+public class NotNullOffsetDateTimeColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> OffsetDateTime
 ) : OffsetDateTimeColumnProperty<T>(), NotNullColumnProperty
 
 /**
  * @author Fred Montariol
  */
-class NullableOffsetDateTimeColumnProperty<T : Any> internal constructor(
+public class NullableOffsetDateTimeColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> OffsetDateTime?
 ) : OffsetDateTimeColumnProperty<T>(), NullableColumnProperty
 
@@ -116,19 +116,19 @@ class NullableOffsetDateTimeColumnProperty<T : Any> internal constructor(
 /**
  * @author Fred Montariol
  */
-abstract class LocalTimeColumnProperty<T : Any> : AbstractColumnProperty<T>()
+public abstract class LocalTimeColumnProperty<T : Any> : AbstractColumnProperty<T>()
 
 /**
  * @author Fred Montariol
  */
-class NotNullLocalTimeColumnProperty<T : Any> internal constructor(
+public class NotNullLocalTimeColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> LocalTime
 ) : LocalTimeColumnProperty<T>(), NotNullColumnProperty
 
 /**
  * @author Fred Montariol
  */
-class NullableLocalTimeColumnProperty<T : Any> internal constructor(
+public class NullableLocalTimeColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> LocalTime?
 ) : LocalTimeColumnProperty<T>(), NullableColumnProperty
 
@@ -136,7 +136,7 @@ class NullableLocalTimeColumnProperty<T : Any> internal constructor(
 /**
  * @author Fred Montariol
  */
-class NotNullBooleanColumnProperty<T : Any> internal constructor(
+public class NotNullBooleanColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> Boolean
 ) : AbstractColumnProperty<T>(), NotNullColumnProperty
 
@@ -144,19 +144,19 @@ class NotNullBooleanColumnProperty<T : Any> internal constructor(
 /**
  * @author Fred Montariol
  */
-abstract class UuidColumnProperty<T : Any> : AbstractColumnProperty<T>()
+public abstract class UuidColumnProperty<T : Any> : AbstractColumnProperty<T>()
 
 /**
  * @author Fred Montariol
  */
-class NotNullUuidColumnProperty<T : Any> internal constructor(
+public class NotNullUuidColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> UUID
 ) : UuidColumnProperty<T>(), NotNullColumnProperty
 
 /**
  * @author Fred Montariol
  */
-class NullableUuidColumnProperty<T : Any> internal constructor(
+public class NullableUuidColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> UUID?
 ) : UuidColumnProperty<T>(), NullableColumnProperty
 
@@ -164,18 +164,18 @@ class NullableUuidColumnProperty<T : Any> internal constructor(
 /**
  * @author Fred Montariol
  */
-abstract class IntColumnProperty<T : Any> : AbstractColumnProperty<T>()
+public abstract class IntColumnProperty<T : Any> : AbstractColumnProperty<T>()
 
 /**
  * @author Fred Montariol
  */
-class NotNullIntColumnProperty<T : Any> internal constructor(
+public class NotNullIntColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> Int
 ) : IntColumnProperty<T>(), NotNullColumnProperty
 
 /**
  * @author Fred Montariol
  */
-class NullableIntColumnProperty<T : Any> internal constructor(
+public class NullableIntColumnProperty<T : Any> internal constructor(
         override val getter: (T) -> Int?
 ) : IntColumnProperty<T>(), NullableColumnProperty

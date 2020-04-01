@@ -8,13 +8,13 @@ package com.pullvert.kotysa.r2dbc
  * @author Fred Montariol
  */
 // todo put in kotysa-core
-interface TransactionStatus {
+public interface TransactionStatus {
 
-    fun isNewTransaction(): Boolean
+    public fun isNewTransaction(): Boolean
 
-    fun setRollbackOnly()
+    public fun setRollbackOnly()
 
-    fun isRollbackOnly(): Boolean
+    public fun isRollbackOnly(): Boolean
 
-    fun isCompleted(): Boolean
+    public fun isCompleted(): Boolean
 }

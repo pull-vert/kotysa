@@ -20,10 +20,10 @@ import kotlin.reflect.full.allSuperclasses
 private fun tableMustBeMapped(tableName: String?) = "Requested table \"$tableName\" is not mapped"
 
 @Suppress("UNCHECKED_CAST")
-fun <T : Any> Tables.getTable(tableClass: KClass<out T>): Table<T> =
+public fun <T : Any> Tables.getTable(tableClass: KClass<out T>): Table<T> =
         requireNotNull(this.allTables[tableClass] as Table<T>?) { tableMustBeMapped(tableClass.qualifiedName) }
 
-fun <T : Any> Tables.checkTable(tableClass: KClass<out T>) {
+public fun <T : Any> Tables.checkTable(tableClass: KClass<out T>) {
     require(this.allTables.containsKey(tableClass)) { tableMustBeMapped(tableClass.qualifiedName) }
 }
 
@@ -32,10 +32,10 @@ private val logger = InlineLogger("com.pullvert.kotysa.DefaultSqlClient")
 /**
  * @author Fred Montariol
  */
-interface DefaultSqlClient {
-    val tables: Tables
+public interface DefaultSqlClient {
+    public val tables: Tables
 
-    fun createTableSql(tableClass: KClass<*>): String {
+    public fun createTableSql(tableClass: KClass<*>): String {
         val table = tables.getTable(tableClass)
 
         val columns = table.columns.values.joinToString { column ->
@@ -90,22 +90,22 @@ interface DefaultSqlClient {
         return createTableSql
     }
 
-    fun checkRowsAreMapped(vararg rows: Any) {
+    public fun checkRowsAreMapped(vararg rows: Any) {
         // fail-fast : check that all tables are mapped Tables
         rows.forEach { row -> tables.checkTable(row::class) }
     }
 
-    fun <T : Any> insertSql(row: T): String {
+    public fun <T : Any> insertSql(row: T): String {
         val insertSqlQuery = insertSqlQuery(row)
         logger.debug { "Exec SQL (${tables.dbType.name}) : $insertSqlQuery" }
         return insertSqlQuery
     }
 
-    fun <T : Any> insertSqlDebug(row: T) {
+    public fun <T : Any> insertSqlDebug(row: T) {
         logger.debug { "Exec SQL (${tables.dbType.name}) : ${insertSqlQuery(row)}" }
     }
 
-    fun <T : Any> insertSqlQuery(row: T): String {
+    public fun <T : Any> insertSqlQuery(row: T): String {
         val table = tables.getTable(row::class)
         val columnNames = mutableSetOf<String>()
         var index = 1
@@ -149,55 +149,57 @@ private fun Any?.defaultValue(): String = when (this) {
 /**
  * @author Fred Montariol
  */
-open class DefaultSqlClientCommon protected constructor() {
+public open class DefaultSqlClientCommon protected constructor() {
 
-    interface Properties {
-        val tables: Tables
-        val whereClauses: MutableList<TypedWhereClause>
-        val joinClauses: MutableList<JoinClause>
-        val availableColumns: MutableMap<(Any) -> Any?, Column<*, *>>
+    public interface Properties {
+        public val tables: Tables
+        public val whereClauses: MutableList<TypedWhereClause>
+        public val joinClauses: MutableList<JoinClause>
+        public val availableColumns: MutableMap<(Any) -> Any?, Column<*, *>>
     }
 
     protected interface Instruction {
         @Suppress("UNCHECKED_CAST")
-        fun <T : Any> addAvailableColumnsFromTable(
+        public fun <T : Any> addAvailableColumnsFromTable(
                 properties: Properties,
                 table: Table<T>
-        ) = properties.apply {
-            if (joinClauses.isEmpty() ||
-                    !joinClauses.map { joinClause -> joinClause.table.table }.contains(table)) {
-                table.columns.forEach { (key, value) ->
-                    // 1) add mapped getter
-                    availableColumns[key as (Any) -> Any?] = value
+        ) {
+            properties.apply {
+                if (joinClauses.isEmpty() ||
+                        !joinClauses.map { joinClause -> joinClause.table.table }.contains(table)) {
+                    table.columns.forEach { (key, value) ->
+                        // 1) add mapped getter
+                        availableColumns[key as (Any) -> Any?] = value
 
-                    val getterCallable = key.toCallable()
+                        val getterCallable = key.toCallable()
 
-                    // 2) add overridden parent getters associated with this column
-                    table.tableClass.allSuperclasses
-                            .flatMap { superClass -> superClass.members }
-                            .filter { callable ->
-                                callable.isAbstract
-                                        && callable.name == getterCallable.name
-                                        && (callable is KProperty1<*, *> || callable.name.startsWith("get"))
-                                        && (callable.returnType == getterCallable.returnType
-                                        || callable.returnType.classifier is KTypeParameter)
-                            }
-                            .forEach { callable ->
-                                availableColumns[callable as (Any) -> Any?] = value
-                            }
+                        // 2) add overridden parent getters associated with this column
+                        table.tableClass.allSuperclasses
+                                .flatMap { superClass -> superClass.members }
+                                .filter { callable ->
+                                    callable.isAbstract
+                                            && callable.name == getterCallable.name
+                                            && (callable is KProperty1<*, *> || callable.name.startsWith("get"))
+                                            && (callable.returnType == getterCallable.returnType
+                                            || callable.returnType.classifier is KTypeParameter)
+                                }
+                                .forEach { callable ->
+                                    availableColumns[callable as (Any) -> Any?] = value
+                                }
+                    }
                 }
             }
         }
     }
 
-    interface WithProperties {
-        val properties: Properties
+    public interface WithProperties {
+        public val properties: Properties
     }
 
     protected interface Whereable : WithProperties
 
     protected interface Join : WithProperties, Instruction {
-        fun <T : Any> addJoinClause(dsl: (FieldProvider) -> ColumnField<*, *>, joinClass: KClass<T>, alias: String?, type: JoinType) {
+        public fun <T : Any> addJoinClause(dsl: (FieldProvider) -> ColumnField<*, *>, joinClass: KClass<T>, alias: String?, type: JoinType) {
             properties.apply {
                 tables.checkTable(joinClass)
                 val aliasedTable = AliasedTable(tables.getTable(joinClass), alias)
@@ -208,13 +210,13 @@ open class DefaultSqlClientCommon protected constructor() {
     }
 
     protected interface Where : WithProperties {
-        fun addWhereClause(dsl: WhereDsl.(FieldProvider) -> WhereClause) {
+        public fun addWhereClause(dsl: WhereDsl.(FieldProvider) -> WhereClause) {
             properties.apply {
                 whereClauses.add(TypedWhereClause(WhereDsl(dsl, availableColumns, tables.dbType).initialize(), WhereClauseType.WHERE))
             }
         }
 
-        fun addOrClause(dsl: WhereDsl.(FieldProvider) -> WhereClause) {
+        public fun addOrClause(dsl: WhereDsl.(FieldProvider) -> WhereClause) {
             properties.apply {
                 whereClauses.add(TypedWhereClause(WhereDsl(dsl, availableColumns, tables.dbType).initialize(), WhereClauseType.OR))
             }
@@ -222,18 +224,18 @@ open class DefaultSqlClientCommon protected constructor() {
     }
 
     protected interface TypedWhere<T : Any> : WithProperties {
-        fun addWhereClause(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause) {
+        public fun addWhereClause(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause) {
             properties.apply {
                 whereClauses.add(TypedWhereClause(TypedWhereDsl(dsl, availableColumns, tables.dbType).initialize(), WhereClauseType.WHERE))
             }
         }
     }
 
-    interface Return : WithProperties {
+    public interface Return : WithProperties {
 
-        fun stringValue(value: Any?) = value.dbValue()
+        public fun stringValue(value: Any?): String = value.dbValue()
 
-        fun joins() =
+        public fun joins(): String =
                 properties.joinClauses.joinToString { joinClause ->
                     require(joinClause.table.primaryKey is SinglePrimaryKey<*, *>) {
                         "Only table with single column primary key is currently supported, ${joinClause.table.name} is not"
@@ -243,7 +245,7 @@ open class DefaultSqlClientCommon protected constructor() {
                     "${joinClause.type.sql} ${joinClause.table.declaration} ON ${joinClause.field.fieldName} = $joinedTableFieldName"
                 }
 
-        fun wheres(withWhere: Boolean = true, offset: Int = 1): String = with(properties) {
+        public fun wheres(withWhere: Boolean = true, offset: Int = 1): String = with(properties) {
             if (whereClauses.isEmpty()) {
                 return ""
             }

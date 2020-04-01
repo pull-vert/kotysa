@@ -46,4 +46,4 @@ private class CoroutinesSqlClientR2Dbc internal constructor(
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbcCoroutines
  * @author Fred Montariol
  */
-fun DatabaseClient.coSqlClient(tables: Tables): CoroutinesSqlClient = CoroutinesSqlClientR2Dbc(this, tables)
+public fun DatabaseClient.coSqlClient(tables: Tables): CoroutinesSqlClient = CoroutinesSqlClientR2Dbc(this, tables)

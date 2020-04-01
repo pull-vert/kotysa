@@ -19,11 +19,11 @@ private val logger = InlineLogger("com.pullvert.kotysa.DefaultSqlClientSelect")
 /**
  * @author Fred Montariol
  */
-open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientCommon() {
+public open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientCommon() {
 
-    class Properties<T : Any> internal constructor(
+    public class Properties<T : Any> internal constructor(
             override val tables: Tables,
-            val selectInformation: SelectInformation<T>,
+            public val selectInformation: SelectInformation<T>,
             override val availableColumns: MutableMap<(Any) -> Any?, Column<*, *>>
     ) : DefaultSqlClientCommon.Properties {
         override val whereClauses: MutableList<TypedWhereClause> = mutableListOf()
@@ -37,11 +37,11 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
     @Suppress("UNCHECKED_CAST")
     protected interface Select<T : Any> : Instruction {
 
-        val tables: Tables
-        val resultClass: KClass<T>
-        val dsl: (SelectDslApi.(ValueProvider) -> T)?
+        public val tables: Tables
+        public val resultClass: KClass<T>
+        public val dsl: (SelectDslApi.(ValueProvider) -> T)?
 
-        fun initProperties(): Properties<T> {
+        public fun initProperties(): Properties<T> {
             if (dsl == null) {
                 tables.checkTable(resultClass)
             }
@@ -242,7 +242,7 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
     protected interface Where<T : Any> : DefaultSqlClientCommon.Where, WithProperties<T>
 
     protected interface Return<T : Any> : DefaultSqlClientCommon.Return, WithProperties<T> {
-        fun selectSql() = with(properties) {
+        public fun selectSql(): String = with(properties) {
             val selects = selectInformation.selectedFields.joinToString(prefix = "SELECT ") { field -> field.fieldName }
             val froms = selectInformation.selectedTables
                     .filterNot { aliasedTable -> joinClauses.map { joinClause -> joinClause.table }.contains(aliasedTable) }
@@ -259,9 +259,9 @@ open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientComm
 /**
  * @author Fred Montariol
  */
-class SelectInformation<T> internal constructor(
-        val fieldIndexMap: Map<Field, Int>,
+public class SelectInformation<T> internal constructor(
+        public val fieldIndexMap: Map<Field, Int>,
         internal val selectedFields: List<Field>,
         internal val selectedTables: Set<AliasedTable<*>>,
-        val select: SelectDslApi.(ValueProvider) -> T
+        public val select: SelectDslApi.(ValueProvider) -> T
 )

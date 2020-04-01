@@ -7,18 +7,18 @@ package com.pullvert.kotysa
 /**
  * @author Fred Montariol
  */
-class WhereClause internal constructor(
+public class WhereClause internal constructor(
         internal val field: Field,
         internal val operation: Operation,
-        val value: Any?
+        public val value: Any?
 )
 
 internal enum class Operation {
     EQ, NOT_EQ, CONTAINS, STARTS_WITH, ENDS_WITH, SUP, INF, SUP_OR_EQ, INF_OR_EQ, IS
 }
 
-class TypedWhereClause internal constructor(
-        val whereClause: WhereClause,
+public class TypedWhereClause internal constructor(
+        public val whereClause: WhereClause,
         internal val type: WhereClauseType
 )
 

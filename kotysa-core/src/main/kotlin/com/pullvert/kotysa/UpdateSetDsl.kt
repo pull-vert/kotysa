@@ -14,7 +14,7 @@ import java.util.*
  * @author Fred Montariol
  */
 @KotysaMarker
-class UpdateSetDsl<T : Any> internal constructor(
+public class UpdateSetDsl<T : Any> internal constructor(
         private val init: (FieldSetter<T>) -> Unit,
         availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
         dbType: DbType

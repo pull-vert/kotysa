@@ -8,10 +8,10 @@ import org.springframework.transaction.reactive.TransactionalOperator
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
-class TransactionalOperationR2dbc(private val operator: TransactionalOperator) : ReactorTransactionalOperation {
-    override fun <T> transactional(mono: Mono<T>) = operator.transactional(mono)
+public class TransactionalOperationR2dbc(private val operator: TransactionalOperator) : ReactorTransactionalOperation {
+    override fun <T> transactional(mono: Mono<T>): Mono<T> = operator.transactional(mono)
 
-    override fun <T> execute(block: (TransactionStatus) -> Flux<T>) =
+    override fun <T> execute(block: (TransactionStatus) -> Flux<T>): Flux<T> =
         operator.execute { reactiveTransaction -> block.invoke(TransactionStatusR2dbc(reactiveTransaction)) }
 }
 
@@ -21,4 +21,4 @@ class TransactionalOperationR2dbc(private val operator: TransactionalOperator) :
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
  * @author Fred Montariol
  */
-fun TransactionalOperator.transactionalOperation(): ReactorTransactionalOperation = TransactionalOperationR2dbc(this)
+public fun TransactionalOperator.transactionalOperation(): ReactorTransactionalOperation = TransactionalOperationR2dbc(this)

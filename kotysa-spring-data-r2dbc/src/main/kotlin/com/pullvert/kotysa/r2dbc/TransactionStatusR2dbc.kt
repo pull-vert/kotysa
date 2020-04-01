@@ -10,15 +10,15 @@ import org.springframework.transaction.ReactiveTransaction
  * @see org.springframework.transaction.TransactionExecution
  * @author Fred Montariol
  */
-class TransactionStatusR2dbc(private val reactiveTransaction: ReactiveTransaction) : TransactionStatus {
+public class TransactionStatusR2dbc(private val reactiveTransaction: ReactiveTransaction) : TransactionStatus {
 
-    override fun isNewTransaction() = reactiveTransaction.isNewTransaction
+    override fun isNewTransaction(): Boolean = reactiveTransaction.isNewTransaction
 
     override fun setRollbackOnly() {
         reactiveTransaction.setRollbackOnly()
     }
 
-    override fun isRollbackOnly() = reactiveTransaction.isRollbackOnly
+    override fun isRollbackOnly(): Boolean = reactiveTransaction.isRollbackOnly
 
-    override fun isCompleted() = reactiveTransaction.isCompleted
+    override fun isCompleted(): Boolean = reactiveTransaction.isCompleted
 }

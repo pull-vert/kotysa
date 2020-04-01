@@ -16,7 +16,7 @@ import kotlin.reflect.KClass
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
  * @author Fred Montariol
  */
-internal class SqlClientR2dbc(
+private class SqlClientR2dbc(
         override val client: DatabaseClient,
         override val tables: Tables
 ) : ReactorSqlClient(), AbstractSqlClientR2dbc {
@@ -49,4 +49,4 @@ internal class SqlClientR2dbc(
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
  * @author Fred Montariol
  */
-fun DatabaseClient.sqlClient(tables: Tables): ReactorSqlClient = SqlClientR2dbc(this, tables)
+public fun DatabaseClient.sqlClient(tables: Tables): ReactorSqlClient = SqlClientR2dbc(this, tables)

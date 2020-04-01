@@ -7,6 +7,6 @@ package com.pullvert.kotysa
 /**
  * @author Fred Montariol
  */
-enum class Nullable {
+public enum class Nullable {
     TRUE
 }

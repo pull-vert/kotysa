@@ -7,9 +7,9 @@ package com.pullvert.kotysa
 /**
  * @author Fred Montariol
  */
-class NonUniqueResultException : RuntimeException("Multiple results, query expected a single result")
+public class NonUniqueResultException : RuntimeException("Multiple results, query expected a single result")
 
 /**
  * @author Fred Montariol
  */
-class NoResultException : RuntimeException("No result, query expected a result")
+public class NoResultException : RuntimeException("No result, query expected a result")

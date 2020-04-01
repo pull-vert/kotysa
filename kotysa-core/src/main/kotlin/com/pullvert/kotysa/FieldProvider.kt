@@ -13,145 +13,173 @@ import java.util.*
 /**
  * @author Fred Montariol
  */
-interface FieldProvider {
-    operator fun <T : Any> get(getter: (T) -> String, alias: String? = null): NotNullStringColumnField<T>
+public interface FieldProvider {
+    public operator fun <T : Any> get(getter: (T) -> String, alias: String? = null): NotNullStringColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> String?, alias: String? = null): NullableStringColumnField<T>
+    public operator fun <T : Any> get(getter: (T) -> String?, alias: String? = null): NullableStringColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> LocalDateTime, alias: String? = null): NotNullLocalDateTimeColumnField<T>
+    public operator fun <T : Any> get(getter: (T) -> LocalDateTime, alias: String? = null): NotNullLocalDateTimeColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> LocalDateTime?, alias: String? = null): NullableLocalDateTimeColumnField<T>
+    public operator fun <T : Any> get(getter: (T) -> LocalDateTime?, alias: String? = null): NullableLocalDateTimeColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> LocalDate, alias: String? = null): NotNullLocalDateColumnField<T>
+    public operator fun <T : Any> get(getter: (T) -> LocalDate, alias: String? = null): NotNullLocalDateColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> LocalDate?, alias: String? = null): NullableLocalDateColumnField<T>
+    public operator fun <T : Any> get(getter: (T) -> LocalDate?, alias: String? = null): NullableLocalDateColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> OffsetDateTime, alias: String? = null): NotNullOffsetDateTimeColumnField<T>
+    public operator fun <T : Any> get(getter: (T) -> OffsetDateTime, alias: String? = null): NotNullOffsetDateTimeColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> OffsetDateTime?, alias: String? = null): NullableOffsetDateTimeColumnField<T>
+    public operator fun <T : Any> get(getter: (T) -> OffsetDateTime?, alias: String? = null): NullableOffsetDateTimeColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> LocalTime, alias: String? = null): NotNullLocalTimeColumnField<T>
+    public operator fun <T : Any> get(getter: (T) -> LocalTime, alias: String? = null): NotNullLocalTimeColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> LocalTime?, alias: String? = null): NullableLocalTimeColumnField<T>
+    public operator fun <T : Any> get(getter: (T) -> LocalTime?, alias: String? = null): NullableLocalTimeColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> Boolean, alias: String? = null): NotNullBooleanColumnField<T>
+    public operator fun <T : Any> get(getter: (T) -> Boolean, alias: String? = null): NotNullBooleanColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> UUID, alias: String? = null): NotNullUuidColumnField<T>
+    public operator fun <T : Any> get(getter: (T) -> UUID, alias: String? = null): NotNullUuidColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> UUID?, alias: String? = null): NullableUuidColumnField<T>
+    public operator fun <T : Any> get(getter: (T) -> UUID?, alias: String? = null): NullableUuidColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> Int, alias: String? = null): NotNullIntColumnField<T>
+    public operator fun <T : Any> get(getter: (T) -> Int, alias: String? = null): NotNullIntColumnField<T>
 
-    operator fun <T : Any> get(getter: (T) -> Int?, alias: String? = null): NullableIntColumnField<T>
+    public operator fun <T : Any> get(getter: (T) -> Int?, alias: String? = null): NullableIntColumnField<T>
 }
 
 /**
  * @author Fred Montariol
  */
-interface TypedFieldProvider<T : Any> {
-    operator fun get(getter: (T) -> String, alias: String? = null): NotNullStringColumnField<T>
+public interface TypedFieldProvider<T : Any> {
+    public operator fun get(getter: (T) -> String, alias: String? = null): NotNullStringColumnField<T>
 
-    operator fun get(getter: (T) -> String?, alias: String? = null): NullableStringColumnField<T>
+    public operator fun get(getter: (T) -> String?, alias: String? = null): NullableStringColumnField<T>
 
-    operator fun get(getter: (T) -> LocalDateTime, alias: String? = null): NotNullLocalDateTimeColumnField<T>
+    public operator fun get(getter: (T) -> LocalDateTime, alias: String? = null): NotNullLocalDateTimeColumnField<T>
 
-    operator fun get(getter: (T) -> LocalDateTime?, alias: String? = null): NullableLocalDateTimeColumnField<T>
+    public operator fun get(getter: (T) -> LocalDateTime?, alias: String? = null): NullableLocalDateTimeColumnField<T>
 
-    operator fun get(getter: (T) -> LocalDate, alias: String? = null): NotNullLocalDateColumnField<T>
+    public operator fun get(getter: (T) -> LocalDate, alias: String? = null): NotNullLocalDateColumnField<T>
 
-    operator fun get(getter: (T) -> LocalDate?, alias: String? = null): NullableLocalDateColumnField<T>
+    public operator fun get(getter: (T) -> LocalDate?, alias: String? = null): NullableLocalDateColumnField<T>
 
-    operator fun get(getter: (T) -> OffsetDateTime, alias: String? = null): NotNullOffsetDateTimeColumnField<T>
+    public operator fun get(getter: (T) -> OffsetDateTime, alias: String? = null): NotNullOffsetDateTimeColumnField<T>
 
-    operator fun get(getter: (T) -> OffsetDateTime?, alias: String? = null): NullableOffsetDateTimeColumnField<T>
+    public operator fun get(getter: (T) -> OffsetDateTime?, alias: String? = null): NullableOffsetDateTimeColumnField<T>
 
-    operator fun get(getter: (T) -> LocalTime, alias: String? = null): NotNullLocalTimeColumnField<T>
+    public operator fun get(getter: (T) -> LocalTime, alias: String? = null): NotNullLocalTimeColumnField<T>
 
-    operator fun get(getter: (T) -> LocalTime?, alias: String? = null): NullableLocalTimeColumnField<T>
+    public operator fun get(getter: (T) -> LocalTime?, alias: String? = null): NullableLocalTimeColumnField<T>
 
-    operator fun get(getter: (T) -> Boolean, alias: String? = null): NotNullBooleanColumnField<T>
+    public operator fun get(getter: (T) -> Boolean, alias: String? = null): NotNullBooleanColumnField<T>
 
-    operator fun get(getter: (T) -> UUID, alias: String? = null): NotNullUuidColumnField<T>
+    public operator fun get(getter: (T) -> UUID, alias: String? = null): NotNullUuidColumnField<T>
 
-    operator fun get(getter: (T) -> UUID?, alias: String? = null): NullableUuidColumnField<T>
+    public operator fun get(getter: (T) -> UUID?, alias: String? = null): NullableUuidColumnField<T>
 
-    operator fun get(getter: (T) -> Int, alias: String? = null): NotNullIntColumnField<T>
+    public operator fun get(getter: (T) -> Int, alias: String? = null): NotNullIntColumnField<T>
 
-    operator fun get(getter: (T) -> Int?, alias: String? = null): NullableIntColumnField<T>
+    public operator fun get(getter: (T) -> Int?, alias: String? = null): NullableIntColumnField<T>
 }
 
-open class SimpleFieldProvider internal constructor(
+public open class SimpleFieldProvider internal constructor(
         availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
         dbType: DbType
 ) : FieldProvider {
 
     private val fieldAccess = FieldAccess(availableColumns, dbType)
 
-    override fun <T : Any> get(getter: (T) -> String, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> String, alias: String?): NotNullStringColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> String?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> String?, alias: String?): NullableStringColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> LocalDateTime, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> LocalDateTime, alias: String?): NotNullLocalDateTimeColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> LocalDateTime?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> LocalDateTime?, alias: String?): NullableLocalDateTimeColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> LocalDate, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> LocalDate, alias: String?): NotNullLocalDateColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> LocalDate?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> LocalDate?, alias: String?): NullableLocalDateColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> OffsetDateTime, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> OffsetDateTime, alias: String?): NotNullOffsetDateTimeColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> OffsetDateTime?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> OffsetDateTime?, alias: String?): NullableOffsetDateTimeColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> LocalTime, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> LocalTime, alias: String?): NotNullLocalTimeColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> LocalTime?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> LocalTime?, alias: String?): NullableLocalTimeColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> Boolean, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> Boolean, alias: String?): NotNullBooleanColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> UUID, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> UUID, alias: String?): NotNullUuidColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> UUID?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> UUID?, alias: String?): NullableUuidColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> Int, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> Int, alias: String?): NotNullIntColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun <T : Any> get(getter: (T) -> Int?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun <T : Any> get(getter: (T) -> Int?, alias: String?): NullableIntColumnField<T> =
+            fieldAccess.getField(getter, alias)
 }
 
-open class SimpleTypedFieldProvider<T : Any> internal constructor(
+public open class SimpleTypedFieldProvider<T : Any> internal constructor(
         availableColumns: Map<out (Any) -> Any?, Column<*, *>>,
         dbType: DbType
 ) : TypedFieldProvider<T> {
 
     private val fieldAccess = FieldAccess(availableColumns, dbType)
 
-    override fun get(getter: (T) -> String, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> String, alias: String?): NotNullStringColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> String?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> String?, alias: String?): NullableStringColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> LocalDateTime, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> LocalDateTime, alias: String?): NotNullLocalDateTimeColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> LocalDateTime?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> LocalDateTime?, alias: String?): NullableLocalDateTimeColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> LocalDate, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> LocalDate, alias: String?): NotNullLocalDateColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> LocalDate?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> LocalDate?, alias: String?): NullableLocalDateColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> OffsetDateTime, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> OffsetDateTime, alias: String?): NotNullOffsetDateTimeColumnField<T> = fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> OffsetDateTime?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> OffsetDateTime?, alias: String?): NullableOffsetDateTimeColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> LocalTime, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> LocalTime, alias: String?): NotNullLocalTimeColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> LocalTime?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> LocalTime?, alias: String?): NullableLocalTimeColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> Boolean, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> Boolean, alias: String?): NotNullBooleanColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> UUID, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> UUID, alias: String?): NotNullUuidColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> UUID?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> UUID?, alias: String?): NullableUuidColumnField<T> =
+            fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> Int, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> Int, alias: String?): NotNullIntColumnField<T> = fieldAccess.getField(getter, alias)
 
-    override fun get(getter: (T) -> Int?, alias: String?) = fieldAccess.getField(getter, alias)
+    override fun get(getter: (T) -> Int?, alias: String?): NullableIntColumnField<T> =
+            fieldAccess.getField(getter, alias)
 }

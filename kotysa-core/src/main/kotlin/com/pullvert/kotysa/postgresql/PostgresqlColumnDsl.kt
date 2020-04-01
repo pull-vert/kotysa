@@ -7,46 +7,66 @@ package com.pullvert.kotysa.postgresql
 import com.pullvert.kotysa.*
 import com.pullvert.kotysa.h2.TimestampWithTimeZoneColumnBuilderNotNull
 import com.pullvert.kotysa.h2.TimestampWithTimeZoneColumnBuilderNullable
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.OffsetDateTime
+import java.util.*
 
 /**
  * see [Postgres Data types](https://www.postgresql.org/docs/11/datatype.html)
  * @author Fred Montariol
  */
-class PostgresqlColumnDsl<T : Any> internal constructor(
+public class PostgresqlColumnDsl<T : Any> internal constructor(
         init: PostgresqlColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T, *>
 ) : ColumnDsl<T, PostgresqlColumnDsl<T>>(init) {
 
-    fun NotNullStringColumnProperty<T>.varchar() = VarcharColumnBuilderNotNull(getter)
+    public fun NotNullStringColumnProperty<T>.varchar(): VarcharColumnBuilderNotNull<T, String> =
+            VarcharColumnBuilderNotNull(getter)
 
-    fun NullableStringColumnProperty<T>.varchar() = VarcharColumnBuilderNullable(getter)
+    public fun NullableStringColumnProperty<T>.varchar(): VarcharColumnBuilderNullable<T, String> =
+            VarcharColumnBuilderNullable(getter)
 
-    fun NotNullLocalDateTimeColumnProperty<T>.timestamp() = TimestampColumnBuilderNotNull(getter)
+    public fun NotNullLocalDateTimeColumnProperty<T>.timestamp(): TimestampColumnBuilderNotNull<T, LocalDateTime> =
+            TimestampColumnBuilderNotNull(getter)
 
-    fun NullableLocalDateTimeColumnProperty<T>.timestamp() = TimestampColumnBuilderNullable(getter)
+    public fun NullableLocalDateTimeColumnProperty<T>.timestamp(): TimestampColumnBuilderNullable<T, LocalDateTime> =
+            TimestampColumnBuilderNullable(getter)
 
-    fun NotNullLocalDateColumnProperty<T>.date() = DateColumnBuilderNotNull(getter)
+    public fun NotNullLocalDateColumnProperty<T>.date(): DateColumnBuilderNotNull<T, LocalDate> =
+            DateColumnBuilderNotNull(getter)
 
-    fun NullableLocalDateColumnProperty<T>.date() = DateColumnBuilderNullable(getter)
+    public fun NullableLocalDateColumnProperty<T>.date(): DateColumnBuilderNullable<T, LocalDate> =
+            DateColumnBuilderNullable(getter)
 
-    fun NotNullOffsetDateTimeColumnProperty<T>.timestampWithTimeZone() = TimestampWithTimeZoneColumnBuilderNotNull(getter)
+    public fun NotNullOffsetDateTimeColumnProperty<T>.timestampWithTimeZone()
+            : TimestampWithTimeZoneColumnBuilderNotNull<T, OffsetDateTime> = TimestampWithTimeZoneColumnBuilderNotNull(getter)
 
-    fun NullableOffsetDateTimeColumnProperty<T>.timestampWithTimeZone() = TimestampWithTimeZoneColumnBuilderNullable(getter)
+    public fun NullableOffsetDateTimeColumnProperty<T>.timestampWithTimeZone()
+            : TimestampWithTimeZoneColumnBuilderNullable<T, OffsetDateTime> = TimestampWithTimeZoneColumnBuilderNullable(getter)
 
-    fun NotNullLocalTimeColumnProperty<T>.time() = TimeColumnBuilderNotNull(getter)
+    public fun NotNullLocalTimeColumnProperty<T>.time(): TimeColumnBuilderNotNull<T, LocalTime> =
+            TimeColumnBuilderNotNull(getter)
 
-    fun NullableLocalTimeColumnProperty<T>.time() = TimeColumnBuilderNullable(getter)
+    public fun NullableLocalTimeColumnProperty<T>.time(): TimeColumnBuilderNullable<T, LocalTime> =
+            TimeColumnBuilderNullable(getter)
 
-    fun NotNullBooleanColumnProperty<T>.boolean() = BooleanColumnBuilderNotNull(getter)
+    public fun NotNullBooleanColumnProperty<T>.boolean(): BooleanColumnBuilderNotNull<T, Boolean> =
+            BooleanColumnBuilderNotNull(getter)
 
-    fun NotNullUuidColumnProperty<T>.uuid() = UuidColumnBuilderNotNull(getter)
+    public fun NotNullUuidColumnProperty<T>.uuid(): UuidColumnBuilderNotNull<T, UUID> =
+            UuidColumnBuilderNotNull(getter)
 
-    fun NullableUuidColumnProperty<T>.uuid() = UuidColumnBuilderNullable(getter)
+    public fun NullableUuidColumnProperty<T>.uuid(): UuidColumnBuilderNullable<T, UUID> =
+            UuidColumnBuilderNullable(getter)
 
-    fun NotNullIntColumnProperty<T>.integer() = IntegerNoAutoIncrementColumnBuilderNotNull(getter)
+    public fun NotNullIntColumnProperty<T>.integer(): IntegerNoAutoIncrementColumnBuilderNotNull<T, Int> =
+            IntegerNoAutoIncrementColumnBuilderNotNull(getter)
 
-    fun NullableIntColumnProperty<T>.integer() = IntegerNoAutoIncrementColumnBuilderNullable(getter)
+    public fun NullableIntColumnProperty<T>.integer(): IntegerNoAutoIncrementColumnBuilderNullable<T, Int> =
+            IntegerNoAutoIncrementColumnBuilderNullable(getter)
 
-    fun NotNullIntColumnProperty<T>.serial() = SerialColumnBuilder(getter)
+    public fun NotNullIntColumnProperty<T>.serial(): SerialColumnBuilder<T, Int> = SerialColumnBuilder(getter)
 
-    fun NullableIntColumnProperty<T>.serial() = SerialColumnBuilder(getter)
+    public fun NullableIntColumnProperty<T>.serial(): SerialColumnBuilder<T, Int> = SerialColumnBuilder(getter)
 }

@@ -5,8 +5,8 @@
 package com.pullvert.kotysa.r2dbc
 
 import com.pullvert.kotysa.*
-import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.data.r2dbc.core.DatabaseClient
+import org.springframework.data.r2dbc.core.awaitRowsUpdated
 import kotlin.reflect.KClass
 
 /**
@@ -69,6 +69,6 @@ internal class CoroutinesSqlClientDeleteR2dbc private constructor() : AbstractSq
 
     private interface Return<T : Any> : AbstractSqlClientDeleteR2dbc.Return<T>, CoroutinesSqlClientDeleteOrUpdate.Return {
 
-        override suspend fun execute(): Int = fetch().rowsUpdated().awaitSingle() // fixme replace when https://github.com/spring-projects/spring-data-r2dbc/issues/212
+        override suspend fun execute(): Int = fetch().awaitRowsUpdated()
     }
 }

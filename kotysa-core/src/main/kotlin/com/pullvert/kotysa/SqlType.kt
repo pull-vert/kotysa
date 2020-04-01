@@ -9,7 +9,7 @@ package com.pullvert.kotysa
  *
  * @author Fred Montariol
  */
-enum class SqlType(val fullType: String) {
+public enum class SqlType(internal val fullType: String) {
     // text
     VARCHAR("VARCHAR"),
     TEXT("TEXT"),

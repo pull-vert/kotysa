@@ -10,14 +10,14 @@ import kotlin.reflect.KClass
  * @author Fred Montariol
  */
 @KotysaMarker
-abstract class TableDsl<T : Any, U : TableDsl<T, U>>(
+public abstract class TableDsl<T : Any, U : TableDsl<T, U>>(
 		private val init: U.() -> Unit,
 		private val tableClass: KClass<T>
 ) {
 
-	lateinit var name: String
+	public lateinit var name: String
 	private val columns = mutableMapOf<(T) -> Any?, Column<T, *>>()
-	lateinit var primaryKey: PrimaryKey
+	public lateinit var primaryKey: PrimaryKey
 
 	protected fun addColumn(column: Column<T, *>) {
 		require(!columns.containsKey(column.entityGetter)) {

@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  * @sample com.pullvert.kotysa.sample.h2Tables
  * @author Fred Montariol
  */
-class H2TablesDsl(init: H2TablesDsl.() -> Unit) : TablesDsl<H2TablesDsl, H2TableDsl<*>>(init) {
+public class H2TablesDsl(init: H2TablesDsl.() -> Unit) : TablesDsl<H2TablesDsl, H2TableDsl<*>>(init) {
 
     override fun <T : Any> initializeTable(tableClass: KClass<T>, dsl: H2TableDsl<*>.() -> Unit): Table<*> {
         val tableDsl = H2TableDsl(dsl, tableClass)
@@ -20,7 +20,7 @@ class H2TablesDsl(init: H2TablesDsl.() -> Unit) : TablesDsl<H2TablesDsl, H2Table
     }
 
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified T : Any> table(noinline dsl: H2TableDsl<T>.() -> Unit) {
+    public inline fun <reified T : Any> table(noinline dsl: H2TableDsl<T>.() -> Unit) {
         table(T::class, dsl as H2TableDsl<*>.() -> Unit)
     }
 }
