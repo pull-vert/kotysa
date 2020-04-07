@@ -322,7 +322,6 @@ public open class DefaultSqlClientCommon protected constructor() {
                                     } else {
                                         "${field.fieldName} IS ?"
                                     }
-                                else -> throw UnsupportedOperationException("$operation is not supported yet")
                             }
                     )
                 }
