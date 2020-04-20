@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc
@@ -13,7 +13,6 @@ import kotlin.reflect.KClass
 
 /**
  * see [spring-data-r2dbc doc](https://docs.spring.io/spring-data/r2dbc/docs/1.0.x/reference/html/#reference)
- * @author Fred Montariol
  */
 internal interface AbstractSqlClientR2dbc : DefaultSqlClient {
 

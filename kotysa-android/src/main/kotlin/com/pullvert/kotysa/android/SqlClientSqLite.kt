@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.android
@@ -17,7 +17,6 @@ import kotlin.reflect.KClass
 
 /**
  * @sample com.pullvert.kotysa.android.sample.UserRepositorySqLite
- * @author Fred Montariol
  */
 internal class SqlClientSqLite(
         private val client: SQLiteOpenHelper,
@@ -88,6 +87,5 @@ internal fun ContentValues.put(name: String, value: Any?) {
  * Create a [BlockingSqlClient] from a Android SqLite [SQLiteDatabase] with [Tables] mapping
  *
  * @sample com.pullvert.kotysa.android.sample.UserRepositorySqLite
- * @author Fred Montariol
  */
 public fun SQLiteOpenHelper.sqlClient(tables: Tables): BlockingSqlClient = SqlClientSqLite(this, tables)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc.postgresql
@@ -12,9 +12,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.data.r2dbc.core.DatabaseClient
 import java.time.LocalDate
 
-/**
- * @author Fred Montariol
- */
+
 class R2DbcSelectLocalDatePostgresqlTest : AbstractR2dbcPostgresqlTest<LocalDateRepositoryPostgresqlSelect>() {
     override val context = startContext<LocalDateRepositoryPostgresqlSelect>()
 
@@ -170,9 +168,7 @@ class R2DbcSelectLocalDatePostgresqlTest : AbstractR2dbcPostgresqlTest<LocalDate
     }
 }
 
-/**
- * @author Fred Montariol
- */
+
 class LocalDateRepositoryPostgresqlSelect(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.sqlClient(postgresqlTables)

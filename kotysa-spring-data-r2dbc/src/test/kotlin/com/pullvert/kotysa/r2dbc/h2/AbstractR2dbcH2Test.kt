@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc.h2
@@ -13,9 +13,7 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.fu.kofu.application
 import org.springframework.fu.kofu.r2dbc.r2dbcH2
 
-/**
- * @author Fred Montariol
- */
+
 abstract class AbstractR2dbcH2Test<T : Repository> {
 
     protected abstract val repository: T

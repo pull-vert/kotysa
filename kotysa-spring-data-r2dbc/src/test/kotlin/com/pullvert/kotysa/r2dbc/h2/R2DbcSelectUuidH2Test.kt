@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc.h2
@@ -12,9 +12,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.data.r2dbc.core.DatabaseClient
 import java.util.*
 
-/**
- * @author Fred Montariol
- */
+
 class R2DbcSelectUuidH2Test : AbstractR2dbcH2Test<UuidRepositoryH2Select>() {
     override val context = startContext<UuidRepositoryH2Select>()
 
@@ -61,9 +59,7 @@ class R2DbcSelectUuidH2Test : AbstractR2dbcH2Test<UuidRepositoryH2Select>() {
     }
 }
 
-/**
- * @author Fred Montariol
- */
+
 class UuidRepositoryH2Select(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.sqlClient(h2Tables)

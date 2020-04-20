@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa
@@ -10,9 +10,7 @@ import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.util.*
 
-/**
- * @author Fred Montariol
- */
+
 @KotysaMarker
 public interface CommonWhereDsl {
 
@@ -266,8 +264,6 @@ public interface CommonWhereDsl {
 
 /**
  * Where can be used for AND, OR operators
- *
- * @author Fred Montariol
  */
 public class WhereDsl internal constructor(
         private val init: WhereDsl.(FieldProvider) -> WhereClause,
@@ -280,9 +276,7 @@ public class WhereDsl internal constructor(
     }
 }
 
-/**
- * @author Fred Montariol
- */
+
 public class TypedWhereDsl<T : Any> internal constructor(
         private val init: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause,
         availableColumns: Map<out (Any) -> Any?, Column<*, *>>,

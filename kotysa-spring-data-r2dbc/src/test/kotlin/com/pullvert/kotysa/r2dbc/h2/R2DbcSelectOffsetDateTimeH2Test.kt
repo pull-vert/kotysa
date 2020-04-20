@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc.h2
@@ -13,9 +13,7 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
-/**
- * @author Fred Montariol
- */
+
 class R2DbcSelectOffsetDateTimeH2Test : AbstractR2dbcH2Test<OffsetDateTimeRepositoryH2Select>() {
     override val context = startContext<OffsetDateTimeRepositoryH2Select>()
 
@@ -191,9 +189,7 @@ class R2DbcSelectOffsetDateTimeH2Test : AbstractR2dbcH2Test<OffsetDateTimeReposi
     }
 }
 
-/**
- * @author Fred Montariol
- */
+
 class OffsetDateTimeRepositoryH2Select(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.sqlClient(h2Tables)

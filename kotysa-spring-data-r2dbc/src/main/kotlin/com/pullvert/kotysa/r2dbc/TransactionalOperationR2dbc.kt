@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc
@@ -19,6 +19,5 @@ public class TransactionalOperationR2dbc(private val operator: TransactionalOper
  * Create a [ReactorTransactionalOperation] from a Reactive [TransactionalOperator]
  *
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
- * @author Fred Montariol
  */
 public fun TransactionalOperator.transactionalOperation(): ReactorTransactionalOperation = TransactionalOperationR2dbc(this)

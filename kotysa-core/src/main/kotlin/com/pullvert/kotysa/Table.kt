@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa
@@ -8,8 +8,6 @@ import kotlin.reflect.KClass
 
 /**
  * A database Table model mapped by entity class [tableClass]
- *
- * @author Fred Montariol
  */
 public interface Table<T : Any> {
     public val tableClass: KClass<T>
@@ -22,9 +20,7 @@ public interface Table<T : Any> {
     public var foreignKeys: Set<ForeignKey>
 }
 
-/**
- * @author Fred Montariol
- */
+
 internal class TableImpl<T : Any> internal constructor(
         override val tableClass: KClass<T>,
         override val name: String,
@@ -52,7 +48,6 @@ internal class TableImpl<T : Any> internal constructor(
 
 /**
  * All Mapped Tables
- * @author Fred Montariol
  */
 public class Tables internal constructor(
         public val allTables: Map<KClass<*>, Table<*>>,

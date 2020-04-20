@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc.postgresql
@@ -17,9 +17,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.springframework.data.r2dbc.core.DatabaseClient
 
-/**
- * @author Fred Montariol
- */
+
 @ExperimentalCoroutinesApi
 class R2DbcCoroutinesH2Test : AbstractR2dbcPostgresqlTest<CoroutinesUserPostgresqlRepository>() {
     override val context = startContext<CoroutinesUserPostgresqlRepository>()
@@ -103,9 +101,7 @@ class R2DbcCoroutinesH2Test : AbstractR2dbcPostgresqlTest<CoroutinesUserPostgres
     }
 }
 
-/**
- * @author Fred Montariol
- */
+
 class CoroutinesUserPostgresqlRepository(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.coSqlClient(postgresqlTables)

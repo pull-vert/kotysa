@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.android
@@ -10,9 +10,6 @@ import com.pullvert.kotysa.test.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
-/**
- * @author Fred Montariol
- */
 class SqLiteUpdateDeleteTest : AbstractSqLiteTest<UserRepositoryUpdateDelete>() {
 
     override fun getRepository(dbHelper: DbHelper, sqLiteTables: Tables) =
@@ -70,9 +67,6 @@ class SqLiteUpdateDeleteTest : AbstractSqLiteTest<UserRepositoryUpdateDelete>() 
     }
 }
 
-/**
- * @author Fred Montariol
- */
 class UserRepositoryUpdateDelete(sqLiteOpenHelper: SQLiteOpenHelper, tables: Tables) : AbstractUserRepository(sqLiteOpenHelper, tables) {
 
     fun deleteUserById(id: String) = sqlClient.deleteFromTable<SqLiteUser>()

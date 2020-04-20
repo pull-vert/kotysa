@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc.h2
@@ -10,9 +10,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.data.r2dbc.core.DatabaseClient
 import java.util.*
 
-/**
- * @author Fred Montariol
- */
+
 class R2DbcUpdateDeleteH2Test : AbstractR2dbcH2Test<UserRepositoryH2UpdateDelete>() {
     override val context = startContext<UserRepositoryH2UpdateDelete>()
 
@@ -86,9 +84,7 @@ class R2DbcUpdateDeleteH2Test : AbstractR2dbcH2Test<UserRepositoryH2UpdateDelete
     }
 }
 
-/**
- * @author Fred Montariol
- */
+
 class UserRepositoryH2UpdateDelete(dbClient: DatabaseClient) : AbstractUserRepositoryH2(dbClient) {
 
     fun deleteUserById(id: UUID) = sqlClient.deleteFromTable<H2User>()

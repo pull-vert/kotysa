@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.h2
@@ -13,7 +13,6 @@ import java.util.*
 
 /**
  * see [H2 Data types](http://h2database.com/html/datatypes.html)
- * @author Fred Montariol
  */
 public class H2ColumnDsl<T : Any> internal constructor(
         init: H2ColumnDsl<T>.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T, *>

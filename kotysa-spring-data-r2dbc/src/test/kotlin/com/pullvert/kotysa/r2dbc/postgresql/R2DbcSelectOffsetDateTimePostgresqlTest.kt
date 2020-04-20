@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc.postgresql
@@ -17,9 +17,7 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 
-/**
- * @author Fred Montariol
- */
+
 class R2DbcSelectOffsetDateTimeH2Test : AbstractR2dbcPostgresqlTest<OffsetDateTimeRepositoryPostgresqlSelect>() {
     override val context = startContext<OffsetDateTimeRepositoryPostgresqlSelect>()
 
@@ -195,9 +193,7 @@ class R2DbcSelectOffsetDateTimeH2Test : AbstractR2dbcPostgresqlTest<OffsetDateTi
     }
 }
 
-/**
- * @author Fred Montariol
- */
+
 class OffsetDateTimeRepositoryPostgresqlSelect(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.sqlClient(postgresqlTables)

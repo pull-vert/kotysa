@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa
@@ -11,9 +11,7 @@ import java.time.OffsetDateTime
 import java.util.*
 import kotlin.reflect.KFunction
 
-/**
- * @author Fred Montariol
- */
+
 @KotysaMarker
 public abstract class ColumnDsl<T : Any, U : ColumnDsl<T, U>> internal constructor(
         private val init: U.(TableColumnPropertyProvider<T>) -> ColumnBuilder<*, T, *>

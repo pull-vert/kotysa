@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.test
@@ -80,9 +80,7 @@ val sqLiteTables =
             }
         }
 
-/**
- * @author Fred Montariol
- */
+
 data class SqLiteRole(
         val label: String,
         val id: String
@@ -92,9 +90,7 @@ val sqLiteUser = SqLiteRole("user", "ghi")
 val sqLiteAdmin = SqLiteRole("admin", "jkl")
 val sqLiteGod = SqLiteRole("god", "mno")
 
-/**
- * @author Fred Montariol
- */
+
 data class SqLiteUser(
         val firstname: String,
         val lastname: String,
@@ -107,9 +103,7 @@ data class SqLiteUser(
 val sqLiteJdoe = SqLiteUser("John", "Doe", false, sqLiteUser.id, id = "abc")
 val sqLiteBboss = SqLiteUser("Big", "Boss", true, sqLiteAdmin.id, "TheBoss", "def")
 
-/**
- * @author Fred Montariol
- */
+
 data class SqLiteAllTypesNotNull(
         val id: String,
         val string: String,
@@ -124,9 +118,7 @@ data class SqLiteAllTypesNotNull(
 val sqLiteAllTypesNotNull = SqLiteAllTypesNotNull("abc", "", true, LocalDate.now(),
         OffsetDateTime.now(), LocalDateTime.now(), LocalTime.now(), 1)
 
-/**
- * @author Fred Montariol
- */
+
 data class SqLiteAllTypesNullable(
         val id: String,
         val string: String?,
@@ -140,9 +132,7 @@ data class SqLiteAllTypesNullable(
 val sqLiteAllTypesNullable = SqLiteAllTypesNullable("def", null, null, null,
         null, null, null)
 
-/**
- * @author Fred Montariol
- */
+
 data class SqLiteAllTypesNullableDefaultValue(
         val id: String,
         val string: String? = null,
@@ -155,9 +145,7 @@ data class SqLiteAllTypesNullableDefaultValue(
 
 val sqLiteAllTypesNullableDefaultValue = SqLiteAllTypesNullableDefaultValue("abc")
 
-/**
- * @author Fred Montariol
- */
+
 data class SqLiteLocalDate(
         val id: String,
         val localDateNotNull: LocalDate,
@@ -167,9 +155,7 @@ data class SqLiteLocalDate(
 val sqLiteLocalDateWithNullable = SqLiteLocalDate("abc", LocalDate.of(2019, 11, 4), LocalDate.of(2018, 11, 4))
 val sqLiteLocalDateWithoutNullable = SqLiteLocalDate("def", LocalDate.of(2019, 11, 6))
 
-/**
- * @author Fred Montariol
- */
+
 data class SqLiteLocalDateTime(
         val id: String,
         val localDateTimeNotNull: LocalDateTime,
@@ -179,9 +165,7 @@ data class SqLiteLocalDateTime(
 val sqLiteLocalDateTimeWithNullable = SqLiteLocalDateTime("abc", LocalDateTime.of(2019, 11, 4, 0, 0), LocalDateTime.of(2018, 11, 4, 0, 0))
 val sqLiteLocalDateTimeWithoutNullable = SqLiteLocalDateTime("def", LocalDateTime.of(2019, 11, 6, 0, 0))
 
-/**
- * @author Fred Montariol
- */
+
 data class SqLiteOffsetDateTime(
         val id: String,
         val offsetDateTimeNotNull: OffsetDateTime,
@@ -194,9 +178,7 @@ val sqLiteOffsetDateTimeWithNullable = SqLiteOffsetDateTime("abc",
 val sqLiteOffsetDateTimeWithoutNullable = SqLiteOffsetDateTime("def",
         OffsetDateTime.of(2019, 11, 6, 0, 0, 0, 0, ZoneOffset.UTC))
 
-/**
- * @author Fred Montariol
- */
+
 data class SqLiteLocalTime(
         val id: String,
         val localTimeNotNull: LocalTime,
@@ -206,9 +188,7 @@ data class SqLiteLocalTime(
 val sqLiteLocalTimeWithNullable = SqLiteLocalTime("abc", LocalTime.of(12, 4), LocalTime.of(11, 4))
 val sqLiteLocalTimeWithoutNullable = SqLiteLocalTime("def", LocalTime.of(12, 6))
 
-/**
- * @author Fred Montariol
- */
+
 data class SqLiteInteger(
         val integerNotNull: Int,
         val integerNullable: Int? = null,

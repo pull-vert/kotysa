@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc.h2
@@ -15,9 +15,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.data.r2dbc.core.DatabaseClient
 import java.time.LocalTime
 
-/**
- * @author Fred Montariol
- */
+
 class R2DbcSelectLocalTimeH2Test : AbstractR2dbcH2Test<LocalTimeRepositoryH2Select>() {
     override val context = startContext<LocalTimeRepositoryH2Select>()
 
@@ -173,9 +171,7 @@ class R2DbcSelectLocalTimeH2Test : AbstractR2dbcH2Test<LocalTimeRepositoryH2Sele
     }
 }
 
-/**
- * @author Fred Montariol
- */
+
 class LocalTimeRepositoryH2Select(dbClient: DatabaseClient) : Repository {
 
     private val sqlClient = dbClient.sqlClient(h2Tables)

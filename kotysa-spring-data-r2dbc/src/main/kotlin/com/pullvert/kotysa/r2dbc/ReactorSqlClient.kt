@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc
@@ -13,7 +13,6 @@ import kotlin.reflect.KClass
  * Reactive (using Reactor Mono and Flux) Sql Client, to be used with R2dbc
  *
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
- * @author Fred Montariol
  */
 public abstract class ReactorSqlClient {
 
@@ -53,9 +52,7 @@ public abstract class ReactorSqlClient {
 }
 
 
-/**
- * @author Fred Montariol
- */
+
 public class ReactorSqlClientSelect private constructor() {
 
     public abstract class Select<T : Any> : Whereable<T>, Return<T> {
@@ -100,9 +97,7 @@ public class ReactorSqlClientSelect private constructor() {
     }
 }
 
-/**
- * @author Fred Montariol
- */
+
 public class ReactorSqlClientDeleteOrUpdate private constructor() {
 
     public abstract class DeleteOrUpdate<T : Any> : Return {

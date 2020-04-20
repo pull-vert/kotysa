@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.test
@@ -89,9 +89,7 @@ val postgresqlTables =
             }
         }
 
-/**
- * @author Fred Montariol
- */
+
 data class PostgresqlRole(
         val label: String,
         val id: UUID = UUID.randomUUID()
@@ -101,9 +99,7 @@ val postgresqlUser = PostgresqlRole("user")
 val postgresqlAdmin = PostgresqlRole("admin")
 val postgresqlGod = PostgresqlRole("god")
 
-/**
- * @author Fred Montariol
- */
+
 data class PostgresqlUser(
         val firstname: String,
         val lastname: String,
@@ -116,9 +112,7 @@ data class PostgresqlUser(
 val postgresqlJdoe = PostgresqlUser("John", "Doe", false, postgresqlUser.id)
 val postgresqlBboss = PostgresqlUser("Big", "Boss", true, postgresqlAdmin.id, "TheBoss")
 
-/**
- * @author Fred Montariol
- */
+
 data class PostgresqlAllTypesNotNull(
         val id: UUID,
         val string: String,
@@ -134,9 +128,7 @@ data class PostgresqlAllTypesNotNull(
 val postgresqlAllTypesNotNull = PostgresqlAllTypesNotNull(UUID.fromString("79e9eb45-2835-49c8-ad3b-c951b591bc7f"), "",
         true, LocalDate.now(), OffsetDateTime.now(), LocalTime.now(), LocalDateTime.now(), UUID.randomUUID(), 1)
 
-/**
- * @author Fred Montariol
- */
+
 data class PostgresqlAllTypesNullable(
         val id: UUID,
         val string: String?,
@@ -151,9 +143,7 @@ data class PostgresqlAllTypesNullable(
 val postgresqlAllTypesNullable = PostgresqlAllTypesNullable(UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"), null,
         null, null, null, null, null, null)
 
-/**
- * @author Fred Montariol
- */
+
 data class PostgresqlAllTypesNullableDefaultValue(
         val string: String? = null,
         val localDate: LocalDate? = null,
@@ -202,9 +192,7 @@ data class PostgresqlAllTypesNullableDefaultValue(
 
 val postgresqlAllTypesNullableDefaultValue = PostgresqlAllTypesNullableDefaultValue()
 
-/**
- * @author Fred Montariol
- */
+
 data class PostgresqlUuid(
         val roleIdNotNull: UUID,
         val roleIdNullable: UUID? = null,
@@ -214,9 +202,7 @@ data class PostgresqlUuid(
 val postgresqlUuidWithNullable = PostgresqlUuid(postgresqlUser.id, postgresqlAdmin.id)
 val postgresqlUuidWithoutNullable = PostgresqlUuid(postgresqlUser.id)
 
-/**
- * @author Fred Montariol
- */
+
 data class PostgresqlLocalDate(
         val localDateNotNull: LocalDate,
         val localDateNullable: LocalDate? = null,
@@ -226,9 +212,7 @@ data class PostgresqlLocalDate(
 val postgresqlLocalDateWithNullable = PostgresqlLocalDate(LocalDate.of(2019, 11, 4), LocalDate.of(2018, 11, 4))
 val postgresqlLocalDateWithoutNullable = PostgresqlLocalDate(LocalDate.of(2019, 11, 6))
 
-/**
- * @author Fred Montariol
- */
+
 data class PostgresqlLocalDateTime(
         val localDateTimeAsTimestampNotNull: LocalDateTime,
         val localDateTimeAsTimestampNullable: LocalDateTime? = null,
@@ -238,9 +222,7 @@ data class PostgresqlLocalDateTime(
 val postgresqlLocalDateTimeWithNullable = PostgresqlLocalDateTime(LocalDateTime.of(2019, 11, 4, 0, 0), LocalDateTime.of(2018, 11, 4, 0, 0))
 val postgresqlLocalDateTimeWithoutNullable = PostgresqlLocalDateTime(LocalDateTime.of(2019, 11, 6, 0, 0))
 
-/**
- * @author Fred Montariol
- */
+
 data class PostgresqlOffsetDateTime(
         val offsetDateTimeNotNull: OffsetDateTime,
         val offsetDateTimeNullable: OffsetDateTime? = null,
@@ -281,9 +263,7 @@ val postgresqlOffsetDateTimeWithNullable = PostgresqlOffsetDateTime(
 val postgresqlOffsetDateTimeWithoutNullable = PostgresqlOffsetDateTime(
         OffsetDateTime.of(2019, 11, 6, 0, 0, 0, 0, ZoneOffset.UTC))
 
-/**
- * @author Fred Montariol
- */
+
 data class PostgresqlLocalTime(
         val localTimeNotNull: LocalTime,
         val localTimeNullable: LocalTime? = null,
@@ -293,9 +273,7 @@ data class PostgresqlLocalTime(
 val postgresqlLocalTimeWithNullable = PostgresqlLocalTime(LocalTime.of(12, 4), LocalTime.of(11, 4))
 val postgresqlLocalTimeWithoutNullable = PostgresqlLocalTime(LocalTime.of(12, 6))
 
-/**
- * @author Fred Montariol
- */
+
 data class PostgresqlInt(
         val intNotNull: Int,
         val intNullable: Int? = null,

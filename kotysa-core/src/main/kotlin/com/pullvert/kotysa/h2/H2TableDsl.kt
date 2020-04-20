@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.h2
@@ -9,9 +9,7 @@ import com.pullvert.kotysa.TableColumnPropertyProvider
 import com.pullvert.kotysa.TableDsl
 import kotlin.reflect.KClass
 
-/**
- * @author Fred Montariol
- */
+
 public class H2TableDsl<T : Any>(
         init: H2TableDsl<T>.() -> Unit,
         tableClass: KClass<T>

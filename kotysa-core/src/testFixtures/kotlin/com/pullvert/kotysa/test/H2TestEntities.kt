@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.test
@@ -96,9 +96,7 @@ val h2Tables =
             }
         }
 
-/**
- * @author Fred Montariol
- */
+
 data class H2Role(
         val label: String,
         val id: UUID = UUID.randomUUID()
@@ -108,9 +106,7 @@ val h2User = H2Role("user")
 val h2Admin = H2Role("admin")
 val h2God = H2Role("god")
 
-/**
- * @author Fred Montariol
- */
+
 data class H2User(
         val firstname: String,
         val lastname: String,
@@ -123,9 +119,7 @@ data class H2User(
 val h2Jdoe = H2User("John", "Doe", false, h2User.id)
 val h2Bboss = H2User("Big", "Boss", true, h2Admin.id, "TheBoss")
 
-/**
- * @author Fred Montariol
- */
+
 data class H2AllTypesNotNull(
         val id: UUID,
         val string: String,
@@ -143,9 +137,7 @@ val h2AllTypesNotNull = H2AllTypesNotNull(UUID.fromString("79e9eb45-2835-49c8-ad
         true, LocalDate.now(), OffsetDateTime.now(), LocalTime.now(), LocalDateTime.now(), LocalDateTime.now(),
         UUID.randomUUID(), 1)
 
-/**
- * @author Fred Montariol
- */
+
 data class H2AllTypesNullable(
         val id: UUID,
         val string: String?,
@@ -161,9 +153,7 @@ data class H2AllTypesNullable(
 val h2AllTypesNullable = H2AllTypesNullable(UUID.fromString("67d4306e-d99d-4e54-8b1d-5b1e92691a4e"), null,
         null, null, null, null, null, null, null)
 
-/**
- * @author Fred Montariol
- */
+
 data class H2AllTypesNullableDefaultValue(
         val string: String? = null,
         val localDate: LocalDate? = null,
@@ -178,9 +168,7 @@ data class H2AllTypesNullableDefaultValue(
 
 val h2AllTypesNullableDefaultValue = H2AllTypesNullableDefaultValue()
 
-/**
- * @author Fred Montariol
- */
+
 data class H2Uuid(
         val roleIdNotNull: UUID,
         val roleIdNullable: UUID? = null,
@@ -190,9 +178,7 @@ data class H2Uuid(
 val h2UuidWithNullable = H2Uuid(h2User.id, h2Admin.id)
 val h2UuidWithoutNullable = H2Uuid(h2User.id)
 
-/**
- * @author Fred Montariol
- */
+
 data class H2LocalDate(
         val localDateNotNull: LocalDate,
         val localDateNullable: LocalDate? = null,
@@ -202,9 +188,7 @@ data class H2LocalDate(
 val h2LocalDateWithNullable = H2LocalDate(LocalDate.of(2019, 11, 4), LocalDate.of(2018, 11, 4))
 val h2LocalDateWithoutNullable = H2LocalDate(LocalDate.of(2019, 11, 6))
 
-/**
- * @author Fred Montariol
- */
+
 data class H2LocalDateTime(
         val localDateTimeNotNull: LocalDateTime,
         val localDateTimeNullable: LocalDateTime?,
@@ -218,9 +202,7 @@ val h2LocalDateTimeWithNullable = H2LocalDateTime(LocalDateTime.of(2019, 11, 4, 
 val h2LocalDateTimeWithoutNullable = H2LocalDateTime(LocalDateTime.of(2019, 11, 6, 0, 0), null,
         LocalDateTime.of(2019, 11, 6, 0, 0))
 
-/**
- * @author Fred Montariol
- */
+
 data class H2OffsetDateTime(
         val offsetDateTimeNotNull: OffsetDateTime,
         val offsetDateTimeNullable: OffsetDateTime? = null,
@@ -233,9 +215,7 @@ val h2OffsetDateTimeWithNullable = H2OffsetDateTime(
 val h2OffsetDateTimeWithoutNullable = H2OffsetDateTime(
         OffsetDateTime.of(2019, 11, 6, 0, 0, 0, 0, ZoneOffset.UTC))
 
-/**
- * @author Fred Montariol
- */
+
 data class H2LocalTime(
         val localTimeNotNull: LocalTime,
         val localTimeNullable: LocalTime? = null,
@@ -245,9 +225,7 @@ data class H2LocalTime(
 val h2LocalTimeWithNullable = H2LocalTime(LocalTime.of(12, 4), LocalTime.of(11, 4))
 val h2LocalTimeWithoutNullable = H2LocalTime(LocalTime.of(12, 6))
 
-/**
- * @author Fred Montariol
- */
+
 data class H2Int(
         val intNotNull: Int,
         val intNullable: Int? = null,

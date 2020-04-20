@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa
@@ -16,9 +16,7 @@ import kotlin.reflect.full.primaryConstructor
 
 private val logger = InlineLogger("com.pullvert.kotysa.DefaultSqlClientSelect")
 
-/**
- * @author Fred Montariol
- */
+
 public open class DefaultSqlClientSelect protected constructor() : DefaultSqlClientCommon() {
 
     public class Properties<T : Any> internal constructor(
@@ -256,9 +254,7 @@ public open class DefaultSqlClientSelect protected constructor() : DefaultSqlCli
     }
 }
 
-/**
- * @author Fred Montariol
- */
+
 public class SelectInformation<T> internal constructor(
         public val fieldIndexMap: Map<Field, Int>,
         internal val selectedFields: List<Field>,

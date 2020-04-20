@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.h2
@@ -7,14 +7,8 @@ package com.pullvert.kotysa.h2
 import com.pullvert.kotysa.*
 import kotlin.reflect.KClass
 
-/**
- * @author Fred Montariol
- */
 internal interface TimestampWithTimeZoneColumn<T : Any, U> : Column<T, U>
 
-/**
- * @author Fred Montariol
- */
 internal class TimestampWithTimeZoneColumnNotNull<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U,
         override val name: String,
@@ -26,9 +20,6 @@ internal class TimestampWithTimeZoneColumnNotNull<T : Any, U> internal construct
         override val fkName: String?
 ) : AbstractColumn<T, U>(), TimestampWithTimeZoneColumn<T, U>, ColumnNotNull<T, U>, NoAutoIncrement<T, U>
 
-/**
- * @author Fred Montariol
- */
 internal class TimestampWithTimeZoneColumnNullable<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U,
         override val name: String,
@@ -37,14 +28,10 @@ internal class TimestampWithTimeZoneColumnNullable<T : Any, U> internal construc
         override val fkName: String?
 ) : AbstractColumn<T, U>(), TimestampWithTimeZoneColumn<T, U>, ColumnNullable<T, U>, NoAutoIncrement<T, U>
 
-/**
- * @author Fred Montariol
- */
+
 internal interface Time9Column<T : Any, U> : Column<T, U>
 
-/**
- * @author Fred Montariol
- */
+
 internal class Time9ColumnNotNull<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U,
         override val name: String,
@@ -56,9 +43,7 @@ internal class Time9ColumnNotNull<T : Any, U> internal constructor(
         override val fkName: String?
 ) : AbstractColumn<T, U>(), Time9Column<T, U>, ColumnNotNull<T, U>, NoAutoIncrement<T, U>
 
-/**
- * @author Fred Montariol
- */
+
 internal class Time9ColumnNullable<T : Any, U> internal constructor(
         override val entityGetter: (T) -> U,
         override val name: String,

@@ -1,20 +1,16 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.test
 
-/**
- * @author Fred Montariol
- */
+
 data class UserDto(
         val name: String,
         val alias: String?
 )
 
-/**
- * @author Fred Montariol
- */
+
 data class UserWithRoleDto(
         val lastname: String,
         val role: String
@@ -23,21 +19,15 @@ data class UserWithRoleDto(
 // test inheritance
 val inherited = Inherited("id", "name", "firstname")
 
-/**
- * @author Fred Montariol
- */
+
 interface Nameable {
     val name: String
 }
 
-/**
- * @author Fred Montariol
- */
+
 interface DummyIntermediary : Nameable
 
-/**
- * @author Fred Montariol
- */
+
 open class Inherited(
         private val id: String,
         override val name: String,

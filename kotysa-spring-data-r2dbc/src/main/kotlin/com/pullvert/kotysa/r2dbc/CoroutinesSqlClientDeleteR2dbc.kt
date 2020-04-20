@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc
@@ -9,9 +9,7 @@ import org.springframework.data.r2dbc.core.DatabaseClient
 import org.springframework.data.r2dbc.core.awaitRowsUpdated
 import kotlin.reflect.KClass
 
-/**
- * @author Fred Montariol
- */
+
 internal class CoroutinesSqlClientDeleteR2dbc private constructor() : AbstractSqlClientDeleteR2dbc() {
 
     internal class Delete<T : Any> internal constructor(

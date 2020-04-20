@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.android
@@ -14,9 +14,6 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.OffsetDateTime
 
-/**
- * @author Fred Montariol
- */
 class SqLiteAllTypesTest : AbstractSqLiteTest<AllTypesRepository>() {
 
     override fun getRepository(dbHelper: DbHelper, sqLiteTables: Tables) =
@@ -71,9 +68,6 @@ class SqLiteAllTypesTest : AbstractSqLiteTest<AllTypesRepository>() {
     }
 }
 
-/**
- * @author Fred Montariol
- */
 class AllTypesRepository(sqLiteOpenHelper: SQLiteOpenHelper, tables: Tables) : Repository {
 
     private val sqlClient = sqLiteOpenHelper.sqlClient(tables)

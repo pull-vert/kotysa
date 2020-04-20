@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa
@@ -9,8 +9,6 @@ import kotlin.reflect.KClass
 
 /**
  * Coroutines Sql Client
- *
- * @author Fred Montariol
  */
 public abstract class CoroutinesSqlClient {
 
@@ -62,9 +60,7 @@ public abstract class CoroutinesSqlClient {
 }
 
 
-/**
- * @author Fred Montariol
- */
+
 public class CoroutinesSqlClientSelect private constructor() {
 
     public abstract class Select<T : Any> : Whereable<T>, Return<T> {
@@ -128,9 +124,7 @@ public class CoroutinesSqlClientSelect private constructor() {
     }
 }
 
-/**
- * @author Fred Montariol
- */
+
 public class CoroutinesSqlClientDeleteOrUpdate private constructor() {
 
     public abstract class DeleteOrUpdate<T : Any> : Return {

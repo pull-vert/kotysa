@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc
@@ -14,7 +14,6 @@ import kotlin.reflect.KClass
 /**
  * see [spring-data-r2dbc doc](https://docs.spring.io/spring-data/r2dbc/docs/1.0.x/reference/html/#reference)
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
- * @author Fred Montariol
  */
 private class SqlClientR2dbc(
         override val client: DatabaseClient,
@@ -47,6 +46,5 @@ private class SqlClientR2dbc(
  * Create a [ReactorSqlClient] from a R2DBC [DatabaseClient] with [Tables] mapping
  *
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbc
- * @author Fred Montariol
  */
 public fun DatabaseClient.sqlClient(tables: Tables): ReactorSqlClient = SqlClientR2dbc(this, tables)

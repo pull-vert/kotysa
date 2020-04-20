@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.android
@@ -12,9 +12,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 
-/**
- * @author Fred Montariol
- */
 class SqLiteSelectTest : AbstractSqLiteTest<UserRepositorySelect>() {
 
     override fun getRepository(dbHelper: DbHelper, sqLiteTables: Tables) =
@@ -53,9 +50,6 @@ class SqLiteSelectTest : AbstractSqLiteTest<UserRepositorySelect>() {
     }
 }
 
-/**
- * @author Fred Montariol
- */
 class UserRepositorySelect(sqLiteOpenHelper: SQLiteOpenHelper, tables: Tables) : AbstractUserRepository(sqLiteOpenHelper, tables) {
 
     fun selectOneNonUnique() = sqlClient.select<SqLiteUser>()

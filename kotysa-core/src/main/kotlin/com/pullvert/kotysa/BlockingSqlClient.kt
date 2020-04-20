@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa
@@ -8,8 +8,6 @@ import kotlin.reflect.KClass
 
 /**
  * Blocking Sql Client, to be used with any blocking JDBC driver
- *
- * @author Fred Montariol
  */
 public abstract class BlockingSqlClient {
 
@@ -58,9 +56,7 @@ public abstract class BlockingSqlClient {
     protected abstract fun <T : Any> updateTable(tableClass: KClass<T>): BlockingSqlClientDeleteOrUpdate.Update<T>
 }
 
-/**
- * @author Fred Montariol
- */
+
 public class BlockingSqlClientSelect private constructor() {
     public abstract class Select<T : Any> : Whereable<T>, Return<T> {
 
@@ -123,9 +119,7 @@ public class BlockingSqlClientSelect private constructor() {
     }
 }
 
-/**
- * @author Fred Montariol
- */
+
 public class BlockingSqlClientDeleteOrUpdate private constructor() {
     public abstract class DeleteOrUpdate<T : Any> : Return {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc.h2
@@ -9,9 +9,7 @@ import com.pullvert.kotysa.r2dbc.sqlClient
 import com.pullvert.kotysa.test.*
 import org.springframework.data.r2dbc.core.DatabaseClient
 
-/**
- * @author Fred Montariol
- */
+
 abstract class AbstractUserRepositoryH2(dbClient: DatabaseClient) : Repository {
 
     protected val sqlClient = dbClient.sqlClient(h2Tables)

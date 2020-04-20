@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.android.sample
@@ -7,9 +7,6 @@ package com.pullvert.kotysa.android.sample
 import android.database.sqlite.SQLiteOpenHelper
 import com.pullvert.kotysa.android.sqlClient
 
-/**
- * @author Fred Montariol
- */
 @Suppress("UNUSED_VARIABLE")
 class UserRepositorySqLite(sqLiteOpenHelper: SQLiteOpenHelper) {
 

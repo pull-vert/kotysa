@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc.h2
@@ -11,9 +11,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.data.r2dbc.core.DatabaseClient
 
-/**
- * @author Fred Montariol
- */
+
 class R2DbcSelectStringH2Test : AbstractR2dbcH2Test<UserRepositoryH2SelectString>() {
     override val context = startContext<UserRepositoryH2SelectString>()
 
@@ -151,9 +149,7 @@ class R2DbcSelectStringH2Test : AbstractR2dbcH2Test<UserRepositoryH2SelectString
     }
 }
 
-/**
- * @author Fred Montariol
- */
+
 class UserRepositoryH2SelectString(dbClient: DatabaseClient) : AbstractUserRepositoryH2(dbClient) {
 
     fun selectAllByFirstameNotEq(firstname: String) = sqlClient.select<H2User>()

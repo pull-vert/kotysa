@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.android
@@ -13,9 +13,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.time.LocalTime
 
-/**
- * @author Fred Montariol
- */
 class SqLiteSelectLocalTimeTest : AbstractSqLiteTest<LocalTimeRepositorySelect>() {
 
     override fun getRepository(dbHelper: DbHelper, sqLiteTables: Tables) =
@@ -171,9 +168,6 @@ class SqLiteSelectLocalTimeTest : AbstractSqLiteTest<LocalTimeRepositorySelect>(
     }
 }
 
-/**
- * @author Fred Montariol
- */
 class LocalTimeRepositorySelect(sqLiteOpenHelper: SQLiteOpenHelper, tables: Tables) : Repository {
 
     private val sqlClient = sqLiteOpenHelper.sqlClient(tables)

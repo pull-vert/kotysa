@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa.r2dbc
@@ -11,7 +11,6 @@ import kotlin.reflect.KClass
 
 /**
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbcCoroutines
- * @author Fred Montariol
  */
 private class CoroutinesSqlClientR2Dbc internal constructor(
         override val client: DatabaseClient,
@@ -44,6 +43,5 @@ private class CoroutinesSqlClientR2Dbc internal constructor(
  * Create a [CoroutinesSqlClient] from a R2DBC [DatabaseClient] with [Tables] mapping
  *
  * @sample com.pullvert.kotysa.r2dbc.sample.UserRepositoryR2dbcCoroutines
- * @author Fred Montariol
  */
 public fun DatabaseClient.coSqlClient(tables: Tables): CoroutinesSqlClient = CoroutinesSqlClientR2Dbc(this, tables)

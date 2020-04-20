@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors. Use of this source code is governed by the Apache 2.0 license.
+ * This is free and unencumbered software released into the public domain, following <https://unlicense.org>
  */
 
 package com.pullvert.kotysa
@@ -29,9 +29,7 @@ public fun <T : Any> Tables.checkTable(tableClass: KClass<out T>) {
 
 private val logger = InlineLogger("com.pullvert.kotysa.DefaultSqlClient")
 
-/**
- * @author Fred Montariol
- */
+
 public interface DefaultSqlClient {
     public val tables: Tables
 
@@ -146,9 +144,7 @@ private fun Any?.defaultValue(): String = when (this) {
     else -> "'${this.dbValue()}'"
 }
 
-/**
- * @author Fred Montariol
- */
+
 public open class DefaultSqlClientCommon protected constructor() {
 
     public interface Properties {
