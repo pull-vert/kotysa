@@ -63,6 +63,11 @@ internal class SqlClientSelectSqLite private constructor() : DefaultSqlClientSel
             override val properties: Properties<T>
     ) : DefaultSqlClientSelect.Where<T>, BlockingSqlClientSelect.Where<T>, Return<T> {
 
+        override fun and(dsl: WhereDsl.(FieldProvider) -> WhereClause): BlockingSqlClientSelect.Where<T> {
+            addAndClause(dsl)
+            return this
+        }
+
         override fun or(dsl: WhereDsl.(FieldProvider) -> WhereClause): BlockingSqlClientSelect.Where<T> {
             addOrClause(dsl)
             return this

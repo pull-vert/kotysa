@@ -63,12 +63,38 @@ internal class SqlClientUpdateR2dbc private constructor() : AbstractSqlClientUpd
     private class Where<T : Any> internal constructor(
             override val client: DatabaseClient,
             override val properties: Properties<T>
-    ) : DefaultSqlClientDeleteOrUpdate.Where<T>, ReactorSqlClientDeleteOrUpdate.Where, Return<T>
+    ) : DefaultSqlClientDeleteOrUpdate.Where<T>, ReactorSqlClientDeleteOrUpdate.Where, Return<T> {
+
+        override fun and(dsl: WhereDsl.(FieldProvider) -> WhereClause): ReactorSqlClientDeleteOrUpdate.Where {
+            addAndClause(dsl)
+            return this
+        }
+
+        override fun or(dsl: WhereDsl.(FieldProvider) -> WhereClause): ReactorSqlClientDeleteOrUpdate.Where {
+            addOrClause(dsl)
+            return this
+        }
+    }
 
     private class TypedWhere<T : Any> internal constructor(
             override val client: DatabaseClient,
             override val properties: Properties<T>
-    ) : DefaultSqlClientDeleteOrUpdate.TypedWhere<T>, ReactorSqlClientDeleteOrUpdate.TypedWhere<T>, Return<T>
+    ) : DefaultSqlClientDeleteOrUpdate.TypedWhere<T>, ReactorSqlClientDeleteOrUpdate.TypedWhere<T>, Return<T> {
+
+        override fun and(
+                dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause
+        ): ReactorSqlClientDeleteOrUpdate.TypedWhere<T> {
+            addAndClause(dsl)
+            return this
+        }
+
+        override fun or(
+                dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause
+        ): ReactorSqlClientDeleteOrUpdate.TypedWhere<T> {
+            addOrClause(dsl)
+            return this
+        }
+    }
 
     private interface Return<T : Any> : AbstractSqlClientUpdateR2dbc.Return<T>, ReactorSqlClientDeleteOrUpdate.Return {
 

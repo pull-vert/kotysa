@@ -22,7 +22,10 @@ internal class CoroutinesSqlClientSelectR2dbc private constructor() : AbstractSq
     ) : CoroutinesSqlClientSelect.Select<T>(), DefaultSqlClientSelect.Select<T>, Whereable<T>, Return<T> {
         override val properties: Properties<T> = initProperties()
 
-        override fun <U : Any> join(joinClass: KClass<U>, alias: String?, type: JoinType): CoroutinesSqlClientSelect.Joinable<T> =
+        override fun <U : Any> join(
+                joinClass: KClass<U>,
+                alias: String?, type: JoinType
+        ): CoroutinesSqlClientSelect.Joinable<T> =
                 Joinable(client, properties, joinClass, alias, type)
     }
 
@@ -60,6 +63,11 @@ internal class CoroutinesSqlClientSelectR2dbc private constructor() : AbstractSq
             override val client: DatabaseClient,
             override val properties: Properties<T>
     ) : DefaultSqlClientSelect.Where<T>, CoroutinesSqlClientSelect.Where<T>, Return<T> {
+
+        override fun and(dsl: WhereDsl.(FieldProvider) -> WhereClause): CoroutinesSqlClientSelect.Where<T> {
+            addAndClause(dsl)
+            return this
+        }
 
         override fun or(dsl: WhereDsl.(FieldProvider) -> WhereClause): CoroutinesSqlClientSelect.Where<T> {
             addOrClause(dsl)

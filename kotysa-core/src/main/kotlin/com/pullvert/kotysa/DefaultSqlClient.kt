@@ -207,22 +207,45 @@ public open class DefaultSqlClientCommon protected constructor() {
 
     protected interface Where : WithProperties {
         public fun addWhereClause(dsl: WhereDsl.(FieldProvider) -> WhereClause) {
-            properties.apply {
-                whereClauses.add(TypedWhereClause(WhereDsl(dsl, availableColumns, tables.dbType).initialize(), WhereClauseType.WHERE))
-            }
+            addClause(dsl, WhereClauseType.WHERE)
+        }
+
+        public fun addAndClause(dsl: WhereDsl.(FieldProvider) -> WhereClause) {
+            addClause(dsl, WhereClauseType.AND)
         }
 
         public fun addOrClause(dsl: WhereDsl.(FieldProvider) -> WhereClause) {
+            addClause(dsl, WhereClauseType.OR)
+        }
+
+        private fun addClause(dsl: WhereDsl.(FieldProvider) -> WhereClause, whereClauseType: WhereClauseType) {
             properties.apply {
-                whereClauses.add(TypedWhereClause(WhereDsl(dsl, availableColumns, tables.dbType).initialize(), WhereClauseType.OR))
+                whereClauses.add(TypedWhereClause(
+                        WhereDsl(dsl, availableColumns, tables.dbType).initialize(), whereClauseType))
             }
         }
     }
 
     protected interface TypedWhere<T : Any> : WithProperties {
         public fun addWhereClause(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause) {
+            addClause(dsl, WhereClauseType.WHERE)
+        }
+
+        public fun addAndClause(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause) {
+            addClause(dsl, WhereClauseType.AND)
+        }
+
+        public fun addOrClause(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause) {
+            addClause(dsl, WhereClauseType.OR)
+        }
+
+        private fun addClause(
+                dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause,
+                whereClauseType: WhereClauseType
+        ) {
             properties.apply {
-                whereClauses.add(TypedWhereClause(TypedWhereDsl(dsl, availableColumns, tables.dbType).initialize(), WhereClauseType.WHERE))
+                whereClauses.add(TypedWhereClause(
+                        TypedWhereDsl(dsl, availableColumns, tables.dbType).initialize(), whereClauseType))
             }
         }
     }

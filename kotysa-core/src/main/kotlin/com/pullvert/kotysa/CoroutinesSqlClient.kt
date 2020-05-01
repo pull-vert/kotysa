@@ -86,6 +86,7 @@ public class CoroutinesSqlClientSelect private constructor() {
     }
 
     public interface Where<T : Any> : Return<T> {
+        public fun and(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
         public fun or(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where<T>
     }
 
@@ -153,9 +154,15 @@ public class CoroutinesSqlClientDeleteOrUpdate private constructor() {
         public fun where(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where
     }
 
-    public interface Where : Return // and function will not be typed
+    public interface Where : Return {
+        public fun and(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where
+        public fun or(dsl: WhereDsl.(FieldProvider) -> WhereClause): Where
+    }
 
-    public interface TypedWhere<T : Any> : Return // and function will be typed
+    public interface TypedWhere<T : Any> : Return {
+        public fun and(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): TypedWhere<T>
+        public fun or(dsl: TypedWhereDsl<T>.(TypedFieldProvider<T>) -> WhereClause): TypedWhere<T>
+    }
 
     public interface Return {
         /**
