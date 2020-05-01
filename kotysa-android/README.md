@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.pullvert:kotysa-android:0.1.0'
+    implementation 'com.pullvert:kotysa-android:0.1.1'
 }
 ```
 
