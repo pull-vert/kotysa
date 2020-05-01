@@ -72,10 +72,6 @@ subprojects {
     java {
         withSourcesJar()
     }
-//    task sourcesJar(type: Jar) {
-//        from sourceSets.main.allSource
-//        archiveClassifier = 'sources'
-//    }
 
     dokka {
         outputFormat = 'html'
@@ -111,7 +107,6 @@ subprojects {
             maven(MavenPublication) {
                 artifactId = project.name
                 from components.java
-//                artifact sourcesJar todo check if still required
                 artifact javadocJar
                 pom {
                     name = project.name
