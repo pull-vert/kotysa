@@ -6,7 +6,7 @@ plugins {
 
 println("Using Gradle version: $gradle.gradleVersion")
 
-subprojects {
+configure(subprojects.findAll { it.name != "kotysa-platform" }) {
     apply plugin: 'org.jetbrains.kotlin.jvm'
     apply plugin: 'jacoco'
     apply plugin: 'org.jetbrains.dokka'

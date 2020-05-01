@@ -4,12 +4,14 @@ repositories {
 }
 
 dependencies {
+    api platform(project(':kotysa-platform'))
+    api project(':kotysa-core')
+
     // import BOM
     implementation platform("io.r2dbc:r2dbc-bom:$r2dbc_bom_version")
     implementation platform("org.testcontainers:testcontainers-bom:$testcontainers_bom_version")
 
     api "io.projectreactor.kotlin:reactor-kotlin-extensions:$reactor_kotlin_extension_version"
-    api project(':kotysa-core')
 
     implementation "org.springframework.data:spring-data-r2dbc:$spring_data_r2dbc_version"
     implementation 'org.jetbrains.kotlin:kotlin-reflect'

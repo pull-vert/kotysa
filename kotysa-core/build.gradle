@@ -7,8 +7,10 @@ plugins {
 println("Using Kotlin compiler version: $KotlinCompilerVersion.VERSION")
 
 dependencies {
+    api platform(project(':kotysa-platform'))
+
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
-    implementation "com.michael-bull.kotlin-inline-logger:kotlin-inline-logger-jvm:$kotlin_inline_logger_version"
+    implementation "com.michael-bull.kotlin-inline-logger:kotlin-inline-logger-jvm"
 
     compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-core'
 

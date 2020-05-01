@@ -12,3 +12,5 @@ include 'kotysa-core'
 
 include 'kotysa-android'
 include 'kotysa-spring-data-r2dbc'
+
+include 'kotysa-platform'
