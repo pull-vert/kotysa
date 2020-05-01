@@ -34,7 +34,7 @@ val tables =
             table<User> {
                 name = "users"
                 column { it[User::id].uuid().primaryKey }
-                column { it[User::firstname].varchar().name("fname") }
+                column { it[User::firstname].varchar().name("first-name") }
                 column { it[User::roleId].uuid().foreignKey<Role>() }
                 column { it[User::alias].varchar() }
             }
@@ -45,7 +45,7 @@ val tables =
 Kotysa will generate SQL for you !
 ```kotlin
 // return all admin users
-sqlClient.select<User>()
+val admins = sqlClient.select<User>()
         .innerJoin<Role>().on { it[User::roleId] }
         .where { it[Role::label] eq "admin" }
         .fetchAll()
