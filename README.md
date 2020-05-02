@@ -60,8 +60,19 @@ Kotysa is agnostic from Sql Engine (SqLite on Android, R2DBC, JDBC in the future
 
 See sample projects [here](samples).
 
+Kotysa provides [Kotlin Coroutines first class support with R2DBC](kotysa-spring-data-r2dbc/README.md#coroutines-first-class-support)
+
 Kotysa is **not production ready yet**, some key features are still missing. Regular early releases will provide new features (see [next milestones](https://github.com/pull-vert/kotysa/milestones)).
 
 Type safety relies on type and nullability of the Entity property (or getter).
 
-Kotysa provides [Kotlin Coroutines first class support with R2DBC](kotysa-spring-data-r2dbc/README.md#coroutines-first-class-support)
+## Build from sources
+
+* Clone Kotysa repository
+* Use a JDK 1.8
+* You need a local docker, like docker-ce. Some integration tests use testcontainers to start real databases like PostgreSQL
+* Kotysa can be easily built with the gradle wrapper
+
+```bash
+ $ ./gradlew clean buildNeeded
+```
