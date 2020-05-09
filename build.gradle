@@ -133,8 +133,9 @@ task build {
     dependsOn subprojects.findResults { it.tasks.findByName('build') }
 }
 
-// execute ./gradlew wrapper then remove .gradle directory when version change
+// when version changes :
+// -> execute ./gradlew wrapper, then remove .gradle directory, then execute ./gradlew wrapper again
 wrapper {
-    gradleVersion = '6.3'
+    gradleVersion = '6.4'
     distributionType = Wrapper.DistributionType.ALL
 }
