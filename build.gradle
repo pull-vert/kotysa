@@ -136,6 +136,6 @@ task build {
 // when version changes :
 // -> execute ./gradlew wrapper, then remove .gradle directory, then execute ./gradlew wrapper again
 wrapper {
-    gradleVersion = '6.4'
+    gradleVersion = '6.4.1'
     distributionType = Wrapper.DistributionType.ALL
 }
