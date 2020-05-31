@@ -5,6 +5,8 @@
 
 The idiomatic way to write **Ko**tlin **ty**pe-**sa**fe SQL.
 
+:exclamation: **This project has migrated to [new location](https://github.com/ufoss-org/kotysa) :exclamation:
+
 ## Easy to use : 3 steps only
 ### step 1 -> Create Kotlin entities
 data classes are great for that !
